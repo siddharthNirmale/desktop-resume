@@ -1,30 +1,36 @@
-import { motion } from 'framer-motion';
+import { motion, useMotionValue } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Minus, Square, X } from 'lucide-react';
 
 export default function Window({ id, title, isMinimized, zIndex, onClose, onMinimize, onFocus, constraintsRef, children }) {
   const [isMaximized, setIsMaximized] = useState(false);
-  const [spawnPos, setSpawnPos] = useState({ x: 0, y: 0 });
+  const [spawnPos, setSpawnPos] = useState(null);
   
-  // Track the dynamic width and height of the window
-  const [size, setSize] = useState({ width: 550, height: 400 });
+  // 1. GPU-Accelerated Motion Values (Bypasses React lag!)
+  const width = useMotionValue(550);
+  const height = useMotionValue(400);
+  
+  // 2. We explicitly track X and Y so they don't fight with the resize updates
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
 
+  // We use CSS top/left for the absolute initial spawn position
   useEffect(() => {
     const randomOffset = Math.floor(Math.random() * 40) - 20;
     setSpawnPos({
-      x: (window.innerWidth / 2) - 275 + randomOffset,
-      y: (window.innerHeight / 2) - 200 + randomOffset,
+      top: (window.innerHeight / 2) - 200 + randomOffset,
+      left: (window.innerWidth / 2) - 275 + randomOffset,
     });
   }, []);
 
-  // Framer Motion's pan handler seamlessly calculates mouse movement (deltas)
+  // 3. Synchronous resize math pushed straight to the style tag
   const handleResize = (event, info) => {
-    setSize((prev) => ({
-      // Enforce minimum dimensions so the window doesn't break UI components
-      width: Math.max(320, prev.width + info.delta.x),
-      height: Math.max(250, prev.height + info.delta.y),
-    }));
+    width.set(Math.max(320, width.get() + info.delta.x));
+    height.set(Math.max(250, height.get() + info.delta.y));
   };
+
+  // Wait for the spawn position to calculate so it doesn't flicker at 0,0
+  if (!spawnPos) return null;
 
   return (
     <motion.div
@@ -33,15 +39,25 @@ export default function Window({ id, title, isMinimized, zIndex, onClose, onMini
       dragHandleClassName="window-header"
       dragConstraints={constraintsRef}
       onMouseDown={onFocus}
-      style={{ zIndex }}
+      // Inject the motion values directly into the style prop
+      style={{ 
+        zIndex, 
+        top: spawnPos.top, 
+        left: spawnPos.left,
+        x, 
+        y, 
+        width, 
+        height 
+      }}
       className={`absolute bg-[#0a0a0a] border border-neutral-800/80 rounded-md shadow-2xl flex flex-col overflow-hidden text-neutral-300 ${isMinimized ? 'hidden' : ''}`}
       
-      initial={{ x: spawnPos.x, y: spawnPos.y, opacity: 0, scale: 0.98 }}
+      initial={{ opacity: 0, scale: 0.98 }}
       animate={
         isMaximized 
-          ? { x: 0, y: 0, width: '100vw', height: '100vh', borderRadius: '0px', opacity: 1, scale: 1 }
-          // Inject our dynamic size state here
-          : { x: spawnPos.x, y: spawnPos.y, width: size.width, height: size.height, borderRadius: '0.375rem', opacity: 1, scale: 1 }
+          // Animate overrides the style values when maximized
+          ? { x: -spawnPos.left, y: -spawnPos.top, width: '100vw', height: '100vh', borderRadius: '0px', opacity: 1, scale: 1 }
+          // When un-maximized, it smoothly reverts back to the underlying style motion values!
+          : { borderRadius: '0.375rem', opacity: 1, scale: 1 } 
       }
       exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.1 } }}
       transition={{ duration: 0.15, ease: "easeOut" }}
@@ -73,13 +89,13 @@ export default function Window({ id, title, isMinimized, zIndex, onClose, onMini
         {children}
       </div>
 
-      {/* Custom Resizer Grip (Hidden when maximized) */}
+      {/* Custom Resizer Grip */}
       {!isMaximized && (
         <motion.div
           onPan={handleResize}
+          onPointerDown={(e) => e.stopPropagation()} // Stop accidental drag events
           className="absolute bottom-0 right-0 w-6 h-6 cursor-se-resize flex items-end justify-end p-1.5 z-50 text-neutral-600 hover:text-white transition-colors"
         >
-          {/* Subtle minimal grip lines */}
           <svg width="8" height="8" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8 10L10 8V10H8ZM4 10L10 4V6L6 10H4ZM0 10L10 0V2L2 10H0Z" fill="currentColor"/>
           </svg>
