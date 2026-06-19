@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { Minus, Square, X } from 'lucide-react'; // We need these for minimal controls
 
-// Added constraintsRef prop
 export default function Window({ id, title, isMinimized, zIndex, onClose, onMinimize, onFocus, constraintsRef, children }) {
   const [isMaximized, setIsMaximized] = useState(false);
   const [spawnPos, setSpawnPos] = useState({ x: 0, y: 0 });
@@ -14,42 +14,62 @@ export default function Window({ id, title, isMinimized, zIndex, onClose, onMini
     });
   }, []);
 
-  // Notice we removed the "if (!isOpen) return null" line here!
-
   return (
     <motion.div
       drag={!isMaximized}
       dragMomentum={false}
       dragHandleClassName="window-header"
-      dragConstraints={constraintsRef} // 🛑 This traps the window inside the screen!
+      dragConstraints={constraintsRef}
       onMouseDown={onFocus}
       style={{ zIndex }}
-      className={`absolute bg-[#0c0c0c] shadow-[0_20px_50px_rgba(0,0,0,0.7)] border border-neutral-800 flex flex-col overflow-hidden text-gray-200 ${isMinimized ? 'hidden' : ''}`}
+      // Changed to tighter rounded corners (rounded-md), removed heavy drop shadows, ultra-dark background
+      className={`absolute bg-[#0a0a0a] border border-neutral-800/80 rounded-md shadow-2xl flex flex-col overflow-hidden text-neutral-300 ${isMinimized ? 'hidden' : ''}`}
       
-      initial={{ x: spawnPos.x, y: spawnPos.y, opacity: 0, scale: 0.95 }}
+      initial={{ x: spawnPos.x, y: spawnPos.y, opacity: 0, scale: 0.98 }}
       animate={
         isMaximized 
           ? { x: 0, y: 0, width: '100vw', height: '100vh', borderRadius: '0px', opacity: 1, scale: 1 }
-          : { x: spawnPos.x, y: spawnPos.y, width: 550, height: 400, borderRadius: '0.75rem', opacity: 1, scale: 1 }
+          : { x: spawnPos.x, y: spawnPos.y, width: 550, height: 400, borderRadius: '0.375rem', opacity: 1, scale: 1 }
       }
-      exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }} // 💨 Smooth close animation
-      transition={{ duration: 0.2, ease: "easeOut" }}
+      exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.1 } }}
+      transition={{ duration: 0.15, ease: "easeOut" }}
     >
+      {/* Hyper-Minimal Title Bar */}
       <div 
         onDoubleClick={() => setIsMaximized(!isMaximized)} 
-        className={`window-header bg-[#111111] px-4 py-3 flex items-center border-b border-neutral-800/80 relative select-none ${isMaximized ? 'cursor-default' : 'cursor-move'}`}
+        // No distinct background color for the header, just a subtle bottom border
+        className={`window-header h-10 px-4 flex items-center justify-between border-b border-neutral-800/50 select-none ${isMaximized ? 'cursor-default' : 'cursor-move'}`}
       >
-        <div className="flex gap-2 z-10">
-          <button onClick={onClose} className="w-3 h-3 rounded-full bg-[#ed6a5e] hover:bg-[#ed6a5e]/80 transition-colors" />
-          <button onClick={onMinimize} className="w-3 h-3 rounded-full bg-[#f4bf4f] hover:bg-[#f4bf4f]/80 transition-colors" />
-          <button onClick={() => setIsMaximized(!isMaximized)} className="w-3 h-3 rounded-full bg-[#61c554] hover:bg-[#61c554]/80 transition-colors" />
-        </div>
-        <span className="absolute left-1/2 -translate-x-1/2 text-[10px] font-bold text-neutral-500 tracking-widest uppercase">
+        {/* Left-aligned, quiet title */}
+        <span className="text-xs font-medium text-neutral-500 tracking-wide">
           {title}
         </span>
+        
+        {/* Clean, monochrome controls with no background colors */}
+        <div className="flex items-center gap-4 z-10 text-neutral-600">
+          <button 
+            onClick={onMinimize} 
+            className="hover:text-white transition-colors flex items-center justify-center"
+          >
+            <Minus size={14} strokeWidth={1.5} />
+          </button>
+          <button 
+            onClick={() => setIsMaximized(!isMaximized)} 
+            className="hover:text-white transition-colors flex items-center justify-center"
+          >
+            <Square size={12} strokeWidth={1.5} />
+          </button>
+          <button 
+            onClick={onClose} 
+            className="hover:text-white transition-colors flex items-center justify-center"
+          >
+            <X size={14} strokeWidth={1.5} />
+          </button>
+        </div>
       </div>
 
-      <div className="flex-1 overflow-auto bg-[#0c0c0c] custom-scrollbar">
+      {/* Content Area */}
+      <div className="flex-1 overflow-auto bg-[#0a0a0a] custom-scrollbar">
         {children}
       </div>
     </motion.div>
