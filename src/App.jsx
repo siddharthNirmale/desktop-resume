@@ -1,11 +1,11 @@
 import useWindows from './hooks/useWindows';
 import Window from './components/Window';
 import Dock from './components/Dock';
-// Import your sections here...
 import AboutSection from './sections/AboutSection';
 import ProjectsSection from './sections/ProjectsSection';
 import Notepad from './sections/Notepad';
 import ContactSection from './sections/ContactSection';
+import Terminal from './sections/Terminal';
 
 export default function App() {
   const { windows, bringToFront, toggleWindow } = useWindows([
@@ -13,10 +13,11 @@ export default function App() {
     { id: 'projects', title: 'Projects', isOpen: false, isMinimized: false, zIndex: 1 },
     { id: 'notepad', title: 'Notes', isOpen: false, isMinimized: false, zIndex: 1 },
     { id: 'contact', title: 'Contact', isOpen: false, isMinimized: false, zIndex: 1 },
+    { id: 'terminal', title: 'Terminal', isOpen: false, isMinimized: false, zIndex: 1 },
   ]);
 
   return (
-    // Pitch black background matching the screenshot
+    // Pitch black background matching the screenshot aesthetic
     <div className="w-screen h-screen bg-[#050505] relative overflow-hidden flex flex-col font-sans text-gray-200 select-none">
       
       {/* Desktop Workspace */}
@@ -53,9 +54,12 @@ export default function App() {
               </div>
             )}
             
+            {/* Component Routing */}
             {win.id === 'projects' && <ProjectsSection />}
             {win.id === 'notepad' && <Notepad />}
             {win.id === 'contact' && <ContactSection />}
+            {win.id === 'terminal' && <Terminal />}
+            
           </Window>
         ))}
       </div>
