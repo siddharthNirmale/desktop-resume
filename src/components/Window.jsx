@@ -2,27 +2,31 @@ import { motion, useMotionValue } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Minus, X, Expand, Shrink } from 'lucide-react';
 
-export default function Window({ id, title, isMinimized, zIndex, onClose, onMinimize, onFocus, constraintsRef, children }) {
+export default function Window({ 
+  id, title, isMinimized, zIndex, onClose, onMinimize, onFocus, constraintsRef, children,
+  defaultWidth = 550, 
+  defaultHeight = 400 
+}) {
   const [isFocused, setIsFocused] = useState(false);
   const [spawnPos, setSpawnPos] = useState(null);
   
-  const width = useMotionValue(550);
-  const height = useMotionValue(400);
+  const width = useMotionValue(defaultWidth);
+  const height = useMotionValue(defaultHeight);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
   useEffect(() => {
     const randomOffset = Math.floor(Math.random() * 40) - 20;
-    setSpawnPos({ top: (window.innerHeight / 2) - 200 + randomOffset, left: (window.innerWidth / 2) - 275 + randomOffset });
-  }, []);
+    setSpawnPos({ top: (window.innerHeight / 2) - (defaultHeight / 2) + randomOffset, left: (window.innerWidth / 2) - (defaultWidth / 2) + randomOffset });
+  }, [defaultWidth, defaultHeight]);
 
   const toggleFocus = () => {
     if (!isFocused) {
       width.set(window.innerWidth * 0.7);
       height.set(window.innerHeight * 0.7);
     } else {
-      width.set(550);
-      height.set(400);
+      width.set(defaultWidth);
+      height.set(defaultHeight);
     }
     setIsFocused(!isFocused);
   };
@@ -44,23 +48,17 @@ export default function Window({ id, title, isMinimized, zIndex, onClose, onMini
       dragConstraints={constraintsRef}
       onMouseDown={onFocus}
       style={{ zIndex, x, y, width, height }}
-      // Enforcing the exact #1a1a1a background theme
       className={`absolute bg-[#1a1a1a] border border-neutral-800 rounded-xl shadow-xl flex flex-col overflow-hidden ${isMinimized ? 'hidden' : ''}`}
       initial={{ top: spawnPos.top, left: spawnPos.left, opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
     >
-      {/* Removed side padding (px-2 just keeps it from clipping the border) */}
-      <div className="window-header h-10 px-2 flex items-center justify-between border-b border-neutral-800 bg-[#1a1a1a] select-none cursor-grab active:cursor-grabbing">
-        
+      <div className="window-header h-10 px-4 flex items-center justify-between border-b border-neutral-800 bg-[#1a1a1a] select-none cursor-grab active:cursor-grabbing">
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-1.5 rounded-full bg-[#E51919]" />
-          <span className="text-[9px] font-bold text-neutral-500 uppercase tracking-[0.2em]">
-            {title}
-          </span>
+          <span className="text-[9px] font-bold text-neutral-500 uppercase tracking-[0.2em]">{title}</span>
         </div>
-
         <div className="flex items-center gap-3 text-neutral-500">
           <button onClick={onMinimize} className="hover:text-white transition-colors">
             <Minus size={14} strokeWidth={2} />
@@ -73,12 +71,9 @@ export default function Window({ id, title, isMinimized, zIndex, onClose, onMini
           </button>
         </div>
       </div>
-
-      {/* Content Area with strict background match */}
       <div className="flex-1 overflow-auto custom-scrollbar bg-[#1a1a1a]">
         {children}
       </div>
-
       {!isFocused && (
         <motion.div
           onPan={handleResize}

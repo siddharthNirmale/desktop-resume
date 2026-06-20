@@ -22,27 +22,24 @@ import Terminal from './sections/Terminal';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
-  
-  // Desktop Right-Click Menu State
   const [menu, setMenu] = useState({ show: false, x: 0, y: 0 });
-
-  const { windows, bringToFront, toggleWindow } = useWindows([
-    { id: 'about', title: 'About', isOpen: true },
-    { id: 'projects', title: 'Projects', isOpen: false },
-    { id: 'notepad', title: 'Notes', isOpen: false },
-    { id: 'contact', title: 'Contact', isOpen: false },
-    { id: 'terminal', title: 'Terminal', isOpen: false },
-  ]);
-
   const desktopRef = useRef(null);
 
-  // Handle Right Click on the Desktop
+  const { windows, bringToFront, toggleWindow } = useWindows([
+    { id: 'about', title: 'About', isOpen: true, type: 'window', defaultWidth: 550, defaultHeight: 400 },
+    { id: 'projects', title: 'Projects', isOpen: false, type: 'window', defaultWidth: 800, defaultHeight: 500 },
+    { id: 'notepad', title: 'Notes', isOpen: false, type: 'window', defaultWidth: 500, defaultHeight: 500 },
+    { id: 'contact', title: 'Contact', isOpen: false, type: 'window', defaultWidth: 450, defaultHeight: 400 },
+    { id: 'terminal', title: 'Terminal', isOpen: false, type: 'window', defaultWidth: 650, defaultHeight: 450 },
+    { id: 'clock', title: 'Local Time', isOpen: true, type: 'widget' },
+    { id: 'github', title: 'Contributions', isOpen: true, type: 'widget' },
+  ]);
+
   const handleContextMenu = (e) => {
-    e.preventDefault(); // Prevents the default browser menu
+    e.preventDefault();
     setMenu({ show: true, x: e.clientX, y: e.clientY });
   };
 
-  // Close menu when clicking anywhere else
   const closeMenu = () => {
     if (menu.show) setMenu({ show: false, x: 0, y: 0 });
   };
@@ -61,10 +58,8 @@ export default function App() {
       {!isLoading && (
         <>
           <Background />
-          <ClockWidget />
-          <GithubWidget />
 
-          {/* 🚀 Global Context Menu Layer */}
+          {/* Context Menu Layer */}
           <AnimatePresence>
             {menu.show && (
               <ContextMenu 
@@ -77,8 +72,29 @@ export default function App() {
             )}
           </AnimatePresence>
 
+          {/* Widgets Layer */}
+          {windows.filter(w => w.type === 'widget' && w.isOpen).map(widget => (
+            <div key={widget.id}>
+              {widget.id === 'clock' && (
+                <ClockWidget 
+                  constraintsRef={desktopRef} 
+                  zIndex={widget.zIndex || 1} 
+                  onFocus={() => bringToFront(widget.id)} 
+                />
+              )}
+              {widget.id === 'github' && (
+                <GithubWidget 
+                  constraintsRef={desktopRef} 
+                  zIndex={widget.zIndex || 1} 
+                  onFocus={() => bringToFront(widget.id)} 
+                />
+              )}
+            </div>
+          ))}
+
+          {/* Windows Layer */}
           <AnimatePresence>
-            {windows.map(win => win.isOpen && (
+            {windows.filter(w => w.type === 'window' && w.isOpen).map(win => (
               <Window
                 key={win.id}
                 {...win}
@@ -87,7 +103,7 @@ export default function App() {
                 onMinimize={() => toggleWindow(win.id, 'isMinimized', true)}
                 onFocus={() => bringToFront(win.id)}
               >
-                <div className="p-1 h-full min-h-0 bg-[#1a1a1a]">
+                <div className="w-full h-full min-h-0 bg-[#1a1a1a]">
                   {win.id === 'about' && <AboutSection />}
                   {win.id === 'projects' && <ProjectsSection />}
                   {win.id === 'notepad' && <Notepad />}
