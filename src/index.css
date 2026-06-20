@@ -1,6 +1,50 @@
 @import "tailwindcss";
 
-/* Add this to index.css */
-.custom-scrollbar::-webkit-scrollbar { width: 8px; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #444; }
+/* Global Scrollbar Styling */
+.custom-scrollbar::-webkit-scrollbar { 
+  width: 8px; 
+  height: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track { 
+  background: transparent; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb { 
+  background: #333; 
+  border-radius: 4px; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { 
+  background: #444; 
+}
+
+/* Theme Foundation */
+:root {
+  --accent-color: #E51919;    /* Default Red */
+  --bg-color: #050505;        /* Default Desktop BG */
+}
+
+/* Utility Layer for Global Theme Integration */
+@layer utilities {
+  /* Dynamic Background */
+  .bg-desktop { 
+    background-color: var(--bg-color); 
+  }
+
+  /* Dynamic Accent Classes */
+  .bg-accent { 
+    background-color: var(--accent-color); 
+  }
+  .text-accent { 
+    color: var(--accent-color); 
+  }
+  .border-accent { 
+    border-color: var(--accent-color); 
+  }
+  
+  /* Hover States */
+  .hover-text-accent:hover { 
+    color: var(--accent-color); 
+  }
+  .hover-border-accent:hover { 
+    border-color: var(--accent-color); 
+  }
+}

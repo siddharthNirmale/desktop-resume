@@ -22,9 +22,7 @@ export default function LearningWidget({
       onPointerDown={onFocus}
       style={{ zIndex }}
       className="absolute top-60 right-3 w-56 bg-[#1a1a1a] border border-neutral-800 rounded-3xl p-4 cursor-move flex flex-col gap-4"
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
+      
     >
       {/* Header with Pulsing Recording/Active Dot */}
       <div className="flex justify-between items-center px-1">
@@ -33,7 +31,7 @@ export default function LearningWidget({
         </span>
         <motion.div 
           
-          className="w-2 h-2 rounded-full bg-[#E51919] shadow-[0_0_8px_rgba(229,25,25,0.4)]" 
+          className="w-2 h-2 rounded-full bg-[#E51919] " 
         />
       </div>
 

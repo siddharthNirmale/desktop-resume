@@ -81,9 +81,9 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
       {/* Replaced backdrop-blur with solid flat #0F0F0F and a sharper border/shadow */}
       <div className="px-3 py-3 bg-[#0F0F0F] border border-neutral-800 rounded-3xl flex items-center gap-2 shadow-2xl">
         <DockIcon id="about" icon={User} label="About" />
-        <DockIcon id="projects" icon={FolderCode} label="Projects" badge={2} />
+        <DockIcon id="projects" icon={FolderCode} label="Projects"  />
         <DockIcon id="notepad" icon={FileText} label="Notes" />
-        <DockIcon id="contact" icon={Mail} label="Contact" badge={1} />
+        <DockIcon id="contact" icon={Mail} label="Contact"  />
         
         {/* Separator changed from a thin line to a thicker dot-like pill */}
         <div className="w-[2px] h-5 bg-neutral-800 rounded-full mx-1" />
