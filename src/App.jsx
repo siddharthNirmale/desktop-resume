@@ -19,6 +19,7 @@ import ProjectsSection from './sections/ProjectsSection';
 import Notepad from './sections/Notepad';
 import ContactSection from './sections/ContactSection';
 import Terminal from './sections/Terminal';
+import LearningWidget from './components/LearningWidget';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -33,6 +34,7 @@ export default function App() {
     { id: 'terminal', title: 'Terminal', isOpen: false, type: 'window', defaultWidth: 650, defaultHeight: 450 },
     { id: 'clock', title: 'Local Time', isOpen: true, type: 'widget' },
     { id: 'github', title: 'Contributions', isOpen: true, type: 'widget' },
+    { id: 'learning', title: 'Learning', isOpen: true, type: 'widget', defaultWidth: 300, defaultHeight: 150 },
   ]);
 
   const handleContextMenu = (e) => {
@@ -45,8 +47,8 @@ export default function App() {
   };
 
   return (
-    <div 
-      ref={desktopRef} 
+    <div
+      ref={desktopRef}
       onContextMenu={handleContextMenu}
       onClick={closeMenu}
       className="w-screen h-screen bg-[#050505] relative overflow-hidden font-sans text-gray-200 select-none"
@@ -62,9 +64,9 @@ export default function App() {
           {/* Context Menu Layer */}
           <AnimatePresence>
             {menu.show && (
-              <ContextMenu 
-                x={menu.x} 
-                y={menu.y} 
+              <ContextMenu
+                x={menu.x}
+                y={menu.y}
                 onClose={closeMenu}
                 toggleWindow={toggleWindow}
                 bringToFront={bringToFront}
@@ -76,17 +78,29 @@ export default function App() {
           {windows.filter(w => w.type === 'widget' && w.isOpen).map(widget => (
             <div key={widget.id}>
               {widget.id === 'clock' && (
-                <ClockWidget 
-                  constraintsRef={desktopRef} 
-                  zIndex={widget.zIndex || 1} 
-                  onFocus={() => bringToFront(widget.id)} 
+                <ClockWidget
+                  constraintsRef={desktopRef}
+                  zIndex={widget.zIndex || 1}
+                  onFocus={() => bringToFront(widget.id)}
                 />
               )}
               {widget.id === 'github' && (
-                <GithubWidget 
-                  constraintsRef={desktopRef} 
-                  zIndex={widget.zIndex || 1} 
-                  onFocus={() => bringToFront(widget.id)} 
+                <GithubWidget
+                  constraintsRef={desktopRef}
+                  zIndex={widget.zIndex || 1}
+                  onFocus={() => bringToFront(widget.id)}
+                />
+              )}
+              {widget.id === 'learning' && (
+                <LearningWidget
+                  constraintsRef={desktopRef}
+                  zIndex={widget.zIndex || 1}
+                  onFocus={() => bringToFront(widget.id)}
+
+                  // 🚀 Pass your custom data here!
+                  progress={55}
+                  topic="Frontend Optimization"
+                  subtopic="Next.js 14"
                 />
               )}
             </div>
@@ -114,10 +128,10 @@ export default function App() {
             ))}
           </AnimatePresence>
 
-          <Dock 
-            windows={windows} 
-            toggleWindow={toggleWindow} 
-            bringToFront={bringToFront} 
+          <Dock
+            windows={windows}
+            toggleWindow={toggleWindow}
+            bringToFront={bringToFront}
           />
         </>
       )}
