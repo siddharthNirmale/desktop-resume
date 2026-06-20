@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import useWindows from './hooks/useWindows';
+import Background from './components/Background';
 
 // System Components
 import Window from './components/Window';
@@ -44,6 +45,7 @@ export default function App() {
       {/* Desktop Interface - Only renders after preloader finishes */}
       {!isLoading && (
         <>
+          <Background />
           <ClockWidget />
           <GithubWidget />
 
