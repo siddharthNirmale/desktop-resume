@@ -21,7 +21,7 @@ export default function LearningWidget({
       dragConstraints={constraintsRef}
       onPointerDown={onFocus}
       style={{ zIndex }}
-      className="absolute top-50 right-3 w-56 bg-[#1a1a1a] border border-neutral-800 rounded-3xl p-4 cursor-move flex flex-col gap-4"
+      className="absolute top-60 right-3 w-56 bg-[#1a1a1a] border border-neutral-800 rounded-3xl p-4 cursor-move flex flex-col gap-4"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3, ease: "easeOut" }}

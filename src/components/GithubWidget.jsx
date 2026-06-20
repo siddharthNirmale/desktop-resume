@@ -34,7 +34,7 @@ export default function GithubWidget({ constraintsRef, zIndex, onFocus }) {
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: isReady ? 1 : 0, scale: 1 }}
       transition={{ duration: 0.3 }}
-      className="absolute bottom-3 right-3 w-fit p-4 bg-[#1a1a1a] border border-neutral-800 rounded-3xl cursor-move"
+      className="absolute bottom-3 left-3 w-fit p-4 bg-[#1a1a1a] border border-neutral-800 rounded-3xl cursor-move"
     >
       <div className="mb-4 flex justify-between items-center px-1">
         <span className="text-[9px] font-bold text-neutral-500 uppercase tracking-[0.2em]">Contributions</span>

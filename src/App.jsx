@@ -8,6 +8,7 @@ import Window from './components/Window';
 import Dock from './components/Dock';
 import Preloader from './components/Preloader';
 import ContextMenu from './components/ContextMenu';
+import TopBar from './components/TopBar';
 
 // Desktop Widgets
 import ClockWidget from './components/ClockWidget';
@@ -61,6 +62,7 @@ export default function App() {
 
       {!isLoading && (
         <>
+          <TopBar />
           <Background />
 
           {/* Context Menu Layer */}
