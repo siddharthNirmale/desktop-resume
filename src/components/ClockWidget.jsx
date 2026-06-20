@@ -33,7 +33,7 @@ export default function ClockWidget() {
       drag
       dragMomentum={false}
       // Flat, opaque dark theme container
-      className="absolute top-3 right-3 w-44 h-44 bg-[#1a1a1a] rounded-3xl border border-neutral-800 flex flex-col justify-between p-5 cursor-move z-[1]"
+      className="absolute top-3 right-3 w-44 h-44 bg-[#1a1a1a] rounded-3xl border border-neutral-800 flex flex-col justify-between p-4 cursor-move z-[1]"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3, ease: "easeOut" }}

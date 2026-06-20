@@ -33,7 +33,7 @@ export default function GithubWidget() {
       animate={{ opacity: isReady ? 1 : 0, scale: 1 }}
       transition={{ duration: 0.3 }}
       // Updated to match the flat, opaque dark theme container
-      className="absolute bottom-3 right-3 w-fit p-6 bg-[#1a1a1a] border border-neutral-800 rounded-3xl cursor-move z-[1]"
+      className="absolute bottom-3 right-3 w-fit p-4 bg-[#1a1a1a] border border-neutral-800 rounded-3xl cursor-move z-[1]"
     >
       <div className="mb-4 flex justify-between items-center px-1">
         <span className="text-[9px] font-bold text-neutral-500 uppercase tracking-[0.2em]">
