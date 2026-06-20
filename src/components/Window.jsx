@@ -44,7 +44,7 @@ export default function Window({ id, title, isMinimized, zIndex, onClose, onMini
       dragConstraints={constraintsRef}
       onMouseDown={onFocus}
       style={{ zIndex, x, y, width, height }}
-      className={`absolute bg-[#0a0a0a] border border-neutral-800 rounded-xl shadow-2xl flex flex-col overflow-hidden ${isMinimized ? 'hidden' : ''}`}
+      className={`absolute bg-[#1a1a1a] border border-neutral-800 rounded-xl shadow-2xl flex flex-col overflow-hidden ${isMinimized ? 'hidden' : ''}`}
       initial={{ top: spawnPos.top, left: spawnPos.left, opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
