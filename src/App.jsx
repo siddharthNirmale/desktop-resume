@@ -20,6 +20,7 @@ import Notepad from './sections/Notepad';
 import ContactSection from './sections/ContactSection';
 import Terminal from './sections/Terminal';
 import LearningWidget from './components/LearningWidget';
+import WeatherWidget from './components/WeatherWidget';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -35,6 +36,7 @@ export default function App() {
     { id: 'clock', title: 'Local Time', isOpen: true, type: 'widget' },
     { id: 'github', title: 'Contributions', isOpen: true, type: 'widget' },
     { id: 'learning', title: 'Learning', isOpen: true, type: 'widget', defaultWidth: 300, defaultHeight: 150 },
+    { id: 'weather', title: 'Weather', isOpen: true, type: 'widget', defaultWidth: 300, defaultHeight: 150 },
   ]);
 
   const handleContextMenu = (e) => {
@@ -101,6 +103,20 @@ export default function App() {
                   progress={55}
                   topic="Frontend Optimization"
                   subtopic="Next.js 14"
+                />
+              )}
+              {widget.id === 'weather' && (
+                <WeatherWidget
+                  constraintsRef={desktopRef}
+                  zIndex={widget.zIndex || 1}
+                  onFocus={() => bringToFront(widget.id)}
+
+                  // 🚀 Pass your custom data here!
+                  location="Indore, IN"
+                  temp={28}
+                  condition="Partly Cloudy"
+                  humidity={45}
+                  wind={12}
                 />
               )}
             </div>
