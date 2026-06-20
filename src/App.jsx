@@ -27,7 +27,7 @@ export default function App() {
 
   const { windows, bringToFront, toggleWindow } = useWindows([
     { id: 'about', title: 'About', isOpen: true, type: 'window', defaultWidth: 550, defaultHeight: 400 },
-    { id: 'projects', title: 'Projects', isOpen: false, type: 'window', defaultWidth: 800, defaultHeight: 500 },
+    { id: 'projects', title: 'Projects', isOpen: false, type: 'window', defaultWidth: 550, defaultHeight: 600 },
     { id: 'notepad', title: 'Notes', isOpen: false, type: 'window', defaultWidth: 500, defaultHeight: 500 },
     { id: 'contact', title: 'Contact', isOpen: false, type: 'window', defaultWidth: 450, defaultHeight: 400 },
     { id: 'terminal', title: 'Terminal', isOpen: false, type: 'window', defaultWidth: 650, defaultHeight: 450 },
