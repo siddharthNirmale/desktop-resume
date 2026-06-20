@@ -4,63 +4,62 @@ import { motion } from 'framer-motion';
 export default function ClockWidget() {
   const [time, setTime] = useState(new Date());
 
-  // Update the clock every second
+  // Update every minute (since we dropped the seconds)
   useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(timer);
+    const timer = setInterval(() => setTime(new Date()), 60000); // 60,000ms = 1 min
+    
+    // Also run an interval to catch the exact second the minute turns over
+    const syncTimer = setTimeout(() => {
+      setTime(new Date());
+      setInterval(() => setTime(new Date()), 60000);
+    }, (60 - new Date().getSeconds()) * 1000);
+
+    return () => {
+      clearInterval(timer);
+      clearTimeout(syncTimer);
+    };
   }, []);
 
-  // Calculate rotation angles for the hands
-  const secondsDegrees = time.getSeconds() * 6; // 360deg / 60s
-  const minutesDegrees = time.getMinutes() * 6 + time.getSeconds() * 0.1; // Smooth minute sweep
-  const hoursDegrees = (time.getHours() % 12) * 30 + time.getMinutes() * 0.5; // Smooth hour sweep
+  // Format hours and minutes to always be 2 digits (e.g., "09", "22")
+  const hoursStr = time.getHours().toString().padStart(2, '0');
+  const minutesStr = time.getMinutes().toString().padStart(2, '0');
+  
+  // Get concise date string (e.g., "SAT 20")
+  const dayStr = time.toLocaleDateString([], { weekday: 'short' }).toUpperCase();
+  const dateStr = time.getDate();
 
   return (
     <motion.div
       drag
       dragMomentum={false}
-      // Matches the ultra-dark, minimal glassmorphism of your OS
-      className="absolute top-8 right-8 w-48 h-56 bg-[#0a0a0a]/80 backdrop-blur-xl border border-neutral-800/80 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center cursor-move z-[9998]"
-      initial={{ opacity: 0, scale: 0.9, y: -20 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
+      // Flat, opaque dark theme container
+      className="absolute top-3 right-3 w-44 h-44 bg-[#1a1a1a] rounded-3xl border border-neutral-800 flex flex-col justify-between p-5 cursor-move z-[1]"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
     >
-      {/* The Clock Face */}
-      <div className="relative w-32 h-32 rounded-full border border-neutral-800/50 flex items-center justify-center bg-[#050505] shadow-inner">
-        
-        {/* Center Pivot Dot */}
-        <div className="absolute w-1.5 h-1.5 bg-white rounded-full z-20 shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-        
-        {/* Hour Hand */}
-        <div 
-          className="absolute w-[3px] h-8 bg-neutral-300 rounded-full origin-bottom z-10 bottom-1/2"
-          style={{ transform: `rotate(${hoursDegrees}deg)` }}
-        />
-        
-        {/* Minute Hand */}
-        <div 
-          className="absolute w-[2px] h-12 bg-neutral-400 rounded-full origin-bottom z-10 bottom-1/2"
-          style={{ transform: `rotate(${minutesDegrees}deg)` }}
-        />
-        
-        {/* Second Hand (Accent Color) */}
-        <div 
-          className="absolute w-[1px] h-14 bg-[#ed6a5e] rounded-full origin-bottom z-10 bottom-1/2"
-          style={{ transform: `rotate(${secondsDegrees}deg)` }}
-        />
-        
-        {/* Minimalist Dial Markers */}
-        <div className="absolute top-1.5 text-[8px] font-bold text-neutral-600">12</div>
-        <div className="absolute right-2 text-[8px] font-bold text-neutral-600">3</div>
-        <div className="absolute bottom-1.5 text-[8px] font-bold text-neutral-600">6</div>
-        <div className="absolute left-2 text-[8px] font-bold text-neutral-600">9</div>
+      {/* Top Header: System Status style */}
+      <div className="flex justify-between items-center">
+        <span className="text-[9px] font-bold text-neutral-500 uppercase tracking-[0.2em]">
+          Local Time
+        </span>
+        {/* Signature Red Accent Dot */}
+        <div className="w-2 h-2 rounded-full bg-[#E51919]" />
       </div>
-      
-      {/* Digital Text Readout */}
-      <div className="mt-5 text-xs font-medium text-neutral-400 tracking-widest uppercase flex flex-col items-center gap-1">
-        <span>{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-        {/* You can remove this sub-text or update it to your exact location */}
-        <span className="text-[9px] text-neutral-600 tracking-wider">INDORE, IN</span>
+
+      {/* Center: Stacked Digital Typographical Clock */}
+      <div className="flex flex-col leading-[0.85] tracking-tighter mt-2">
+        {/* Crisp white for the hour */}
+        <span className="text-[4rem] font-medium text-white">{hoursStr}</span>
+        {/* Muted grey for the minute, creating visual hierarchy */}
+        <span className="text-[4rem] font-medium text-neutral-600">{minutesStr}</span>
+      </div>
+
+      {/* Bottom: Date Info */}
+      <div className="flex justify-start items-center mt-1">
+        <span className="text-[10px] font-bold tracking-widest text-neutral-400">
+          {dayStr} <span className="text-[#E51919]">{dateStr}</span>
+        </span>
       </div>
     </motion.div>
   );

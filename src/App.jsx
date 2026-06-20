@@ -46,7 +46,7 @@ export default function App() {
       {!isLoading && (
         <>
           <Background />
-          <ClockWidget />
+          <ClockWidget  />
           <GithubWidget />
 
           <AnimatePresence>
