@@ -16,6 +16,7 @@ import GithubWidget from './components/GithubWidget';
 import LearningWidget from './components/LearningWidget';
 import WeatherWidget from './components/WeatherWidget';
 import ThemeWidget from './components/ThemeWidget';
+import SkillsWidget from './components/SkillsWidget';
 
 // App Sections
 import AboutSection from './sections/AboutSection';
@@ -32,17 +33,19 @@ export default function App() {
   const desktopRef = useRef(null);
 
   const { windows, bringToFront, toggleWindow } = useWindows([
-    { id: 'about', title: 'About', isOpen: false, type: 'window', defaultWidth: 550, defaultHeight: 450 },
+    { id: 'about', title: 'About', isOpen: true, type: 'window', defaultWidth: 550, defaultHeight: 450 },
     { id: 'projects', title: 'Projects', isOpen: false, type: 'window', defaultWidth: 800, defaultHeight: 600 },
     { id: 'notepad', title: 'Notes', isOpen: false, type: 'window', defaultWidth: 500, defaultHeight: 600 },
     { id: 'contact', title: 'Contact', isOpen: false, type: 'window', defaultWidth: 450, defaultHeight: 600 },
     { id: 'terminal', title: 'Terminal', isOpen: false, type: 'window', defaultWidth: 650, defaultHeight: 600 },
+    { id: 'resume', title: 'Resume', isOpen: false, type: 'window', defaultWidth: 700, defaultHeight: 600 },
     { id: 'clock', title: 'Local Time', isOpen: true, type: 'widget' },
     { id: 'github', title: 'Contributions', isOpen: true, type: 'widget' },
     { id: 'learning', title: 'Learning', isOpen: true, type: 'widget' },
     { id: 'weather', title: 'Weather', isOpen: true, type: 'widget' },
     { id: 'theme', title: 'Appearance', isOpen: true, type: 'widget' },
-    { id: 'resume', title: 'Resume', isOpen: true, type: 'window', defaultWidth: 700, defaultHeight: 600 }
+    { id: 'skills', title: 'Skills', isOpen: true, type: 'widget' },
+
   ]);
 
   const handleContextMenu = (e) => {
@@ -60,7 +63,7 @@ export default function App() {
       onContextMenu={handleContextMenu}
       onClick={closeMenu}
       className="w-screen h-screen bg-[#050505] transition-all duration-700 relative overflow-hidden font-sans text-gray-200 select-none"
-      style={{ 
+      style={{
         backgroundImage: wallpaper ? `url(${wallpaper})` : 'none',
         backgroundSize: 'cover',
         backgroundPosition: 'center'
@@ -73,7 +76,7 @@ export default function App() {
       {!isLoading && (
         <>
           <TopBar />
-          
+
           {/* Only render Background dots if no custom wallpaper is set */}
           {!wallpaper && <Background />}
 
@@ -96,12 +99,18 @@ export default function App() {
               {widget.id === 'github' && <GithubWidget constraintsRef={desktopRef} zIndex={widget.zIndex || 1} onFocus={() => bringToFront(widget.id)} />}
               {widget.id === 'learning' && <LearningWidget constraintsRef={desktopRef} zIndex={widget.zIndex || 1} onFocus={() => bringToFront(widget.id)} progress={55} topic="Frontend Optimization" subtopic="Next.js 14" />}
               {widget.id === 'weather' && <WeatherWidget constraintsRef={desktopRef} zIndex={widget.zIndex || 1} onFocus={() => bringToFront(widget.id)} />}
-              
+              {widget.id === 'skills' && (
+                <SkillsWidget
+                  constraintsRef={desktopRef}
+                  zIndex={widget.zIndex || 1}
+                  onFocus={() => bringToFront(widget.id)}
+                />
+              )}
               {widget.id === 'theme' && (
-                <ThemeWidget 
-                  constraintsRef={desktopRef} 
-                  zIndex={widget.zIndex || 1} 
-                  onFocus={() => bringToFront(widget.id)} 
+                <ThemeWidget
+                  constraintsRef={desktopRef}
+                  zIndex={widget.zIndex || 1}
+                  onFocus={() => bringToFront(widget.id)}
                   setWallpaper={setWallpaper}
                 />
               )}

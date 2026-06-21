@@ -3,7 +3,7 @@ import { FaGithub, FaLinkedin } from 'react-icons/fa';
 
 export default function AboutSection() {
   return (
-    <div className="h-[600px] flex flex-col p-6 bg-black font-mono overflow-hidden">
+    <div className="h-[450px] flex flex-col p-6 bg-black font-mono overflow-hidden">
       
       {/* Header */}
       <div className="flex justify-between items-end pb-4 border-b border-neutral-900 mb-6">
