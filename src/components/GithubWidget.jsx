@@ -1,11 +1,12 @@
-import { motion } from 'framer-motion';
-import { GitHubCalendar } from 'react-github-calendar';
 import { useState, useEffect } from 'react';
+import { GitHubCalendar } from 'react-github-calendar';
+import BaseWidget from './BaseWidget';
 
 export default function GithubWidget({ constraintsRef, zIndex, onFocus }) {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
+    // Keeps the 1s delay to let the calendar fetch and render smoothly
     const timer = setTimeout(() => setIsReady(true), 1000);
     return () => clearTimeout(timer);
   }, []);
@@ -25,22 +26,17 @@ export default function GithubWidget({ constraintsRef, zIndex, onFocus }) {
   };
 
   return (
-    <motion.div
-      drag
-      dragMomentum={false}
-      dragConstraints={constraintsRef}
-      onPointerDown={onFocus}
-      style={{ zIndex }}
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: isReady ? 1 : 0, scale: 1 }}
-      transition={{ duration: 0.3 }}
-      className="absolute bottom-3 left-3 w-fit p-4 bg-[#1a1a1a] border border-neutral-800 rounded-3xl cursor-move"
+    <BaseWidget
+      constraintsRef={constraintsRef}
+      zIndex={zIndex}
+      onFocus={onFocus}
+      className="bottom-3 left-3 w-fit" // Placed exactly where it was before
+      title="Contributions"
     >
-      <div className="mb-4 flex justify-between items-center px-1">
-        <span className="text-[9px] font-bold text-neutral-500 uppercase tracking-[0.2em]">Contributions</span>
-        <div className="w-2 h-2 rounded-full bg-[#E51919]" /> 
-      </div>
-      <div className="on-pan-stop" onPointerDown={(e) => e.stopPropagation()}>
+      <div 
+        className={`transition-opacity duration-300 ${isReady ? 'opacity-100' : 'opacity-0'}`}
+        onPointerDown={(e) => e.stopPropagation()} // Prevents dragging when clicking calendar tooltips
+      >
         <GitHubCalendar 
           username="siddharthNirmale" 
           colorScheme="dark"
@@ -54,6 +50,6 @@ export default function GithubWidget({ constraintsRef, zIndex, onFocus }) {
           style={{ color: '#737373' }}
         />
       </div>
-    </motion.div>
+    </BaseWidget>
   );
 }
