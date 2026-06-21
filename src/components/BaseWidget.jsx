@@ -15,16 +15,17 @@ export default function BaseWidget({
       drag
       dragMomentum={false}
       dragConstraints={constraintsRef}
+      dragElastic={0.15} // Adds a light, physical resistance
       onPointerDown={onFocus}
-      style={{ zIndex }}
-      // Base styles combined with any specific positioning/sizing you pass in
-      className={`absolute bg-[#1a1a1a] border border-neutral-800 rounded-3xl p-4 py-3 cursor-move flex flex-col gap-2 ${className}`}
-      initial={{ opacity: 0, scale: 0.9 }}
+      style={{ zIndex, touchAction: "none" }} // 'none' prevents scroll conflicts
+      whileDrag={{ scale: 1.02, cursor: "grabbing" }} // "Lift" effect
+      className={`absolute bg-[#1a1a1a] border border-neutral-800 rounded-3xl p-4 py-3 cursor-grab flex flex-col gap-2 ${className}`}
+      initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
     >
-      {/* Universal Widget Header */}
       {(title || Icon || showDot) && (
-        <div className="flex justify-between items-center px-1">
+        <div className="flex justify-between items-center px-1 select-none">
           <div className="flex items-center gap-2">
             {Icon && <Icon size={14} className="text-neutral-500" />}
             {title && (
@@ -34,18 +35,15 @@ export default function BaseWidget({
             )}
           </div>
           
-          {/* Optional: I added a slight pulse animation to your live dot to make it feel more active! */}
           {showDot && (
-            <motion.div 
-              className="w-2 h-2 rounded-full bg-[#E51919]" 
-              animate={{ opacity: [1, 0.4, 1] }} 
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-            />
+            <div className="relative">
+                <div className="w-2 h-2 rounded-full bg-[#E51919]" />
+                <div className="absolute inset-0 w-2 h-2 rounded-full bg-[#E51919] animate-ping opacity-75" />
+            </div>
           )}
         </div>
       )}
 
-      {/* Widget Specific Content */}
       <div className="w-full">
         {children}
       </div>
