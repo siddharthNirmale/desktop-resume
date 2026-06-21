@@ -2,21 +2,20 @@ import { motion } from 'framer-motion';
 import { FiGithub, FiExternalLink, FiImage } from 'react-icons/fi';
 
 export default function ProjectsSection() {
-  // Added placeholder image strings and link properties
   const projects = [
     { 
       id: 1, 
       title: 'Distributed Systems', 
-      tech: 'Rust • gRPC', 
+      tech: 'RUST • GRPC', 
       desc: 'A high-performance node architecture for distributed computing and real-time processing.',
-      image: '/api/placeholder/400/200', // Replace with your actual image path
+      image: '/api/placeholder/400/200', 
       github: '#', 
       live: '#' 
     },
     { 
       id: 2, 
       title: 'Web OS Portfolio', 
-      tech: 'React • Tailwind', 
+      tech: 'REACT • TAILWIND', 
       desc: 'A draggable, modern desktop interface mimicking a native operating system environment.',
       image: '/api/placeholder/400/200',
       github: '#', 
@@ -25,7 +24,7 @@ export default function ProjectsSection() {
     { 
       id: 3, 
       title: 'On-Chain Indexer', 
-      tech: 'Node.js • Postgres', 
+      tech: 'NODE.JS • POSTGRES', 
       desc: 'Real-time blockchain analytics and smart contract monitoring dashboard.',
       image: '/api/placeholder/400/200',
       github: '#', 
@@ -34,81 +33,81 @@ export default function ProjectsSection() {
   ];
 
   return (
-    <div className="h-full flex flex-col p-2 gap-4 bg-[#1a1a1a]">
+    // Outer container matching the deep black background of the reference image
+    <div className="h-full flex flex-col p-4 gap-6 bg-black">
       
-      {/* Flat, Tracked Header to match the OS style */}
-      <div className="border-b border-neutral-800 pb-3 mt-1">
-        <span className="text-[9px] font-bold text-neutral-500 uppercase tracking-[0.2em] px-1">
+      {/* Header section styled like a digital display label */}
+      <div className="pb-2">
+        <span className="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-[0.3em]">
           Deployed Architecture
         </span>
       </div>
 
-      {/* Grid Layout for Cards */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div className="flex-1 overflow-y-auto custom-scrollbar pb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {projects.map((project, i) => (
             <motion.div 
               key={project.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              // Card Wrapper: Stark borders, dark background
-              className="flex flex-col bg-[#0F0F0F] border border-neutral-800 rounded-2xl overflow-hidden group hover:border-neutral-600 transition-colors"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: i * 0.1, duration: 0.3 }}
+              // Bento-box card style: Dark grey, large radius, no border, flat UI
+              className="flex flex-col bg-[#141414] rounded-[32px] p-4 group"
             >
               
-              {/* Project Image Area */}
-              <div className="h-28 bg-[#141414] border-b border-neutral-800 relative flex items-center justify-center overflow-hidden">
-                {/* Fallback Icon if no image is present */}
-                <FiImage size={24} className="text-neutral-800 absolute z-0" strokeWidth={1.5} />
+              {/* Website Preview Space - Nested rounded container for that hardware screen look */}
+              <div className="h-40 bg-[#0a0a0a] rounded-[24px] mb-5 relative flex items-center justify-center overflow-hidden">
+                <FiImage size={28} className="text-neutral-700 absolute z-0" />
                 
-                {/* Actual Image (Uncomment and use your real image paths) */}
-                {/* <img 
-                  src={project.image} 
-                  alt={project.title} 
-                  className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity relative z-10 grayscale group-hover:grayscale-0" 
-                /> */}
+                {/* Drop your actual image here 
+                  <img 
+                    src={project.image} 
+                    alt={project.title} 
+                    className="w-full h-full object-cover relative z-10" 
+                  /> 
+                */}
               </div>
 
-              {/* Card Content Area */}
-              <div className="p-4 flex flex-col flex-1">
+              {/* Content Area */}
+              <div className="flex flex-col flex-1 px-2">
                 
-                {/* Title & Tech Stack */}
-                <div className="mb-2">
-                  <h3 className="text-sm font-bold text-white tracking-tight leading-none mb-1.5">
-                    {project.title}
-                  </h3>
-                  <span className="text-[8px] font-bold text-neutral-500 uppercase tracking-[0.2em]">
-                    {project.tech}
-                  </span>
-                </div>
+                {/* Tech Stack - Styled like the digital clocks in the image */}
+                <span className="text-[10px] font-mono font-bold text-neutral-500 tracking-widest mb-2">
+                  {project.tech}
+                </span>
+
+                <h3 className="text-xl font-semibold text-white tracking-tight leading-none mb-3">
+                  {project.title}
+                </h3>
                 
-                {/* Description */}
-                <p className="text-xs text-neutral-400 font-medium leading-relaxed mb-4 line-clamp-2 flex-1">
+                <p className="text-sm text-neutral-400 font-medium leading-relaxed mb-6 line-clamp-2">
                   {project.desc}
                 </p>
                 
-                {/* Hardware-style Link Buttons */}
-                <div className="flex items-center gap-2 mt-auto">
+                {/* Action Buttons - Mimicking the circular/pill widgets from the image */}
+                <div className="flex items-center gap-3 mt-auto">
+                  
+                  {/* GitHub Button - Stark white circle */}
                   <a 
                     href={project.github}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center justify-center w-8 h-8 rounded-lg border border-neutral-800 bg-[#1a1a1a] text-neutral-500 hover:text-white hover:border-neutral-500 transition-all"
+                    className="flex items-center justify-center w-12 h-12 rounded-full bg-white text-black hover:bg-neutral-200 transition-colors"
                   >
-                    <FiGithub size={14} strokeWidth={2.5} />
+                    <FiGithub size={20} strokeWidth={2.5} />
                   </a>
                   
+                  {/* Live Link Button - Signature bright red from the design */}
                   <a 
                     href={project.live}
                     target="_blank"
                     rel="noreferrer"
-                    // Uses the signature red hover to tie it into the OS theme
-                    className="flex items-center justify-center w-8 h-8 rounded-lg border border-neutral-800 bg-[#1a1a1a] text-neutral-500 hover:text-[#E51919] hover:border-[#E51919] transition-all ml-auto"
+                    className="flex items-center justify-center w-12 h-12 rounded-full bg-[#E51919] text-white hover:bg-red-600 transition-colors ml-auto"
                   >
-                    <FiExternalLink size={14} strokeWidth={2.5} />
+                    <FiExternalLink size={20} strokeWidth={2.5} />
                   </a>
+                  
                 </div>
-
               </div>
             </motion.div>
           ))}
