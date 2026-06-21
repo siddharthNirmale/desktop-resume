@@ -1,22 +1,8 @@
-import { useState } from 'react';
+import { FiMail, FiPhone, FiGithub, FiLinkedin, FiMapPin } from 'react-icons/fi';
 
 export default function ContactSection() {
-  const [status, setStatus] = useState('Listening');
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setStatus('Transmitting...');
-    
-    // Simulate network delay for the aesthetic
-    setTimeout(() => {
-      alert('[SYS.COMM] Message successfully queued for delivery.');
-      setStatus('Listening');
-      e.target.reset();
-    }, 800);
-  };
-
   return (
-    <div className="h-full flex flex-col p-6 bg-black font-mono overflow-auto custom-scrollbar">
+    <div className="h-[600px] flex flex-col p-6 bg-black font-mono overflow-hidden">
       
       {/* Widget Header */}
       <div className="flex justify-between items-end pb-4 mb-6 border-b border-neutral-900">
@@ -29,55 +15,75 @@ export default function ContactSection() {
           </p>
         </div>
         <div className="text-[#f02020] text-[10px] tracking-widest flex items-center gap-2 uppercase font-bold">
-          {status === 'Listening' ? (
-            <span className="w-1.5 h-1.5 bg-[#f02020] rounded-full animate-pulse"></span>
-          ) : (
-            <span className="text-white animate-bounce">↓</span>
-          )}
-          {status}
+          <span className="w-1.5 h-1.5 bg-[#f02020] rounded-full animate-pulse"></span>
+          Online
         </div>
       </div>
       
-      <form className="flex flex-col gap-5 flex-1" onSubmit={handleSubmit}>
-        
-        {/* Origin Input */}
-        <div className="flex flex-col gap-2">
-          <label className="text-[10px] text-neutral-500 uppercase tracking-widest flex items-center">
-            <span className="text-[#f02020] mr-2">❯</span>Origin.Address
-          </label>
-          <input 
-            type="email" 
-            placeholder="USER@DOMAIN.COM" 
-            className="bg-[#050505] border border-neutral-800 p-4 text-sm text-white outline-none focus:border-[#f02020] transition-colors placeholder-neutral-800 rounded-none w-full" 
-            required 
-          />
+      {/* Contact Grid */}
+      <div className="flex flex-col gap-4 flex-1">
+        <div className="text-[10px] text-neutral-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+          <span className="text-[#f02020]">❯</span> Available.Nodes
         </div>
 
-        {/* Payload Input */}
-        <div className="flex flex-col gap-2 flex-1 mb-2">
-          <label className="text-[10px] text-neutral-500 uppercase tracking-widest flex items-center">
-            <span className="text-[#f02020] mr-2">❯</span>Payload.Data
-          </label>
-          <textarea 
-            className="bg-[#050505] border border-neutral-800 p-4 text-sm text-white flex-1 resize-none outline-none focus:border-[#f02020] transition-colors custom-scrollbar placeholder-neutral-800 rounded-none w-full leading-relaxed" 
-            placeholder="TRANSMIT YOUR MESSAGE..." 
-            required
-          ></textarea>
-        </div>
-        
-        {/* Action Button */}
-        <button 
-          type="submit" 
-          disabled={status !== 'Listening'}
-          className="mt-auto p-4 bg-white text-black text-xs font-bold uppercase tracking-[0.2em] hover:bg-[#f02020] hover:text-white transition-all duration-300 flex justify-between items-center group rounded-none disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <span>{status === 'Listening' ? 'Initialize Transfer' : 'Sending...'}</span>
-          <span className="group-hover:translate-x-1 transition-transform text-[#f02020] group-hover:text-white">
-            ↗
-          </span>
-        </button>
+        <ContactCard 
+          icon={<FiMail size={16} />} 
+          label="Email" 
+          value="siddharth175nirmale1@gmail.com" 
+          href="mailto:siddharth175nirmale1@gmail.com" 
+        />
+        <ContactCard 
+          icon={<FiPhone size={16} />} 
+          label="Phone" 
+          value="+91-772-382-4225" 
+          href="tel:+917723824225" 
+        />
+        <ContactCard 
+          icon={<FiGithub size={16} />} 
+          label="GitHub" 
+          value="github.com/siddharthNirmale" 
+          href="https://github.com/siddharthNirmale" 
+        />
+        <ContactCard 
+          icon={<FiLinkedin size={16} />} 
+          label="LinkedIn" 
+          value="linkedin.com/in/siddharth-nirmale" 
+          href="https://linkedin.com/in/siddharth-nirmale" 
+        />
+        <ContactCard 
+          icon={<FiMapPin size={16} />} 
+          label="Location" 
+          value="Indore, Madhya Pradesh" 
+          href="#" 
+        />
+      </div>
 
-      </form>
+      {/* Footer Status */}
+      <div className="mt-auto pt-6 border-t border-neutral-900 text-[10px] text-neutral-600 uppercase tracking-widest text-center">
+        Transmission Encryption: Active // Latency: 0ms
+      </div>
     </div>
+  );
+}
+
+function ContactCard({ icon, label, value, href }) {
+  const isLink = href !== "#";
+  
+  const content = (
+    <div className="bg-[#050505] border border-neutral-800 p-4 flex items-center gap-4 group transition-all hover:border-[#f02020]">
+      <div className="text-neutral-600 group-hover:text-[#f02020] transition-colors">{icon}</div>
+      <div className="flex flex-col">
+        <span className="text-[9px] uppercase tracking-widest text-neutral-500">{label}</span>
+        <span className="text-sm text-white">{value}</span>
+      </div>
+    </div>
+  );
+
+  return isLink ? (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="block">
+      {content}
+    </a>
+  ) : (
+    content
   );
 }
