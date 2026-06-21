@@ -1,4 +1,4 @@
-import { FiTerminal, FiUser, FiLayers } from 'react-icons/fi';
+import { FiTerminal, FiUser, FiMapPin, FiBook, FiLayers } from 'react-icons/fi';
 import { 
   SiReact, 
   SiMongodb, 
@@ -12,53 +12,87 @@ import {
 
 export default function AboutSection() {
   return (
-    // Main container padding adjusted for the grouped card look
-    <div className="flex flex-col h-full p-2 gap-4 text-zinc-300">
+    <div className="h-full flex flex-col p-6 bg-black font-mono overflow-auto custom-scrollbar">
       
-      {/* 1. Profile Card (macOS Style Grouping) */}
-      <div className="flex items-center gap-4 bg-[#0a0a0a] border border-zinc-900 rounded-[1.25rem] p-4 shadow-sm">
-        <div className="w-14 h-14 bg-black border border-zinc-800 rounded-2xl flex items-center justify-center text-zinc-400 shadow-inner">
-          <FiTerminal size={22} strokeWidth={1.5} />
+      {/* Widget Header */}
+      <div className="flex justify-between items-end pb-4 mb-6 border-b border-neutral-900">
+        <div>
+          <h1 className="text-3xl font-bold tracking-[0.2em] text-white">
+            SYS<span className="text-[#f02020]">.</span>USER
+          </h1>
+          <p className="text-[10px] text-neutral-500 tracking-widest uppercase mt-2">
+            Identity Record // Auth: Verified
+          </p>
         </div>
-        
-        <div className="flex flex-col justify-center">
-          <h2 className="text-lg font-semibold text-white tracking-tight">
-            Siddharth Nirmale
-          </h2>
-          <span className="text-[10px] font-['NDot',_monospace] font-bold text-zinc-500 uppercase tracking-[0.15em] mt-0.5">
-            Full-Stack Developer
-          </span>
+        <div className="text-[#f02020] text-[10px] tracking-widest flex items-center gap-2 uppercase">
+          <span className="w-1.5 h-1.5 bg-[#f02020] rounded-full animate-pulse"></span>
+          Active
         </div>
       </div>
 
-      {/* Scrollable Content Area */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-4 pb-2">
+      <div className="flex flex-col gap-6 pb-4">
         
-        {/* 2. Bio Card */}
-        <div className="bg-[#0a0a0a] border border-zinc-900 rounded-[1.25rem] p-5 flex flex-col gap-3">
-          <div className="flex items-center gap-2 mb-1">
-            <FiUser size={14} className="text-zinc-500" />
-            <h3 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">About Me</h3>
+        {/* 1. System ID Badge */}
+        <div className="bg-[#050505] border border-neutral-800 flex flex-col md:flex-row relative group">
+          {/* Accent Line */}
+          <div className="absolute top-0 left-0 w-full md:w-1 h-1 md:h-full bg-[#f02020] opacity-80"></div>
+          
+          <div className="p-6 md:pr-10 border-b md:border-b-0 md:border-r border-neutral-900 flex items-center justify-center bg-black">
+            <div className="w-16 h-16 bg-[#111] border border-neutral-800 flex items-center justify-center text-white relative">
+               {/* Corner markers for that HUD feel */}
+               <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-[#f02020]"></div>
+               <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-[#f02020]"></div>
+               <FiTerminal size={24} strokeWidth={1.5} />
+            </div>
           </div>
-          <div className="text-[13px] text-zinc-400 leading-relaxed font-medium">
-            <p className="mb-3">
+          
+          <div className="p-6 flex-1 flex flex-col justify-center">
+            <h2 className="text-2xl font-bold text-white tracking-widest uppercase mb-1">
+              Siddharth Nirmale
+            </h2>
+            <div className="text-[#f02020] text-[10px] font-bold uppercase tracking-[0.2em] mb-4">
+              Full-Stack Developer
+            </div>
+            
+            <div className="flex flex-col gap-2 mt-auto">
+              <div className="flex items-center gap-3 text-[10px] uppercase tracking-widest text-neutral-400">
+                <FiMapPin className="text-neutral-600" size={12} />
+                <span>Indore, Madhya Pradesh</span>
+              </div>
+              <div className="flex items-center gap-3 text-[10px] uppercase tracking-widest text-neutral-400">
+                <FiBook className="text-neutral-600" size={12} />
+                <span>MITS Gwalior</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 2. Bio Telemetry */}
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-[#f02020] font-bold">❯</span>
+            <h3 className="text-xs font-bold text-white uppercase tracking-widest">Initialization.Log</h3>
+          </div>
+          <div className="bg-[#050505] border border-neutral-900 p-5 text-sm text-neutral-400 leading-relaxed tracking-wide">
+            <p className="mb-4">
+              <span className="text-neutral-600 mr-2">[01]</span>
               I am a developer who loves building highly interactive and scalable web applications. I specialize in the MERN Stack to craft robust backends and dynamic frontends.
             </p>
             <p>
+              <span className="text-neutral-600 mr-2">[02]</span>
               When I'm not writing code, I'm usually exploring seamless deployment pipelines and setting up infrastructure using Google Cloud Platform and Render to bring projects to life on the web.
             </p>
           </div>
         </div>
 
-        {/* 3. Tech Stack Card */}
-        <div className="bg-[#0a0a0a] border border-zinc-900 rounded-[1.25rem] p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <FiLayers size={14} className="text-zinc-500" />
-            <h3 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Core Stack</h3>
+        {/* 3. Tech Stack Matrix */}
+        <div className="mt-2">
+          <div className="flex items-center gap-3 mb-4">
+             <span className="text-[#f02020] font-bold">❯</span>
+            <h3 className="text-xs font-bold text-white uppercase tracking-widest">Core.Dependencies</h3>
           </div>
           
-          {/* Grid optimized for readability */}
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <TechBadge icon={SiReact} label="ReactJS" />
             <TechBadge icon={SiNodedotjs} label="Node.js" />
             <TechBadge icon={SiExpress} label="Express" />
@@ -75,12 +109,12 @@ export default function AboutSection() {
   );
 }
 
-// Updated Tech Badge: softer borders, sleek white highlight on hover instead of red
+// Upgraded brutalist Tech Badge
 function TechBadge({ icon: Icon, label }) {
   return (
-    <div className="flex items-center gap-3 bg-black border border-zinc-800 rounded-xl px-3.5 py-3 hover:border-zinc-500 hover:bg-[#111] transition-all duration-300 group cursor-default">
-      <Icon className="text-zinc-500 group-hover:text-white transition-colors duration-300" size={16} />
-      <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest group-hover:text-zinc-200 transition-colors duration-300 mt-0.5">
+    <div className="flex items-center gap-3 bg-black border border-neutral-800 p-3 hover:border-[#f02020] hover:bg-[#050505] transition-all duration-200 group cursor-default">
+      <Icon className="text-neutral-600 group-hover:text-[#f02020] transition-colors duration-200" size={16} />
+      <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest group-hover:text-white transition-colors duration-200">
         {label}
       </span>
     </div>
