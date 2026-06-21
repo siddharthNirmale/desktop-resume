@@ -14,24 +14,26 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
       constraintsRef={constraintsRef}
       zIndex={zIndex}
       onFocus={onFocus}
-      className="top-55 left-3 w-64" // Just pass the positioning and width!
+      className="top-55 left-3 w-64 bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-3xl"
       title="Wallpaper"
       icon={ImageIcon}
     >
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-3 p-1">
         {WALLPAPERS.map((wp) => (
           <button 
             key={wp.id} 
             onClick={() => setWallpaper(wp.url)} 
-            className="group relative w-full h-16 rounded-xl border border-neutral-700 overflow-hidden hover:border-white transition-all"
+            className="group relative w-full h-20 rounded-2xl border border-white/5 overflow-hidden hover:scale-[1.02] hover:border-white/20 transition-all duration-300 shadow-inner"
           >
             {wp.id === 'default' ? (
-              <div className="w-full h-full bg-[#050505] flex items-center justify-center">
-                <RefreshCw size={16} className="text-neutral-600 group-hover:text-white" />
+              <div className="w-full h-full bg-[#1a1a1a] flex items-center justify-center">
+                <RefreshCw size={20} className="text-neutral-500 group-hover:text-white transition-colors" />
               </div>
             ) : (
-              <img src={wp.url} alt="Wallpaper" className="w-full h-full object-cover" />
+              <img src={wp.url} alt={wp.name} className="w-full h-full object-cover" />
             )}
+            {/* Subtle inner shadow overlay for depth */}
+            <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl pointer-events-none" />
           </button>
         ))}
       </div>
