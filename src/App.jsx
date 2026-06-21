@@ -23,6 +23,7 @@ import ProjectsSection from './sections/ProjectsSection';
 import Notepad from './sections/Notepad';
 import ContactSection from './sections/ContactSection';
 import Terminal from './sections/Terminal';
+import ResumeSection from './sections/ResumeSection';
 
 export default function App() {
   const [wallpaper, setWallpaper] = useState(''); // Default: empty (uses Background component)
@@ -31,7 +32,7 @@ export default function App() {
   const desktopRef = useRef(null);
 
   const { windows, bringToFront, toggleWindow } = useWindows([
-    { id: 'about', title: 'About', isOpen: true, type: 'window', defaultWidth: 550, defaultHeight: 400 },
+    { id: 'about', title: 'About', isOpen: false, type: 'window', defaultWidth: 550, defaultHeight: 400 },
     { id: 'projects', title: 'Projects', isOpen: false, type: 'window', defaultWidth: 800, defaultHeight: 500 },
     { id: 'notepad', title: 'Notes', isOpen: false, type: 'window', defaultWidth: 500, defaultHeight: 500 },
     { id: 'contact', title: 'Contact', isOpen: false, type: 'window', defaultWidth: 450, defaultHeight: 400 },
@@ -41,6 +42,7 @@ export default function App() {
     { id: 'learning', title: 'Learning', isOpen: true, type: 'widget' },
     { id: 'weather', title: 'Weather', isOpen: true, type: 'widget' },
     { id: 'theme', title: 'Appearance', isOpen: true, type: 'widget' },
+    { id: 'resume', title: 'Resume', isOpen: true, type: 'window', defaultWidth: 800, defaultHeight: 500 }
   ]);
 
   const handleContextMenu = (e) => {
@@ -120,6 +122,7 @@ export default function App() {
                 <div className="w-full h-full min-h-0 bg-[#1a1a1a]">
                   {win.id === 'about' && <AboutSection />}
                   {win.id === 'projects' && <ProjectsSection />}
+                  {win.id === 'resume' && <ResumeSection />}
                   {win.id === 'notepad' && <Notepad />}
                   {win.id === 'contact' && <ContactSection />}
                   {win.id === 'terminal' && <Terminal />}

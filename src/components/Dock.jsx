@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { User, FolderCode, FileText, Mail, Terminal } from 'lucide-react';
+import { User, FolderCode, FileText, Mail, Terminal ,Notebook} from 'lucide-react';
 import { motion } from 'framer-motion';
+
+Notebook
+
 
 export default function Dock({ windows, toggleWindow, bringToFront }) {
   const [menu, setMenu] = useState({ show: false, x: 0, y: 0, id: null });
@@ -82,7 +85,8 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
       <div className="px-3 py-3 bg-[#0F0F0F] border border-neutral-800 rounded-3xl flex items-center gap-2 shadow-2xl">
         <DockIcon id="about" icon={User} label="About" />
         <DockIcon id="projects" icon={FolderCode} label="Projects"  />
-        <DockIcon id="notepad" icon={FileText} label="Notes" />
+        <DockIcon id="resume" icon={FileText} label="Resume" />
+        <DockIcon id="notepad" icon={Notebook} label="Notes" />
         <DockIcon id="contact" icon={Mail} label="Contact"  />
         
         {/* Separator changed from a thin line to a thicker dot-like pill */}
