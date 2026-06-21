@@ -62,7 +62,7 @@ export default function App() {
       ref={desktopRef}
       onContextMenu={handleContextMenu}
       onClick={closeMenu}
-      className="w-screen h-screen bg-[#050505] transition-all duration-700 relative overflow-hidden font-sans text-gray-200 select-none"
+      className="w-screen h-screen bg-[#292929] transition-all duration-700 relative overflow-hidden font-sans text-gray-200 select-none"
       style={{
         backgroundImage: wallpaper ? `url(${wallpaper})` : 'none',
         backgroundSize: 'cover',
