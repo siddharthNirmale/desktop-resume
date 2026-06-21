@@ -1,4 +1,5 @@
-import { ImageIcon, RefreshCw } from 'lucide-react';
+import { useState } from 'react';
+import { ImageIcon, RefreshCw, Loader2 } from 'lucide-react';
 import BaseWidget from './BaseWidget';
 
 const WALLPAPERS = [
@@ -7,6 +8,38 @@ const WALLPAPERS = [
   { id: 'wp2', url: 'https://static1.squarespace.com/static/5e949a92e17d55230cd1d44f/t/6980fa4328829334c89817ff/1770060355992/FGrad_Feb03_Mac.png', name: 'Abstract Blue' },
   { id: 'wp3', url: 'https://static1.squarespace.com/static/5e949a92e17d55230cd1d44f/t/6972579a8695ad2400d2ec01/1769101210900/OrangeTulip_Mac.png', name: 'Neon Glitch' },
 ];
+
+function WallpaperButton({ wp, setWallpaper }) {
+  const [isLoading, setIsLoading] = useState(true);
+
+  return (
+    <button 
+      onClick={() => setWallpaper(wp.url)} 
+      className="group relative w-full h-20 rounded-2xl border border-white/5 overflow-hidden hover:scale-[1.02] hover:border-white/20 transition-all duration-300"
+    >
+      {wp.id === 'default' ? (
+        <div className="w-full h-full bg-[#1a1a1a] flex items-center justify-center">
+          <RefreshCw size={20} className="text-neutral-500 group-hover:text-white" />
+        </div>
+      ) : (
+        <>
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+              <Loader2 size={20} className="animate-spin text-white/50" />
+            </div>
+          )}
+          <img 
+            src={wp.url} 
+            alt={wp.name} 
+            className={`w-full h-full object-cover transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+            onLoad={() => setIsLoading(false)}
+          />
+        </>
+      )}
+      <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl pointer-events-none" />
+    </button>
+  );
+}
 
 export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpaper }) {
   return (
@@ -20,21 +53,7 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
     >
       <div className="grid grid-cols-2 gap-3 p-1">
         {WALLPAPERS.map((wp) => (
-          <button 
-            key={wp.id} 
-            onClick={() => setWallpaper(wp.url)} 
-            className="group relative w-full h-20 rounded-2xl border border-white/5 overflow-hidden hover:scale-[1.02] hover:border-white/20 transition-all duration-300 shadow-inner"
-          >
-            {wp.id === 'default' ? (
-              <div className="w-full h-full bg-[#1a1a1a] flex items-center justify-center">
-                <RefreshCw size={20} className="text-neutral-500 group-hover:text-white transition-colors" />
-              </div>
-            ) : (
-              <img src={wp.url} alt={wp.name} className="w-full h-full object-cover" />
-            )}
-            {/* Subtle inner shadow overlay for depth */}
-            <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl pointer-events-none" />
-          </button>
+          <WallpaperButton key={wp.id} wp={wp} setWallpaper={setWallpaper} />
         ))}
       </div>
     </BaseWidget>
