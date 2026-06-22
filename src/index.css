@@ -3,24 +3,33 @@
 @import url("https://fonts.googleapis.com/css2?family=Mulish:wght@200..1000&family=Ovo&display=swap");
 
 @theme {
-  /* Colors */
-  --color-accent: #e51919;
+  /* Accent */
+  --color-accent: #0A84FF; /* iOS system red */
 
-  --color-desktop: #050505;
+  /* Desktop / Background */
+  --color-desktop: #000000;
 
-  --color-surface: #1a1a1a;
-  --color-surface-dark: #0f0f0f;
+  /* Surfaces */
+  --color-surface-dark: #1c1c1e;
+  --color-surface: #2c2c2e;
+  --color-surface-elevated: #3a3a3c;
 
-  --color-surface-border: #2a2a2a;
+  /* Borders */
+  --color-surface-border: rgba(255, 255, 255, 0.08);
 
+  /* Effects */
   --color-surface-dot: rgba(255, 255, 255, 0.08);
 
+  /* Text */
+  --color-text: #ffffff;
+  --color-text-secondary: rgba(255, 255, 255, 0.6);
+  --color-text-tertiary: rgba(255, 255, 255, 0.35);
+
   /* Typography */
-  --font-primary: "Mulish", sans-serif;
+  --font-primary: "SF Pro Display", "Mulish", sans-serif;
   --font-heading: "Ovo", serif;
 
   --text-micro: 9px;
-
   --tracking-super-wide: 0.2em;
 }
 
