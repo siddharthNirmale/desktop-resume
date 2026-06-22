@@ -48,16 +48,18 @@ export default function Window({
       dragConstraints={constraintsRef}
       onMouseDown={onFocus}
       style={{ zIndex, x, y, width, height }}
-      className={`absolute bg-[#1a1a1a] border border-neutral-800 rounded-xl shadow-xl flex flex-col overflow-hidden ${isMinimized ? 'hidden' : ''}`}
+      className={`absolute bg-surface border border-surface-border rounded-xl shadow-xl flex flex-col overflow-hidden ${isMinimized ? 'hidden' : ''}`}
       initial={{ top: spawnPos.top, left: spawnPos.left, opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
     >
-      <div className="window-header h-10 px-4 flex items-center justify-between border-b border-neutral-800 bg-[#1a1a1a] select-none cursor-grab active:cursor-grabbing">
+      <div className="window-header h-10 px-4 flex items-center justify-between border-b border-surface-border bg-surface  select-none cursor-grab active:cursor-grabbing">
         <div className="flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-[#E51919]" />
-          <span className="text-[9px] font-bold text-neutral-500 uppercase tracking-[0.2em]">{title}</span>
+          {/* Swapped hardcoded red for your global accent color */}
+          <div className="w-1.5 h-1.5 rounded-full bg-accent" />
+          {/* Swapped hardcoded px/em values for standard Tailwind text-xs and tracking-widest, added a custom font class */}
+          <span className="text-[9px] font-bold text-neutral-500 uppercase tracking-[0.2em]  ">{title}</span>
         </div>
         <div className="flex items-center gap-3 text-neutral-500">
           <button onClick={onMinimize} className="hover:text-white transition-colors">
@@ -66,18 +68,19 @@ export default function Window({
           <button onClick={toggleFocus} className="hover:text-white transition-colors">
             {isFocused ? <Shrink size={14} strokeWidth={2} /> : <Expand size={14} strokeWidth={2} />}
           </button>
-          <button onClick={onClose} className="hover:text-[#E51919] transition-colors">
+          {/* Swapped hardcoded red hover for your global accent color */}
+          <button onClick={onClose} className="hover:text-accent transition-colors">
             <X size={14} strokeWidth={2} />
           </button>
         </div>
       </div>
-      <div className="flex-1 overflow-auto custom-scrollbar bg-[#1a1a1a]">
+      <div className="flex-1 overflow-auto custom-scrollbar bg-surface">
         {children}
       </div>
       {!isFocused && (
         <motion.div
           onPan={handleResize}
-          className="absolute bottom-0 right-0 w-6 h-6 cursor-se-resize flex items-end justify-end p-2 z-50 text-neutral-600 hover:text-[#E51919] transition-colors"
+          className="absolute bottom-0 right-0 w-6 h-6 cursor-se-resize flex items-end justify-end p-2 z-50 text-neutral-600 hover:text-accent transition-colors"
         >
           <div className="w-2 h-2 border-r-[1.5px] border-b-[1.5px] border-current"></div>
         </motion.div>

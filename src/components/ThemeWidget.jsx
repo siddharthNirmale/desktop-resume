@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { ImageIcon, RefreshCw, Loader2 } from 'lucide-react';
-import BaseWidget from './BaseWidget';
+import { RefreshCw, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const WALLPAPERS = [
   { id: 'default', url: '', name: 'Default Dots' },
@@ -15,47 +15,65 @@ function WallpaperButton({ wp, setWallpaper }) {
   return (
     <button 
       onClick={() => setWallpaper(wp.url)} 
-      className="group relative w-full h-20 rounded-2xl border border-white/5 overflow-hidden hover:scale-[1.02] hover:border-white/20 transition-all duration-300"
+      // Swapped to bg-surface, border-surface-border, hover:border-accent
+      className="group relative w-full h-20 rounded-2xl border border-surface-border overflow-hidden hover:border-accent transition-colors duration-300 bg-surface"
     >
       {wp.id === 'default' ? (
-        <div className="w-full h-full bg-[#1a1a1a] flex items-center justify-center">
-          <RefreshCw size={20} className="text-neutral-500 group-hover:text-white" />
+        <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+          {/* Swapped text colors to standard neutral-500 and accent */}
+          <RefreshCw size={16} className="text-neutral-500 group-hover:text-accent transition-colors" />
+          <span className="text-micro font-mono text-neutral-500 uppercase tracking-widest group-hover:text-white transition-colors">
+            Default
+          </span>
         </div>
       ) : (
         <>
           {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-              <Loader2 size={20} className="animate-spin text-white/50" />
+            // Spinner container matches button background
+            <div className="absolute inset-0 flex items-center justify-center bg-surface">
+              <Loader2 size={16} className="animate-spin text-accent" />
             </div>
           )}
           <img 
             src={wp.url} 
             alt={wp.name} 
-            className={`w-full h-full object-cover transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+            className={`w-full h-full object-cover transition-opacity duration-500 opacity-60 group-hover:opacity-100 ${isLoading ? 'opacity-0' : ''}`}
             onLoad={() => setIsLoading(false)}
           />
         </>
       )}
-      <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl pointer-events-none" />
     </button>
   );
 }
 
 export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpaper }) {
   return (
-    <BaseWidget
-      constraintsRef={constraintsRef}
-      zIndex={zIndex}
-      onFocus={onFocus}
-      className="top-55 left-3 w-64 bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-3xl"
-      title="Wallpaper"
-      icon={ImageIcon}
+    <motion.div
+      drag
+      dragMomentum={false}
+      dragConstraints={constraintsRef}
+      dragElastic={0.15}
+      onPointerDown={onFocus}
+      style={{ zIndex, touchAction: "none" }}
+      whileDrag={{ scale: 1.02, cursor: "grabbing" }}
+      // Standardized sizing and global theme colors
+      className="absolute top-60 left-3 w-64 bg-surface-dark border border-surface-border rounded-3xl p-4 cursor-grab flex flex-col gap-3 shadow-xl"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
     >
-      <div className="grid grid-cols-2 gap-3 p-1">
+      {/* Integrated Header - Matches all other widgets */}
+      <div className="flex justify-between items-center px-1 select-none">
+        <span className="text-micro font-bold text-neutral-500 uppercase tracking-super-wide font-primary">
+          THEME
+        </span>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 mt-1">
         {WALLPAPERS.map((wp) => (
           <WallpaperButton key={wp.id} wp={wp} setWallpaper={setWallpaper} />
         ))}
       </div>
-    </BaseWidget>
+    </motion.div>
   );
 }

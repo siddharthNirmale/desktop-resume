@@ -30,15 +30,16 @@ export default function Preloader({ onLoadingComplete }) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black font-mono"
+      // Mapped background to your global desktop color so the fade-out is seamless
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-desktop font-mono"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Increased text size and spacing for maximum readability */}
       <div className="flex flex-col items-center gap-6">
         <motion.div 
-          className="text-white text-3xl md:text-5xl tracking-[0.4em] uppercase font-bold"
+          // Swapped hardcoded tracking for standard Tailwind tracking-widest
+          className="text-white text-3xl md:text-5xl tracking-widest uppercase font-bold"
           key={text}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -47,10 +48,11 @@ export default function Preloader({ onLoadingComplete }) {
           {text}
         </motion.div>
         
-        {/* Larger, more visible loading line */}
-        <div className="w-32 h-[2px] bg-neutral-900 overflow-hidden">
+        {/* Loader track mapped to surface-border */}
+        <div className="w-32 h-[2px] bg-surface-border overflow-hidden">
           <motion.div 
-            className="h-full bg-[#f02020]"
+            // Loader fill mapped perfectly to your global accent color
+            className="h-full bg-accent"
             initial={{ width: '0%' }}
             animate={{ width: '100%' }}
             transition={{ duration: 2.2, ease: "linear" }}

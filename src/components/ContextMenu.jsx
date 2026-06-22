@@ -23,23 +23,33 @@ export default function ContextMenu({ x, y, onClose, toggleWindow, bringToFront 
       transition={{ duration: 0.1 }}
       style={{ top: y, left: x }}
       onContextMenu={(e) => e.preventDefault()} 
-      className="fixed z-[999999] w-48 bg-[#1a1a1a] border border-neutral-800 rounded-xl shadow-2xl py-1.5 overflow-hidden"
+      // Mapped to surface and surface-border
+      className="fixed z-[999999] w-48 bg-surface border border-surface-border rounded-xl shadow-2xl py-1.5 overflow-hidden"
     >
-      <div className="px-3 py-1.5 mb-1 border-b border-neutral-800/50">
-        <span className="text-[8px] font-bold text-neutral-600 uppercase tracking-widest">Desktop Actions</span>
+      <div className="px-3 py-1.5 mb-1 border-b border-surface-border/50">
+        {/* Unified with your global micro-typography system */}
+        <span className="text-micro font-bold text-neutral-500 uppercase tracking-super-wide font-primary">
+          Desktop Actions
+        </span>
       </div>
+      
       {menuItems.map((item) => (
         <button
           key={item.id}
           onClick={(e) => { e.stopPropagation(); openApp(item.id); }}
-          className="w-full flex items-center gap-3 px-3 py-2 text-[10px] font-bold text-neutral-400 hover:text-[#E51919] hover:bg-[#0F0F0F] transition-colors uppercase tracking-[0.1em] group"
+          // Swapped hovers to text-accent and bg-surface-dark, standardized to text-xs
+          className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-neutral-400 hover:text-accent hover:bg-surface-dark transition-colors uppercase tracking-widest font-primary group"
         >
-          <item.icon size={14} strokeWidth={2} className="text-neutral-500 group-hover:text-[#E51919] transition-colors" />
+          {/* Icon hover mapped to text-accent */}
+          <item.icon size={14} strokeWidth={2} className="text-neutral-500 group-hover:text-accent transition-colors" />
           {item.label}
         </button>
       ))}
-      <div className="h-px bg-neutral-800/50 my-1 mx-2" />
-      <button className="w-full flex items-center gap-3 px-3 py-2 text-[10px] font-bold text-neutral-600 cursor-not-allowed uppercase tracking-[0.1em]">
+      
+      {/* Separator mapped to surface-border */}
+      <div className="h-px bg-surface-border/50 my-1 mx-2" />
+      
+      <button className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-neutral-600 cursor-not-allowed uppercase tracking-widest font-primary">
         <Settings size={14} strokeWidth={2} />
         System Preferences
       </button>

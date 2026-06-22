@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import BaseWidget from './BaseWidget';
-import { FiCpu } from 'react-icons/fi';
 import { 
   SiReact, SiNodedotjs, SiExpress, SiMongodb, SiGooglecloud, 
   SiTailwindcss, SiGit, SiGooglegemini, SiTypescript, SiPython, SiNextdotjs 
 } from 'react-icons/si';
+import { FiCpu } from 'react-icons/fi';
 
 const skillSets = [
   { name: 'Core', items: [
@@ -33,35 +32,51 @@ export default function SkillsWidget({ constraintsRef, zIndex, onFocus }) {
   }, []);
 
   return (
-    <BaseWidget
-      constraintsRef={constraintsRef}
-      zIndex={zIndex}
-      onFocus={onFocus}
-      title={`Stack // ${skillSets[index].name}`}
-      icon={FiCpu}
-      className="w-56  absolute right-3 bottom-5"
+    <motion.div
+      drag
+      dragMomentum={false}
+      dragConstraints={constraintsRef}
+      dragElastic={0.15}
+      onPointerDown={onFocus}
+      style={{ zIndex, touchAction: "none" }}
+      whileDrag={{ scale: 1.02, cursor: "grabbing" }}
+      // Standardized to surface-dark, surface-border, rounded-3xl, and shadow-xl
+      className="absolute bottom-5 right-3 w-64 bg-surface-dark border border-surface-border rounded-3xl p-4 cursor-grab flex flex-col gap-3 shadow-xl"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
     >
-      <div className="relative h-[85px] mt-2 ">
+      {/* Integrated Header - Matches all other widgets */}
+      <div className="flex justify-between items-center px-1 select-none">
+        <span className="text-micro font-bold text-neutral-500 uppercase tracking-super-wide font-primary">
+          STACK // {skillSets[index].name.toUpperCase()}
+        </span>
+      </div>
+
+      {/* Fixed height container to prevent layout jumping during animations */}
+      <div className="relative h-[84px] w-full mt-1">
         <AnimatePresence mode="wait">
           <motion.div
             key={index}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.4 }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
             className="grid grid-cols-2 gap-2 absolute w-full"
           >
             {skillSets[index].items.map((skill) => (
               <div 
                 key={skill.name} 
-                className="flex items-center  gap-2 bg-black/40 border border-neutral-800 p-2 rounded-xl text-[9px] text-neutral-400 uppercase tracking-widest hover:border-[#E51919] hover:text-white transition-colors duration-300"
+                // Badges now use bg-surface, text-micro, text-neutral-400, and border-accent for hover
+                className="flex items-center gap-2.5 bg-surface border border-surface-border px-3 py-2.5 rounded-2xl text-micro text-neutral-400 font-mono uppercase tracking-widest hover:border-accent hover:text-white transition-colors duration-300"
               >
-                {skill.icon} {skill.name}
+                <span className="text-sm">{skill.icon}</span> 
+                <span className="truncate mt-0.5">{skill.name}</span>
               </div>
             ))}
           </motion.div>
         </AnimatePresence>
       </div>
-    </BaseWidget>
+    </motion.div>
   );
 }

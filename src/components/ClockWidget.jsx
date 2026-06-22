@@ -1,81 +1,88 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import BaseWidget from './BaseWidget';
 
 export default function ClockWidget({ constraintsRef, zIndex, onFocus }) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
-    // 1-second interval keeps the widget feeling active
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // Time calculations
   const hours = time.getHours();
   const displayHoursStr = (hours % 12 || 12).toString().padStart(2, '0');
   const minutesStr = time.getMinutes().toString().padStart(2, '0');
   const secondsStr = time.getSeconds().toString().padStart(2, '0');
   const amPm = hours >= 12 ? 'PM' : 'AM';
   
-  // Date calculations
   const dayStr = time.toLocaleDateString([], { weekday: 'short' });
   const dateStr = time.getDate();
   const monthStr = time.toLocaleDateString([], { month: 'short' });
 
-  return (
-    <BaseWidget
-      constraintsRef={constraintsRef}
-      zIndex={zIndex}
-      onFocus={onFocus}
-      className="top-10 right-3 w-auto h-auto" 
-      title="Clock" // Left blank so the widget body handles the layout
-    >
-      {/* The OS Container: 
-        Stark black, tight border, heavily rounded, zero blur or gradients.
-      */}
-      <div className="relative w-full h-full rounded-[1.5rem] bg-black border-[1.5px] border-zinc-900 overflow-hidden flex flex-col p-5">
-        
-        
+  // Prevents the progress bar from animating "backwards" when hitting 0
+  const isResetting = time.getSeconds() === 0;
 
-        {/* Time Display: Centered and stark */}
-        <div className="flex items-center justify-center gap-2 z-10 w-full mb-2">
-          {/* Main Time: Back to the signature dot-matrix/monospace look */}
-          <span className="text-[3.5rem] font-['NDot',_monospace] tracking-widest text-white leading-none">
+  return (
+    <motion.div
+      drag
+      dragMomentum={false}
+      dragConstraints={constraintsRef}
+      dragElastic={0.15} 
+      onPointerDown={onFocus}
+      style={{ zIndex, touchAction: "none" }} 
+      whileDrag={{ scale: 1.02, cursor: "grabbing" }} 
+      className="absolute top-10 right-3 w-64 bg-surface-dark border border-surface-border rounded-3xl p-4 cursor-grab flex flex-col gap-3 shadow-xl"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+    >
+      {/* Integrated Header */}
+      <div className="flex justify-between items-center px-1 select-none">
+        {/* Using the new global micro-typography variables */}
+        <span className="text-micro font-bold text-neutral-500 uppercase tracking-super-wide font-primary">
+          CLOCK
+        </span>
+      </div>
+
+      <div className="flex flex-col items-center justify-center p-2 gap-4 w-full h-full">
+        {/* Time Display */}
+        <div className="flex items-start justify-center gap-2 w-full mt-2">
+          <span className="text-5xl font-mono tracking-wider text-white leading-none">
             {displayHoursStr}:{minutesStr}
           </span>
           
-          {/* AM/PM and Live Seconds */}
-          <div className="flex flex-col items-start gap-1">
-            <span className="text-[10px] font-bold text-[#E51919] uppercase tracking-[0.2em]">
+          <div className="flex flex-col items-start gap-1 mt-1">
+            {/* AM/PM using accent color and micro-typography */}
+            <span className="text-micro font-bold text-accent uppercase tracking-super-wide font-mono">
               {amPm}
             </span>
-            <span className="text-[10px] font-['NDot',_monospace] text-zinc-500 w-5 text-left leading-none">
+            <span className="text-xs font-mono text-neutral-400 w-5 text-left leading-none">
               {secondsStr}
             </span>
           </div>
         </div>
 
-        {/* Flat Date Readout */}
-        <div className="flex items-center justify-center gap-2.5 mt-auto w-full pb-2">
-          <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{dayStr}</span>
-          <div className="w-1 h-1 bg-zinc-700" /> {/* Square separator instead of round for blockier feel */}
-          <span className="text-[10px] font-bold text-white uppercase tracking-widest">
+        {/* Date Readout */}
+        <div className="flex items-center justify-center gap-3 w-full">
+          <span className="text-xs font-medium text-neutral-400 uppercase tracking-wider font-mono">
+            {dayStr}
+          </span>
+          {/* Subtle separator dot mapped to your surface border color */}
+          <div className="w-1 h-1 bg-surface-border rounded-full" /> 
+          <span className="text-xs font-medium text-neutral-400 uppercase tracking-wider font-mono">
             {monthStr} {dateStr}
           </span>
         </div>
 
-        {/* Sweeping Minute Progress Bar: 
-          Replaced the glowing blue with a flat, signature red track 
-        */}
-        <div className="absolute bottom-0 left-0 h-1.5 bg-zinc-900 w-full">
+        {/* Flat minute progress bar */}
+        <div className="w-full h-1 bg-surface rounded-full overflow-hidden mt-2">
           <motion.div 
-            className="h-full bg-[#E51919]"
+            className="h-full bg-accent"
             animate={{ width: `${(time.getSeconds() / 60) * 100}%` }}
-            transition={{ ease: "linear", duration: 1 }}
+            transition={{ ease: "linear", duration: isResetting ? 0 : 1 }}
           />
         </div>
       </div>
-    </BaseWidget>
+    </motion.div>
   );
 }
