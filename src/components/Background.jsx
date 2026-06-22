@@ -1,16 +1,15 @@
-export default function Background({ dotSize = 1.5, spacing = 24 }) {
+export default function Background() {
   return (
     <div
-      className="absolute inset-0 pointer-events-none -z-10"
+      className="absolute inset-0 pointer-events-none"
       style={{
         backgroundImage: `
           radial-gradient(
-            circle, 
-            var(--color-surface-dot) ${dotSize}px, 
-            transparent ${dotSize}px
+            rgba(255,255,255,0.15) 1px,
+            transparent 1px
           )
         `,
-        backgroundSize: `${spacing}px ${spacing}px`,
+        backgroundSize: '12px 12px',
       }}
     />
   );
