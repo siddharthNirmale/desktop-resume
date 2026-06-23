@@ -8,40 +8,43 @@ export default function GithubWidget({
   onFocus,
 }) {
   const [isReady, setIsReady] = useState(false);
-  const [accent, setAccent] = useState('#5E5CE6');
+  const [accent, setAccent] = useState('#0A84FF'); // Fallback to your default iOS blue
 
   useEffect(() => {
+    const root = document.documentElement;
+
     const updateAccent = () => {
-      const root = getComputedStyle(document.documentElement);
-
-      const currentAccent =
-        root.getPropertyValue('--color-accent').trim() ||
-        '#2dcf18';
-
+      const currentAccent = getComputedStyle(root).getPropertyValue('--color-accent').trim() || '#0A84FF';
       setAccent(currentAccent);
     };
 
+    // Initial check
     updateAccent();
+
+    // Watch for inline style changes on the HTML element (triggered by ThemeWidget)
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+          updateAccent();
+        }
+      });
+    });
+
+    observer.observe(root, { attributes: true, attributeFilter: ['style'] });
 
     const timer = setTimeout(() => {
       setIsReady(true);
     }, 800);
 
-    window.addEventListener('accent-change', updateAccent);
-
     return () => {
       clearTimeout(timer);
-      window.removeEventListener(
-        'accent-change',
-        updateAccent
-      );
+      observer.disconnect();
     };
   }, []);
 
   const customTheme = useMemo(() => {
     const hexToRgb = (hex) => {
       const clean = hex.replace('#', '');
-
       return {
         r: parseInt(clean.substring(0, 2), 16),
         g: parseInt(clean.substring(2, 4), 16),
@@ -53,10 +56,10 @@ export default function GithubWidget({
 
     return {
       dark: [
-        '#1a1a1a',
-        `rgba(${r}, ${g}, ${b}, 0.15)`,
-        `rgba(${r}, ${g}, ${b}, 0.35)`,
-        `rgba(${r}, ${g}, ${b}, 0.65)`,
+        '#1a1a1a', // Base dark grid color
+        `rgba(${r}, ${g}, ${b}, 0.25)`,
+        `rgba(${r}, ${g}, ${b}, 0.50)`,
+        `rgba(${r}, ${g}, ${b}, 0.75)`,
         accent,
       ],
     };
@@ -64,13 +67,11 @@ export default function GithubWidget({
 
   const filterLastSixMonths = (contributions) => {
     const today = new Date();
-
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setDate(today.getDate() - 180);
 
     return contributions.filter((day) => {
       const date = new Date(day.date);
-
       return date >= sixMonthsAgo && date <= today;
     });
   };
@@ -103,52 +104,25 @@ export default function GithubWidget({
         stiffness: 300,
         damping: 30,
       }}
-      className="
-        absolute
-        bottom-3
-        left-3
-        w-fit
-        bg-[var(--color-surface-dark)]
-        border
-        border-[var(--color-surface-border)]
-        rounded-3xl
-        p-4
-        cursor-grab
-        shadow-xl
-        select-none
-      "
+      // Integrated global themes, shadow-2xl, and exact rounded-2xl to match other widgets
+      className="absolute bottom-3 left-3 w-fit bg-surface-dark border border-surface-border rounded-2xl p-4 cursor-grab shadow-2xl select-none font-primary"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-2">
-          <div
-            className="w-2 h-2 rounded-full"
-            style={{
-              backgroundColor: accent,
-              boxShadow: `0 0 10px ${accent}`,
-            }}
-          />
-          <span
-            className="
-              text-[9px]
-              uppercase
-              tracking-[0.2em]
-              font-semibold
-              text-white/60
-            "
-          >
-            Contributions
+          {/* Accent dot (removed glow, linked to global CSS variable natively) */}
+          <div className="w-1.5 h-1.5 rounded-full bg-accent" />
+          
+          {/* Themed typography */}
+          <span className="text-micro font-medium uppercase tracking-super-wide text-text-secondary">
+            CONTRIBUTIONS
           </span>
         </div>
       </div>
 
       {/* Calendar */}
       <div
-        className={`
-          transition-all
-          duration-500
-          ${isReady ? 'opacity-100' : 'opacity-0'}
-        `}
+        className={`transition-all duration-500 ${isReady ? 'opacity-100' : 'opacity-0'}`}
         onPointerDown={(e) => e.stopPropagation()}
       >
         <GitHubCalendar
@@ -158,12 +132,12 @@ export default function GithubWidget({
           transformData={filterLastSixMonths}
           blockSize={10}
           blockMargin={4}
-          blockRadius={3}
+          blockRadius={2} // Subtly tightened the block radius to look crisper
           fontSize={10}
           hideColorLegend
           hideTotalCount
           style={{
-            color: 'rgba(255,255,255,0.55)',
+            color: 'var(--color-text-tertiary)',
             fontFamily: 'var(--font-primary)',
           }}
         />
