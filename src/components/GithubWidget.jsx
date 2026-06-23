@@ -8,7 +8,7 @@ export default function GithubWidget({
   onFocus,
 }) {
   const [isReady, setIsReady] = useState(false);
-  const [accent, setAccent] = useState('#0A84FF'); // Fallback to your default iOS blue
+  const [accent, setAccent] = useState('#0A84FF');
 
   useEffect(() => {
     const root = document.documentElement;
@@ -18,10 +18,8 @@ export default function GithubWidget({
       setAccent(currentAccent);
     };
 
-    // Initial check
     updateAccent();
 
-    // Watch for inline style changes on the HTML element (triggered by ThemeWidget)
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
@@ -56,7 +54,7 @@ export default function GithubWidget({
 
     return {
       dark: [
-        '#1a1a1a', // Base dark grid color
+        '#1a1a1a', 
         `rgba(${r}, ${g}, ${b}, 0.25)`,
         `rgba(${r}, ${g}, ${b}, 0.50)`,
         `rgba(${r}, ${g}, ${b}, 0.75)`,
@@ -65,14 +63,15 @@ export default function GithubWidget({
     };
   }, [accent]);
 
-  const filterLastSixMonths = (contributions) => {
+  // Adjusted to 150 days (~5 months) to mathematically fit the 280px container width
+  const filterLastFiveMonths = (contributions) => {
     const today = new Date();
-    const sixMonthsAgo = new Date();
-    sixMonthsAgo.setDate(today.getDate() - 180);
+    const startWindow = new Date();
+    startWindow.setDate(today.getDate() - 150);
 
     return contributions.filter((day) => {
       const date = new Date(day.date);
-      return date >= sixMonthsAgo && date <= today;
+      return date >= startWindow && date <= today;
     });
   };
 
@@ -104,16 +103,12 @@ export default function GithubWidget({
         stiffness: 300,
         damping: 30,
       }}
-      // Integrated global themes, shadow-2xl, and exact rounded-2xl to match other widgets
-      className="absolute bottom-3 left-3 w-fit bg-surface-dark border border-surface-border rounded-2xl p-4 cursor-grab shadow-2xl select-none font-primary"
+      // Locked to exactly w-[280px] and p-5 to match the Theme, Weather, and Clock widgets
+      className="absolute bottom-3 left-3 w-[280px] bg-surface-dark border border-surface-border rounded-2xl p-5 cursor-grab shadow-2xl select-none font-primary"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-2">
-          {/* Accent dot (removed glow, linked to global CSS variable natively) */}
-          <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-          
-          {/* Themed typography */}
           <span className="text-micro font-medium uppercase tracking-super-wide text-text-secondary">
             CONTRIBUTIONS
           </span>
@@ -122,17 +117,17 @@ export default function GithubWidget({
 
       {/* Calendar */}
       <div
-        className={`transition-all duration-500 ${isReady ? 'opacity-100' : 'opacity-0'}`}
+        className={`flex justify-center transition-all duration-500 ${isReady ? 'opacity-100' : 'opacity-0'}`}
         onPointerDown={(e) => e.stopPropagation()}
       >
         <GitHubCalendar
           username="siddharthNirmale"
           colorScheme="dark"
           theme={customTheme}
-          transformData={filterLastSixMonths}
-          blockSize={10}
-          blockMargin={4}
-          blockRadius={2} // Subtly tightened the block radius to look crisper
+          transformData={filterLastFiveMonths} // Applying our new 150-day filter
+          blockSize={8} // Scaled down from 10 to fit
+          blockMargin={2} // Scaled down from 4 to fit
+          blockRadius={2} 
           fontSize={10}
           hideColorLegend
           hideTotalCount
