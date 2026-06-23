@@ -63,16 +63,17 @@ export default function App() {
       ref={desktopRef}
       onContextMenu={handleContextMenu}
       onClick={closeMenu}
+      // Integrated @theme classes: font-primary, text-text, and bg-desktop
       className="
         w-screen h-screen
         relative overflow-hidden
-        font-[var(--font-primary)]
-        text-white
+        font-primary
+        text-text
+        bg-desktop
         select-none
         transition-all duration-700
       "
       style={{
-        backgroundColor: "var(--color-desktop)",
         backgroundImage: wallpaper ? `url(${wallpaper})` : "none",
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -176,7 +177,8 @@ export default function App() {
                   onMinimize={() => toggleWindow(win.id, "isMinimized", true)}
                   onFocus={() => bringToFront(win.id)}
                 >
-                  <div className="w-full h-full min-h-0 bg-[var(--color-surface)]">
+                  {/* Cleaned up interior wrapper to use global bg-surface */}
+                  <div className="w-full h-full min-h-0 bg-surface rounded-b-xl overflow-y-auto custom-scrollbar">
                     {win.id === "about" && <AboutSection />}
                     {win.id === "projects" && <ProjectsSection />}
                     {win.id === "resume" && <ResumeSection />}
