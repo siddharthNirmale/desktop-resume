@@ -1,36 +1,32 @@
 @import "tailwindcss";
 
-@import url("https://fonts.googleapis.com/css2?family=Mulish:wght@200..1000&family=Ovo&display=swap");
-
 @theme {
   /* Accent */
-  --color-accent: #0A84FF; /* iOS system red */
+  --color-accent: #0A84FF; 
+  --color-accent-glow: rgba(10, 132, 255, 0.3);
 
   /* Desktop / Background */
-  --color-desktop: #000000;
+  --color-desktop: #0B0E14;
 
   /* Surfaces */
-  --color-surface-dark: #1c1c1e;
-  --color-surface: #2c2c2e;
-  --color-surface-elevated: #3a3a3c;
+  --color-surface-dark: #121822;
+  --color-surface: #1A2230;
+  --color-surface-elevated: #232D3F;
 
   /* Borders */
-  --color-surface-border: rgba(255, 255, 255, 0.08);
-
-  /* Effects */
-  --color-surface-dot: rgba(255, 255, 255, 0.08);
+  --color-surface-border: rgba(255, 255, 255, 0.06);
 
   /* Text */
-  --color-text: #ffffff;
-  --color-text-secondary: rgba(255, 255, 255, 0.6);
-  --color-text-tertiary: rgba(255, 255, 255, 0.35);
+  --color-text: #FFFFFF;
+  --color-text-secondary: #94A3B8;
+  --color-text-tertiary: #475569;
 
   /* Typography */
-  --font-primary: "SF Pro Display", "Mulish", sans-serif;
-  --font-heading: "Ovo", serif;
-
-  --text-micro: 9px;
-  --tracking-super-wide: 0.2em;
+  /* This grabs SF Pro on Mac/iOS, Segoe UI on Windows, and Roboto on Android */
+  --font-primary: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  
+  --text-micro: 10px;
+  --tracking-super-wide: 0.15em;
 }
 
 @layer base {
@@ -43,7 +39,7 @@
 
   body {
     background: var(--color-desktop);
-    color: white;
+    color: var(--color-text);
     font-family: var(--font-primary);
 
     -webkit-font-smoothing: antialiased;
@@ -53,8 +49,8 @@
 
 @layer utilities {
   .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
@@ -62,15 +58,21 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: var(--color-surface-border);
+    background: var(--color-surface-elevated);
     border-radius: 999px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #404040;
+    background: var(--color-text-tertiary);
   }
 
   .glow-accent {
-    box-shadow: 0 0 12px var(--color-accent);
+    box-shadow: 0 0 15px var(--color-accent-glow);
+  }
+
+  .glass-panel {
+    background: var(--color-surface-dark);
+    border: 1px solid var(--color-surface-border);
+    border-radius: 1.25rem; 
   }
 }
