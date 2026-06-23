@@ -200,8 +200,8 @@ export default function App() {
               <div className="lg:col-span-3 flex flex-col gap-6">
                 <ClockWidget />
                 <LearningWidget
-                  progress={55}
-                  topic="Frontend Optimization"
+                  progress={30}
+                  topic="Frontend Development"
                   subtopic="Next.js 14"
                 />
                 <SkillsWidget />
