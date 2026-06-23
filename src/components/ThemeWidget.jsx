@@ -23,13 +23,13 @@ function WallpaperButton({ wp, setWallpaper }) {
   return (
     <button 
       onClick={() => setWallpaper(wp.url)} 
-      // Proportional inner radius: rounded-lg looks best inside a rounded-2xl container
-      className="group relative h-10 w-10 flex-shrink-0 rounded-lg border border-surface-border overflow-hidden hover:border-accent transition-colors duration-300 bg-surface cursor-pointer"
+      // Scaled up to h-12 w-12 and rounded-xl to perfectly fill the 280px container
+      className="group relative h-12 w-12 flex-shrink-0 rounded-xl border border-surface-border overflow-hidden hover:border-accent transition-colors duration-300 bg-surface cursor-pointer"
     >
       {wp.id === 'default' ? (
-        <div className="w-full h-full flex flex-col items-center justify-center">
-          <RefreshCw size={11} className="text-text-tertiary group-hover:text-accent transition-colors duration-300" />
-          <span className="text-[7px] font-mono text-text-tertiary uppercase group-hover:text-text scale-90 transition-colors duration-300">
+        <div className="w-full h-full flex flex-col items-center justify-center gap-0.5">
+          <RefreshCw size={12} className="text-text-tertiary group-hover:text-accent transition-colors duration-300" />
+          <span className="text-[8px] font-mono text-text-tertiary uppercase tracking-widest group-hover:text-text scale-90 transition-colors duration-300">
             DEF
           </span>
         </div>
@@ -37,7 +37,7 @@ function WallpaperButton({ wp, setWallpaper }) {
         <>
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-surface">
-              <Loader2 size={10} className="animate-spin text-accent" />
+              <Loader2 size={12} className="animate-spin text-accent" />
             </div>
           )}
           <img 
@@ -69,20 +69,21 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
       onPointerDown={onFocus}
       style={{ zIndex, touchAction: "none" }}
       whileDrag={{ scale: 1.01, cursor: "grabbing" }}
-      // Standardized to rounded-2xl to perfectly match the WeatherWidget
-      className="absolute top-70 left-3 w-[245px] bg-surface-dark border border-surface-border rounded-2xl p-3.5 cursor-grab flex flex-col gap-3.5 shadow-2xl font-primary"
+      // Standardized: w-[280px], p-5, gap-4, and rounded-2xl
+      className="absolute top-70 left-3 w-[280px] bg-surface-dark border border-surface-border rounded-2xl p-5 cursor-grab flex flex-col gap-4 shadow-2xl font-primary"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
     >
       {/* SECTION 1: WALLPAPER BACKGROUNDS */}
-      <div className="flex flex-col gap-2">
-        <div className="flex justify-between items-center select-none">
-          <span className="text-[8px] font-medium text-text-secondary uppercase tracking-super-wide">
+      <div className="flex flex-col gap-3">
+        <div className="flex justify-between items-center select-none mb-1">
+          {/* Restored to text-micro to match the other headers */}
+          <span className="text-micro font-medium text-text-secondary uppercase tracking-super-wide">
             DESKTOP WALLPAPER
           </span>
         </div>
-        <div className="flex flex-row items-center gap-2 overflow-x-auto custom-scrollbar pb-0.5">
+        <div className="flex flex-row items-center gap-3 overflow-x-auto custom-scrollbar pb-1">
           {WALLPAPERS.map((wp) => (
             <WallpaperButton key={wp.id} wp={wp} setWallpaper={setWallpaper} />
           ))}
@@ -93,14 +94,15 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
       <div className="h-[1px] w-full bg-surface-border" />
 
       {/* SECTION 2: SYSTEM ACCENT COLOR */}
-      <div className="flex flex-col gap-2">
-        <div className="flex justify-between items-center select-none">
-          <span className="text-[8px] font-medium text-text-secondary uppercase tracking-super-wide">
+      <div className="flex flex-col gap-3">
+        <div className="flex justify-between items-center select-none mb-1">
+          <span className="text-micro font-medium text-text-secondary uppercase tracking-super-wide">
             SYSTEM ACCENT
           </span>
         </div>
         
-        <div className="flex flex-row items-center gap-2.5">
+        {/* Scaled the gap and circle size to match the new width */}
+        <div className="flex flex-row items-center gap-3">
           {ACCENT_COLORS.map((color) => {
             const isSelected = activeAccent === color.id;
             return (
@@ -108,13 +110,14 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
                 key={color.id}
                 onClick={() => handleAccentChange(color.id, color.value)}
                 style={{ backgroundColor: color.value }}
-                className={`group relative h-5 w-5 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95
-                  ${isSelected ? 'ring-2 ring-offset-1 ring-offset-surface-dark ring-white' : 'opacity-70 hover:opacity-100'}
+                // Scaled from h-5 to h-6
+                className={`group relative h-6 w-6 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95
+                  ${isSelected ? 'ring-2 ring-offset-2 ring-offset-surface-dark ring-white' : 'opacity-70 hover:opacity-100'}
                 `}
                 title={color.name}
               >
                 {isSelected && (
-                  <Check size={9} className="text-black stroke-[4]" />
+                  <Check size={10} className="text-black stroke-[3.5]" />
                 )}
               </button>
             );
