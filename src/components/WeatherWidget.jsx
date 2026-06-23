@@ -1,17 +1,34 @@
-import { Wind, Droplets, Loader2 } from 'lucide-react';
+import { 
+  Cloud, 
+  Sun, 
+  CloudRain, 
+  CloudLightning, 
+  CloudSnow, 
+  Loader2 
+} from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
+// Helper to map Open-Meteo WMO codes to Lucide icons
+const getWeatherDetails = (code) => {
+  if (code === 0) return { label: 'Clear', Icon: Sun };
+  if (code > 0 && code <= 3) return { label: 'Cloudy', Icon: Cloud };
+  if (code >= 51 && code <= 67) return { label: 'Rain', Icon: CloudRain };
+  if (code >= 71 && code <= 77) return { label: 'Snow', Icon: CloudSnow };
+  if (code >= 95) return { label: 'Storm', Icon: CloudLightning };
+  return { label: 'Cloudy', Icon: Cloud }; 
+};
+
 export default function WeatherWidget({ constraintsRef, zIndex, onFocus }) {
-  const [weather, setWeather] = useState(null);
+  const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Open-Meteo API for Indore (latitude: 22.7196, longitude: 75.8577)
-    fetch('https://api.open-meteo.com/v1/forecast?latitude=22.7196&longitude=75.8577&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&timezone=auto')
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=22.7196&longitude=75.8577&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=5')
       .then(res => res.json())
       .then(data => {
-        setWeather(data.current);
+        setWeatherData(data);
         setLoading(false);
       })
       .catch(err => console.error("Weather fetch failed", err));
@@ -26,60 +43,80 @@ export default function WeatherWidget({ constraintsRef, zIndex, onFocus }) {
       onPointerDown={onFocus}
       style={{ zIndex, touchAction: "none" }}
       whileDrag={{ scale: 1.02, cursor: "grabbing" }}
-      // Standardized to surface-dark, surface-border, rounded-3xl, and shadow-xl
-      className="absolute top-10 left-3 w-64 bg-surface-dark border border-surface-border rounded-3xl p-4 cursor-grab flex flex-col gap-3 shadow-xl"
+      className="absolute top-10 left-3 w-[280px] bg-surface-dark border border-surface-border rounded-2xl p-5 cursor-grab flex flex-col gap-4 shadow-2xl font-primary"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
     >
-      {/* Integrated Header - Matches all other widgets */}
-      <div className="flex justify-between items-center px-1 select-none">
-        <span className="text-micro font-bold text-neutral-500 uppercase tracking-super-wide font-primary">
-          INDORE, IN
+      {/* Clean Header (3-dot menu buttons removed) */}
+      <div className="flex justify-between items-center select-none mb-1">
+        <span className="text-micro font-medium text-text-secondary uppercase tracking-super-wide">
+          WEATHER
         </span>
       </div>
 
       {loading ? (
-        <div className="h-[96px] flex items-center justify-center w-full">
-          {/* Swapped to global text-accent */}
+        <div className="h-[120px] flex items-center justify-center w-full">
           <Loader2 className="animate-spin text-accent" size={20} />
         </div>
       ) : (
-        <div className="flex flex-col gap-4 w-full p-1">
-          {/* Temperature and Status */}
-          <div className="flex items-start gap-3 mt-1">
-            <span className="text-5xl font-mono tracking-wider text-white leading-none">
-              {Math.round(weather.temperature_2m)}°
-            </span>
-            <div className="flex flex-col gap-1.5 mt-1">
-              {/* Swapped to text-accent and micro-typography */}
-              <span className="text-micro font-bold text-accent uppercase tracking-super-wide font-mono leading-none">
-                LIVE
-              </span>
-              <span className="text-xs font-mono text-neutral-400 uppercase tracking-wider leading-none">
-                NOW
-              </span>
-            </div>
-          </div>
+        <>
+          {(() => {
+            const CurrentIcon = getWeatherDetails(weatherData.current.weather_code).Icon;
+            const currentLabel = getWeatherDetails(weatherData.current.weather_code).label;
+            const todayHigh = Math.round(weatherData.daily.temperature_2m_max[0]);
+            const todayLow = Math.round(weatherData.daily.temperature_2m_min[0]);
 
-          {/* Secondary Stats (Humidity & Wind) */}
-          {/* Mapped border to surface-border */}
-          <div className="flex justify-between items-center border-t border-surface-border pt-3 mt-1">
-            <div className="flex items-center gap-2">
-              <Droplets size={14} className="text-neutral-500" />
-              {/* Standardized typography */}
-              <span className="text-xs font-medium text-neutral-400 uppercase tracking-wider font-mono">
-                {weather.relative_humidity_2m}%
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Wind size={14} className="text-neutral-500" />
-              <span className="text-xs font-medium text-neutral-400 uppercase tracking-wider font-mono">
-                {Math.round(weather.wind_speed_10m)} KM/H
-              </span>
-            </div>
-          </div>
-        </div>
+            return (
+              <div className="flex flex-col gap-5 w-full">
+                
+                {/* Main Current Weather Section */}
+                <div className="flex items-center justify-between">
+                  {/* Clean icon configuration (glow-accent removed) */}
+                  <CurrentIcon size={42} strokeWidth={1} className="text-accent" />
+                  <div className="flex flex-col items-end">
+                    <div className="flex items-start gap-2">
+                      <span className="text-4xl font-light text-text leading-none">
+                        {Math.round(weatherData.current.temperature_2m)}°
+                      </span>
+                      <span className="text-sm font-medium text-text-secondary mt-1">
+                        {currentLabel}
+                      </span>
+                    </div>
+                    <span className="text-xs text-text-tertiary mt-2 font-mono tracking-wide">
+                      H: {todayHigh}° L: {todayLow}°
+                    </span>
+                  </div>
+                </div>
+
+                {/* 4-Day Forecast Row */}
+                <div className="flex justify-between items-center border-t border-surface-border pt-4 mt-1">
+                  {weatherData.daily.time.slice(1, 5).map((dateStr, index) => {
+                    const actualIndex = index + 1;
+                    const date = new Date(dateStr);
+                    const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+                    const DayIcon = getWeatherDetails(weatherData.daily.weather_code[actualIndex]).Icon;
+                    const high = Math.round(weatherData.daily.temperature_2m_max[actualIndex]);
+                    const low = Math.round(weatherData.daily.temperature_2m_min[actualIndex]);
+
+                    return (
+                      <div key={dateStr} className="flex flex-col items-center gap-2">
+                        <span className="text-micro text-text-secondary uppercase font-medium">
+                          {dayName}
+                        </span>
+                        <DayIcon size={16} strokeWidth={1.5} className="text-text-tertiary" />
+                        <span className="text-micro text-text-secondary font-mono">
+                          {high}°/{low}°
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+              </div>
+            );
+          })()}
+        </>
       )}
     </motion.div>
   );
