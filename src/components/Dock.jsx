@@ -35,7 +35,7 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
     return (
       <div className="relative group flex flex-col items-center justify-center">
         {/* Hardware-style minimal tooltip using global theme */}
-        <span className="absolute -top-12 opacity-0 group-hover:opacity-100 transition-opacity bg-surface border border-surface-border text-white text-micro font-bold uppercase tracking-super-wide font-primary px-3 py-1.5 rounded-lg pointer-events-none z-50 shadow-xl">
+        <span className="absolute -top-12 opacity-0 group-hover:opacity-100 transition-opacity bg-surface border border-surface-border text-text-secondary text-micro font-medium uppercase tracking-super-wide px-3 py-1.5 rounded-lg pointer-events-none z-50 shadow-xl">
           {label}
         </span>
 
@@ -47,16 +47,16 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
           onContextMenu={(e) => { e.preventDefault(); setMenu({ show: true, x: e.clientX, y: e.clientY - 150, id }); }}
           className={`relative flex items-center justify-center w-12 h-12 rounded-2xl border transition-colors ${
             isOpen 
-              ? 'bg-surface text-white border-surface-border shadow-sm' 
-              : 'bg-transparent text-neutral-500 border-transparent hover:bg-surface hover:text-white hover:border-surface-border'
+              ? 'bg-surface text-text border-surface-border shadow-sm' 
+              : 'bg-transparent text-text-tertiary border-transparent hover:bg-surface hover:text-text hover:border-surface-border'
           }`}
         >
-          {/* Thicker strokes to match the new mechanical window icons */}
-          <Icon size={20} strokeWidth={2.5} />
+          {/* Icons standardized for your mechanical OS look */}
+          <Icon size={20} strokeWidth={2} className="transition-colors duration-300" />
           
-          {/* Notification Badge updated to global accent */}
+          {/* Notification Badge updated to global accent and typography */}
           {badge > 0 && (
-            <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-accent text-white text-micro font-bold rounded-full flex items-center justify-center border-2 border-surface-dark"> 
+            <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-accent text-desktop text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-surface-dark"> 
               {badge} 
             </div>
           )}
@@ -67,7 +67,7 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
           <div className="absolute -bottom-3 flex justify-center">
             <div className={`rounded-full transition-all ${
               isMinimized 
-                ? 'w-1 h-1 bg-neutral-600' // Subtle grey dot if minimized
+                ? 'w-1 h-1 bg-text-tertiary' // Subtle grey dot if minimized
                 : 'w-1.5 h-1.5 bg-accent shadow-[0_0_8px_var(--color-accent)]' // Glowing dot linked to your CSS variable
             }`} />
           </div>
@@ -78,16 +78,16 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
 
   return (
     <div ref={dockRef} className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[99999]">
-      {/* Replaced solid flat hex codes with surface-dark and surface-border */}
-      <div className="px-3 py-3 bg-surface-dark border border-surface-border rounded-3xl flex items-center gap-2 shadow-2xl">
+      {/* Container utilizing custom system background and border layers */}
+      <div className="px-3 py-3 bg-surface-dark border border-surface-border rounded-3xl flex items-center gap-2 shadow-2xl font-primary">
         <DockIcon id="about" icon={User} label="About" />
         <DockIcon id="projects" icon={FolderCode} label="Projects"  />
         <DockIcon id="resume" icon={FileText} label="Resume" />
         <DockIcon id="notepad" icon={Notebook} label="Notes" />
         <DockIcon id="contact" icon={Mail} label="Contact"  />
         
-        {/* Separator mapped to surface-border */}
-        <div className="w-[2px] h-5 bg-surface-border rounded-full mx-1" />
+        {/* Separator explicitly mapped to surface-border */}
+        <div className="w-[1px] h-6 bg-surface-border rounded-full mx-1.5" />
         
         <DockIcon id="terminal" icon={Terminal} label="Terminal" />
       </div>
