@@ -10,11 +10,11 @@ const WALLPAPERS = [
 ];
 
 const ACCENT_COLORS = [
-  { id: 'crimson', value: '#e11d48', name: 'Crimson' },
+  { id: 'lavender', value: '#9D7BFF', name: 'Lavender' },
   { id: 'ios-blue', value: '#0A84FF', name: 'iOS Blue' },
   { id: 'emerald', value: '#10b981', name: 'Emerald' },
   { id: 'amber', value: '#f59e0b', name: 'Amber' },
-  { id: 'violet', value: '#8b5cf6', name: 'Violet' },
+  { id: 'crimson', value: '#e11d48', name: 'Crimson' },
 ];
 
 function WallpaperButton({ wp, setWallpaper }) {
@@ -23,21 +23,21 @@ function WallpaperButton({ wp, setWallpaper }) {
   return (
     <button 
       onClick={() => setWallpaper(wp.url)} 
-      // Scaled up to h-12 w-12 and rounded-xl to perfectly fill the 280px container
-      className="group relative h-12 w-12 flex-shrink-0 rounded-xl border border-surface-border overflow-hidden hover:border-accent transition-colors duration-300 bg-surface cursor-pointer"
+      // Scaled down to h-11 w-11 and rounded-xl for the compact look
+      className="group relative h-11 w-11 flex-shrink-0 rounded-xl border border-surface-border overflow-hidden hover:border-accent transition-colors duration-300 bg-surface cursor-pointer"
     >
       {wp.id === 'default' ? (
         <div className="w-full h-full flex flex-col items-center justify-center gap-0.5">
           <RefreshCw size={12} className="text-text-tertiary group-hover:text-accent transition-colors duration-300" />
-          <span className="text-[8px] font-mono text-text-tertiary uppercase tracking-widest group-hover:text-text scale-90 transition-colors duration-300">
-            DEF
+          <span className="text-[8px] font-medium text-text-tertiary group-hover:text-text transition-colors duration-300">
+            Clear
           </span>
         </div>
       ) : (
         <>
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-surface">
-              <Loader2 size={12} className="animate-spin text-accent" />
+              <Loader2 size={10} className="animate-spin text-accent" />
             </div>
           )}
           <img 
@@ -53,7 +53,7 @@ function WallpaperButton({ wp, setWallpaper }) {
 }
 
 export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpaper }) {
-  const [activeAccent, setActiveAccent] = useState('ios-blue');
+  const [activeAccent, setActiveAccent] = useState('lavender');
 
   const handleAccentChange = (colorId, colorValue) => {
     setActiveAccent(colorId);
@@ -69,21 +69,21 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
       onPointerDown={onFocus}
       style={{ zIndex, touchAction: "none" }}
       whileDrag={{ scale: 1.01, cursor: "grabbing" }}
-      // Standardized: w-[280px], p-4, gap-4, and rounded-2xl
-      className="absolute top-70 left-3 w-[280px] bg-surface-dark border border-surface-border rounded-2xl p-4 cursor-grab flex flex-col gap-4 shadow-2xl font-primary"
+      // Compact adjustments: w-[240px], p-4, gap-4. Overriding border-radius slightly to fit the smaller size.
+      className="absolute top-70 left-3 w-[240px] glass-panel !rounded-3xl p-4 cursor-grab flex flex-col gap-4 font-primary"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
     >
       {/* SECTION 1: WALLPAPER BACKGROUNDS */}
       <div className="flex flex-col gap-3">
-        <div className="flex justify-between items-center select-none mb-1">
-          {/* Restored to text-micro to match the other headers */}
-          <span className="text-micro font-medium text-text-secondary uppercase tracking-super-wide">
-            DESKTOP WALLPAPER
+        <div className="flex justify-between items-center select-none">
+          {/* Scaled text down to text-xs */}
+          <span className="text-xs font-medium text-text-secondary">
+            Wallpapers
           </span>
         </div>
-        <div className="flex flex-row items-center gap-3 overflow-x-auto custom-scrollbar pb-1">
+        <div className="flex flex-row items-center gap-2.5 overflow-x-auto custom-scrollbar pb-1.5">
           {WALLPAPERS.map((wp) => (
             <WallpaperButton key={wp.id} wp={wp} setWallpaper={setWallpaper} />
           ))}
@@ -91,17 +91,16 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
       </div>
 
       {/* Subtle thin separator line */}
-      <div className="h-[1px] w-full bg-surface-border" />
+      <div className="h-[1px] w-full bg-surface-border rounded-full" />
 
       {/* SECTION 2: SYSTEM ACCENT COLOR */}
       <div className="flex flex-col gap-3">
-        <div className="flex justify-between items-center select-none mb-1">
-          <span className="text-micro font-medium text-text-secondary uppercase tracking-super-wide">
-            SYSTEM ACCENT
+        <div className="flex justify-between items-center select-none">
+          <span className="text-xs font-medium text-text-secondary">
+            System accent
           </span>
         </div>
         
-        {/* Scaled the gap and circle size to match the new width */}
         <div className="flex flex-row items-center gap-3">
           {ACCENT_COLORS.map((color) => {
             const isSelected = activeAccent === color.id;
@@ -110,9 +109,9 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
                 key={color.id}
                 onClick={() => handleAccentChange(color.id, color.value)}
                 style={{ backgroundColor: color.value }}
-                // Scaled from h-5 to h-6
-                className={`group relative h-6 w-6 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95
-                  ${isSelected ? 'ring-2 ring-offset-2 ring-offset-surface-dark ring-white' : 'opacity-70 hover:opacity-100'}
+                // Shrunk to h-5 w-5 for the tighter layout
+                className={`group relative h-5 w-5 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95
+                  ${isSelected ? 'ring-2 ring-offset-1 ring-offset-surface-dark ring-white' : 'opacity-60 hover:opacity-100'}
                 `}
                 title={color.name}
               >

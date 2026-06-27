@@ -1,32 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  /* Accent */
-  --color-accent: #0A84FF; 
-  --color-accent-glow: rgba(10, 132, 255, 0.3);
+  /* Accent - Lavender/Purple from the design */
+  --color-accent: #9D7BFF;
+  --color-accent-glow: rgba(157, 123, 255, 0.4);
+  --color-accent-light: #B49BFF;
 
-  /* Desktop / Background */
-  --color-desktop: #0B0E14;
+  /* Desktop / Background - Deep dark gray/black */
+  --color-desktop: #0A0A0C;
 
-  /* Surfaces */
-  --color-surface-dark: #121822;
-  --color-surface: #1A2230;
-  --color-surface-elevated: #232D3F;
+  /* Surfaces - Smooth dark cards */
+  --color-surface-dark: #141417;
+  --color-surface: #1E1E24;
+  --color-surface-elevated: #282830;
 
-  /* Borders */
-  --color-surface-border: rgba(255, 255, 255, 0.06);
+  /* Borders - Very subtle */
+  --color-surface-border: rgba(255, 255, 255, 0.04);
 
   /* Text */
   --color-text: #FFFFFF;
-  --color-text-secondary: #94A3B8;
-  --color-text-tertiary: #475569;
+  --color-text-secondary: #A1A1AA;
+  --color-text-tertiary: #52525B;
 
-  /* Typography */
-  /* This grabs SF Pro on Mac/iOS, Segoe UI on Windows, and Roboto on Android */
-  --font-primary: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* Typography - Strictly one font for cross-platform consistency */
+  --font-primary: "Inter", sans-serif;
   
   --text-micro: 10px;
   --tracking-super-wide: 0.15em;
+  
+  /* Soft drop shadow */
+  --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.6);
 }
 
 @layer base {
@@ -67,12 +71,21 @@
   }
 
   .glow-accent {
-    box-shadow: 0 0 15px var(--color-accent-glow);
+    box-shadow: 0 0 20px var(--color-accent-glow);
   }
 
+  /* Heavily rounded, floating aesthetic */
   .glass-panel {
     background: var(--color-surface-dark);
     border: 1px solid var(--color-surface-border);
-    border-radius: 1.25rem; 
+    border-radius: 2rem; 
+    box-shadow: var(--shadow-soft);
+  }
+  
+  /* Inner purple pill shapes */
+  .pill-panel {
+     background: var(--color-accent);
+     border-radius: 9999px; 
+     color: var(--color-desktop); 
   }
 }
