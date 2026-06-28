@@ -42,15 +42,9 @@ export default function WeatherWidget({ constraintsRef, zIndex, onFocus }) {
       dragElastic={0.08}
       onPointerDown={onFocus}
       style={{ zIndex, touchAction: "none" }}
-<<<<<<< HEAD
-      whileDrag={{ scale: 1.02, cursor: "grabbing" }}
-      className="absolute top-10 left-3 w-[280px] bg-surface-dark border border-surface-border rounded-2xl p-4 cursor-grab flex flex-col gap-4 shadow-2xl font-primary"
-      initial={{ opacity: 0, scale: 0.95 }}
-=======
       whileDrag={{ cursor: "grabbing" }}
       className="absolute top-14 left-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4.5 cursor-grab flex flex-col gap-3.5 shadow-[0_20px_40px_rgba(0,0,0,0.5)] font-primary select-none pointer-events-auto"
       initial={{ opacity: 0, scale: 0.96 }}
->>>>>>> sid
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0 }}
       transition={{ type: "spring", stiffness: 360, damping: 28 }}

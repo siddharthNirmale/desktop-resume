@@ -1,34 +1,7 @@
-@import "tailwindcss";
 
-<<<<<<< HEAD
-@theme {
-  /* Accent */
-  --color-accent: #0A84FF; 
-  --color-accent-glow: rgba(10, 132, 255, 0.3);
 
-  /* Desktop / Background */
-  --color-desktop: #0B0E14;
-
-  /* Surfaces */
-  --color-surface-dark: #121822;
-  --color-surface: #1A2230;
-  --color-surface-elevated: #232D3F;
-
-  /* Borders */
-  --color-surface-border: rgba(255, 255, 255, 0.06);
-
-  /* Text */
-  --color-text: #FFFFFF;
-  --color-text-secondary: #94A3B8;
-  --color-text-tertiary: #475569;
-
-  /* Typography */
-  /* This grabs SF Pro on Mac/iOS, Segoe UI on Windows, and Roboto on Android */
-  --font-primary: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  
-=======
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
-
+@import "tailwindcss";
 @theme {
   /* Accent - Mojave Blue */
   --color-accent: #0A84FF; 
@@ -56,7 +29,6 @@
   --font-primary: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-heading: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
 
->>>>>>> sid
   --text-micro: 10px;
   --tracking-super-wide: 0.15em;
 }
@@ -85,13 +57,8 @@
 @layer utilities {
   /* macOS Minimalist Scrollbar Style */
   .custom-scrollbar::-webkit-scrollbar {
-<<<<<<< HEAD
-    width: 6px;
-    height: 6px;
-=======
     width: 7px;
     height: 7px;
->>>>>>> sid
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
@@ -99,38 +66,19 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-<<<<<<< HEAD
-    background: var(--color-surface-elevated);
-=======
     background: rgba(255, 255, 255, 0.12);
->>>>>>> sid
     border-radius: 999px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-<<<<<<< HEAD
     background: var(--color-text-tertiary);
   }
 
-  .glow-accent {
-    box-shadow: 0 0 15px var(--color-accent-glow);
-  }
-
-  .glass-panel {
-    background: var(--color-surface-dark);
-    border: 1px solid var(--color-surface-border);
-    border-radius: 1.25rem; 
-=======
-    background: rgba(255, 255, 255, 0.25);
-  }
-
-  /* Drop Shadow mimicking native macOS Window styling */
   .window-shadow {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), 0 0 1px rgba(255, 255, 255, 0.1);
   }
   
   .popover-shadow {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
->>>>>>> sid
   }
 }
