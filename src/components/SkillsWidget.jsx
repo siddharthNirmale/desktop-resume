@@ -17,7 +17,7 @@ const skillSets = [
   ]},
   { name: 'Advanced', items: [
     { name: 'TypeScript', icon: <SiTypescript /> }, { name: 'Python', icon: <SiPython /> },
-    { name: 'Next.js', icon: <SiNextdotjs /> }, { name: 'REST', icon: <FiCpu /> }
+    { name: 'Next.js', icon: <SiNextdotjs /> }, { name: 'REST APIs', icon: <FiCpu /> }
   ]}
 ];
 
@@ -36,58 +36,58 @@ export default function SkillsWidget({ constraintsRef, zIndex, onFocus }) {
       drag
       dragMomentum={false}
       dragConstraints={constraintsRef}
-      dragElastic={0.15}
+      dragElastic={0.08}
       onPointerDown={onFocus}
       style={{ zIndex, touchAction: "none" }}
-      whileDrag={{ scale: 1.02, cursor: "grabbing" }}
-      // Standardized to w-[280px], rounded-2xl, p-5, and shadow-2xl
-      className="absolute bottom-5 right-3 w-[280px] bg-surface-dark border border-surface-border rounded-2xl p-5 cursor-grab flex flex-col gap-4 shadow-2xl font-primary"
-      initial={{ opacity: 0, scale: 0.95 }}
+      whileDrag={{ cursor: "grabbing" }}
+      className="absolute bottom-8 right-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4.5 cursor-grab flex flex-col gap-3.5 shadow-[0_20px_40px_rgba(0,0,0,0.5)] font-primary select-none pointer-events-auto"
+      initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      exit={{ opacity: 0 }}
+      transition={{ type: "spring", stiffness: 360, damping: 28 }}
     >
-      {/* Clean Header */}
-      <div className="flex justify-between items-center px-1 select-none mb-1">
-        <span className="text-micro font-medium text-text-secondary uppercase tracking-super-wide flex items-center gap-2">
-          <span>STACK</span>
-          <span className="text-surface-border">/</span>
-          <span className="text-accent">{skillSets[index].name.toUpperCase()}</span>
+      {/* Widget Header */}
+      <div className="flex justify-between items-center px-0.5 select-none">
+        <span className="text-[11px] font-medium text-white/40 uppercase tracking-wider flex items-center gap-1.5">
+          <span>Stack</span>
+          <span className="text-white/10">/</span>
+          <span className="text-accent font-semibold capitalize">{skillSets[index].name}</span>
         </span>
         
-        {/* Progress dots indicating the cycling categories */}
+        {/* Progress Tracker Dots */}
         <div className="flex items-center gap-1.5">
           {skillSets.map((_, i) => (
             <div 
               key={i} 
-              className={`w-1 h-1 rounded-full transition-colors duration-500 ${
-                i === index ? 'bg-accent' : 'bg-surface-border'
+              className={`w-[4px] h-[4px] rounded-full transition-all duration-300 ${
+                i === index ? 'bg-accent scale-110 shadow-[0_0_4px_var(--color-accent)]' : 'bg-white/10'
               }`} 
             />
           ))}
         </div>
       </div>
 
-      {/* Fixed height container to prevent layout jumping during animations */}
-      <div className="relative h-[88px] w-full">
+      {/* Grid Canvas Frame */}
+      <div className="relative h-[84px] w-full mt-0.5">
         <AnimatePresence mode="wait">
           <motion.div
             key={index}
-            initial={{ opacity: 0, y: 5 }}
+            initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -5 }}
-            transition={{ duration: 0.2 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.15 }}
             className="grid grid-cols-2 gap-2 absolute w-full"
+            onPointerDown={(e) => e.stopPropagation()}
           >
             {skillSets[index].items.map((skill) => (
               <div 
                 key={skill.name} 
-                // Nested rounded-xl inside the rounded-2xl container. Tied hover to accent variables.
-                className="group flex items-center gap-2.5 bg-surface border border-surface-border px-3 py-2.5 rounded-xl text-text-tertiary hover:border-accent hover:text-text transition-colors duration-300 cursor-default"
+                className="group flex items-center gap-2.5 bg-white/[0.03] border border-white/5 px-3 py-2 rounded-xl text-white/70 hover:bg-white/[0.05] hover:border-white/10 hover:text-white transition-all duration-150 cursor-default"
               >
-                <span className="text-sm text-text-secondary group-hover:text-accent transition-colors duration-300">
+                <span className="text-[14px] text-white/40 group-hover:text-accent transition-colors duration-150 shrink-0">
                   {skill.icon}
                 </span> 
-                <span className="text-[10px] font-mono uppercase tracking-wider truncate mt-0.5">
+                <span className="text-[12px] font-medium tracking-tight truncate mt-0.5">
                   {skill.name}
                 </span>
               </div>
