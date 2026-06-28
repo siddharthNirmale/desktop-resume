@@ -1,32 +1,65 @@
 import { useState } from 'react';
 
 export default function useWindows(initialWindows) {
-  const [windows, setWindows] = useState(initialWindows);
-  const [maxZIndex, setMaxZIndex] = useState(1);
+  const [windows, setWindows] = useState(() =>
+    initialWindows.map((w, index) => ({
+      ...w,
+      zIndex: w.zIndex || index + 1,
+      isMinimized: w.isMinimized || false,
+    }))
+  );
+  
+  const [maxZIndex, setMaxZIndex] = useState(initialWindows.length + 1);
 
   const bringToFront = (id) => {
-    const nextZ = maxZIndex + 1;
-    setMaxZIndex(nextZ);
-    // Use the functional update pattern (prevWindows) so we always have the latest state
-    setWindows(prevWindows => 
-      prevWindows.map(w => (w.id === id ? { ...w, zIndex: nextZ, isMinimized: false } : w))
-    );
+    setWindows((prevWindows) => {
+      const target = prevWindows.find((w) => w.id === id);
+      
+      if (target && target.zIndex === maxZIndex && !target.isMinimized) {
+        return prevWindows;
+      }
+
+      const nextZ = maxZIndex + 1;
+      setMaxZIndex(nextZ);
+
+      return prevWindows.map((w) =>
+        w.id === id 
+          ? { ...w, zIndex: nextZ, isMinimized: false } 
+          : w
+      );
+    });
   };
 
   const toggleWindow = (id, key, value) => {
-    if (key === 'isOpen' && value === true) {
-      // FIX: If we are opening a window, we need to open it AND bring it to the front in one single, unified state update!
-      const nextZ = maxZIndex + 1;
-      setMaxZIndex(nextZ);
-      setWindows(prevWindows => 
-        prevWindows.map(w => (w.id === id ? { ...w, isOpen: true, isMinimized: false, zIndex: nextZ } : w))
+    setWindows((prevWindows) => {
+      // Handle opening or unminimizing focus states in a single step
+      if ((key === 'isOpen' && value === true) || (key === 'isMinimized' && value === false)) {
+        const nextZ = maxZIndex + 1;
+        setMaxZIndex(nextZ);
+        
+        return prevWindows.map((w) =>
+          w.id === id
+            ? { ...w, isOpen: true, isMinimized: false, zIndex: nextZ }
+            : w
+        );
+      }
+
+      // Handle closing window layers safely (Reset depth reference on close targets)
+      if (key === 'isOpen' && value === false) {
+        return prevWindows.map((w) =>
+          w.id === id 
+            ? { ...w, isOpen: false, isMinimized: false, zIndex: 1 } 
+            : w
+        );
+      }
+
+      // Default toggle for typical closed / minimized window states
+      return prevWindows.map((w) =>
+        w.id === id 
+          ? { ...w, [key]: value } 
+          : w
       );
-    } else {
-      // Normal toggle for closing or minimizing
-      setWindows(prevWindows => 
-        prevWindows.map(w => (w.id === id ? { ...w, [key]: value } : w))
-      );
-    }
+    });
   };
 
   return { windows, bringToFront, toggleWindow };

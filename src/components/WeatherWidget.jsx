@@ -39,25 +39,37 @@ export default function WeatherWidget({ constraintsRef, zIndex, onFocus }) {
       drag
       dragMomentum={false}
       dragConstraints={constraintsRef}
-      dragElastic={0.15}
+      dragElastic={0.08}
       onPointerDown={onFocus}
       style={{ zIndex, touchAction: "none" }}
+<<<<<<< HEAD
       whileDrag={{ scale: 1.02, cursor: "grabbing" }}
       className="absolute top-10 left-3 w-[280px] bg-surface-dark border border-surface-border rounded-2xl p-4 cursor-grab flex flex-col gap-4 shadow-2xl font-primary"
       initial={{ opacity: 0, scale: 0.95 }}
+=======
+      whileDrag={{ cursor: "grabbing" }}
+      className="absolute top-14 left-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4.5 cursor-grab flex flex-col gap-3.5 shadow-[0_20px_40px_rgba(0,0,0,0.5)] font-primary select-none pointer-events-auto"
+      initial={{ opacity: 0, scale: 0.96 }}
+>>>>>>> sid
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      exit={{ opacity: 0 }}
+      transition={{ type: "spring", stiffness: 360, damping: 28 }}
     >
-      {/* Clean Header (3-dot menu buttons removed) */}
-      <div className="flex justify-between items-center select-none mb-1">
-        <span className="text-micro font-medium text-text-secondary uppercase tracking-super-wide">
-          WEATHER
+      {/* Widget Sub-Header */}
+      <div className="flex justify-between items-center px-0.5">
+        <span className="text-[11px] font-medium text-white/40 uppercase tracking-wider">
+          Weather
         </span>
+        {!loading && (
+          <span className="text-[11px] font-medium text-white/30">
+            Indore
+          </span>
+        )}
       </div>
 
       {loading ? (
         <div className="h-[120px] flex items-center justify-center w-full">
-          <Loader2 className="animate-spin text-accent" size={20} />
+          <Loader2 className="animate-spin text-accent" size={18} />
         </div>
       ) : (
         <>
@@ -68,29 +80,28 @@ export default function WeatherWidget({ constraintsRef, zIndex, onFocus }) {
             const todayLow = Math.round(weatherData.daily.temperature_2m_min[0]);
 
             return (
-              <div className="flex flex-col gap-5 w-full">
+              <div className="flex flex-col gap-4 w-full">
                 
-                {/* Main Current Weather Section */}
-                <div className="flex items-center justify-between">
-                  {/* Clean icon configuration (glow-accent removed) */}
-                  <CurrentIcon size={42} strokeWidth={1} className="text-accent" />
+                {/* Main Current Weather Display */}
+                <div className="flex items-center justify-between px-0.5">
+                  <CurrentIcon size={40} strokeWidth={1.25} className="text-accent drop-shadow-[0_0_8px_rgba(10,132,255,0.2)]" />
                   <div className="flex flex-col items-end">
-                    <div className="flex items-start gap-2">
-                      <span className="text-4xl font-light text-text leading-none">
+                    <div className="flex items-start gap-1.5">
+                      <span className="text-[38px] font-light text-white/95 leading-none tracking-tight font-primary tabular-nums">
                         {Math.round(weatherData.current.temperature_2m)}°
                       </span>
-                      <span className="text-sm font-medium text-text-secondary mt-1">
+                      <span className="text-[12px] font-medium text-white/60 mt-0.5">
                         {currentLabel}
                       </span>
                     </div>
-                    <span className="text-xs text-text-tertiary mt-2 font-mono tracking-wide">
-                      H: {todayHigh}° L: {todayLow}°
+                    <span className="text-[11px] font-medium text-white/30 mt-1.5 tracking-normal tabular-nums">
+                      High: {todayHigh}° &nbsp;Low: {todayLow}°
                     </span>
                   </div>
                 </div>
 
-                {/* 4-Day Forecast Row */}
-                <div className="flex justify-between items-center border-t border-surface-border pt-4 mt-1">
+                {/* 4-Day Extended Forecast Row */}
+                <div className="flex justify-between items-center border-t border-white/5 pt-3.5 mt-0.5">
                   {weatherData.daily.time.slice(1, 5).map((dateStr, index) => {
                     const actualIndex = index + 1;
                     const date = new Date(dateStr);
@@ -100,13 +111,13 @@ export default function WeatherWidget({ constraintsRef, zIndex, onFocus }) {
                     const low = Math.round(weatherData.daily.temperature_2m_min[actualIndex]);
 
                     return (
-                      <div key={dateStr} className="flex flex-col items-center gap-2">
-                        <span className="text-micro text-text-secondary uppercase font-medium">
+                      <div key={dateStr} className="flex flex-col items-center gap-1.5">
+                        <span className="text-[10px] text-white/40 uppercase font-medium tracking-wider">
                           {dayName}
                         </span>
-                        <DayIcon size={16} strokeWidth={1.5} className="text-text-tertiary" />
-                        <span className="text-micro text-text-secondary font-mono">
-                          {high}°/{low}°
+                        <DayIcon size={15} strokeWidth={1.5} className="text-white/30" />
+                        <span className="text-[11px] text-white/50 font-medium tabular-nums">
+                          {high}°<span className="text-white/20">/</span>{low}°
                         </span>
                       </div>
                     );
