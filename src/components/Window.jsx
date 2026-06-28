@@ -51,7 +51,7 @@ export default function Window({
     <motion.div
       drag={true}
       dragMomentum={false}
-      dragHandleClassName="window-header-drag"
+      dragHandleClassName="window-header-drag" // Handled cleanly by the title area now
       dragConstraints={constraintsRef}
       onMouseDown={onFocus}
       style={{ zIndex, x, y, width, height }}
@@ -61,27 +61,30 @@ export default function Window({
       exit={{ opacity: 0, scale: 0.96 }}
       transition={{ type: "spring", stiffness: 380, damping: 26 }}
     >
-      {/* Premium Dark Header with Traditional Right-Aligned Controls */}
-      <div 
-        className="window-header-drag h-[36px] min-h-[36px] pl-4 pr-0 flex items-center justify-between select-none cursor-default bg-gradient-to-b from-[#3c3c3c] to-[#323232] border-b border-[#181818]"
-        onDoubleClick={toggleMaximize}
-      >
-        {/* Left Side: Clean Title Text */}
-        <div className="flex items-center gap-2 pointer-events-none">
-          <span className="text-[12px] font-medium text-[#D2D2D2] tracking-wide opacity-90">
-            {title}
-          </span>
+      {/* Top Header Shell */}
+      <div className="h-[36px] min-h-[36px] flex items-center justify-between select-none bg-gradient-to-b from-[#3c3c3c] to-[#323232] border-b border-[#181818] relative">
+        
+        {/* Left Drag Area: Title text and empty header space can be dragged */}
+        <div 
+          className="window-header-drag flex-1 h-full flex items-center pl-4 cursor-default"
+          onDoubleClick={toggleMaximize}
+        >
+          <div className="pointer-events-none">
+            <span className="text-[12px] font-medium text-[#D2D2D2] tracking-wide opacity-90">
+              {title}
+            </span>
+          </div>
         </div>
 
-        {/* Right Side: Navigation Icons (Clicks Isolated from Drag Engine) */}
-        <div className="flex items-center h-full z-50">
+        {/* Right Side Control Panel: NOT part of the drag class wrapper */}
+        <div className="flex items-center h-full z-50 relative">
           {/* Minimize Icon */}
           <button 
             onClick={(e) => {
               e.stopPropagation();
               onMinimize();
             }}
-            onMouseDown={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
             className="w-[42px] h-[36px] flex items-center justify-center text-[#A0A0A0] hover:bg-white/10 hover:text-white transition-colors duration-150 focus:outline-none cursor-default"
             title="Minimize"
           >
@@ -105,7 +108,7 @@ export default function Window({
             )}
           </button>
           
-          {/* Close Icon (Traditional Windows Red Hover Highlight) */}
+          {/* Close Icon */}
           <button 
             onClick={(e) => {
               e.stopPropagation();
