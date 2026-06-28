@@ -8,7 +8,9 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (dockRef.current && !dockRef.current.contains(e.target)) setMenu(prev => ({ ...prev, show: false }));
+      if (dockRef.current && !dockRef.current.contains(e.target)) {
+        setMenu(prev => ({ ...prev, show: false }));
+      }
     };
     if (menu.show) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -16,59 +18,70 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
 
   const DockIcon = ({ id, icon: Icon, label, badge }) => {
     const win = windows.find(w => w.id === id);
-    // Ignore widgets in the dock mapping just in case they slipped in
     if (win && win.type === 'widget') return null; 
 
     const isOpen = win?.isOpen;
     const isMinimized = win?.isMinimized;
 
     const handleClick = () => {
-      if (!isOpen || isMinimized) {
+      if (!isOpen) {
         toggleWindow(id, 'isOpen', true);
+        bringToFront(id);
+      } else if (isMinimized) {
         toggleWindow(id, 'isMinimized', false);
         bringToFront(id);
       } else {
-        toggleWindow(id, 'isMinimized', true);
+        // If it's open and focused, minimize it. If open but not focused, bring it to front.
+        const activeWindows = windows.filter(w => w.type === 'window' && w.isOpen && !w.isMinimized);
+        const maxZ = Math.max(...activeWindows.map(w => w.zIndex || 0), 0);
+        
+        if (win.zIndex === maxZ) {
+          toggleWindow(id, 'isMinimized', true);
+        } else {
+          bringToFront(id);
+        }
       }
     };
 
     return (
       <div className="relative group flex flex-col items-center justify-center">
-        {/* Hardware-style minimal tooltip using global theme */}
-        <span className="absolute -top-12 opacity-0 group-hover:opacity-100 transition-opacity bg-surface border border-surface-border text-text-secondary text-micro font-medium uppercase tracking-super-wide px-3 py-1.5 rounded-lg pointer-events-none z-50 shadow-xl">
+        {/* macOS Style Crisp Dynamic Tooltip */}
+        <span className="absolute -top-11 opacity-0 group-hover:opacity-100 transition-all duration-150 delay-100 transform scale-95 group-hover:scale-100 bg-[#2A2A2A]/90 backdrop-blur-md border border-white/10 text-[#EAEAEA] text-[11px] font-normal px-2.5 py-1 rounded-md pointer-events-none z-[99999] shadow-lg whitespace-nowrap">
           {label}
         </span>
 
         <motion.button
-          // Tighter, less bouncy animations for a "clicky" hardware feel
-          whileHover={{ scale: 1.05, y: -2 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.12, y: -4 }}
+          whileTap={{ scale: 0.92 }}
           onClick={handleClick}
-          onContextMenu={(e) => { e.preventDefault(); setMenu({ show: true, x: e.clientX, y: e.clientY - 150, id }); }}
-          className={`relative flex items-center justify-center w-12 h-12 rounded-2xl border transition-colors ${
-            isOpen 
-              ? 'bg-surface text-text border-surface-border shadow-sm' 
-              : 'bg-transparent text-text-tertiary border-transparent hover:bg-surface hover:text-text hover:border-surface-border'
+          onContextMenu={(e) => { 
+            e.preventDefault(); 
+            setMenu({ show: true, x: e.clientX, y: e.clientY - 150, id }); 
+          }}
+          className={`relative flex items-center justify-center w-[48px] h-[48px] rounded-[11px] transition-all duration-200 ${
+            isOpen && !isMinimized
+              ? 'text-white bg-white/5 shadow-inner' 
+              : 'text-white/70 hover:text-white hover:bg-white/10'
           }`}
         >
-          {/* Icons standardized for your mechanical OS look */}
-          <Icon size={20} strokeWidth={2} className="transition-colors duration-300" />
+          {/* Flat, Clean Native App Icon Design */}
+          <Icon size={23} strokeWidth={1.75} className="drop-shadow-md" />
           
-          {/* Notification Badge updated to global accent and typography */}
+          {/* iOS/macOS Notification Badge */}
           {badge > 0 && (
-            <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-accent text-desktop text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-surface-dark"> 
+            <div className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 bg-[#FF3B30] text-white text-[10px] font-semibold rounded-full flex items-center justify-center border border-black/20 shadow-sm"> 
               {badge} 
             </div>
           )}
         </motion.button>
         
-        {/* Active Indicators: Replaced pills with the signature system dots */}
+        {/* Active Indicators: Translucent macOS System Dots */}
         {isOpen && (
-          <div className="absolute -bottom-3 flex justify-center">
-            <div className={`rounded-full transition-all ${
+          <div className="absolute -bottom-1.5 flex justify-center items-center h-2">
+            <div className={`rounded-full transition-all duration-300 ${
               isMinimized 
-                ? 'w-1 h-1 bg-text-tertiary' // Subtle grey dot if minimized
-                : 'w-1.5 h-1.5 bg-accent shadow-[0_0_8px_var(--color-accent)]' // Glowing dot linked to your CSS variable
+                ? 'w-[4px] h-[4px] bg-white/30' // Dimmed dot if minimized
+                : 'w-[4px] h-[4px] bg-white shadow-[0_0_6px_#fff]' // Vibrant glowing white dot if active
             }`} />
           </div>
         )}
@@ -77,17 +90,17 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
   };
 
   return (
-    <div ref={dockRef} className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[99999]">
-      {/* Container utilizing custom system background and border layers */}
-      <div className="px-3 py-3 bg-surface-dark border border-surface-border rounded-3xl flex items-center gap-2 shadow-2xl font-primary">
-        <DockIcon id="about" icon={User} label="About" />
+    <div ref={dockRef} className="absolute bottom-3 left-1/2 -translate-x-1/2 z-[99999] pointer-events-auto">
+      {/* Container utilizing authentic translucent dark glass overlay & subtle reflections */}
+      <div className="px-3.5 py-2.5 bg-[#1C1C1E]/60 backdrop-blur-xl border border-white/10 rounded-[20px] flex items-end gap-2.5 shadow-[0_24px_50px_rgba(0,0,0,0.6)] ring-1 ring-black/40">
+        <DockIcon id="about" icon={User} label="About Me" />
         <DockIcon id="projects" icon={FolderCode} label="Projects"  />
-        <DockIcon id="resume" icon={FileText} label="Resume" />
+        <DockIcon id="resume" icon={FileText} label="Curriculum Vitae" />
         <DockIcon id="notepad" icon={Notebook} label="Notes" />
         <DockIcon id="contact" icon={Mail} label="Contact"  />
         
-        {/* Separator explicitly mapped to surface-border */}
-        <div className="w-[1px] h-6 bg-surface-border rounded-full mx-1.5" />
+        {/* Glass vertical app partition divider */}
+        <div className="w-[1px] h-9 bg-white/10 rounded-full mx-1 align-middle self-center" />
         
         <DockIcon id="terminal" icon={Terminal} label="Terminal" />
       </div>

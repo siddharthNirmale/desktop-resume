@@ -1,36 +1,36 @@
 @import "tailwindcss";
 
-@import url("https://fonts.googleapis.com/css2?family=Mulish:wght@200..1000&family=Ovo&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
 @theme {
-  /* Accent */
-  --color-accent: #0A84FF; /* iOS system red */
+  /* Accent - Mojave Blue */
+  --color-accent: #0A84FF; 
+  --color-accent-hover: #0070E0;
 
-  /* Desktop / Background */
-  --color-desktop: #000000;
+  /* Desktop Background / Wallpaper Area */
+  --color-desktop: #1E1E1E;
 
-  /* Surfaces */
-  --color-surface-dark: #1c1c1e;
-  --color-surface: #2c2c2e;
-  --color-surface-elevated: #3a3a3c;
+  /* Surfaces - True macOS Mojave Dark Mode Palette */
+  --color-surface-dark: #161616;       /* Sidebar background */
+  --color-surface: #262626;            /* Main window active background */
+  --color-surface-inactive: #2D2D2D;   /* Inactive window background */
+  --color-surface-elevated: #373737;   /* Popovers / Context Menus / Tooltips */
 
-  /* Borders */
-  --color-surface-border: rgba(255, 255, 255, 0.08);
+  /* Borders & Dividers */
+  --color-surface-border: rgba(255, 255, 255, 0.06);
+  --color-window-border: rgba(0, 0, 0, 0.3);
 
-  /* Effects */
-  --color-surface-dot: rgba(255, 255, 255, 0.08);
-
-  /* Text */
-  --color-text: #ffffff;
-  --color-text-secondary: rgba(255, 255, 255, 0.6);
+  /* Text - High contrast but soft standard system colors */
+  --color-text: #FFFFFF;
+  --color-text-secondary: rgba(255, 255, 255, 0.65);
   --color-text-tertiary: rgba(255, 255, 255, 0.35);
 
-  /* Typography */
-  --font-primary: "SF Pro Display", "Mulish", sans-serif;
-  --font-heading: "Ovo", serif;
+  /* Typography - Defaulting to Inter as requested */
+  --font-primary: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
 
-  --text-micro: 9px;
-  --tracking-super-wide: 0.2em;
+  --text-micro: 10px;
+  --tracking-super-wide: 0.15em;
 }
 
 @layer base {
@@ -39,22 +39,26 @@
   #root {
     width: 100%;
     height: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   body {
     background: var(--color-desktop);
-    color: white;
+    color: var(--color-text);
     font-family: var(--font-primary);
 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em; /* Matches crisp macOS text rendering */
   }
 }
 
 @layer utilities {
+  /* macOS Minimalist Scrollbar Style */
   .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
@@ -62,15 +66,20 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: var(--color-surface-border);
+    background: rgba(255, 255, 255, 0.12);
     border-radius: 999px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #404040;
+    background: rgba(255, 255, 255, 0.25);
   }
 
-  .glow-accent {
-    box-shadow: 0 0 12px var(--color-accent);
+  /* Drop Shadow mimicking native macOS Window styling */
+  .window-shadow {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  .popover-shadow {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   }
 }

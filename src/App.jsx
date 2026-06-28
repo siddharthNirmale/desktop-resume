@@ -34,12 +34,12 @@ export default function App() {
   const desktopRef = useRef(null);
 
   const { windows, bringToFront, toggleWindow } = useWindows([
-    { id: "about", title: "About", isOpen: true, type: "window", defaultWidth: 750, defaultHeight: 550 },
-    { id: "projects", title: "Projects", isOpen: false, type: "window", defaultWidth: 750, defaultHeight: 550 },
-    { id: "notepad", title: "Notes", isOpen: false, type: "window", defaultWidth: 750, defaultHeight: 550 },
-    { id: "contact", title: "Contact", isOpen: false, type: "window", defaultWidth: 750, defaultHeight: 550 },
-    { id: "terminal", title: "Terminal", isOpen: false, type: "window", defaultWidth: 750, defaultHeight: 550 },
-    { id: "resume", title: "Resume", isOpen: false, type: "window", defaultWidth: 750, defaultHeight: 550 },
+    { id: "about", title: "About", isOpen: true, type: "window", defaultWidth: 780, defaultHeight: 560 },
+    { id: "projects", title: "Projects", isOpen: false, type: "window", defaultWidth: 800, defaultHeight: 580 },
+    { id: "notepad", title: "Notes", isOpen: false, type: "window", defaultWidth: 700, defaultHeight: 500 },
+    { id: "contact", title: "Contact", isOpen: false, type: "window", defaultWidth: 600, defaultHeight: 450 },
+    { id: "terminal", title: "Terminal", isOpen: false, type: "window", defaultWidth: 720, defaultHeight: 440 },
+    { id: "resume", title: "Resume", isOpen: false, type: "window", defaultWidth: 820, defaultHeight: 600 },
 
     { id: "clock", title: "Local Time", isOpen: true, type: "widget" },
     { id: "github", title: "Contributions", isOpen: true, type: "widget" },
@@ -78,7 +78,7 @@ export default function App() {
         backgroundPosition: "center",
       }}
     >
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {isLoading && (
           <Preloader onLoadingComplete={() => setIsLoading(false)} />
         )}
@@ -86,12 +86,13 @@ export default function App() {
 
       {!isLoading && (
         <>
+          {/* Top Global Navigation Bar */}
           <TopBar />
 
-          {/* Background layer only when no wallpaper */}
+          {/* Desktop Canvas Wallpapers */}
           {!wallpaper && <Background />}
 
-          {/* Context Menu */}
+          {/* Context Popover Engine */}
           <AnimatePresence>
             {menu.show && (
               <ContextMenu
@@ -104,90 +105,96 @@ export default function App() {
             )}
           </AnimatePresence>
 
-          {/* Widgets Layer */}
-          {windows
-            .filter((w) => w.type === "widget" && w.isOpen)
-            .map((widget) => (
-              <div key={widget.id}>
-                {widget.id === "clock" && (
-                  <ClockWidget
-                    constraintsRef={desktopRef}
-                    zIndex={widget.zIndex || 1}
-                    onFocus={() => bringToFront(widget.id)}
-                  />
-                )}
-
-                {widget.id === "github" && (
-                  <GithubWidget
-                    constraintsRef={desktopRef}
-                    zIndex={widget.zIndex || 1}
-                    onFocus={() => bringToFront(widget.id)}
-                  />
-                )}
-
-                {widget.id === "learning" && (
-                  <LearningWidget
-                    constraintsRef={desktopRef}
-                    zIndex={widget.zIndex || 1}
-                    onFocus={() => bringToFront(widget.id)}
-                    progress={55}
-                    topic="Frontend Optimization"
-                    subtopic="Next.js 14"
-                  />
-                )}
-
-                {widget.id === "weather" && (
-                  <WeatherWidget
-                    constraintsRef={desktopRef}
-                    zIndex={widget.zIndex || 1}
-                    onFocus={() => bringToFront(widget.id)}
-                  />
-                )}
-
-                {widget.id === "skills" && (
-                  <SkillsWidget
-                    constraintsRef={desktopRef}
-                    zIndex={widget.zIndex || 1}
-                    onFocus={() => bringToFront(widget.id)}
-                  />
-                )}
-
-                {widget.id === "theme" && (
-                  <ThemeWidget
-                    constraintsRef={desktopRef}
-                    zIndex={widget.zIndex || 1}
-                    onFocus={() => bringToFront(widget.id)}
-                    setWallpaper={setWallpaper}
-                  />
-                )}
-              </div>
-            ))}
-
-          {/* Windows Layer */}
-          <AnimatePresence>
+          {/* Background Widgets Stack Layer */}
+          <div className="absolute inset-0 pointer-events-none z-10">
             {windows
-              .filter((w) => w.type === "window" && w.isOpen)
-              .map((win) => (
-                <Window
-                  key={win.id}
-                  {...win}
-                  constraintsRef={desktopRef}
-                  onClose={() => toggleWindow(win.id, "isOpen", false)}
-                  onMinimize={() => toggleWindow(win.id, "isMinimized", true)}
-                  onFocus={() => bringToFront(win.id)}
-                >
-                  <div className="w-full h-full min-h-0 bg-surface rounded-b-xl overflow-y-auto custom-scrollbar">
-                    {win.id === "about" && <AboutSection />}
-                    {win.id === "projects" && <ProjectsSection />}
-                    {win.id === "resume" && <ResumeSection />}
-                    {win.id === "notepad" && <Notepad />}
-                    {win.id === "contact" && <ContactSection />}
-                    {win.id === "terminal" && <Terminal />}
-                  </div>
-                </Window>
-              ))}
-          </AnimatePresence>
+              .filter((w) => w.type === "widget" && w.isOpen)
+              .map((widget) => (
+                <div key={widget.id} className="pointer-events-auto">
+                  {widget.id === "clock" && (
+                    <ClockWidget
+                      constraintsRef={desktopRef}
+                      zIndex={widget.zIndex || 10}
+                      onFocus={() => bringToFront(widget.id)}
+                    />
+                  )}
 
+                  {widget.id === "github" && (
+                    <GithubWidget
+                      constraintsRef={desktopRef}
+                      zIndex={widget.zIndex || 10}
+                      onFocus={() => bringToFront(widget.id)}
+                    />
+                  )}
+
+                  {widget.id === "learning" && (
+                    <LearningWidget
+                      constraintsRef={desktopRef}
+                      zIndex={widget.zIndex || 10}
+                      onFocus={() => bringToFront(widget.id)}
+                      progress={55}
+                      topic="Frontend Optimization"
+                      subtopic="Next.js"
+                    />
+                  )}
+
+                  {widget.id === "weather" && (
+                    <WeatherWidget
+                      constraintsRef={desktopRef}
+                      zIndex={widget.zIndex || 10}
+                      onFocus={() => bringToFront(widget.id)}
+                    />
+                  )}
+
+                  {widget.id === "skills" && (
+                    <SkillsWidget
+                      constraintsRef={desktopRef}
+                      zIndex={widget.zIndex || 10}
+                      onFocus={() => bringToFront(widget.id)}
+                    />
+                  )}
+
+                  {widget.id === "theme" && (
+                    <ThemeWidget
+                      constraintsRef={desktopRef}
+                      zIndex={widget.zIndex || 10}
+                      onFocus={() => bringToFront(widget.id)}
+                      setWallpaper={setWallpaper}
+                    />
+                  )}
+                </div>
+              ))}
+          </div>
+
+          {/* Active Windows Application Layer */}
+          <div className="absolute inset-0 pointer-events-none z-20">
+            <AnimatePresence>
+              {windows
+                .filter((w) => w.type === "window" && w.isOpen && !w.isMinimized)
+                .map((win) => (
+                  <Window
+                    key={win.id}
+                    {...win}
+                    constraintsRef={desktopRef}
+                    onClose={() => toggleWindow(win.id, "isOpen", false)}
+                    onMinimize={() => toggleWindow(win.id, "isMinimized", true)}
+                    onFocus={() => bringToFront(win.id)}
+                  >
+                    {/* Inner content container - Updated radius match to rounded-[8px] windows */}
+                    <div className="w-full h-full min-h-0 bg-surface rounded-b-[7px] overflow-y-auto custom-scrollbar pointer-events-auto">
+                      {win.id === "about" && <AboutSection />}
+                      {win.id === "projects" && <ProjectsSection />}
+                      {win.id === "resume" && <ResumeSection />}
+                      {win.id === "notepad" && <Notepad />}
+                      {win.id === "contact" && <ContactSection />}
+                      {win.id === "terminal" && <Terminal />}
+                    </div>
+                  </Window>
+                ))}
+            </AnimatePresence>
+          </div>
+
+          {/* Bottom Desktop Dock App Manager */}
           <Dock
             windows={windows}
             toggleWindow={toggleWindow}
