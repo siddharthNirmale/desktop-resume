@@ -34,12 +34,12 @@ export default function App() {
   const desktopRef = useRef(null);
 
   const { windows, bringToFront, toggleWindow } = useWindows([
-    { id: "about", title: "About", isOpen: true, type: "window", defaultWidth: 550, defaultHeight: 450 },
-    { id: "projects", title: "Projects", isOpen: false, type: "window", defaultWidth: 800, defaultHeight: 600 },
-    { id: "notepad", title: "Notes", isOpen: false, type: "window", defaultWidth: 500, defaultHeight: 600 },
-    { id: "contact", title: "Contact", isOpen: false, type: "window", defaultWidth: 450, defaultHeight: 600 },
-    { id: "terminal", title: "Terminal", isOpen: false, type: "window", defaultWidth: 650, defaultHeight: 600 },
-    { id: "resume", title: "Resume", isOpen: false, type: "window", defaultWidth: 700, defaultHeight: 600 },
+    { id: "about", title: "About", isOpen: true, type: "window", defaultWidth: 750, defaultHeight: 550 },
+    { id: "projects", title: "Projects", isOpen: false, type: "window", defaultWidth: 750, defaultHeight: 550 },
+    { id: "notepad", title: "Notes", isOpen: false, type: "window", defaultWidth: 750, defaultHeight: 550 },
+    { id: "contact", title: "Contact", isOpen: false, type: "window", defaultWidth: 750, defaultHeight: 550 },
+    { id: "terminal", title: "Terminal", isOpen: false, type: "window", defaultWidth: 750, defaultHeight: 550 },
+    { id: "resume", title: "Resume", isOpen: false, type: "window", defaultWidth: 750, defaultHeight: 550 },
 
     { id: "clock", title: "Local Time", isOpen: true, type: "widget" },
     { id: "github", title: "Contributions", isOpen: true, type: "widget" },
@@ -63,7 +63,6 @@ export default function App() {
       ref={desktopRef}
       onContextMenu={handleContextMenu}
       onClick={closeMenu}
-      // Integrated @theme classes: font-primary, text-text, and bg-desktop
       className="
         w-screen h-screen
         relative overflow-hidden
@@ -177,7 +176,6 @@ export default function App() {
                   onMinimize={() => toggleWindow(win.id, "isMinimized", true)}
                   onFocus={() => bringToFront(win.id)}
                 >
-                  {/* Cleaned up interior wrapper to use global bg-surface */}
                   <div className="w-full h-full min-h-0 bg-surface rounded-b-xl overflow-y-auto custom-scrollbar">
                     {win.id === "about" && <AboutSection />}
                     {win.id === "projects" && <ProjectsSection />}
