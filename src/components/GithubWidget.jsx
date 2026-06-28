@@ -1,6 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
-import { GitHubCalendar } from 'react-github-calendar';
+import * as GitHubCalendarNamespace from 'react-github-calendar'; // Star import to completely bypass Vite default-export mismatch
 import { motion } from 'framer-motion';
+
+// Pull the underlying component out of the star namespace wrapper safely
+const GitHubCalendar = GitHubCalendarNamespace.default || GitHubCalendarNamespace.GitHubCalendar;
 
 export default function GithubWidget({
   constraintsRef,
@@ -32,7 +35,7 @@ export default function GithubWidget({
 
     const timer = setTimeout(() => {
       setIsReady(true);
-    }, 800);
+    }, 600);
 
     return () => {
       clearTimeout(timer);
@@ -54,7 +57,7 @@ export default function GithubWidget({
 
     return {
       dark: [
-        '#1a1a1a', 
+        'rgba(255, 255, 255, 0.04)', 
         `rgba(${r}, ${g}, ${b}, 0.25)`,
         `rgba(${r}, ${g}, ${b}, 0.50)`,
         `rgba(${r}, ${g}, ${b}, 0.75)`,
@@ -63,7 +66,6 @@ export default function GithubWidget({
     };
   }, [accent]);
 
-  // Adjusted to 150 days (~5 months) to mathematically fit the 280px container width
   const filterLastFiveMonths = (contributions) => {
     const today = new Date();
     const startWindow = new Date();
@@ -80,62 +82,64 @@ export default function GithubWidget({
       drag
       dragMomentum={false}
       dragConstraints={constraintsRef}
-      dragElastic={0.15}
+      dragElastic={0.08}
       onPointerDown={onFocus}
       style={{
         zIndex,
         touchAction: 'none',
       }}
       whileDrag={{
-        scale: 1.02,
         cursor: 'grabbing',
       }}
       initial={{
         opacity: 0,
-        scale: 0.95,
+        scale: 0.96,
       }}
       animate={{
         opacity: 1,
         scale: 1,
       }}
+      exit={{ opacity: 0 }}
       transition={{
         type: 'spring',
-        stiffness: 300,
-        damping: 30,
+        stiffness: 360,
+        damping: 28,
       }}
-      // Locked to exactly w-[280px] and p-5 to match the Theme, Weather, and Clock widgets
-      className="absolute bottom-3 left-3 w-[280px] bg-surface-dark border border-surface-border rounded-2xl p-5 cursor-grab shadow-2xl select-none font-primary"
+      className="absolute bottom-5 left-5 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4.5 cursor-grab shadow-[0_20px_40px_rgba(0,0,0,0.5)] select-none font-primary pointer-events-auto"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between mb-3 px-1">
-        <div className="flex items-center gap-2">
-          <span className="text-micro font-medium uppercase tracking-super-wide text-text-secondary">
-            CONTRIBUTIONS
+      <div className="flex items-center justify-between mb-3.5 px-0.5">
+        <span className="text-[11px] font-medium uppercase tracking-wider text-white/40">
+          Contributions
+        </span>
+        {isReady && (
+          <span className="text-[11px] font-medium text-white/30 font-mono tracking-wide">
+            siddharthNirmale
           </span>
-        </div>
+        )}
       </div>
 
-      {/* Calendar */}
       <div
-        className={`flex justify-center transition-all duration-500 ${isReady ? 'opacity-100' : 'opacity-0'}`}
+        className={`flex justify-center transition-all duration-300 ${isReady ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
         onPointerDown={(e) => e.stopPropagation()}
       >
-        <GitHubCalendar
-          username="siddharthNirmale"
-          colorScheme="dark"
-          theme={customTheme}
-          transformData={filterLastFiveMonths} // Applying our new 150-day filter
-          blockSize={8} // Scaled down from 10 to fit
-          blockMargin={2} // Scaled down from 4 to fit
-          blockRadius={2} 
-          fontSize={10}
-          hideColorLegend
-          hideTotalCount
-          style={{
-            color: 'var(--color-text-tertiary)',
-            fontFamily: 'var(--font-primary)',
-          }}
-        />
+        {GitHubCalendar && (
+          <GitHubCalendar
+            username="siddharthNirmale"
+            colorScheme="dark"
+            theme={customTheme}
+            transformData={filterLastFiveMonths}
+            blockSize={7.5} 
+            blockMargin={2}
+            blockRadius={1.5}
+            fontSize={11}
+            hideColorLegend
+            hideTotalCount
+            style={{
+              color: 'rgba(255, 255, 255, 0.3)',
+              fontFamily: 'var(--font-primary)',
+            }}
+          />
+        )}
       </div>
     </motion.div>
   );
