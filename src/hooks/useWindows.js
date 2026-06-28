@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 export default function useWindows(initialWindows) {
-  // Map over initial data to ensure baseline parameters exist cleanly
   const [windows, setWindows] = useState(() =>
     initialWindows.map((w, index) => ({
       ...w,
@@ -14,10 +13,8 @@ export default function useWindows(initialWindows) {
 
   const bringToFront = (id) => {
     setWindows((prevWindows) => {
-      // Find the target window to see if it actually needs an update
       const target = prevWindows.find((w) => w.id === id);
       
-      // If it's already at the absolute peak zIndex and visible, do nothing to prevent unnecessary rerenders
       if (target && target.zIndex === maxZIndex && !target.isMinimized) {
         return prevWindows;
       }
@@ -35,7 +32,7 @@ export default function useWindows(initialWindows) {
 
   const toggleWindow = (id, key, value) => {
     setWindows((prevWindows) => {
-      // Specialized case: Handle opening or maximizing focus layers in one paint step
+      // Handle opening or unminimizing focus states in a single step
       if ((key === 'isOpen' && value === true) || (key === 'isMinimized' && value === false)) {
         const nextZ = maxZIndex + 1;
         setMaxZIndex(nextZ);
@@ -43,6 +40,15 @@ export default function useWindows(initialWindows) {
         return prevWindows.map((w) =>
           w.id === id
             ? { ...w, isOpen: true, isMinimized: false, zIndex: nextZ }
+            : w
+        );
+      }
+
+      // Handle closing window layers safely (Reset depth reference on close targets)
+      if (key === 'isOpen' && value === false) {
+        return prevWindows.map((w) =>
+          w.id === id 
+            ? { ...w, isOpen: false, isMinimized: false, zIndex: 1 } 
             : w
         );
       }
