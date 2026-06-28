@@ -103,8 +103,8 @@ export default function GithubWidget({
         stiffness: 300,
         damping: 30,
       }}
-      // Locked to exactly w-[280px] and p-5 to match the Theme, Weather, and Clock widgets
-      className="absolute bottom-3 left-3 w-[280px] bg-surface-dark border border-surface-border rounded-2xl p-5 cursor-grab shadow-2xl select-none font-primary"
+      // Locked to exactly w-[280px] and p-4 to match the Theme, Weather, and Clock widgets
+      className="absolute bottom-3 left-3 w-[280px] bg-surface-dark border border-surface-border rounded-2xl p-4 cursor-grab shadow-2xl select-none font-primary"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-3 px-1">

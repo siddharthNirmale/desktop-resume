@@ -69,8 +69,8 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
       onPointerDown={onFocus}
       style={{ zIndex, touchAction: "none" }}
       whileDrag={{ scale: 1.01, cursor: "grabbing" }}
-      // Standardized: w-[280px], p-5, gap-4, and rounded-2xl
-      className="absolute top-70 left-3 w-[280px] bg-surface-dark border border-surface-border rounded-2xl p-5 cursor-grab flex flex-col gap-4 shadow-2xl font-primary"
+      // Standardized: w-[280px], p-4, gap-4, and rounded-2xl
+      className="absolute top-70 left-3 w-[280px] bg-surface-dark border border-surface-border rounded-2xl p-4 cursor-grab flex flex-col gap-4 shadow-2xl font-primary"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
