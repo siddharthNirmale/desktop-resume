@@ -115,6 +115,22 @@ export default function App() {
 
   const desktopRef = useRef(null);
 
+  const { windows, bringToFront, toggleWindow } = useWindows([
+    { id: "about", title: "About", isOpen: true, type: "window", defaultWidth: 550, defaultHeight: 450 },
+    { id: "projects", title: "Projects", isOpen: false, type: "window", defaultWidth: 800, defaultHeight: 600 },
+    { id: "notepad", title: "Notes", isOpen: false, type: "window", defaultWidth: 500, defaultHeight: 600 },
+    { id: "contact", title: "Contact", isOpen: false, type: "window", defaultWidth: 450, defaultHeight: 600 },
+    { id: "terminal", title: "Terminal", isOpen: false, type: "window", defaultWidth: 650, defaultHeight: 600 },
+    { id: "resume", title: "Resume", isOpen: false, type: "window", defaultWidth: 700, defaultHeight: 600 },
+
+    { id: "clock", title: "Local Time", isOpen: true, type: "widget" },
+    { id: "github", title: "Contributions", isOpen: true, type: "widget" },
+    { id: "learning", title: "Learning", isOpen: true, type: "widget" },
+    { id: "weather", title: "Weather", isOpen: true, type: "widget" },
+    { id: "theme", title: "Appearance", isOpen: true, type: "widget" },
+    { id: "skills", title: "Skills", isOpen: true, type: "widget" },
+  ]);
+
   const handleContextMenu = (e) => {
     e.preventDefault();
     setMenu({ show: true, x: e.clientX, y: e.clientY });
