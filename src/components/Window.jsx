@@ -76,6 +76,7 @@ export default function Window({
       transition={{ type: "spring", stiffness: 380, damping: 26 }}
     >
 <<<<<<< HEAD
+<<<<<<< HEAD
       {/* WINDOW HEADER */}
       <div className="window-header h-10 px-4 flex items-center justify-between border-b border-surface-border bg-surface-dark/50 select-none cursor-grab active:cursor-grabbing backdrop-blur-md">
         <div className="flex items-center gap-2">
@@ -83,6 +84,21 @@ export default function Window({
           <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">
             {title}
           </span>
+=======
+      {/* Top Header Shell */}
+      <div className="h-[36px] min-h-[36px] flex items-center justify-between select-none bg-gradient-to-b from-[#3c3c3c] to-[#323232] border-b border-[#181818] relative">
+        
+        {/* Left Drag Area: Title text and empty header space can be dragged */}
+        <div 
+          className="window-header-drag flex-1 h-full flex items-center pl-4 cursor-default"
+          onDoubleClick={toggleMaximize}
+        >
+          <div className="pointer-events-none">
+            <span className="text-[12px] font-medium text-[#D2D2D2] tracking-wide opacity-90">
+              {title}
+            </span>
+          </div>
+>>>>>>> f5c7079 (feat: create draggable and resizable Window component with header controls)
         </div>
         
         {/* WINDOW CONTROLS */}
