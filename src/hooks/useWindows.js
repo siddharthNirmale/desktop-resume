@@ -1,34 +1,38 @@
 import { useState } from 'react';
 
 export default function useWindows(initialWindows) {
-  const [windows, setWindows] = useState(() =>
-    initialWindows.map((w, index) => ({
-      ...w,
-      zIndex: w.zIndex || index + 1,
-      isMinimized: w.isMinimized || false,
-    }))
-  );
-  
-  const [maxZIndex, setMaxZIndex] = useState(initialWindows.length + 1);
+ const [windows, setWindows] = useState(() =>
+  initialWindows.map((w, index) => ({
+    ...w,
+    zIndex:
+      w.type === "window"
+        ? 1000 + index
+        : index,
+    isMinimized: false,
+  }))
+);
 
-  const bringToFront = (id) => {
-    setWindows((prevWindows) => {
-      const target = prevWindows.find((w) => w.id === id);
-      
-      if (target && target.zIndex === maxZIndex && !target.isMinimized) {
-        return prevWindows;
-      }
+const [maxZIndex, setMaxZIndex] = useState(100);
+ const bringToFront = (id) => {
+  setWindows((prev) => {
+    const target = prev.find((w) => w.id === id);
+    if (!target) return prev;
 
-      const nextZ = maxZIndex + 1;
-      setMaxZIndex(nextZ);
+    const base = target.type === "window" ? 1000 : 1;
+    const nextZ = maxZIndex + 1;
+    setMaxZIndex(nextZ);
 
-      return prevWindows.map((w) =>
-        w.id === id 
-          ? { ...w, zIndex: nextZ, isMinimized: false } 
-          : w
-      );
-    });
-  };
+    return prev.map((w) =>
+      w.id === id
+        ? {
+            ...w,
+            zIndex: base + nextZ,
+            isMinimized: false,
+          }
+        : w
+    );
+  });
+};
 
   const toggleWindow = (id, key, value) => {
     setWindows((prevWindows) => {
