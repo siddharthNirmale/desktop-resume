@@ -15,10 +15,10 @@ export default function App() {
 
   const desktopRef = useRef(null);
 
-  // Responsive screen size listener (Up to 1024px handles iPads/Tablets and below)
+  // Responsive screen size listener (Up to 768 handles iPads/Tablets and below)
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 1024);
+      setIsMobile(window.innerWidth <= 768);
     };
     handleResize();
     window.addEventListener("resize", handleResize);

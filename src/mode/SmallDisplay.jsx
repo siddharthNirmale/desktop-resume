@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { GitHubCalendar } from "react-github-calendar";
 import {
   FiExternalLink,
   FiMail,
@@ -26,7 +27,7 @@ import {
 import { TbBrandCpp } from "react-icons/tb";
 
 const skills = [
-  "JavaScript", "TypeScript", "Python", "C++", "HTML5", 
+  "JavaScript", "TypeScript", "Python", "C++", "HTML5",
   "React.js", "Next.js", "Tailwind CSS", "Bootstrap", "Vite",
   "Node.js", "Express.js", "MongoDB", "Firebase", "Git", "GitHub"
 ];
@@ -53,29 +54,51 @@ const iconMap = {
 const projects = [
   {
     title: "Thumbmax",
-    badge: "10K+ signups", // Mimicking the design's image text
-    desc: "Built a scalable AI-powered thumbnail generation platform. Integrated Gemini API and Cloudinary. Implemented JWT authentication and API rate limiting.",
+    badge: "AI Powered",
+    desc: "Built a scalable AI-powered thumbnail generation platform using Node.js and Express.js. Integrated Gemini API and Cloudinary, implemented JWT authentication, API rate limiting, and deployed on Vercel.",
     stack: ["Node.js", "Express.js", "Gemini API", "Cloudinary"],
     link: "thumbmax-psi.vercel.app",
-    github: "siddharthNirmale/Thumbmax", 
+    github: "siddharthNirmale/Thumbmax",
   },
   {
     title: "Postify",
-    badge: "1.2k+ downloads",
-    desc: "Developed a full-stack social media application. Built REST APIs for authentication, feeds and posts. Implemented secure CRUD operations with JWT.",
+    badge: "Full Stack",
+    desc: "Developed a full-stack social media platform with authentication, posts, feeds, and user management. Built secure REST APIs using Express.js and MongoDB with JWT authentication.",
     stack: ["Node.js", "Express.js", "MongoDB"],
     link: "github.com/siddharthNirmale/Feed-Pin",
     github: "siddharthNirmale/Feed-Pin",
   },
   {
     title: "E-Commerce",
-    badge: "Live Store",
-    desc: "Built responsive e-commerce user interface. Implemented filtering and category navigation. Used React Hooks for state management across devices.",
+    badge: "Live Project",
+    desc: "Built a responsive e-commerce frontend with product filtering, search, category navigation, and React Hooks for efficient state management across devices.",
     stack: ["React.js", "Vite", "JavaScript"],
     link: "ecommerce-aug.vercel.app",
-    github: "siddharthNirmale", 
+    github: "siddharthNirmale/Ecommerce-Aug",
   },
 ];
+
+// --- Helper configurations for the GitHub Calendar ---
+const customTheme = {
+  light: ['#27272a', '#52525b', '#71717a', '#a1a1aa', '#f4f4f5'],
+  dark: ['#18181b', '#3f3f46', '#71717a', '#a1a1aa', '#f4f4f5'], // Matches the dark zinc aesthetic
+};
+
+const filterLastSixMonths = (contributions) => {
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth();
+  const shownMonths = 6;
+
+  return contributions.filter((activity) => {
+    const date = new Date(activity.date);
+    const monthOfDay = date.getMonth();
+    return (
+      date.getFullYear() === currentYear &&
+      monthOfDay > currentMonth - shownMonths &&
+      monthOfDay <= currentMonth
+    );
+  });
+};
 
 export default function TerminalPortfolio() {
   const [currentTime, setCurrentTime] = useState("");
@@ -108,24 +131,23 @@ export default function TerminalPortfolio() {
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
       `}</style>
-      
+
       <div className="max-w-3xl mx-auto px-6 py-16 space-y-12">
-        
+
         {/* --- Profile Header --- */}
         <div className="flex flex-col sm:flex-row gap-6 items-start">
           <div className="w-20 h-20 shrink-0 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center relative">
-             <span className="text-3xl">👨‍💻</span>
-             {/* Status Dot */}
-             <span className="absolute bottom-1 right-1 w-3 h-3 bg-green-500 border-2 border-[#0a0a0a] rounded-full"></span>
+            <span className="text-3xl">👨‍💻</span>
+            <span className="absolute bottom-1 right-1 w-3 h-3 bg-green-500 border-2 border-[#0a0a0a] rounded-full"></span>
           </div>
-          
+
           <div className="space-y-3 flex-1">
             <div>
               <h1 className="text-xl font-bold text-zinc-100 flex items-center gap-2">
                 Siddharth Nirmale <span className="text-lg">🚀</span>
               </h1>
               <p className="text-[13px] text-zinc-500 mt-0.5">@siddharthNirmale</p>
-              
+
               <div className="flex flex-wrap items-center gap-3 mt-2 text-[12px] text-zinc-400">
                 <span className="flex items-center gap-1.5 border border-zinc-800 bg-zinc-900/50 px-2 py-0.5 rounded-md">
                   Building Scalable Apps ✦
@@ -136,11 +158,15 @@ export default function TerminalPortfolio() {
             </div>
 
             <p className="text-[13px] leading-relaxed max-w-2xl text-zinc-400">
-              Yup! I'm a <strong className="text-zinc-200 font-semibold">Full Stack Developer</strong>. Big deal, right? But wait... there's more! I'm not just any developer, I love building solutions and solving problems. I enjoy crafting webapps with <strong className="text-zinc-200 font-semibold">React, Node.js, Express, and MongoDB</strong> and I practically live on the <strong className="text-zinc-200 font-semibold">terminal</strong> mostly.
+              Full Stack Developer passionate about building scalable web applications and solving real-world problems. I enjoy developing modern applications with <strong className="text-zinc-200 font-semibold">React, Next.js, Node.js, Express.js, and MongoDB</strong>, integrating AI services, and creating responsive user experiences with clean, maintainable code.
             </p>
 
             <div className="flex flex-wrap gap-2 pt-1">
-              <ActionButton icon={<FaTwitter />} text="Twitter DM" href="#" />
+              <ActionButton
+                icon={<FaLinkedin />}
+                text="LinkedIn"
+                href="https://linkedin.com/in/siddharth-nirmale"
+              />
               <ActionButton icon={<FaGithub />} text="GitHub" href="https://github.com/siddharthNirmale" />
               <ActionButton icon={<FiMail />} text="Email Me" href="mailto:siddharth175nirmale1@gmail.com" />
               <ActionButton icon={<FiDownload />} text="Resume" onClick={handleDownload} isButton />
@@ -165,7 +191,7 @@ export default function TerminalPortfolio() {
         <section className="space-y-4">
           <TerminalHeader title="Education & Activity" />
           <div className="border border-zinc-800 rounded-xl bg-[#0c0c0e] p-5 space-y-6">
-            
+
             {/* Timeline */}
             <div className="relative border-l border-zinc-800 ml-2 space-y-6">
               <div className="relative pl-6">
@@ -180,35 +206,36 @@ export default function TerminalPortfolio() {
               </div>
             </div>
 
-            {/* Custom GitHub Contribution Graph Mock */}
-            <div className="pt-4 border-t border-zinc-800/60">
-              <div className="flex items-end justify-between mb-2">
-                <span className="text-[11px] text-zinc-500">Jul — Mar</span>
+            {/* Actual GitHub Contribution Graph */}
+            <div className="pt-4 border-t border-zinc-800/60 overflow-hidden">
+              <div className="overflow-x-auto pb-2 scrollbar-hide flex flex-col items-start w-full">
+                <GitHubCalendar
+                  username="siddharthNirmale"
+                  colorScheme="dark"
+
+
+                  blockSize={8.5}
+                  blockMargin={3}
+                  blockRadius={2}
+                  fontSize={11}
+
+                  hideTotalCount
+                  style={{
+                    color: 'rgba(255, 255, 255, 0.3)',
+                    fontFamily: 'var(--font-primary)',
+                  }}
+                />
               </div>
-              <div className="flex gap-[3px] overflow-hidden">
-                {Array.from({ length: 42 }).map((_, colIndex) => (
-                  <div key={colIndex} className="grid grid-rows-7 gap-[3px]">
-                    {Array.from({ length: 7 }).map((_, rowIndex) => {
-                      // Generate random activity density
-                      const intensity = Math.random();
-                      let bgClass = "bg-zinc-800/40"; // Empty
-                      if (intensity > 0.85) bgClass = "bg-zinc-100"; // High
-                      else if (intensity > 0.6) bgClass = "bg-zinc-400"; // Medium
-                      else if (intensity > 0.4) bgClass = "bg-zinc-600"; // Low
-                      
-                      return <div key={rowIndex} className={`w-[10px] h-[10px] rounded-[2px] ${bgClass}`} />;
-                    })}
-                  </div>
-                ))}
-              </div>
+
+              {/* Custom Legend underneath to match the widget since you set hideColorLegend */}
               <div className="flex justify-between items-center mt-2 text-[11px] text-zinc-500">
                 <span>This year, I achieved consistent deployments</span>
                 <div className="flex items-center gap-1">
                   Less
-                  <div className="w-[10px] h-[10px] rounded-[2px] bg-zinc-800/40" />
-                  <div className="w-[10px] h-[10px] rounded-[2px] bg-zinc-600" />
-                  <div className="w-[10px] h-[10px] rounded-[2px] bg-zinc-400" />
-                  <div className="w-[10px] h-[10px] rounded-[2px] bg-zinc-100" />
+                  <div className="w-[10px] h-[10px] rounded-[2px] bg-[#18181b]" />
+                  <div className="w-[10px] h-[10px] rounded-[2px] bg-[#3f3f46]" />
+                  <div className="w-[10px] h-[10px] rounded-[2px] bg-[#71717a]" />
+                  <div className="w-[10px] h-[10px] rounded-[2px] bg-[#f4f4f5]" />
                   More
                 </div>
               </div>
@@ -223,7 +250,7 @@ export default function TerminalPortfolio() {
           <div className="space-y-4">
             {projects.map((project, idx) => (
               <div key={idx} className="flex flex-col sm:flex-row border border-zinc-800 rounded-xl overflow-hidden bg-[#0c0c0e] hover:border-zinc-700 transition-colors">
-                
+
                 {/* Left Side: Image/Preview area */}
                 <div className="w-full sm:w-[240px] h-[160px] bg-gradient-to-br from-zinc-900 to-black border-b sm:border-b-0 sm:border-r border-zinc-800 flex flex-col items-center justify-center p-4 relative">
                   <div className="absolute top-3 left-3 bg-zinc-800 text-zinc-300 text-[10px] px-2 py-0.5 rounded-sm">
@@ -232,7 +259,7 @@ export default function TerminalPortfolio() {
                   <h4 className="text-zinc-200 font-semibold text-center">{project.title}</h4>
                   <p className="text-[10px] text-green-400 mt-1 uppercase tracking-widest">Active.</p>
                 </div>
-                
+
                 {/* Right Side: Content */}
                 <div className="p-4 sm:p-5 flex-1 flex flex-col">
                   <div className="flex justify-between items-start mb-2">
@@ -240,8 +267,8 @@ export default function TerminalPortfolio() {
                       {project.title} <span className="w-2 h-2 rounded-full bg-green-500" />
                     </h3>
                     <div className="flex items-center gap-2">
-                      <LinkBadge icon={<FiExternalLink size={12}/>} text="Live" href={`https://${project.link}`} />
-                      <LinkBadge icon={<FaGithub size={12}/>} text="GitHub" href={`https://github.com/${project.github}`} />
+                      <LinkBadge icon={<FiExternalLink size={12} />} text="Live" href={`https://${project.link}`} />
+                      <LinkBadge icon={<FaGithub size={12} />} text="GitHub" href={`https://github.com/${project.github}`} />
                     </div>
                   </div>
 
@@ -286,7 +313,7 @@ function TerminalHeader({ title }) {
 
 function ActionButton({ icon, text, href, onClick, isButton }) {
   const baseClasses = "inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 rounded hover:bg-zinc-800 hover:text-white transition-all cursor-pointer";
-  
+
   if (isButton) {
     return (
       <button onClick={onClick} className={baseClasses}>
@@ -303,9 +330,9 @@ function ActionButton({ icon, text, href, onClick, isButton }) {
 
 function LinkBadge({ icon, text, href }) {
   return (
-    <a 
-      href={href} 
-      target="_blank" 
+    <a
+      href={href}
+      target="_blank"
       rel="noopener noreferrer"
       className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-zinc-900 border border-zinc-800 rounded hover:bg-zinc-800 transition-colors text-[11px] font-medium text-zinc-300"
     >
