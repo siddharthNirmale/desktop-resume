@@ -6,9 +6,10 @@ import Background from "../components/Background";
 // System Components
 import Window from "../components/Window";
 import Dock from "../components/Dock";
-import Preloader from "../components/Preloader";
+
 import ContextMenu from "../components/ContextMenu";
 import TopBar from "../components/TopBar";
+import Preloader from "../components/Preloader";
 
 // Desktop Widgets
 import ClockWidget from "../components/ClockWidget";
@@ -28,7 +29,7 @@ import ResumeSection from "../sections/ResumeSection";
 
 export default function DesktopDisplay() {
   const [wallpaper, setWallpaper] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [menu, setMenu] = useState({ show: false, x: 0, y: 0 });
 
   const desktopRef = useRef(null);
