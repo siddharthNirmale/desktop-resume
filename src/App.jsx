@@ -1,45 +1,41 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import useWindows from "./hooks/useWindows";
-import Background from "./components/Background";
-
-// System Components
-import Window from "./components/Window";
-import Dock from "./components/Dock";
 import Preloader from "./components/Preloader";
-import ContextMenu from "./components/ContextMenu";
-import TopBar from "./components/TopBar";
 
-// Desktop Widgets
-import ClockWidget from "./components/ClockWidget";
-import GithubWidget from "./components/GithubWidget";
-import LearningWidget from "./components/LearningWidget";
-import WeatherWidget from "./components/WeatherWidget";
-import ThemeWidget from "./components/ThemeWidget";
-import SkillsWidget from "./components/SkillsWidget";
-
-// App Sections
-import AboutSection from "./sections/AboutSection";
-import ProjectsSection from "./sections/ProjectsSection";
-import Notepad from "./sections/Notepad";
-import ContactSection from "./sections/ContactSection";
-import Terminal from "./sections/Terminal";
-import ResumeSection from "./sections/ResumeSection";
+// Display Modes
+import DesktopDisplay from "./mode/DesktopDisplay";
+import SmallDisplay from "./mode/SmallDisplay";
 
 export default function App() {
   const [wallpaper, setWallpaper] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [menu, setMenu] = useState({ show: false, x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
 
   const desktopRef = useRef(null);
 
+  // Responsive screen size listener (Up to 1024px handles iPads/Tablets and below)
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Viewport-percentage calculation helpers for safe initialization
+  const vw = (pct) => (typeof window !== "undefined" ? Math.round(window.innerWidth * pct) : 800);
+  const vh = (pct) => (typeof window !== "undefined" ? Math.round(window.innerHeight * pct) : 600);
+
   const { windows, bringToFront, toggleWindow } = useWindows([
-    { id: "about", title: "About", isOpen: true, type: "window", defaultWidth: 800, defaultHeight: 600 },
-    { id: "projects", title: "Projects", isOpen: false, type: "window", defaultWidth: 800, defaultHeight: 600 },
-    { id: "notepad", title: "Notes", isOpen: false, type: "window", defaultWidth: 800, defaultHeight: 600 },
-    { id: "contact", title: "Contact", isOpen: false, type: "window", defaultWidth: 800, defaultHeight: 600 },
-    { id: "terminal", title: "Terminal", isOpen: false, type: "window", defaultWidth: 800, defaultHeight: 600 },
-    { id: "resume", title: "Resume", isOpen: false, type: "window", defaultWidth: 800, defaultHeight: 600 },
+    { id: "about", title: "About", isOpen: true, type: "window", defaultWidth: vw(0.7), defaultHeight: vh(0.75) },
+    { id: "projects", title: "Projects", isOpen: false, type: "window", defaultWidth: vw(0.7), defaultHeight: vh(0.75) },
+    { id: "notepad", title: "Notes", isOpen: false, type: "window", defaultWidth: vw(0.6), defaultHeight: vh(0.65) },
+    { id: "contact", title: "Contact", isOpen: false, type: "window", defaultWidth: vw(0.5), defaultHeight: vh(0.6) },
+    { id: "terminal", title: "Terminal", isOpen: false, type: "window", defaultWidth: vw(0.6), defaultHeight: vh(0.55) },
+    { id: "resume", title: "Resume", isOpen: false, type: "window", defaultWidth: vw(0.7), defaultHeight: vh(0.8) },
 
     { id: "clock", title: "Local Time", isOpen: true, type: "widget" },
     { id: "github", title: "Contributions", isOpen: true, type: "widget" },
@@ -50,6 +46,7 @@ export default function App() {
   ]);
 
   const handleContextMenu = (e) => {
+    if (isMobile) return;
     e.preventDefault();
     setMenu({ show: true, x: e.clientX, y: e.clientY });
   };
@@ -63,21 +60,7 @@ export default function App() {
       ref={desktopRef}
       onContextMenu={handleContextMenu}
       onClick={closeMenu}
-      // Integrated @theme classes: font-primary, text-text, and bg-desktop
-      className="
-        w-screen h-screen
-        relative overflow-hidden
-        font-primary
-        text-text
-        bg-desktop
-        select-none
-        transition-all duration-700
-      "
-      style={{
-        backgroundImage: wallpaper ? `url(${wallpaper})` : "none",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+      className="w-screen h-screen relative overflow-hidden select-none"
     >
       <AnimatePresence>
         {isLoading && (
@@ -87,114 +70,24 @@ export default function App() {
 
       {!isLoading && (
         <>
-          <TopBar />
-
-          {/* Background layer only when no wallpaper */}
-          {!wallpaper && <Background />}
-
-          {/* Context Menu */}
-          <AnimatePresence>
-            {menu.show && (
-              <ContextMenu
-                x={menu.x}
-                y={menu.y}
-                onClose={closeMenu}
-                toggleWindow={toggleWindow}
-                bringToFront={bringToFront}
-              />
-            )}
-          </AnimatePresence>
-
-          {/* Widgets Layer */}
-          {windows
-            .filter((w) => w.type === "widget" && w.isOpen)
-            .map((widget) => (
-              <div key={widget.id}>
-                {widget.id === "clock" && (
-                  <ClockWidget
-                    constraintsRef={desktopRef}
-                    zIndex={widget.zIndex || 1}
-                    onFocus={() => bringToFront(widget.id)}
-                  />
-                )}
-
-                {widget.id === "github" && (
-                  <GithubWidget
-                    constraintsRef={desktopRef}
-                    zIndex={widget.zIndex || 1}
-                    onFocus={() => bringToFront(widget.id)}
-                  />
-                )}
-
-                {widget.id === "learning" && (
-                  <LearningWidget
-                    constraintsRef={desktopRef}
-                    zIndex={widget.zIndex || 1}
-                    onFocus={() => bringToFront(widget.id)}
-                    progress={55}
-                    topic="Frontend Optimization"
-                    subtopic="Next.js 14"
-                  />
-                )}
-
-                {widget.id === "weather" && (
-                  <WeatherWidget
-                    constraintsRef={desktopRef}
-                    zIndex={widget.zIndex || 1}
-                    onFocus={() => bringToFront(widget.id)}
-                  />
-                )}
-
-                {widget.id === "skills" && (
-                  <SkillsWidget
-                    constraintsRef={desktopRef}
-                    zIndex={widget.zIndex || 1}
-                    onFocus={() => bringToFront(widget.id)}
-                  />
-                )}
-
-                {widget.id === "theme" && (
-                  <ThemeWidget
-                    constraintsRef={desktopRef}
-                    zIndex={widget.zIndex || 1}
-                    onFocus={() => bringToFront(widget.id)}
-                    setWallpaper={setWallpaper}
-                  />
-                )}
-              </div>
-            ))}
-
-          {/* Windows Layer */}
-          <AnimatePresence>
-            {windows
-              .filter((w) => w.type === "window" && w.isOpen)
-              .map((win) => (
-                <Window
-                  key={win.id}
-                  {...win}
-                  constraintsRef={desktopRef}
-                  onClose={() => toggleWindow(win.id, "isOpen", false)}
-                  onMinimize={() => toggleWindow(win.id, "isMinimized", true)}
-                  onFocus={() => bringToFront(win.id)}
-                >
-                  {/* Cleaned up interior wrapper to use global bg-surface */}
-                  <div className="w-full h-full min-h-0 bg-surface rounded-b-xl overflow-y-auto custom-scrollbar">
-                    {win.id === "about" && <AboutSection />}
-                    {win.id === "projects" && <ProjectsSection />}
-                    {win.id === "resume" && <ResumeSection />}
-                    {win.id === "notepad" && <Notepad />}
-                    {win.id === "contact" && <ContactSection />}
-                    {win.id === "terminal" && <Terminal />}
-                  </div>
-                </Window>
-              ))}
-          </AnimatePresence>
-
-          <Dock
-            windows={windows}
-            toggleWindow={toggleWindow}
-            bringToFront={bringToFront}
-          />
+          {isMobile ? (
+            <SmallDisplay
+              windows={windows}
+              toggleWindow={toggleWindow}
+              setWallpaper={setWallpaper}
+            />
+          ) : (
+            <DesktopDisplay
+              windows={windows}
+              toggleWindow={toggleWindow}
+              bringToFront={bringToFront}
+              menu={menu}
+              closeMenu={closeMenu}
+              desktopRef={desktopRef}
+              setWallpaper={setWallpaper}
+              wallpaper={wallpaper}
+            />
+          )}
         </>
       )}
     </div>
