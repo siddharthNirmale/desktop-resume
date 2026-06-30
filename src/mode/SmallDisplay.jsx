@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { GitHubCalendar } from "react-github-calendar";
+import {GitHubCalendar} from "react-github-calendar";
 import {
   FiExternalLink,
   FiMail,
@@ -81,28 +81,28 @@ const projects = [
 // --- Helper configurations for the GitHub Calendar ---
 const customTheme = {
   light: ['#27272a', '#52525b', '#71717a', '#a1a1aa', '#f4f4f5'],
-  dark: ['#18181b', '#3f3f46', '#71717a', '#a1a1aa', '#f4f4f5'], // Matches the dark zinc aesthetic
+  dark: ['#18181b', '#3f3f46', '#71717a', '#a1a1aa', '#f4f4f5'], 
 };
 
-const filterLastSixMonths = (contributions) => {
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth();
-  const shownMonths = 6;
+// Robust date filter that correctly handles crossing over into previous years
+const filterResponsiveMonths = (contributions, monthsToShow) => {
+  if (monthsToShow >= 12) return contributions; // Show the full GitHub default (1 year)
+
+  const endDate = new Date();
+  const startDate = new Date();
+  startDate.setMonth(endDate.getMonth() - monthsToShow);
 
   return contributions.filter((activity) => {
     const date = new Date(activity.date);
-    const monthOfDay = date.getMonth();
-    return (
-      date.getFullYear() === currentYear &&
-      monthOfDay > currentMonth - shownMonths &&
-      monthOfDay <= currentMonth
-    );
+    return date >= startDate && date <= endDate;
   });
 };
 
 export default function TerminalPortfolio() {
   const [currentTime, setCurrentTime] = useState("");
+  const [visibleMonths, setVisibleMonths] = useState(12);
 
+  // Clock Effect
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
@@ -111,6 +111,24 @@ export default function TerminalPortfolio() {
     updateTime();
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
+  }, []);
+
+  // Responsive Layout Effect for GitHub Calendar
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 640) {
+        setVisibleMonths(4); // Mobile: show last 4 months
+      } else if (width < 1024) {
+        setVisibleMonths(8); // Tablet: show last 8 months
+      } else {
+        setVisibleMonths(12); // Desktop: show full year
+      }
+    };
+
+    handleResize(); // Set initial value
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const handleDownload = () => {
@@ -208,17 +226,16 @@ export default function TerminalPortfolio() {
 
             {/* Actual GitHub Contribution Graph */}
             <div className="pt-4 border-t border-zinc-800/60 overflow-hidden">
-              <div className="overflow-x-auto pb-2 scrollbar-hide flex flex-col items-start w-full">
+              <div className="pb-2 flex flex-col items-start w-full">
                 <GitHubCalendar
                   username="siddharthNirmale"
                   colorScheme="dark"
-
-
+                  theme={customTheme}
+                  transformData={(data) => filterResponsiveMonths(data, visibleMonths)}
                   blockSize={8.5}
                   blockMargin={3}
                   blockRadius={2}
                   fontSize={11}
-
                   hideTotalCount
                   style={{
                     color: 'rgba(255, 255, 255, 0.3)',
