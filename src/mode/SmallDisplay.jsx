@@ -1,11 +1,12 @@
+import React, { useState, useEffect } from "react";
 import {
   FiExternalLink,
   FiMail,
-  FiPhone,
   FiMapPin,
   FiDownload,
+  FiClock,
 } from "react-icons/fi";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 import {
   SiJavascript,
   SiTypescript,
@@ -24,13 +25,11 @@ import {
 } from "react-icons/si";
 import { TbBrandCpp } from "react-icons/tb";
 
-const skills = {
-  Languages: ["JavaScript", "TypeScript", "Python", "C++", "HTML5"],
-  Frontend: ["React.js", "Next.js", "Tailwind CSS", "Bootstrap", "Vite"],
-  Backend: ["Node.js", "Express.js"],
-  Database: ["MongoDB", "Firebase"],
-  "Cloud & Tools": ["Git", "GitHub"],
-};
+const skills = [
+  "JavaScript", "TypeScript", "Python", "C++", "HTML5", 
+  "React.js", "Next.js", "Tailwind CSS", "Bootstrap", "Vite",
+  "Node.js", "Express.js", "MongoDB", "Firebase", "Git", "GitHub"
+];
 
 const iconMap = {
   JavaScript: <SiJavascript />,
@@ -54,46 +53,43 @@ const iconMap = {
 const projects = [
   {
     title: "Thumbmax",
-    year: "2026",
+    badge: "10K+ signups", // Mimicking the design's image text
+    desc: "Built a scalable AI-powered thumbnail generation platform. Integrated Gemini API and Cloudinary. Implemented JWT authentication and API rate limiting.",
     stack: ["Node.js", "Express.js", "Gemini API", "Cloudinary"],
-    bullets: [
-      "Built a scalable AI-powered thumbnail generation platform.",
-      "Integrated Gemini API and Cloudinary.",
-      "Implemented JWT authentication and API rate limiting.",
-      "Deployed production-ready application on Vercel.",
-    ],
     link: "thumbmax-psi.vercel.app",
-    github: "github.com/siddharthNirmale/Thumbmax", // Add actual github link if available
+    github: "siddharthNirmale/Thumbmax", 
   },
   {
     title: "Postify",
-    year: "2025",
+    badge: "1.2k+ downloads",
+    desc: "Developed a full-stack social media application. Built REST APIs for authentication, feeds and posts. Implemented secure CRUD operations with JWT.",
     stack: ["Node.js", "Express.js", "MongoDB"],
-    bullets: [
-      "Developed a full-stack social media application.",
-      "Built REST APIs for authentication, feeds and posts.",
-      "Implemented secure CRUD operations.",
-      "Used JWT authentication for access control.",
-    ],
     link: "github.com/siddharthNirmale/Feed-Pin",
-    github: "github.com/siddharthNirmale/Feed-Pin",
+    github: "siddharthNirmale/Feed-Pin",
   },
   {
     title: "E-Commerce",
-    year: "2025",
+    badge: "Live Store",
+    desc: "Built responsive e-commerce user interface. Implemented filtering and category navigation. Used React Hooks for state management across devices.",
     stack: ["React.js", "Vite", "JavaScript"],
-    bullets: [
-      "Built responsive e-commerce user interface.",
-      "Implemented filtering and category navigation.",
-      "Used React Hooks for state management.",
-      "Optimized for cross-device compatibility.",
-    ],
     link: "ecommerce-aug.vercel.app",
-    github: "github.com/siddharthNirmale", // Replace with actual repo
+    github: "siddharthNirmale", 
   },
 ];
 
 export default function TerminalPortfolio() {
+  const [currentTime, setCurrentTime] = useState("");
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setCurrentTime(now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const handleDownload = () => {
     const resumeUrl = "/Siddharth_Nirmale_Resume.pdf";
     const link = document.createElement("a");
@@ -105,39 +101,47 @@ export default function TerminalPortfolio() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-300 font-sans selection:bg-zinc-800 selection:text-white pb-20">
-      <div className="max-w-3xl mx-auto px-6 pt-16 space-y-16">
+    <div className="h-screen w-full bg-[#0a0a0a] text-zinc-400 font-sans overflow-y-auto custom-scrollbar selection:bg-zinc-800 selection:text-zinc-100">
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+      `}</style>
+      
+      <div className="max-w-3xl mx-auto px-6 py-16 space-y-12">
         
         {/* --- Profile Header --- */}
-        <div className="flex flex-col md:flex-row gap-8 items-start">
-          {/* Avatar Placeholder (Optional, remove if you don't want a picture) */}
-          <div className="w-24 h-24 shrink-0 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center overflow-hidden">
-             <span className="text-4xl">👨‍💻</span>
+        <div className="flex flex-col sm:flex-row gap-6 items-start">
+          <div className="w-20 h-20 shrink-0 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center relative">
+             <span className="text-3xl">👨‍💻</span>
+             {/* Status Dot */}
+             <span className="absolute bottom-1 right-1 w-3 h-3 bg-green-500 border-2 border-[#0a0a0a] rounded-full"></span>
           </div>
           
-          <div className="space-y-4">
+          <div className="space-y-3 flex-1">
             <div>
-              <h1 className="text-2xl font-bold text-zinc-100 flex items-center gap-2">
+              <h1 className="text-xl font-bold text-zinc-100 flex items-center gap-2">
                 Siddharth Nirmale <span className="text-lg">🚀</span>
               </h1>
-              <div className="flex items-center gap-4 mt-1.5 text-xs text-zinc-500 font-medium">
-                <span className="flex items-center gap-1"><FiMapPin size={12} /> Indore, India</span>
-                <span className="w-1 h-1 rounded-full bg-zinc-700"></span>
-                <span>Full Stack Developer</span>
+              <p className="text-[13px] text-zinc-500 mt-0.5">@siddharthNirmale</p>
+              
+              <div className="flex flex-wrap items-center gap-3 mt-2 text-[12px] text-zinc-400">
+                <span className="flex items-center gap-1.5 border border-zinc-800 bg-zinc-900/50 px-2 py-0.5 rounded-md">
+                  Building Scalable Apps ✦
+                </span>
+                <span className="flex items-center gap-1"><FiMapPin size={11} /> Indore, India</span>
+                <span className="flex items-center gap-1"><FiClock size={11} /> {currentTime}</span>
               </div>
             </div>
 
-            <p className="text-sm text-zinc-400 leading-relaxed max-w-2xl">
-              Yup! I'm a <strong className="text-zinc-200 font-semibold">Full Stack Developer</strong>. 
-              I enjoy crafting scalable web applications and solving complex problems. 
-              Currently focused on the MERN stack and building responsive, user-centric interfaces. 
-              I practically live in the terminal.
+            <p className="text-[13px] leading-relaxed max-w-2xl text-zinc-400">
+              Yup! I'm a <strong className="text-zinc-200 font-semibold">Full Stack Developer</strong>. Big deal, right? But wait... there's more! I'm not just any developer, I love building solutions and solving problems. I enjoy crafting webapps with <strong className="text-zinc-200 font-semibold">React, Node.js, Express, and MongoDB</strong> and I practically live on the <strong className="text-zinc-200 font-semibold">terminal</strong> mostly.
             </p>
 
-            {/* Action Links */}
-            <div className="flex flex-wrap gap-3 pt-2">
+            <div className="flex flex-wrap gap-2 pt-1">
+              <ActionButton icon={<FaTwitter />} text="Twitter DM" href="#" />
               <ActionButton icon={<FaGithub />} text="GitHub" href="https://github.com/siddharthNirmale" />
-              <ActionButton icon={<FaLinkedin />} text="LinkedIn" href="https://linkedin.com/in/siddharth-nirmale" />
               <ActionButton icon={<FiMail />} text="Email Me" href="mailto:siddharth175nirmale1@gmail.com" />
               <ActionButton icon={<FiDownload />} text="Resume" onClick={handleDownload} isButton />
             </div>
@@ -145,82 +149,111 @@ export default function TerminalPortfolio() {
         </div>
 
         {/* --- Skills Section --- */}
-        <section className="space-y-6">
+        <section className="space-y-4">
           <TerminalHeader title="My Skills" />
           <div className="flex flex-wrap gap-2">
-            {Object.values(skills).flat().map((skill) => (
-              <TechBadge key={skill} label={skill} icon={iconMap[skill]} />
+            {skills.map((skill) => (
+              <div key={skill} className="flex items-center gap-1.5 text-[12px] font-medium text-zinc-300 hover:text-white transition-colors cursor-default">
+                <span className="text-zinc-500">{iconMap[skill]}</span>
+                {skill}
+              </div>
             ))}
           </div>
         </section>
 
-        {/* --- Education / Experience Timeline --- */}
-        <section className="space-y-6">
-          <TerminalHeader title="Education" />
-          <div className="border border-zinc-800/60 rounded-xl p-6 bg-[#09090b]">
-            <div className="flex gap-5">
-              {/* Timeline graphic */}
-              <div className="flex flex-col items-center mt-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
-                <div className="w-[1px] h-full bg-zinc-800 my-2" />
-              </div>
-              
-              {/* Content */}
-              <div className="pb-2 w-full">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 mb-1">
-                  <h3 className="text-zinc-200 font-medium text-sm">Madhav Institute of Technology & Science (MITS)</h3>
-                  <span className="text-[11px] text-zinc-500 font-mono">2020 — 2024</span>
-                </div>
-                <p className="text-[13px] text-zinc-400">B.Tech Engineering in Electronics & Telecommunication</p>
-                <div className="mt-3 inline-flex items-center gap-1.5 border border-zinc-800 bg-zinc-900/50 px-2.5 py-1 rounded text-xs font-medium text-zinc-300">
-                  CGPA: 8.49 / 10
+        {/* --- Education / Work / GitHub Graph Section --- */}
+        <section className="space-y-4">
+          <TerminalHeader title="Education & Activity" />
+          <div className="border border-zinc-800 rounded-xl bg-[#0c0c0e] p-5 space-y-6">
+            
+            {/* Timeline */}
+            <div className="relative border-l border-zinc-800 ml-2 space-y-6">
+              <div className="relative pl-6">
+                <div className="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-green-500 ring-4 ring-[#0c0c0e]" />
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-[13px] font-medium text-zinc-200">MITS Gwalior <a href="#" className="text-zinc-500 hover:text-zinc-300">↗</a></h3>
+                    <p className="text-[12px] text-zinc-500">B.Tech Electronics & Telecom (CGPA: 8.49)</p>
+                  </div>
+                  <span className="text-[11px] text-zinc-500 border border-zinc-800 rounded px-2 py-0.5">2020 - 2024</span>
                 </div>
               </div>
             </div>
+
+            {/* Custom GitHub Contribution Graph Mock */}
+            <div className="pt-4 border-t border-zinc-800/60">
+              <div className="flex items-end justify-between mb-2">
+                <span className="text-[11px] text-zinc-500">Jul — Mar</span>
+              </div>
+              <div className="flex gap-[3px] overflow-hidden">
+                {Array.from({ length: 42 }).map((_, colIndex) => (
+                  <div key={colIndex} className="grid grid-rows-7 gap-[3px]">
+                    {Array.from({ length: 7 }).map((_, rowIndex) => {
+                      // Generate random activity density
+                      const intensity = Math.random();
+                      let bgClass = "bg-zinc-800/40"; // Empty
+                      if (intensity > 0.85) bgClass = "bg-zinc-100"; // High
+                      else if (intensity > 0.6) bgClass = "bg-zinc-400"; // Medium
+                      else if (intensity > 0.4) bgClass = "bg-zinc-600"; // Low
+                      
+                      return <div key={rowIndex} className={`w-[10px] h-[10px] rounded-[2px] ${bgClass}`} />;
+                    })}
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-between items-center mt-2 text-[11px] text-zinc-500">
+                <span>This year, I achieved consistent deployments</span>
+                <div className="flex items-center gap-1">
+                  Less
+                  <div className="w-[10px] h-[10px] rounded-[2px] bg-zinc-800/40" />
+                  <div className="w-[10px] h-[10px] rounded-[2px] bg-zinc-600" />
+                  <div className="w-[10px] h-[10px] rounded-[2px] bg-zinc-400" />
+                  <div className="w-[10px] h-[10px] rounded-[2px] bg-zinc-100" />
+                  More
+                </div>
+              </div>
+            </div>
+
           </div>
         </section>
 
         {/* --- Projects Section --- */}
-        <section className="space-y-6">
+        <section className="space-y-4">
           <TerminalHeader title="My Projects" />
-          <div className="space-y-6">
+          <div className="space-y-4">
             {projects.map((project, idx) => (
-              <div key={idx} className="border border-zinc-800/60 rounded-xl overflow-hidden bg-[#09090b] transition-colors hover:border-zinc-700">
-                {/* Mock Image Area */}
-                <div className="h-32 bg-zinc-900/50 border-b border-zinc-800/60 flex items-center justify-center">
-                  <span className="font-mono text-xs text-zinc-600 border border-zinc-800 px-3 py-1.5 rounded bg-zinc-950">
-                    {project.title.toLowerCase()}_preview.jpg
-                  </span>
+              <div key={idx} className="flex flex-col sm:flex-row border border-zinc-800 rounded-xl overflow-hidden bg-[#0c0c0e] hover:border-zinc-700 transition-colors">
+                
+                {/* Left Side: Image/Preview area */}
+                <div className="w-full sm:w-[240px] h-[160px] bg-gradient-to-br from-zinc-900 to-black border-b sm:border-b-0 sm:border-r border-zinc-800 flex flex-col items-center justify-center p-4 relative">
+                  <div className="absolute top-3 left-3 bg-zinc-800 text-zinc-300 text-[10px] px-2 py-0.5 rounded-sm">
+                    {project.badge}
+                  </div>
+                  <h4 className="text-zinc-200 font-semibold text-center">{project.title}</h4>
+                  <p className="text-[10px] text-green-400 mt-1 uppercase tracking-widest">Active.</p>
                 </div>
                 
-                {/* Card Body */}
-                <div className="p-6 space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-                    <div>
-                      <h3 className="text-zinc-100 font-semibold flex items-center gap-2">
-                        {project.title}
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                      </h3>
-                      <p className="text-xs text-zinc-500 mt-1 font-mono">Built in {project.year}</p>
-                    </div>
-                    
+                {/* Right Side: Content */}
+                <div className="p-4 sm:p-5 flex-1 flex flex-col">
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="text-[15px] font-semibold text-zinc-100 flex items-center gap-2">
+                      {project.title} <span className="w-2 h-2 rounded-full bg-green-500" />
+                    </h3>
                     <div className="flex items-center gap-2">
-                      <LinkBadge icon={<FiExternalLink />} text="Live" href={`https://${project.link}`} />
-                      <LinkBadge icon={<FaGithub />} text="GitHub" href={`https://${project.github}`} />
+                      <LinkBadge icon={<FiExternalLink size={12}/>} text="Live" href={`https://${project.link}`} />
+                      <LinkBadge icon={<FaGithub size={12}/>} text="GitHub" href={`https://github.com/${project.github}`} />
                     </div>
                   </div>
 
-                  <ul className="text-[13px] text-zinc-400 space-y-2 list-disc list-inside marker:text-zinc-700">
-                    {project.bullets.map((bullet, i) => (
-                      <li key={i}>{bullet}</li>
-                    ))}
-                  </ul>
+                  <p className="text-[12px] text-zinc-400 leading-relaxed mb-4 flex-1">
+                    {project.desc}
+                  </p>
 
-                  <div className="pt-4 border-t border-zinc-800/60">
-                    <p className="text-[11px] text-zinc-500 mb-2 font-medium">Technologies Used:</p>
+                  <div>
+                    <p className="text-[10px] text-zinc-500 mb-1.5 font-medium">Technologies Used:</p>
                     <div className="flex flex-wrap gap-1.5">
                       {project.stack.map((tech) => (
-                        <span key={tech} className="text-[11px] px-2 py-1 bg-zinc-900 border border-zinc-800 rounded text-zinc-300">
+                        <span key={tech} className="text-[10px] px-2 py-0.5 bg-zinc-900 border border-zinc-800 rounded-md text-zinc-300">
                           {tech}
                         </span>
                       ))}
@@ -239,12 +272,11 @@ export default function TerminalPortfolio() {
 
 /* ---------------- UI COMPONENTS ---------------- */
 
-// The decorative bracket header from the image
 function TerminalHeader({ title }) {
   return (
     <div className="inline-flex">
-      <div className="border border-dashed border-zinc-700/80 rounded-md px-3 py-1.5 bg-zinc-900/20">
-        <h2 className="font-mono text-[13px] font-medium tracking-wide text-zinc-300">
+      <div className="border border-dashed border-zinc-700 rounded-md px-3 py-1">
+        <h2 className="font-mono text-[12px] font-medium tracking-wide text-zinc-300">
           [ {title} ]
         </h2>
       </div>
@@ -252,9 +284,8 @@ function TerminalHeader({ title }) {
   );
 }
 
-// Action buttons (Socials/Resume) under the profile
 function ActionButton({ icon, text, href, onClick, isButton }) {
-  const baseClasses = "inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 rounded-md hover:bg-zinc-800 hover:text-white hover:border-zinc-700 transition-all cursor-pointer";
+  const baseClasses = "inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 rounded hover:bg-zinc-800 hover:text-white transition-all cursor-pointer";
   
   if (isButton) {
     return (
@@ -270,24 +301,13 @@ function ActionButton({ icon, text, href, onClick, isButton }) {
   );
 }
 
-// Tech stack pills
-function TechBadge({ label, icon }) {
-  return (
-    <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-zinc-900 border border-zinc-800 rounded text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-colors">
-      {icon && <span className="text-zinc-500">{icon}</span>}
-      {label}
-    </div>
-  );
-}
-
-// Mini link buttons inside project cards
 function LinkBadge({ icon, text, href }) {
   return (
     <a 
       href={href} 
       target="_blank" 
       rel="noopener noreferrer"
-      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-900/50 border border-zinc-800 rounded hover:bg-zinc-800 transition-colors text-[11px] font-medium text-zinc-300"
+      className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-zinc-900 border border-zinc-800 rounded hover:bg-zinc-800 transition-colors text-[11px] font-medium text-zinc-300"
     >
       {icon} {text}
     </a>
