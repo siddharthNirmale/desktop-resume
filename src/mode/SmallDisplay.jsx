@@ -230,12 +230,12 @@ export default function TerminalPortfolio() {
                 <GitHubCalendar
                   username="siddharthNirmale"
                   colorScheme="dark"
-                  theme={customTheme}
+                  
                   transformData={(data) => filterResponsiveMonths(data, visibleMonths)}
                   blockSize={8.5}
                   blockMargin={3}
-                  blockRadius={2}
-                  fontSize={11}
+                  blockRadius={2.5}
+                  fontSize={12}
                   hideTotalCount
                   style={{
                     color: 'rgba(255, 255, 255, 0.3)',
