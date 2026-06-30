@@ -292,6 +292,16 @@ export default function TerminalPortfolio() {
           </div>
         </section>
 
+        {/* footer */}
+        <section className="mt-12">
+          <TerminalHeader title="Footer" />
+          <div className="border border-zinc-800 rounded-xl bg-[#0c0c0e] p-5 space-y-4">
+            <p className="text-[13px] text-zinc-400">
+              Built with ❤️ by Siddharth Nirmale
+            </p>
+          </div>
+        </section>
+
       </div>
     </div>
   );
