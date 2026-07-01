@@ -24,6 +24,8 @@ import {
 } from "react-icons/si";
 import { TbBrandCpp } from "react-icons/tb";
 import { GraduationCap, Code2, Briefcase } from "lucide-react";
+import projects from "../data/project";
+
 
 const skills = {
   Languages: ["JavaScript", "TypeScript", "Python", "C++", "HTML5"],
@@ -52,44 +54,7 @@ const iconMap = {
   GitHub: <FaGithub />,
 };
 
-const projects = [
-  {
-    title: "Thumbmax",
-    year: "2026",
-    stack: "Node.js • Express.js • Gemini API • Cloudinary",
-    bullets: [
-      "Built a scalable AI-powered thumbnail generation platform.",
-      "Integrated Gemini API and Cloudinary.",
-      "Implemented JWT authentication and API rate limiting.",
-      "Deployed production-ready application on Vercel.",
-    ],
-    link: "thumbmax-psi.vercel.app",
-  },
-  {
-    title: "Postify",
-    year: "2025",
-    stack: "Node.js • Express.js • MongoDB",
-    bullets: [
-      "Developed a full-stack social media application.",
-      "Built REST APIs for authentication, feeds and posts.",
-      "Implemented secure CRUD operations.",
-      "Used JWT authentication for access control.",
-    ],
-    link: "github.com/siddharthNirmale/Feed-Pin",
-  },
-  {
-    title: "E-Commerce",
-    year: "2025",
-    stack: "React.js • Vite • JavaScript",
-    bullets: [
-      "Built responsive e-commerce user interface.",
-      "Implemented filtering and category navigation.",
-      "Used React Hooks for state management.",
-      "Optimized for cross-device compatibility.",
-    ],
-    link: "ecommerce-aug.vercel.app",
-  },
-];
+
 
 export default function ResumeSection() {
   const handleDownload = () => {
@@ -196,7 +161,7 @@ export default function ResumeSection() {
                 <Panel key={project.title} title={project.title}>
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-[11px] font-semibold text-accent uppercase tracking-wider">
-                      {project.stack}
+                      {project.tech}
                     </span>
                     <span className="text-[12px] text-white/40 font-medium">
                       {project.year}
@@ -210,7 +175,7 @@ export default function ResumeSection() {
                   </ul>
 
                   <a
-                    href={`https://${project.link}`}
+                    href={`${project.live}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 mt-4 text-[12px] font-medium text-white/50 hover:text-accent transition-colors border border-white/10 rounded-md px-2.5 py-1 bg-white/[0.02]"

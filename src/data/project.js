@@ -1,6 +1,7 @@
  const projects = [
   {
     id: 1,
+    year:"2026",
     title: "Desktop Style Portfolio",
     tech: "React • Vite • Tailwind CSS • Framer Motion • Three.js",
     bullets: [
@@ -16,6 +17,7 @@
   },
   {
     id: 2,
+    year:"2026",
     title: "AI Refund Agent (preview only)",
     tech: "Next.js • Groq AI • TypeScript • Tailwind CSS • Zustand",
     bullets: [
@@ -31,6 +33,7 @@
   },
   {
     id: 3,
+    year:"2025",
     title: "Thumbmax",
     tech: "Node.js • Express.js • Gemini API • Cloudinary",
     bullets: [

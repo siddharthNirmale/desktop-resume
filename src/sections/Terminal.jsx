@@ -104,14 +104,52 @@ export default function Terminal() {
       case "projects":
         const projects = [
           {
-            name: "Thumbmax",
-            desc: "AI-powered thumbnail generation platform built with Node.js and Gemini API.",
-            tech: ["Node.js", "Gemini API"],
+            id: 1,
+            year: "2026",
+            title: "Desktop Style Portfolio",
+            tech: "React • Vite • Tailwind CSS • Framer Motion • Three.js",
+            bullets: [
+              "Designed a Windows-inspired desktop experience with draggable and resizable application windows.",
+              "Built using React, Vite, Tailwind CSS, Framer Motion, React Three Fiber, and GSAP.",
+              "Implemented smooth animations, custom desktop interactions, and responsive layouts.",
+              "Integrated GitHub activity, weather widget, projects, resume, and interactive desktop utilities.",
+            ],
+            image:
+              "https://images.unsplash.com/photo-1496171367470-9ed9a91ea931?q=80&w=600&h=300&fit=crop",
+            github: "https://github.com/siddharthNirmale/desktop-resume",
+            live: "https://siddharthn-portfolio.vercel.app/",
           },
           {
-            name: "Postify",
-            desc: "Full-stack social media application with custom REST API structures.",
-            tech: ["React", "Node.js", "MongoDB"],
+            id: 2,
+            year: "2026",
+            title: "AI Refund Agent (preview only)",
+            tech: "Next.js • Groq AI • TypeScript • Tailwind CSS • Zustand",
+            bullets: [
+              "Developed an AI-powered refund assistant using Groq AI for intelligent query understanding.",
+              "Implemented a rule-based decision engine to validate refund eligibility before AI processing.",
+              "Created a multi-step workflow that routes user requests based on business conditions.",
+              "Built a modern responsive interface with Next.js, TypeScript, Tailwind CSS, and Zustand.",
+            ],
+            image:
+              "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=600&h=300&fit=crop",
+            github: "https://github.com/siddharthNirmale/ai-refund-agent",
+            live: "https://refundpilot-preview.vercel.app/",
+          },
+          {
+            id: 3,
+            year: "2025",
+            title: "Thumbmax",
+            tech: "Node.js • Express.js • Gemini API • Cloudinary",
+            bullets: [
+              "Built an AI-powered thumbnail generation platform using Gemini API and Cloudinary.",
+              "Implemented secure JWT authentication with protected API endpoints.",
+              "Added API rate limiting and optimized backend image-processing workflows.",
+              "Deployed the production-ready application on Vercel with scalable architecture.",
+            ],
+            image:
+              "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&h=300&fit=crop",
+            github: "https://github.com/siddharthNirmale/Thumbnail",
+            live: "https://thumbmax-psi.vercel.app/",
           },
         ];
 
@@ -124,15 +162,17 @@ export default function Terminal() {
               >
                 <div className="flex justify-between items-center">
                   <h3 className="text-white/90 font-semibold text-[14px]">
-                    {proj.name}
+                    {proj.title}
                   </h3>
-                  <span className="text-white/30 text-[12px]">↗</span>
+                  <a href={proj.live} target="_blank" rel="noreferrer" className="text-white/30 text-[12px] hover:text-white/70 transition-colors">
+                    ↗
+                  </a>
                 </div>
                 <p className="text-white/50 text-[13px] leading-relaxed">
-                  {proj.desc}
+                  {proj.bullets[0]}
                 </p>
-                <div className="flex gap-1.5 pt-1">
-                  {proj.tech.map((t) => (
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {proj.tech.split(' • ').map((t) => (
                     <span
                       key={t}
                       className="text-[11px] font-medium px-2 py-0.5 rounded bg-white/[0.02] border border-white/5 text-white/40"
