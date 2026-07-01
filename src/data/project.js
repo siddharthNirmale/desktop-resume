@@ -11,7 +11,7 @@
       "Integrated GitHub activity, weather widget, projects, resume, and interactive desktop utilities.",
     ],
     image:
-      "https://images.unsplash.com/photo-1496171367470-9ed9a91ea931?q=80&w=600&h=300&fit=crop",
+      "src/assets/project/Portfolio.png",
     github: "https://github.com/siddharthNirmale/desktop-resume",
     live: "https://siddharthn-portfolio.vercel.app/",
   },
@@ -27,7 +27,7 @@
       "Built a modern responsive interface with Next.js, TypeScript, Tailwind CSS, and Zustand.",
     ],
     image:
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=600&h=300&fit=crop",
+      "src/assets/project/agent.png",
     github: "https://github.com/siddharthNirmale/ai-refund-agent",
     live: "https://refundpilot-preview.vercel.app/",
   },
@@ -43,7 +43,7 @@
       "Deployed the production-ready application on Vercel with scalable architecture.",
     ],
     image:
-      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&h=300&fit=crop",
+      "src/assets/project/thumbmax.png",
     github: "https://github.com/siddharthNirmale/Thumbnail",
     live: "https://thumbmax-psi.vercel.app/",
   },
