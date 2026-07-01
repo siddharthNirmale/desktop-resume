@@ -53,28 +53,49 @@ const iconMap = {
 
 const projects = [
   {
+    id: 1,
+    year: "2026",
+    title: "Desktop Style Portfolio",
+    tech: "React • Vite • Tailwind CSS • Framer Motion • Three.js",
+    bullets: [
+      "Designed a Windows-inspired desktop experience with draggable and resizable application windows.",
+      "Built using React, Vite, Tailwind CSS, Framer Motion, React Three Fiber, and GSAP.",
+      "Implemented smooth animations, custom desktop interactions, and responsive layouts.",
+      "Integrated GitHub activity, weather widget, projects, resume, and interactive desktop utilities.",
+    ],
+    image: "src/assets/project/Portfolio.png",
+    github: "https://github.com/siddharthNirmale/desktop-resume",
+    live: "https://siddharthn-portfolio.vercel.app/",
+  },
+  {
+    id: 2,
+    year: "2026",
+    title: "AI Refund Agent (preview only)",
+    tech: "Next.js • Groq AI • TypeScript • Tailwind CSS • Zustand",
+    bullets: [
+      "Developed an AI-powered refund assistant using Groq AI for intelligent query understanding.",
+      "Implemented a rule-based decision engine to validate refund eligibility before AI processing.",
+      "Created a multi-step workflow that routes user requests based on business conditions.",
+      "Built a modern responsive interface with Next.js, TypeScript, Tailwind CSS, and Zustand.",
+    ],
+    image: "src/assets/project/agent.png",
+    github: "https://github.com/siddharthNirmale/ai-refund-agent",
+    live: "https://refundpilot-preview.vercel.app/",
+  },
+  {
+    id: 3,
+    year: "2025",
     title: "Thumbmax",
-    badge: "AI Powered",
-    desc: "Built a scalable AI-powered thumbnail generation platform using Node.js and Express.js. Integrated Gemini API and Cloudinary, implemented JWT authentication, API rate limiting, and deployed on Vercel.",
-    stack: ["Node.js", "Express.js", "Gemini API", "Cloudinary"],
-    link: "thumbmax-psi.vercel.app",
-    github: "siddharthNirmale/Thumbmax",
-  },
-  {
-    title: "Postify",
-    badge: "Full Stack",
-    desc: "Developed a full-stack social media platform with authentication, posts, feeds, and user management. Built secure REST APIs using Express.js and MongoDB with JWT authentication.",
-    stack: ["Node.js", "Express.js", "MongoDB"],
-    link: "github.com/siddharthNirmale/Feed-Pin",
-    github: "siddharthNirmale/Feed-Pin",
-  },
-  {
-    title: "E-Commerce",
-    badge: "Live Project",
-    desc: "Built a responsive e-commerce frontend with product filtering, search, category navigation, and React Hooks for efficient state management across devices.",
-    stack: ["React.js", "Vite", "JavaScript"],
-    link: "ecommerce-aug.vercel.app",
-    github: "siddharthNirmale/Ecommerce-Aug",
+    tech: "Node.js • Express.js • Gemini API • Cloudinary",
+    bullets: [
+      "Built an AI-powered thumbnail generation platform using Gemini API and Cloudinary.",
+      "Implemented secure JWT authentication with protected API endpoints.",
+      "Added API rate limiting and optimized backend image-processing workflows.",
+      "Deployed the production-ready application on Vercel with scalable architecture.",
+    ],
+    image: "src/assets/project/thumbmax.png",
+    github: "https://github.com/siddharthNirmale/Thumbnail",
+    live: "https://thumbmax-psi.vercel.app/",
   },
 ];
 
@@ -86,7 +107,7 @@ const customTheme = {
 
 // Robust date filter that correctly handles crossing over into previous years
 const filterResponsiveMonths = (contributions, monthsToShow) => {
-  if (monthsToShow >= 12) return contributions; // Show the full GitHub default (1 year)
+  if (monthsToShow >= 12) return contributions;
 
   const endDate = new Date();
   const startDate = new Date();
@@ -118,15 +139,15 @@ export default function TerminalPortfolio() {
     const handleResize = () => {
       const width = window.innerWidth;
       if (width < 640) {
-        setVisibleMonths(4); // Mobile: show last 4 months
+        setVisibleMonths(4);
       } else if (width < 1024) {
-        setVisibleMonths(8); // Tablet: show last 8 months
+        setVisibleMonths(8);
       } else {
-        setVisibleMonths(12); // Desktop: show full year
+        setVisibleMonths(12);
       }
     };
 
-    handleResize(); // Set initial value
+    handleResize(); 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -230,7 +251,6 @@ export default function TerminalPortfolio() {
                 <GitHubCalendar
                   username="siddharthNirmale"
                   colorScheme="dark"
-                  
                   transformData={(data) => filterResponsiveMonths(data, visibleMonths)}
                   blockSize={8.5}
                   blockMargin={3}
@@ -244,7 +264,7 @@ export default function TerminalPortfolio() {
                 />
               </div>
 
-              {/* Custom Legend underneath to match the widget since you set hideColorLegend */}
+              {/* Custom Legend */}
               <div className="flex justify-between items-center mt-2 text-[11px] text-zinc-500">
                 <span>This year, I achieved consistent deployments</span>
                 <div className="flex items-center gap-1">
@@ -269,35 +289,43 @@ export default function TerminalPortfolio() {
               <div key={idx} className="flex flex-col sm:flex-row border border-zinc-800 rounded-xl overflow-hidden bg-[#0c0c0e] hover:border-zinc-700 transition-colors">
 
                 {/* Left Side: Image/Preview area */}
-                <div className="w-full sm:w-[240px] h-[160px] bg-gradient-to-br from-zinc-900 to-black border-b sm:border-b-0 sm:border-r border-zinc-800 flex flex-col items-center justify-center p-4 relative">
-                  <div className="absolute top-3 left-3 bg-zinc-800 text-zinc-300 text-[10px] px-2 py-0.5 rounded-sm">
-                    {project.badge}
+                <div className="w-full sm:w-[240px] h-[180px] sm:h-auto border-b sm:border-b-0 sm:border-r border-zinc-800 relative group overflow-hidden shrink-0 bg-zinc-900">
+                  <img 
+                    src={project.image} 
+                    alt={project.title} 
+                    className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+                  />
+                  <div className="absolute top-3 left-3 bg-zinc-900/80 backdrop-blur-sm border border-zinc-700 text-zinc-300 text-[10px] px-2 py-0.5 rounded-sm">
+                    {project.year}
                   </div>
-                  <h4 className="text-zinc-200 font-semibold text-center">{project.title}</h4>
-                  <p className="text-[10px] text-green-400 mt-1 uppercase tracking-widest">Active.</p>
+                  <div className="absolute bottom-3 right-3 flex items-center justify-center w-6 h-6 rounded-full bg-zinc-900/80 backdrop-blur-sm border border-zinc-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                  </div>
                 </div>
 
                 {/* Right Side: Content */}
                 <div className="p-4 sm:p-5 flex-1 flex flex-col">
-                  <div className="flex justify-between items-start mb-2">
+                  <div className="flex justify-between items-start mb-3">
                     <h3 className="text-[15px] font-semibold text-zinc-100 flex items-center gap-2">
                       {project.title} <span className="w-2 h-2 rounded-full bg-green-500" />
                     </h3>
                     <div className="flex items-center gap-2">
-                      <LinkBadge icon={<FiExternalLink size={12} />} text="Live" href={`https://${project.link}`} />
-                      <LinkBadge icon={<FaGithub size={12} />} text="GitHub" href={`https://github.com/${project.github}`} />
+                      <LinkBadge icon={<FiExternalLink size={12} />} text="Live" href={project.live} />
+                      <LinkBadge icon={<FaGithub size={12} />} text="GitHub" href={project.github} />
                     </div>
                   </div>
 
-                  <p className="text-[12px] text-zinc-400 leading-relaxed mb-4 flex-1">
-                    {project.desc}
-                  </p>
+                  <ul className="text-[12px] text-zinc-400 leading-relaxed mb-4 flex-1 list-disc pl-4 space-y-1.5">
+                    {project.bullets.map((bullet, i) => (
+                      <li key={i}>{bullet}</li>
+                    ))}
+                  </ul>
 
-                  <div>
-                    <p className="text-[10px] text-zinc-500 mb-1.5 font-medium">Technologies Used:</p>
+                  <div className="mt-auto">
+                    <p className="text-[10px] text-zinc-500 mb-2 font-medium uppercase tracking-wider">Technologies Used</p>
                     <div className="flex flex-wrap gap-1.5">
-                      {project.stack.map((tech) => (
-                        <span key={tech} className="text-[10px] px-2 py-0.5 bg-zinc-900 border border-zinc-800 rounded-md text-zinc-300">
+                      {project.tech.split(' • ').map((tech) => (
+                        <span key={tech} className="text-[10px] px-2 py-0.5 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-300 hover:bg-zinc-800 transition-colors">
                           {tech}
                         </span>
                       ))}
