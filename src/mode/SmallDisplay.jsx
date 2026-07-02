@@ -31,6 +31,7 @@ import { TbBrandCpp } from "react-icons/tb";
 // Import centralized data
 import projects from "../data/project";
 import skills from "../data/skills";
+import resume from "../data/resume";
 
 const iconMap = {
   JavaScript: <SiJavascript />,
