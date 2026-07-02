@@ -1,14 +1,14 @@
- const projects = [
+const projects = [
   {
     id: 1,
-    year:"2026",
+    year: "2026",
     title: "Desktop Style Portfolio",
-    tech: "React • Vite • Tailwind CSS • Framer Motion • Three.js",
+    tech: "React.js • Vite • Tailwind CSS • Framer Motion",
     bullets: [
-      "Designed a Windows-inspired desktop experience with draggable and resizable application windows.",
-      "Built using React, Vite, Tailwind CSS, Framer Motion, React Three Fiber, and GSAP.",
-      "Implemented smooth animations, custom desktop interactions, and responsive layouts.",
-      "Integrated GitHub activity, weather widget, projects, resume, and interactive desktop utilities.",
+      "Developed a Windows-inspired interactive desktop environment with draggable, resizable application windows.",
+      "Implemented smooth animations and complex UI interactions using Framer Motion to optimize visual performance.",
+      "Integrated GitHub and weather APIs to dynamically render live activity and data into the frontend interface.",
+      "Built custom state management for seamless window utilities and responsive layout handling across devices.",
     ],
     image:
       "src/assets/project/Portfolio.png",
@@ -17,14 +17,13 @@
   },
   {
     id: 2,
-    year:"2026",
-    title: "AI Refund Agent (preview only)",
-    tech: "Next.js • Groq AI • TypeScript • Tailwind CSS • Zustand",
+    year: "2026",
+    title: "AI Refund Agent (Preview)",
+    tech: "Next.js • TypeScript • Groq AI • Tailwind CSS",
     bullets: [
-      "Developed an AI-powered refund assistant using Groq AI for intelligent query understanding.",
-      "Implemented a rule-based decision engine to validate refund eligibility before AI processing.",
-      "Created a multi-step workflow that routes user requests based on business conditions.",
-      "Built a modern responsive interface with Next.js, TypeScript, Tailwind CSS, and Zustand.",
+      "Developed an AI-powered customer service agent using Next.js and Groq AI for intelligent query understanding.",
+      "Created a rule-based decision engine with Zustand state management to accurately validate refund eligibility.",
+      "Built multi-step dynamic workflows to intelligently route customer queries based on configurable business logic.",
     ],
     image:
       "src/assets/project/agent.png",
@@ -33,14 +32,13 @@
   },
   {
     id: 3,
-    year:"2025",
+    year: "2025",
     title: "Thumbmax",
     tech: "Node.js • Express.js • Gemini API • Cloudinary",
     bullets: [
-      "Built an AI-powered thumbnail generation platform using Gemini API and Cloudinary.",
-      "Implemented secure JWT authentication with protected API endpoints.",
-      "Added API rate limiting and optimized backend image-processing workflows.",
-      "Deployed the production-ready application on Vercel with scalable architecture.",
+      "Developed a full-stack media platform leveraging Node.js, Express.js, and the Gemini API for thumbnail generation.",
+      "Integrated Cloudinary for optimized image processing, scalable storage, and secure media delivery.",
+      "Implemented JWT authentication for secure APIs, including request validation and rate limiting on Vercel.",
     ],
     image:
       "src/assets/project/thumbmax.png",
