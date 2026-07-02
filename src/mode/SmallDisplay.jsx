@@ -322,9 +322,7 @@ export default function TerminalPortfolio() {
                     color: "rgba(255, 255, 255, 0.4)",
                     fontFamily: "inherit",
                   }}
-                  theme={{
-                    dark: ["#18181b", "#27272a", "#52525b", "#a1a1aa", "#ffffff"],
-                  }}
+                  
                 />
               </div>
 
