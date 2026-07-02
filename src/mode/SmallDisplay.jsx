@@ -318,26 +318,13 @@ export default function TerminalPortfolio() {
                   blockRadius={2}
                   fontSize={12}
                   hideTotalCount
-                  style={{
-                    color: "rgba(255, 255, 255, 0.4)",
-                    fontFamily: "inherit",
-                  }}
+                 
                   
                 />
               </div>
 
               {/* Custom Legend */}
-              <div className="flex justify-between items-center mt-2 text-[11px] font-medium text-zinc-500">
-                <span>Consistent deployments</span>
-                <div className="flex items-center gap-1.5">
-                  Less
-                  <div className="w-[10px] h-[10px] rounded-[2px] bg-[#18181b]" />
-                  <div className="w-[10px] h-[10px] rounded-[2px] bg-[#27272a]" />
-                  <div className="w-[10px] h-[10px] rounded-[2px] bg-[#52525b]" />
-                  <div className="w-[10px] h-[10px] rounded-[2px] bg-[#ffffff]" />
-                  More
-                </div>
-              </div>
+              
             </div>
           </div>
         </motion.section>
