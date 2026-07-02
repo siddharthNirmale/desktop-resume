@@ -25,15 +25,7 @@ import {
 import { TbBrandCpp } from "react-icons/tb";
 import { GraduationCap, Code2, Briefcase } from "lucide-react";
 import projects from "../data/project";
-
-
-const skills = {
-  Languages: ["JavaScript", "TypeScript", "Python", "C++", "HTML5"],
-  Frontend: ["React.js", "Next.js", "Tailwind CSS", "Bootstrap", "Vite"],
-  Backend: ["Node.js", "Express.js"],
-  Database: ["MongoDB", "Firebase"],
-  "Cloud & Tools": ["Git", "GitHub"],
-};
+import skills from "../data/skills"; // <-- Imported your new skills file!
 
 const iconMap = {
   JavaScript: <SiJavascript />,
@@ -54,12 +46,10 @@ const iconMap = {
   GitHub: <FaGithub />,
 };
 
-
-
 export default function ResumeSection() {
   const handleDownload = () => {
     // Replace this string with the actual path to your resume file inside the /public folder
-    const resumeUrl = "/Siddharth_Nirmale_Resume.pdf";
+    const resumeUrl = "src\\assets\\Siddharth_Nirmale.pdf";
     
     const link = document.createElement("a");
     link.href = resumeUrl;
@@ -75,10 +65,10 @@ export default function ResumeSection() {
       <div className="px-8 py-5 border-b border-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-b from-white/[0.02] to-transparent shrink-0">
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-white/95">
-            Curriculum Vitae
+            Siddharth_Resume.pdf
           </h1>
           <p className="text-[12px] text-white/40 mt-0.5">
-            Verified professional background and technical framework credentials.
+            Here is my professional resume, showcasing my skills, projects, and academic achievements. You can download the PDF version for your reference.
           </p>
         </div>
         
@@ -92,10 +82,7 @@ export default function ResumeSection() {
             Download PDF
           </button>
           
-          <div className="hidden sm:flex items-center gap-2 text-[12px] text-white/50 font-medium border-l border-white/10 pl-4 h-5">
-            <span className="w-2 h-2 bg-accent rounded-full shadow-[0_0_8px_var(--color-accent)] animate-pulse" />
-            Public Link Active
-          </div>
+          
         </div>
       </div>
 
@@ -192,13 +179,14 @@ export default function ResumeSection() {
           <div className="space-y-4">
             <SectionTitle icon={<Briefcase size={14} />} title="Technical Core Competencies" />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#202022]/40 rounded-xl p-5 border border-white/5">
-              {Object.entries(skills).map(([group, items]) => (
-                <div key={group} className="space-y-2">
+              {/* Updated map function to match the new skills array structure */}
+              {skills.map((skillGroup) => (
+                <div key={skillGroup.category} className="space-y-2">
                   <div className="text-[11px] font-semibold text-white/40 uppercase tracking-wider">
-                    {group}
+                    {skillGroup.category}
                   </div>
                   <div className="flex flex-wrap gap-1.5">
-                    {items.map((skill) => (
+                    {skillGroup.items.map((skill) => (
                       <TechBadge
                         key={skill}
                         label={skill}
