@@ -25,8 +25,9 @@ import {
 import { TbBrandCpp } from "react-icons/tb";
 import { GraduationCap, Code2, Briefcase } from "lucide-react";
 import projects from "../data/project";
-import skills from "../data/skills"; // <-- Imported your new skills file!
-
+import skills from "../data/skills"; // 
+// <-- Imported your new skills file!
+import resume from "../data/resume"; // <-- Imported your new resume file!
 const iconMap = {
   JavaScript: <SiJavascript />,
   TypeScript: <SiTypescript />,
@@ -49,7 +50,7 @@ const iconMap = {
 export default function ResumeSection() {
   const handleDownload = () => {
     // Replace this string with the actual path to your resume file inside the /public folder
-    const resumeUrl = "src\\assets\\Siddharth_Nirmale.pdf";
+    const resumeUrl = resume;
     
     const link = document.createElement("a");
     link.href = resumeUrl;
