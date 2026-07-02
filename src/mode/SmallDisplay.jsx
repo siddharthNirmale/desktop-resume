@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import {GitHubCalendar} from "react-github-calendar";
+import { GitHubCalendar } from "react-github-calendar";
 import {
   FiExternalLink,
   FiMail,
   FiMapPin,
   FiDownload,
   FiClock,
+  FiCpu,
 } from "react-icons/fi";
-import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 import {
   SiJavascript,
   SiTypescript,
@@ -26,11 +27,9 @@ import {
 } from "react-icons/si";
 import { TbBrandCpp } from "react-icons/tb";
 
-const skills = [
-  "JavaScript", "TypeScript", "Python", "C++", "HTML5",
-  "React.js", "Next.js", "Tailwind CSS", "Bootstrap", "Vite",
-  "Node.js", "Express.js", "MongoDB", "Firebase", "Git", "GitHub"
-];
+// Import centralized data
+import projects from "../data/project";
+import skills from "../data/skills";
 
 const iconMap = {
   JavaScript: <SiJavascript />,
@@ -49,60 +48,6 @@ const iconMap = {
   Firebase: <SiFirebase />,
   Git: <SiGit />,
   GitHub: <FaGithub />,
-};
-
-const projects = [
-  {
-    id: 1,
-    year: "2026",
-    title: "Desktop Style Portfolio",
-    tech: "React • Vite • Tailwind CSS • Framer Motion • Three.js",
-    bullets: [
-      "Designed a Windows-inspired desktop experience with draggable and resizable application windows.",
-      "Built using React, Vite, Tailwind CSS, Framer Motion, React Three Fiber, and GSAP.",
-      "Implemented smooth animations, custom desktop interactions, and responsive layouts.",
-      "Integrated GitHub activity, weather widget, projects, resume, and interactive desktop utilities.",
-    ],
-    image: "src/assets/project/Portfolio.png",
-    github: "https://github.com/siddharthNirmale/desktop-resume",
-    live: "https://siddharthn-portfolio.vercel.app/",
-  },
-  {
-    id: 2,
-    year: "2026",
-    title: "AI Refund Agent (preview only)",
-    tech: "Next.js • Groq AI • TypeScript • Tailwind CSS • Zustand",
-    bullets: [
-      "Developed an AI-powered refund assistant using Groq AI for intelligent query understanding.",
-      "Implemented a rule-based decision engine to validate refund eligibility before AI processing.",
-      "Created a multi-step workflow that routes user requests based on business conditions.",
-      "Built a modern responsive interface with Next.js, TypeScript, Tailwind CSS, and Zustand.",
-    ],
-    image: "src/assets/project/agent.png",
-    github: "https://github.com/siddharthNirmale/ai-refund-agent",
-    live: "https://refundpilot-preview.vercel.app/",
-  },
-  {
-    id: 3,
-    year: "2025",
-    title: "Thumbmax",
-    tech: "Node.js • Express.js • Gemini API • Cloudinary",
-    bullets: [
-      "Built an AI-powered thumbnail generation platform using Gemini API and Cloudinary.",
-      "Implemented secure JWT authentication with protected API endpoints.",
-      "Added API rate limiting and optimized backend image-processing workflows.",
-      "Deployed the production-ready application on Vercel with scalable architecture.",
-    ],
-    image: "src/assets/project/thumbmax.png",
-    github: "https://github.com/siddharthNirmale/Thumbnail",
-    live: "https://thumbmax-psi.vercel.app/",
-  },
-];
-
-// --- Helper configurations for the GitHub Calendar ---
-const customTheme = {
-  light: ['#27272a', '#52525b', '#71717a', '#a1a1aa', '#f4f4f5'],
-  dark: ['#18181b', '#3f3f46', '#71717a', '#a1a1aa', '#f4f4f5'], 
 };
 
 // Robust date filter that correctly handles crossing over into previous years
@@ -127,7 +72,13 @@ export default function TerminalPortfolio() {
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      setCurrentTime(now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+      setCurrentTime(
+        now.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        })
+      );
     };
     updateTime();
     const interval = setInterval(updateTime, 1000);
@@ -147,7 +98,7 @@ export default function TerminalPortfolio() {
       }
     };
 
-    handleResize(); 
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -163,7 +114,7 @@ export default function TerminalPortfolio() {
   };
 
   return (
-    <div className="h-screen w-full bg-[#0a0a0a] text-zinc-400 font-sans overflow-y-auto custom-scrollbar selection:bg-zinc-800 selection:text-zinc-100">
+    <div className="min-h-screen w-full bg-[#0a0a0b] text-zinc-400 font-sans overflow-y-auto custom-scrollbar selection:bg-zinc-800 selection:text-zinc-100 pb-12">
       <style>{`
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
@@ -171,161 +122,235 @@ export default function TerminalPortfolio() {
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
       `}</style>
 
-      <div className="max-w-3xl mx-auto px-6 py-16 space-y-12">
-
+      <div className="max-w-[800px] mx-auto px-6 py-16 space-y-12">
         {/* --- Profile Header --- */}
         <div className="flex flex-col sm:flex-row gap-6 items-start">
-          <div className="w-20 h-20 shrink-0 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center relative">
-            <span className="text-3xl">👨‍💻</span>
-            <span className="absolute bottom-1 right-1 w-3 h-3 bg-green-500 border-2 border-[#0a0a0a] rounded-full"></span>
+          <div className="w-24 h-24 shrink-0 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center relative shadow-sm">
+            <span className="text-4xl">👨‍💻</span>
+            <span className="absolute bottom-1 right-1 w-3.5 h-3.5 bg-zinc-400 border-[3px] border-[#0a0a0b] rounded-full"></span>
           </div>
 
-          <div className="space-y-3 flex-1">
+          <div className="space-y-4 flex-1 pt-1">
             <div>
-              <h1 className="text-xl font-bold text-zinc-100 flex items-center gap-2">
-                Siddharth Nirmale <span className="text-lg">🚀</span>
+              <h1 className="text-2xl font-bold text-zinc-100 flex items-center gap-2">
+                Siddharth Nirmale <span className="text-xl">🚀</span>
               </h1>
-              <p className="text-[13px] text-zinc-500 mt-0.5">@siddharthNirmale</p>
+              <p className="text-[13px] text-zinc-500 mt-0.5 font-medium">
+                @siddharthNirmale
+              </p>
 
               <div className="flex flex-wrap items-center gap-3 mt-2 text-[12px] text-zinc-400">
-                <span className="flex items-center gap-1.5 border border-zinc-800 bg-zinc-900/50 px-2 py-0.5 rounded-md">
+                <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-md hover:text-zinc-300 transition-colors cursor-default border-b border-zinc-800">
                   Building Scalable Apps ✦
                 </span>
-                <span className="flex items-center gap-1"><FiMapPin size={11} /> Indore, India</span>
-                <span className="flex items-center gap-1"><FiClock size={11} /> {currentTime}</span>
+                <span className="flex items-center gap-1">
+                  <FiMapPin size={11} /> Indore, India
+                </span>
+                <span className="flex items-center gap-1">
+                  <FiClock size={11} /> {currentTime}
+                </span>
               </div>
             </div>
 
-            <p className="text-[13px] leading-relaxed max-w-2xl text-zinc-400">
-              Full Stack Developer passionate about building scalable web applications and solving real-world problems. I enjoy developing modern applications with <strong className="text-zinc-200 font-semibold">React, Next.js, Node.js, Express.js, and MongoDB</strong>, integrating AI services, and creating responsive user experiences with clean, maintainable code.
+            <p className="text-[14px] leading-relaxed max-w-2xl text-zinc-400">
+              Yup! I'm a <strong className="text-zinc-200 font-semibold">Full Stack Developer</strong>. Big deal, right? But wait... there's more! I'm not just any developer, I love building scalable solutions and solving real-world problems. I enjoy crafting modern web applications with{" "}
+              <strong className="text-zinc-200 font-semibold">
+                React, Next.js, Node.js, Express.js,
+              </strong>{" "}
+              and <strong className="text-zinc-200 font-semibold">MongoDB</strong> mostly.
             </p>
 
-            <div className="flex flex-wrap gap-2 pt-1">
+            <div className="flex flex-wrap items-center gap-3 pt-2">
               <ActionButton
                 icon={<FaLinkedin />}
-                text="LinkedIn"
+                text="LinkedIn Dm"
                 href="https://linkedin.com/in/siddharth-nirmale"
               />
-              <ActionButton icon={<FaGithub />} text="GitHub" href="https://github.com/siddharthNirmale" />
-              <ActionButton icon={<FiMail />} text="Email Me" href="mailto:siddharth175nirmale1@gmail.com" />
-              <ActionButton icon={<FiDownload />} text="Resume" onClick={handleDownload} isButton />
+              <span className="text-[10px] text-zinc-600 font-bold italic font-serif">
+                OR
+              </span>
+              <ActionButton
+                icon={<FiMail />}
+                text="Email Me"
+                href="mailto:siddharth175nirmale1@gmail.com"
+              />
+              <span className="text-zinc-700">|</span>
+              <IconButton icon={<FaGithub />} href="https://github.com/siddharthNirmale" />
+              <IconButton icon={<FiDownload />} onClick={handleDownload} isButton />
             </div>
           </div>
         </div>
 
         {/* --- Skills Section --- */}
-        <section className="space-y-4">
+        <section className="space-y-6">
           <TerminalHeader title="My Skills" />
-          <div className="flex flex-wrap gap-2">
-            {skills.map((skill) => (
-              <div key={skill} className="flex items-center gap-1.5 text-[12px] font-medium text-zinc-300 hover:text-white transition-colors cursor-default">
-                <span className="text-zinc-500">{iconMap[skill]}</span>
-                {skill}
-              </div>
+          <div className="flex flex-wrap gap-x-6 gap-y-3">
+            {skills.map((skillGroup) => (
+              <React.Fragment key={skillGroup.category}>
+                {skillGroup.items.map((skill) => (
+                  <div
+                    key={skill}
+                    className="flex items-center gap-2 text-[13px] font-medium text-zinc-400 hover:text-zinc-200 transition-colors cursor-default"
+                  >
+                    <span className="text-zinc-500">
+                      {iconMap[skill] || <FiCpu size={14} />}
+                    </span>
+                    {skill}
+                  </div>
+                ))}
+              </React.Fragment>
             ))}
           </div>
         </section>
 
-        {/* --- Education / Work / GitHub Graph Section --- */}
-        <section className="space-y-4">
-          <TerminalHeader title="Education & Activity" />
-          <div className="border border-zinc-800 rounded-xl bg-[#0c0c0e] p-5 space-y-6">
-
+        {/* --- Experience Section --- */}
+        <section className="space-y-6">
+          <TerminalHeader title="Work Experience" />
+          <div className="border border-zinc-800/80 rounded-xl bg-[#0c0c0e] p-6 space-y-8">
             {/* Timeline */}
-            <div className="relative border-l border-zinc-800 ml-2 space-y-6">
-              <div className="relative pl-6">
-                <div className="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-green-500 ring-4 ring-[#0c0c0e]" />
-                <div className="flex justify-between items-start">
+            <div className="space-y-6 relative before:absolute before:inset-0 before:ml-2.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-zinc-800 before:to-transparent">
+              
+              {/* Experience Entry */}
+              <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                <div className="flex items-center justify-center w-5 h-5 rounded-full border border-zinc-800 bg-[#0c0c0e] shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                  <div className="w-2 h-2 rounded-full bg-green-500" />
+                </div>
+                <div className="w-[calc(100%-3rem)] md:w-[calc(50%-1.5rem)] flex justify-between items-start border border-zinc-800/60 bg-zinc-900/20 rounded-lg p-3">
                   <div>
-                    <h3 className="text-[13px] font-medium text-zinc-200">MITS Gwalior <a href="#" className="text-zinc-500 hover:text-zinc-300">↗</a></h3>
-                    <p className="text-[12px] text-zinc-500">B.Tech Electronics & Telecom (CGPA: 8.49)</p>
+                    <h3 className="text-[14px] font-semibold text-zinc-200 flex items-center gap-2">
+                      Personifwy <FiExternalLink size={12} className="text-zinc-500" />
+                      <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-green-500/10 text-green-500 border border-green-500/20">Active</span>
+                    </h3>
+                    <p className="text-[12px] text-zinc-500 mt-1">Data Science & Dev Intern</p>
                   </div>
-                  <span className="text-[11px] text-zinc-500 border border-zinc-800 rounded px-2 py-0.5">2020 - 2024</span>
+                  <span className="text-[11px] text-zinc-500">Jan 2024 - May 2024</span>
+                </div>
+              </div>
+
+              {/* Education Entry */}
+              <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                <div className="flex items-center justify-center w-5 h-5 rounded-full border border-zinc-800 bg-[#0c0c0e] shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                  <div className="w-2 h-2 rounded-full bg-red-500" />
+                </div>
+                <div className="w-[calc(100%-3rem)] md:w-[calc(50%-1.5rem)] flex justify-between items-start border border-zinc-800/60 bg-zinc-900/20 rounded-lg p-3">
+                  <div>
+                    <h3 className="text-[14px] font-semibold text-zinc-200 flex items-center gap-2">
+                      MITS Gwalior <FiExternalLink size={12} className="text-zinc-500" />
+                      <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/20">Done</span>
+                    </h3>
+                    <p className="text-[12px] text-zinc-500 mt-1">B.Tech Electronics & Telecom</p>
+                  </div>
+                  <span className="text-[11px] text-zinc-500">2020 - 2024</span>
                 </div>
               </div>
             </div>
 
-            {/* Actual GitHub Contribution Graph */}
-            <div className="pt-4 border-t border-zinc-800/60 overflow-hidden">
-              <div className="pb-2 flex flex-col items-start w-full">
+            {/* GitHub Contribution Graph */}
+            <div className="pt-6 border-t border-zinc-800/60 overflow-hidden">
+              <div className="pb-2 flex flex-col items-center w-full">
                 <GitHubCalendar
                   username="siddharthNirmale"
                   colorScheme="dark"
-                  transformData={(data) => filterResponsiveMonths(data, visibleMonths)}
-                  blockSize={8.5}
-                  blockMargin={3}
-                  blockRadius={2.5}
+                  transformData={(data) =>
+                    filterResponsiveMonths(data, visibleMonths)
+                  }
+                  blockSize={11}
+                  blockMargin={4}
+                  blockRadius={2}
                   fontSize={12}
                   hideTotalCount
                   style={{
-                    color: 'rgba(255, 255, 255, 0.3)',
-                    fontFamily: 'var(--font-primary)',
+                    color: "rgba(255, 255, 255, 0.4)",
+                    fontFamily: "var(--font-primary)",
+                  }}
+                  theme={{
+                    light: ['#27272a', '#52525b', '#71717a', '#a1a1aa', '#f4f4f5'],
+                    dark: ['#18181b', '#27272a', '#3f3f46', '#71717a', '#a1a1aa']
                   }}
                 />
               </div>
-
-              {/* Custom Legend */}
-              <div className="flex justify-between items-center mt-2 text-[11px] text-zinc-500">
-                <span>This year, I achieved consistent deployments</span>
-                <div className="flex items-center gap-1">
+              <div className="flex justify-between items-center mt-3 text-[11px] text-zinc-500 px-2">
+                <span>This year, I achieved solid contributions</span>
+                <div className="flex items-center gap-1.5">
                   Less
-                  <div className="w-[10px] h-[10px] rounded-[2px] bg-[#18181b]" />
-                  <div className="w-[10px] h-[10px] rounded-[2px] bg-[#3f3f46]" />
-                  <div className="w-[10px] h-[10px] rounded-[2px] bg-[#71717a]" />
-                  <div className="w-[10px] h-[10px] rounded-[2px] bg-[#f4f4f5]" />
+                  <div className="w-3 h-3 rounded-[2px] bg-[#18181b] border border-zinc-800/50" />
+                  <div className="w-3 h-3 rounded-[2px] bg-[#27272a]" />
+                  <div className="w-3 h-3 rounded-[2px] bg-[#3f3f46]" />
+                  <div className="w-3 h-3 rounded-[2px] bg-[#71717a]" />
+                  <div className="w-3 h-3 rounded-[2px] bg-[#a1a1aa]" />
                   More
                 </div>
               </div>
             </div>
-
           </div>
         </section>
 
         {/* --- Projects Section --- */}
-        <section className="space-y-4">
+        <section className="space-y-6">
           <TerminalHeader title="My Projects" />
-          <div className="space-y-4">
+          <div className="space-y-5">
             {projects.map((project, idx) => (
-              <div key={idx} className="flex flex-col sm:flex-row border border-zinc-800 rounded-xl overflow-hidden bg-[#0c0c0e] hover:border-zinc-700 transition-colors">
-
-                {/* Left Side: Image/Preview area */}
-                <div className="w-full sm:w-[240px] h-[180px] sm:h-auto border-b sm:border-b-0 sm:border-r border-zinc-800 relative group overflow-hidden shrink-0 bg-zinc-900">
-                  <img 
-                    src={project.image} 
-                    alt={project.title} 
-                    className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+              <div
+                key={idx}
+                className="flex flex-col sm:flex-row border border-zinc-800/80 rounded-xl overflow-hidden bg-[#0c0c0e] hover:border-zinc-700 transition-all duration-300 group"
+              >
+                {/* Left Side: Clean Image Area */}
+                <div className="w-full sm:w-[320px] h-[200px] shrink-0 relative bg-zinc-900 border-b sm:border-b-0 sm:border-r border-zinc-800/60 p-4 flex items-center justify-center">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover rounded shadow-lg border border-zinc-800/50"
                   />
-                  <div className="absolute top-3 left-3 bg-zinc-900/80 backdrop-blur-sm border border-zinc-700 text-zinc-300 text-[10px] px-2 py-0.5 rounded-sm">
-                    {project.year}
+                  {/* Overlay Badges */}
+                  <div className="absolute top-6 left-6 bg-zinc-900/90 backdrop-blur text-zinc-200 text-[10px] font-semibold px-2.5 py-1 rounded shadow-sm border border-zinc-700/50">
+                    {project.year || "Recent"}
                   </div>
-                  <div className="absolute bottom-3 right-3 flex items-center justify-center w-6 h-6 rounded-full bg-zinc-900/80 backdrop-blur-sm border border-zinc-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                  <div className="absolute top-6 right-6 flex items-center gap-1 bg-zinc-900/90 backdrop-blur text-zinc-400 text-[9px] font-semibold px-2 py-1 rounded uppercase tracking-wide border border-zinc-700/50">
+                    <FiCpu size={10} /> FEATURED
                   </div>
                 </div>
 
                 {/* Right Side: Content */}
-                <div className="p-4 sm:p-5 flex-1 flex flex-col">
-                  <div className="flex justify-between items-start mb-3">
-                    <h3 className="text-[15px] font-semibold text-zinc-100 flex items-center gap-2">
-                      {project.title} <span className="w-2 h-2 rounded-full bg-green-500" />
-                    </h3>
-                    <div className="flex items-center gap-2">
-                      <LinkBadge icon={<FiExternalLink size={12} />} text="Live" href={project.live} />
-                      <LinkBadge icon={<FaGithub size={12} />} text="GitHub" href={project.github} />
+                <div className="p-6 flex-1 flex flex-col justify-between">
+                  <div>
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="text-[18px] font-bold text-zinc-100 flex items-center gap-2">
+                        {project.title}
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <LinkBadge
+                          icon={<FiExternalLink size={12} />}
+                          text="Live"
+                          href={project.live}
+                        />
+                        <LinkBadge
+                          icon={<FaGithub size={12} />}
+                          text="GitHub"
+                          href={project.github}
+                        />
+                      </div>
                     </div>
+
+                    <ul className="text-[13px] text-zinc-400 leading-relaxed mb-6 list-none space-y-2">
+                      {project.bullets.map((bullet, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="mt-1.5 w-1 h-1 rounded-full bg-zinc-600 shrink-0" />
+                          <span>{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
 
-                  <ul className="text-[12px] text-zinc-400 leading-relaxed mb-4 flex-1 list-disc pl-4 space-y-1.5">
-                    {project.bullets.map((bullet, i) => (
-                      <li key={i}>{bullet}</li>
-                    ))}
-                  </ul>
-
-                  <div className="mt-auto">
-                    <p className="text-[10px] text-zinc-500 mb-2 font-medium uppercase tracking-wider">Technologies Used</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {project.tech.split(' • ').map((tech) => (
-                        <span key={tech} className="text-[10px] px-2 py-0.5 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-300 hover:bg-zinc-800 transition-colors">
+                  <div>
+                    <p className="text-[12px] text-zinc-200 font-semibold mb-3">
+                      Technologies Used:
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {project.tech.split(" • ").map((tech) => (
+                        <span
+                          key={tech}
+                          className="text-[11px] px-2.5 py-1 bg-zinc-800/80 border border-zinc-700/50 rounded-md text-zinc-300 font-medium"
+                        >
                           {tech}
                         </span>
                       ))}
@@ -335,18 +360,55 @@ export default function TerminalPortfolio() {
               </div>
             ))}
           </div>
+          
+          <div className="flex justify-end pt-2">
+            <button className="text-[13px] text-zinc-400 hover:text-zinc-200 flex items-center gap-1.5 transition-colors border-b border-transparent hover:border-zinc-200 pb-0.5">
+              More Projects <span>→</span>
+            </button>
+          </div>
         </section>
 
-        {/* footer */}
-        <section className="mt-12">
-          <TerminalHeader title="Footer" />
-          <div className="border border-zinc-800 rounded-xl bg-[#0c0c0e] p-5 space-y-4">
+        {/* --- Thoughts Section --- */}
+        <section className="space-y-6">
+          <TerminalHeader title="Thoughts in words." />
+          <div className="border border-zinc-800/80 border-dashed rounded-xl p-6 bg-zinc-900/10">
             <p className="text-[13px] text-zinc-400">
-              Built with ❤️ by Siddharth Nirmale
+              You really wanna read my blogs? Head over to <a href="#" className="text-zinc-200 border-b border-zinc-500 hover:border-zinc-200 transition-colors">My Blogs</a> page.
             </p>
           </div>
         </section>
 
+        {/* --- Footer / Let's Connect --- */}
+        <section className="pt-8 pb-4">
+          <div className="border border-zinc-800/80 rounded-xl bg-[#0c0c0e] p-8 flex flex-col items-center text-center space-y-6 shadow-sm">
+            <div>
+              <h2 className="text-lg font-bold text-zinc-100 mb-2">Let's Connect</h2>
+              <p className="text-[13px] text-zinc-400">
+                Feel free to reach out through any of these platforms
+              </p>
+            </div>
+            
+            <div className="flex flex-wrap justify-center gap-3">
+              <ActionButton icon={<FaLinkedin />} text="LinkedIn" href="https://linkedin.com/in/siddharth-nirmale" isDark />
+              <ActionButton icon={<FaGithub />} text="GitHub" href="https://github.com/siddharthNirmale" isDark />
+              <ActionButton icon={<FiDownload />} text="Resume" onClick={handleDownload} isButton isDark />
+            </div>
+
+            <div className="pt-6 border-t border-zinc-800/50 w-full mt-2">
+              <p className="text-[12px] italic text-zinc-500 font-serif">
+                "Nothing Is Perfect - But You Can Make It Better."
+              </p>
+              <p className="text-[12px] font-semibold text-zinc-200 mt-4">
+                Designed & Made with ❤️
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex justify-between items-center text-[11px] text-zinc-600 mt-6 px-2">
+            <span>2026. All rights reserved</span>
+            <span>Views #0001</span>
+          </div>
+        </section>
       </div>
     </div>
   );
@@ -354,20 +416,27 @@ export default function TerminalPortfolio() {
 
 /* ---------------- UI COMPONENTS ---------------- */
 
+// Recreates the targeting bracket corners from the inspiration [ Title ]
 function TerminalHeader({ title }) {
   return (
-    <div className="inline-flex">
-      <div className="border border-dashed border-zinc-700 rounded-md px-3 py-1">
-        <h2 className="font-mono text-[12px] font-medium tracking-wide text-zinc-300">
-          [ {title} ]
-        </h2>
-      </div>
+    <div className="relative inline-flex items-center justify-center">
+      <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-zinc-500" />
+      <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-zinc-500" />
+      <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-zinc-500" />
+      <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-zinc-500" />
+      <h2 className="font-sans text-[13px] font-semibold tracking-wide text-zinc-300 px-4 py-1.5">
+        {title}
+      </h2>
     </div>
   );
 }
 
-function ActionButton({ icon, text, href, onClick, isButton }) {
-  const baseClasses = "inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 rounded hover:bg-zinc-800 hover:text-white transition-all cursor-pointer";
+function ActionButton({ icon, text, href, onClick, isButton, isDark }) {
+  const baseClasses = `inline-flex items-center gap-2 px-3 py-1.5 text-[12px] font-medium transition-all rounded-md border ${
+    isDark 
+      ? 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/80' 
+      : 'bg-zinc-200 border-zinc-200 text-zinc-900 hover:bg-white'
+  } cursor-pointer`;
 
   if (isButton) {
     return (
@@ -383,13 +452,30 @@ function ActionButton({ icon, text, href, onClick, isButton }) {
   );
 }
 
+function IconButton({ icon, href, onClick, isButton }) {
+  const baseClasses = "flex items-center justify-center w-8 h-8 bg-zinc-900 border border-zinc-800 rounded-md text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors cursor-pointer";
+  
+  if (isButton) {
+    return (
+      <button onClick={onClick} className={baseClasses}>
+        {icon}
+      </button>
+    );
+  }
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className={baseClasses}>
+      {icon}
+    </a>
+  );
+}
+
 function LinkBadge({ icon, text, href }) {
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-zinc-900 border border-zinc-800 rounded hover:bg-zinc-800 transition-colors text-[11px] font-medium text-zinc-300"
+      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-transparent border border-zinc-700 hover:border-zinc-500 rounded text-[11px] font-semibold text-zinc-300 transition-colors"
     >
       {icon} {text}
     </a>
