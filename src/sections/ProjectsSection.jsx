@@ -13,16 +13,11 @@ export default function ProjectsSection() {
       <div className="px-8 py-5 border-b border-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-b from-white/[0.02] to-transparent shrink-0">
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-white/95">
-            Production Repositories
+            Projects
           </h1>
           <p className="text-[12px] text-white/40 mt-0.5">
             Displaying active projects and live cloud deployments.
           </p>
-        </div>
-
-        <div className="flex items-center gap-2 text-[12px] text-white/50 font-medium">
-          <span className="w-2 h-2 bg-[#27C93F] rounded-full shadow-[0_0_8px_#27C93F]" />
-          Synchronized
         </div>
       </div>
 
@@ -35,20 +30,27 @@ export default function ProjectsSection() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08, duration: 0.3, ease: "easeOut" }}
-              className="flex flex-col bg-[#202022]/60 rounded-xl border border-white/5 overflow-hidden shadow-lg group hover:bg-[#242426]/80 hover:border-white/10 transition-all duration-200"
+              className="flex flex-col bg-[#202022]/60 rounded-xl border border-white/5 overflow-hidden shadow-lg group hover:bg-[#242426]/80 hover:border-white/10 transition-all duration-300"
             >
               {/* Product Card Image */}
-              <div className="h-44 md:h-48 overflow-hidden bg-black/40 relative border-b border-black/20">
-                <div className="absolute inset-0 bg-gradient-to-t from-[#161616]/40 to-transparent z-10 opacity-60 group-hover:opacity-20 transition-opacity duration-300" />
+              <div className="h-44 md:h-48 relative p-3 md:p-4 overflow-hidden bg-black/40 border-b border-black/20 flex items-center justify-center">
+                
+                {/* 🌟 THE FUN GLOW EFFECT 🌟 */}
+                <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-fuchsia-600 to-cyan-500 blur-md opacity-20 group-hover:opacity-80 group-hover:blur-xl group-hover:scale-110 transition-all duration-500 z-0" />
+                
+                {/* Subtle dark gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#161616]/80 to-transparent z-10 opacity-60 group-hover:opacity-30 transition-opacity duration-300" />
+                
+                {/* Actual Image */}
                 <img
                   src={project.image || "/placeholder.jpg"}
                   alt={project.title}
-                  className="w-full h-full object-cover transform scale-[1.02] group-hover:scale-100 transition-transform duration-500 ease-out"
+                  className="relative w-full h-full object-cover rounded-lg shadow-2xl shadow-black/60 z-20 transform scale-100 group-hover:scale-[1.04] transition-transform duration-500 ease-out"
                 />
               </div>
 
               {/* Meta Content */}
-              <div className="flex flex-col flex-1 p-5 md:p-6 space-y-4">
+              <div className="flex flex-col flex-1 p-5 md:p-6 space-y-4 relative z-20">
                 <div className="space-y-1.5">
                   <span className="text-[11px] font-semibold text-accent tracking-wider uppercase">
                     {project.tech || "Project"}
