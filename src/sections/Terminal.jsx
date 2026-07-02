@@ -1,4 +1,7 @@
 import { useState, useRef, useEffect } from "react";
+import { FiMapPin, FiExternalLink, FiTerminal, FiChevronRight, FiCpu, FiFolder, FiBriefcase, FiCalendar } from "react-icons/fi";
+import projects from "../data/project";
+import skills from "../data/skills";
 
 export default function Terminal() {
   const [input, setInput] = useState("");
@@ -8,8 +11,8 @@ export default function Terminal() {
       type: "output",
       content: (
         <div className="mb-6 pb-4 border-b border-white/5 flex flex-col gap-1">
-          <h1 className="text-lg font-semibold text-white/95 tracking-tight">
-            Terminal — zsh
+          <h1 className="text-lg font-semibold text-white/95 tracking-tight flex items-center gap-2">
+            <FiTerminal className="text-accent" /> Terminal — zsh
           </h1>
           <p className="text-[12px] text-white/40">
             Type <span className="text-accent font-medium">help</span> to list the available configuration nodes.
@@ -36,22 +39,22 @@ export default function Terminal() {
         outputContent = (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 text-[13px] max-w-xl my-2 font-mono">
             {[
-              "help",
-              "clear",
-              "whoami",
-              "skills",
-              "projects",
-              "experience",
-              "location",
-              "date",
-            ].map((cmd) => (
+              { cmd: "help", icon: <FiTerminal size={10} /> },
+              { cmd: "clear", icon: <FiTerminal size={10} /> },
+              { cmd: "whoami", icon: <FiTerminal size={10} /> },
+              { cmd: "skills", icon: <FiCpu size={10} /> },
+              { cmd: "projects", icon: <FiFolder size={10} /> },
+              { cmd: "experience", icon: <FiBriefcase size={10} /> },
+              { cmd: "location", icon: <FiMapPin size={10} /> },
+              { cmd: "date", icon: <FiCalendar size={10} /> },
+            ].map(({ cmd, icon }) => (
               <div key={cmd} className="flex items-center gap-2">
-                <span className="text-accent/60 text-[10px]">❯</span>
+                <span className="text-accent/60 flex items-center">{icon}</span>
                 <span className="text-white/80 font-medium">{cmd}</span>
               </div>
             ))}
             <div className="col-span-full flex items-center gap-2 mt-2 pt-2 border-t border-white/5 text-white/40">
-              <span className="text-accent/60 text-[10px]">❯</span>
+              <span className="text-accent/60"><FiTerminal size={10} /></span>
               <span>echo [text]</span>
             </div>
           </div>
@@ -77,82 +80,30 @@ export default function Terminal() {
         break;
 
       case "skills":
-        const skills = [
-          "MERN Stack",
-          "ReactJS",
-          "Node.js",
-          "MongoDB Atlas",
-          "Google Cloud Platform",
-          "Render",
-          "Gemini API",
-        ];
-
         outputContent = (
-          <div className="flex flex-wrap gap-1.5 my-2 max-w-xl">
-            {skills.map((skill) => (
-              <span
-                key={skill}
-                className="px-2.5 py-1 rounded bg-white/[0.03] border border-white/5 text-[12px] text-white/70 font-medium"
-              >
-                {skill}
-              </span>
+          <div className="flex flex-col gap-4 my-3 max-w-2xl">
+            {skills.map((skillGroup) => (
+              <div key={skillGroup.category}>
+                <div className="text-[11px] font-semibold text-white/40 uppercase tracking-wider mb-1.5">
+                  {skillGroup.category}
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {skillGroup.items.map((skill) => (
+                    <span
+                      key={skill}
+                      className="px-2.5 py-1 rounded bg-white/[0.03] border border-white/5 text-[12px] text-white/70 font-medium"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         );
         break;
 
       case "projects":
-        const projects = [
-          {
-            id: 1,
-            year: "2026",
-            title: "Desktop Style Portfolio",
-            tech: "React • Vite • Tailwind CSS • Framer Motion • Three.js",
-            bullets: [
-              "Designed a Windows-inspired desktop experience with draggable and resizable application windows.",
-              "Built using React, Vite, Tailwind CSS, Framer Motion, React Three Fiber, and GSAP.",
-              "Implemented smooth animations, custom desktop interactions, and responsive layouts.",
-              "Integrated GitHub activity, weather widget, projects, resume, and interactive desktop utilities.",
-            ],
-            image:
-              "https://images.unsplash.com/photo-1496171367470-9ed9a91ea931?q=80&w=600&h=300&fit=crop",
-            github: "https://github.com/siddharthNirmale/desktop-resume",
-            live: "https://siddharthn-portfolio.vercel.app/",
-          },
-          {
-            id: 2,
-            year: "2026",
-            title: "AI Refund Agent (preview only)",
-            tech: "Next.js • Groq AI • TypeScript • Tailwind CSS • Zustand",
-            bullets: [
-              "Developed an AI-powered refund assistant using Groq AI for intelligent query understanding.",
-              "Implemented a rule-based decision engine to validate refund eligibility before AI processing.",
-              "Created a multi-step workflow that routes user requests based on business conditions.",
-              "Built a modern responsive interface with Next.js, TypeScript, Tailwind CSS, and Zustand.",
-            ],
-            image:
-              "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=600&h=300&fit=crop",
-            github: "https://github.com/siddharthNirmale/ai-refund-agent",
-            live: "https://refundpilot-preview.vercel.app/",
-          },
-          {
-            id: 3,
-            year: "2025",
-            title: "Thumbmax",
-            tech: "Node.js • Express.js • Gemini API • Cloudinary",
-            bullets: [
-              "Built an AI-powered thumbnail generation platform using Gemini API and Cloudinary.",
-              "Implemented secure JWT authentication with protected API endpoints.",
-              "Added API rate limiting and optimized backend image-processing workflows.",
-              "Deployed the production-ready application on Vercel with scalable architecture.",
-            ],
-            image:
-              "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&h=300&fit=crop",
-            github: "https://github.com/siddharthNirmale/Thumbnail",
-            live: "https://thumbmax-psi.vercel.app/",
-          },
-        ];
-
         outputContent = (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-3 max-w-2xl">
             {projects.map((proj, idx) => (
@@ -165,7 +116,7 @@ export default function Terminal() {
                     {proj.title}
                   </h3>
                   <a href={proj.live} target="_blank" rel="noreferrer" className="text-white/30 text-[12px] hover:text-white/70 transition-colors">
-                    ↗
+                    <FiExternalLink size={14} />
                   </a>
                 </div>
                 <p className="text-white/50 text-[13px] leading-relaxed">
@@ -190,9 +141,9 @@ export default function Terminal() {
       case "experience":
         const jobs = [
           {
-            role: "Full-Stack Developer",
-            company: "MERN Architecture Engine",
-            year: "2024 — Present",
+            role: "Data Science & Development Intern",
+            company: "Personifwy",
+            year: "Jan 2024 — May 2024",
           },
         ];
 
@@ -201,7 +152,8 @@ export default function Terminal() {
             {jobs.map((job, idx) => (
               <div key={idx} className="relative space-y-0.5">
                 <div className="absolute -left-[21px] top-[6px] w-2 h-2 bg-accent rounded-full border border-surface shadow-[0_0_6px_var(--color-accent)]" />
-                <div className="text-white/90 text-[14px] font-semibold">
+                <div className="text-white/90 text-[14px] font-semibold flex items-center gap-2">
+                  <FiBriefcase size={12} className="text-accent/70" />
                   {job.role}
                 </div>
                 <div className="flex items-center gap-2 text-[12px] text-white/40">
@@ -218,7 +170,7 @@ export default function Terminal() {
       case "location":
         outputContent = (
           <div className="flex items-center gap-3 my-2 text-[13px] text-white/70">
-            <span>📍</span>
+            <FiMapPin size={14} className="text-accent" />
             <span className="font-medium text-white/90">Indore, Madhya Pradesh, India</span>
           </div>
         );
@@ -227,7 +179,8 @@ export default function Terminal() {
       case "date":
         const now = new Date();
         outputContent = (
-          <div className="text-[13px] text-white/70 font-mono my-2">
+          <div className="text-[13px] text-white/70 font-mono my-2 flex items-center gap-2">
+            <FiCalendar size={14} className="text-accent" />
             {now.toString()}
           </div>
         );
@@ -266,7 +219,7 @@ export default function Terminal() {
           <div key={index} className="mb-2 leading-relaxed">
             {line.type === "command" ? (
               <div className="flex items-center text-white/90 mt-4 mb-2">
-                <span className="text-accent mr-2.5 font-bold select-none">❯</span>
+                <FiChevronRight className="text-accent mr-1 font-bold select-none" size={16} />
                 <span className="font-medium tracking-wide">{line.content}</span>
               </div>
             ) : (
@@ -277,7 +230,7 @@ export default function Terminal() {
 
         {/* Real-time Interactive Input Line */}
         <div className="flex items-center mt-4">
-          <span className="text-accent mr-2.5 font-bold select-none">❯</span>
+          <FiChevronRight className="text-accent mr-1 font-bold select-none" size={16} />
           <input
             type="text"
             value={input}
