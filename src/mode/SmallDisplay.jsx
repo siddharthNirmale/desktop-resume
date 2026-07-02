@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { GitHubCalendar } from "react-github-calendar";
 import { motion } from "framer-motion";
 import {
@@ -91,7 +91,6 @@ const fadeUpVariant = {
 };
 
 // --- OPTIMIZATION: Extracted Clock Component ---
-// This prevents the entire page from re-rendering every second!
 const LiveClock = () => {
   const [currentTime, setCurrentTime] = useState("");
 
@@ -121,25 +120,34 @@ const LiveClock = () => {
 export default function TerminalPortfolio() {
   const [visibleMonths, setVisibleMonths] = useState(12);
 
-  // Responsive Layout Effect for GitHub Calendar
+  // Responsive Layout Effect for GitHub Calendar (Optimized with debounce)
   useEffect(() => {
+    let timeoutId;
+    
     const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 640) {
-        setVisibleMonths(4);
-      } else if (width < 1024) {
-        setVisibleMonths(8);
-      } else {
-        setVisibleMonths(12);
-      }
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        const width = window.innerWidth;
+        if (width < 640) {
+          setVisibleMonths(4);
+        } else if (width < 1024) {
+          setVisibleMonths(8);
+        } else {
+          setVisibleMonths(12);
+        }
+      }, 150); // 150ms debounce
     };
 
     handleResize();
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(timeoutId);
+    };
   }, []);
 
-  const handleDownload = () => {
+  // Memoize download handler to prevent recreation on every render
+  const handleDownload = useCallback(() => {
     const resumeUrl = "src/assets/Siddharth_Nirmale.pdf";
     const link = document.createElement("a");
     link.href = resumeUrl;
@@ -147,7 +155,13 @@ export default function TerminalPortfolio() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
+  }, []);
+
+  // Memoize the calendar transform function
+  const transformCalendarData = useCallback(
+    (data) => filterResponsiveMonths(data, visibleMonths),
+    [visibleMonths]
+  );
 
   return (
     // Deep black modern background
@@ -159,25 +173,27 @@ export default function TerminalPortfolio() {
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
       `}</style>
 
-      <div className="max-w-3xl mx-auto px-6 py-20 space-y-20">
+      {/* Adjusted padding for mobile (py-12 instead of py-20) */}
+      <div className="max-w-3xl mx-auto px-6 py-12 sm:py-20 space-y-16 sm:space-y-20">
+        
         {/* --- Profile Header --- */}
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="flex flex-col sm:flex-row gap-8 items-start"
+          className="flex flex-col sm:flex-row gap-6 sm:gap-8 items-start"
         >
           <motion.div 
             whileHover={{ scale: 1.05, rotate: -2 }}
-            className="w-24 h-24 shrink-0 rounded-2xl bg-[#09090b] border border-white/10 flex items-center justify-center relative shadow-[0_0_30px_rgba(255,255,255,0.03)] cursor-pointer transition-colors hover:border-white/20"
+            className="w-24 h-24 shrink-0 rounded-2xl bg-[#09090b] border border-white/10 flex items-center justify-center relative shadow-[0_0_30px_rgba(255,255,255,0.03)] cursor-pointer transition-colors hover:border-white/20 mx-auto sm:mx-0"
           >
             <span className="text-4xl">👨‍💻</span>
             <span className="absolute bottom-1.5 right-1.5 w-3.5 h-3.5 bg-green-500 border-2 border-[#09090b] rounded-full"></span>
           </motion.div>
 
-          <div className="space-y-4 flex-1">
+          <div className="space-y-4 flex-1 text-center sm:text-left">
             <div>
-              <div className="flex flex-wrap items-center gap-3 mb-1">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-1">
                 <h1 className="text-2xl font-bold text-white tracking-tight">
                   Siddharth Nirmale
                 </h1>
@@ -194,7 +210,7 @@ export default function TerminalPortfolio() {
                 @siddharthNirmale
               </p>
 
-              <div className="flex flex-wrap items-center gap-3 mt-4 text-[12px] text-zinc-400 font-medium">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-4 text-[12px] text-zinc-400 font-medium">
                 <span className="flex items-center gap-1.5 border border-white/10 bg-white/5 px-2.5 py-1 rounded-md text-zinc-300">
                   Building Scalable Apps ✦
                 </span>
@@ -216,7 +232,7 @@ export default function TerminalPortfolio() {
               with clean, maintainable code.
             </p>
 
-            <div className="flex flex-wrap gap-2 pt-2">
+            <div className="flex flex-wrap justify-center sm:justify-start gap-2 pt-2">
               <ActionButton icon={<FaLinkedin />} text="LinkedIn" href="https://linkedin.com/in/siddharth-nirmale" />
               <ActionButton icon={<FaGithub />} text="GitHub" href="https://github.com/siddharthNirmale" />
               <ActionButton icon={<FiMail />} text="Email Me" href="mailto:siddharth175nirmale1@gmail.com" />
@@ -264,7 +280,7 @@ export default function TerminalPortfolio() {
           className="space-y-5"
         >
           <SectionHeader title="Experience & Education" />
-          <div className="border border-white/10 rounded-2xl bg-[#09090b] p-6 space-y-8 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+          <div className="border border-white/10 rounded-2xl bg-[#09090b] p-6 space-y-8 shadow-[0_0_20px_rgba(0,0,0,0.5)] overflow-hidden">
             {/* Timeline */}
             <div className="relative border-l border-white/10 ml-2.5 space-y-8">
               {/* Experience Entry */}
@@ -279,7 +295,7 @@ export default function TerminalPortfolio() {
                       Personifwy | Remote
                     </p>
                   </div>
-                  <span className="text-[11px] font-mono text-zinc-400 border border-white/10 bg-white/5 rounded px-2 py-1 w-fit">
+                  <span className="text-[11px] font-mono text-zinc-400 border border-white/10 bg-white/5 rounded px-2 py-1 w-fit mt-1 sm:mt-0">
                     Jan 2024 - May 2024
                   </span>
                 </div>
@@ -297,7 +313,7 @@ export default function TerminalPortfolio() {
                       B.Tech Electronics & Telecom (CGPA: 8.49)
                     </p>
                   </div>
-                  <span className="text-[11px] font-mono text-zinc-400 border border-white/10 bg-white/5 rounded px-2 py-1 w-fit">
+                  <span className="text-[11px] font-mono text-zinc-400 border border-white/10 bg-white/5 rounded px-2 py-1 w-fit mt-1 sm:mt-0">
                     2020 - 2024
                   </span>
                 </div>
@@ -305,26 +321,19 @@ export default function TerminalPortfolio() {
             </div>
 
             {/* GitHub Contribution Graph */}
-            <div className="pt-6 border-t border-white/5 overflow-hidden">
-              <div className="pb-3 flex flex-col items-start w-full opacity-90 hover:opacity-100 transition-opacity">
+            <div className="pt-6 border-t border-white/5 overflow-x-auto custom-scrollbar">
+              <div className="pb-3 flex flex-col items-center sm:items-start w-full min-w-[300px] opacity-90 hover:opacity-100 transition-opacity">
                 <GitHubCalendar
                   username="siddharthNirmale"
                   colorScheme="dark"
-                  transformData={(data) =>
-                    filterResponsiveMonths(data, visibleMonths)
-                  }
+                  transformData={transformCalendarData}
                   blockSize={9}
                   blockMargin={3}
                   blockRadius={2}
                   fontSize={12}
                   hideTotalCount
-                 
-                  
                 />
               </div>
-
-              {/* Custom Legend */}
-              
             </div>
           </div>
         </motion.section>
@@ -345,20 +354,22 @@ export default function TerminalPortfolio() {
                 variants={fadeUpVariant}
                 className="flex flex-col sm:flex-row border border-white/10 rounded-2xl overflow-hidden bg-[#09090b] hover:border-white/20 transition-all duration-300 group shadow-[0_0_20px_rgba(0,0,0,0.5)]"
               >
-                {/* Left Side: Flat clean image area */}
-                <div className="w-full sm:w-[260px] h-[180px] sm:h-auto border-b sm:border-b-0 sm:border-r border-white/10 relative overflow-hidden shrink-0 bg-[#050505] p-5 flex items-center justify-center">
-                  <div className="w-full h-full relative overflow-hidden rounded-lg border border-white/10 group-hover:border-white/20 transition-colors">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-full object-cover opacity-60 grayscale-[30%] group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 scale-100 group-hover:scale-105"
-                    />
-                  </div>
+                {/* Left Side: Image area - Added explicit widths for flex layout */}
+                <div className="relative w-full sm:w-2/5 md:w-1/3 h-48 sm:h-auto overflow-hidden bg-black/40 border-b sm:border-b-0 sm:border-r border-black/20 shrink-0 flex items-center justify-center p-4">
                   
-                  {/* Flat Badge overlay */}
-                  <div className="absolute top-7 left-7 bg-black/80 backdrop-blur-md border border-white/10 text-white font-mono text-[10px] px-2.5 py-1 rounded-sm shadow-xl">
-                    {project.year}
-                  </div>
+                  {/* 🌟 THE FUN GLOW EFFECT 🌟 */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-fuchsia-600 to-cyan-500 blur-md opacity-20 group-hover:opacity-80 group-hover:blur-xl group-hover:scale-110 transition-all duration-500 z-0" />
+                  
+                  {/* Subtle dark gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#161616]/80 to-transparent z-10 opacity-60 group-hover:opacity-30 transition-opacity duration-300" />
+                  
+                  {/* Actual Image - Added loading="lazy" */}
+                  <img
+                    src={project.image || "/placeholder.jpg"}
+                    alt={project.title}
+                    loading="lazy"
+                    className="relative w-full h-full object-cover rounded-lg shadow-2xl shadow-black/60 z-20 transform scale-100 group-hover:scale-[1.04] transition-transform duration-500 ease-out"
+                  />
                 </div>
 
                 {/* Right Side: Content */}
@@ -406,7 +417,6 @@ export default function TerminalPortfolio() {
             <p className="text-[12px] text-zinc-500 font-medium">
               © {new Date().getFullYear()} Siddharth Nirmale
             </p>
-           
           </div>
         </section>
       </div>
@@ -419,7 +429,7 @@ export default function TerminalPortfolio() {
 function SectionHeader({ title }) {
   return (
     <div className="flex items-center gap-4 mb-2">
-      <h2 className="text-[14px] font-semibold tracking-wider uppercase text-white">
+      <h2 className="text-[14px] font-semibold tracking-wider uppercase text-white whitespace-nowrap">
         {title}
       </h2>
       <div className="h-[1px] flex-1 bg-white/10"></div>
@@ -429,7 +439,7 @@ function SectionHeader({ title }) {
 
 function ActionButton({ icon, text, href, onClick, isButton, primary }) {
   const baseClasses =
-    "inline-flex items-center gap-2 px-3 py-1.5 text-[12px] font-semibold rounded-md transition-all cursor-pointer border";
+    "inline-flex items-center justify-center gap-2 px-3 py-1.5 text-[12px] font-semibold rounded-md transition-all cursor-pointer border";
   
   const styles = primary
     ? "bg-white text-black border-transparent hover:bg-zinc-200 shadow-sm hover:scale-105 active:scale-95"
