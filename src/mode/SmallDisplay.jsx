@@ -123,7 +123,7 @@ export default function TerminalPortfolio() {
   // Responsive Layout Effect for GitHub Calendar (Optimized with debounce)
   useEffect(() => {
     let timeoutId;
-    
+
     const handleResize = () => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
@@ -147,17 +147,14 @@ export default function TerminalPortfolio() {
   }, []);
 
   // Memoize download handler to prevent recreation on every render
-    const handleDownload = () => {
-    // Replace this string with the actual path to your resume file inside the /public folder
+   const handleDownload = () => {
     const resumeUrl = resume;
-    
     const link = document.createElement("a");
     link.href = resumeUrl;
     link.setAttribute("download", "Siddharth_Nirmale_Resume.pdf");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-            
   };
 
   // Memoize the calendar transform function
@@ -178,15 +175,15 @@ export default function TerminalPortfolio() {
 
       {/* Adjusted padding for mobile (py-12 instead of py-20) */}
       <div className="max-w-3xl mx-auto px-6 py-12 sm:py-20 space-y-16 sm:space-y-20">
-        
+
         {/* --- Profile Header --- */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="flex flex-col sm:flex-row gap-6 sm:gap-8 items-start"
         >
-          <motion.div 
+          <motion.div
             whileHover={{ scale: 1.05, rotate: -2 }}
             className="w-24 h-24 shrink-0 rounded-2xl bg-[#09090b] border border-white/10 flex items-center justify-center relative shadow-[0_0_30px_rgba(255,255,255,0.03)] cursor-pointer transition-colors hover:border-white/20 mx-auto sm:mx-0"
           >
@@ -205,7 +202,7 @@ export default function TerminalPortfolio() {
                   <span className="relative flex h-1.5 w-1.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
-                    <br/> 
+                    <br />
                   </span>
                   Available for Opportunities
                 </span>
@@ -276,7 +273,7 @@ export default function TerminalPortfolio() {
         </section>
 
         {/* --- Education / Work / GitHub Graph Section --- */}
-        <motion.section 
+        <motion.section
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
@@ -345,7 +342,7 @@ export default function TerminalPortfolio() {
         {/* --- Projects Section --- */}
         <section className="space-y-5">
           <SectionHeader title="Selected Projects" />
-          <motion.div 
+          <motion.div
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
@@ -360,13 +357,13 @@ export default function TerminalPortfolio() {
               >
                 {/* Left Side: Image area - Added explicit widths for flex layout */}
                 <div className="relative w-full sm:w-2/5 md:w-1/3 h-48 sm:h-auto overflow-hidden bg-black/40 border-b sm:border-b-0 sm:border-r border-black/20 shrink-0 flex items-center justify-center p-4">
-                  
+
                   {/* 🌟 THE FUN GLOW EFFECT 🌟 */}
                   <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-fuchsia-600 to-cyan-500 blur-md opacity-20 group-hover:opacity-80 group-hover:blur-xl group-hover:scale-110 transition-all duration-500 z-0" />
-                  
+
                   {/* Subtle dark gradient overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-[#161616]/80 to-transparent z-10 opacity-60 group-hover:opacity-30 transition-opacity duration-300" />
-                  
+
                   {/* Actual Image - Added loading="lazy" */}
                   <img
                     src={project.image || "/placeholder.jpg"}
@@ -444,7 +441,7 @@ function SectionHeader({ title }) {
 function ActionButton({ icon, text, href, onClick, isButton, primary }) {
   const baseClasses =
     "inline-flex items-center justify-center gap-2 px-3 py-1.5 text-[12px] font-semibold rounded-md transition-all cursor-pointer border";
-  
+
   const styles = primary
     ? "bg-white text-black border-transparent hover:bg-zinc-200 shadow-sm hover:scale-105 active:scale-95"
     : "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95";
