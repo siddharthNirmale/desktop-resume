@@ -406,9 +406,7 @@ export default function TerminalPortfolio() {
             <p className="text-[12px] text-zinc-500 font-medium">
               © {new Date().getFullYear()} Siddharth Nirmale
             </p>
-            <p className="flex items-center gap-2 text-[12px] text-zinc-600 font-mono">
-              <span className="w-1.5 h-1.5 rounded-full bg-zinc-600"></span> SYSTEM.ONLINE
-            </p>
+           
           </div>
         </section>
       </div>
