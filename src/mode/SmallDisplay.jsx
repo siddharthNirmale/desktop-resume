@@ -148,7 +148,7 @@ export default function TerminalPortfolio() {
 
   // Memoize download handler to prevent recreation on every render
   const handleDownload = useCallback(() => {
-    const resumeUrl = "src/assets/Siddharth_Nirmale.pdf";
+    const resumeUrl = "src\\assets\\Siddharth_Nirmale.pdf";
     const link = document.createElement("a");
     link.href = resumeUrl;
     link.setAttribute("download", "Siddharth_Nirmale_Resume.pdf");
