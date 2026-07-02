@@ -147,15 +147,18 @@ export default function TerminalPortfolio() {
   }, []);
 
   // Memoize download handler to prevent recreation on every render
-  const handleDownload = useCallback(() => {
+    const handleDownload = () => {
+    // Replace this string with the actual path to your resume file inside the /public folder
     const resumeUrl = resume;
+    
     const link = document.createElement("a");
     link.href = resumeUrl;
     link.setAttribute("download", "Siddharth_Nirmale_Resume.pdf");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }, []);
+            
+  };
 
   // Memoize the calendar transform function
   const transformCalendarData = useCallback(
