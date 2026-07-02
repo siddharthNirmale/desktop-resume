@@ -1,3 +1,8 @@
+import agent from "../assets/project/agent.png";
+import thumbmax from "../assets/project/thumbmax.png";
+import portfolio from "../assets/project/Portfolio.png";
+
+
 const projects = [
   {
     id: 1,
@@ -10,8 +15,7 @@ const projects = [
       "Integrated GitHub and weather APIs to dynamically render live activity and data into the frontend interface.",
       "Built custom state management for seamless window utilities and responsive layout handling across devices.",
     ],
-    image:
-      "src/assets/project/Portfolio.png",
+    image: portfolio,
     github: "https://github.com/siddharthNirmale/desktop-resume",
     live: "https://siddharthn-portfolio.vercel.app/",
   },
@@ -25,8 +29,7 @@ const projects = [
       "Created a rule-based decision engine with Zustand state management to accurately validate refund eligibility.",
       "Built multi-step dynamic workflows to intelligently route customer queries based on configurable business logic.",
     ],
-    image:
-      "src/assets/project/agent.png",
+    image: agent,
     github: "https://github.com/siddharthNirmale/ai-refund-agent",
     live: "https://refundpilot-preview.vercel.app/",
   },
@@ -40,8 +43,7 @@ const projects = [
       "Integrated Cloudinary for optimized image processing, scalable storage, and secure media delivery.",
       "Implemented JWT authentication for secure APIs, including request validation and rate limiting on Vercel.",
     ],
-    image:
-      "src/assets/project/thumbmax.png",
+    image: thumbmax,
     github: "https://github.com/siddharthNirmale/Thumbnail",
     live: "https://thumbmax-psi.vercel.app/",
   },
