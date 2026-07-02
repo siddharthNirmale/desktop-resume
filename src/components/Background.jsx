@@ -5,7 +5,7 @@ export default function Background() {
       style={{
         backgroundImage: `
           radial-gradient(
-            rgba(255,255,255,0.15) 1px,
+            rgba(255, 255, 255, 0.14) 1px,
             transparent 1px
           )
         `,

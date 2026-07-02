@@ -20,7 +20,7 @@ export default function AboutSection() {
               Siddharth Nirmale
             </h1>
             <span className="text-[11px] font-medium text-accent bg-accent/10 px-2 py-0.5 rounded-full ring-1 ring-accent/20">
-              Available
+              Available for Hire
             </span>
           </div>
           
