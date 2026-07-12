@@ -165,8 +165,8 @@ export default function TerminalPortfolio() {
   );
 
   return (
-    // Deep black modern background
-    <div className="h-screen w-full bg-black text-zinc-400 font-sans overflow-y-auto custom-scrollbar selection:bg-zinc-800 selection:text-white">
+    // Deep black modern background - updated font-sans to font-primary
+    <div className="h-screen w-full bg-black text-zinc-400 font-primary overflow-y-auto custom-scrollbar selection:bg-zinc-800 selection:text-white">
       <style>{`
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
@@ -195,7 +195,8 @@ export default function TerminalPortfolio() {
           <div className="space-y-4 flex-1 text-center sm:text-left">
             <div>
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-1">
-                <h1 className="text-2xl font-bold text-white tracking-tight">
+                {/* Added font-heading */}
+                <h1 className="text-2xl font-heading font-bold text-white tracking-tight">
                   Siddharth Nirmale
                 </h1>
                 {/* Upgraded Breathing Status Badge */}
@@ -290,7 +291,8 @@ export default function TerminalPortfolio() {
                 <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-blue-500 ring-4 ring-[#09090b] group-hover:scale-110 transition-transform" />
                 <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-1">
                   <div>
-                    <h3 className="text-[14px] font-semibold text-zinc-100">
+                    {/* Added font-heading */}
+                    <h3 className="text-[14px] font-heading font-semibold text-zinc-100">
                       Data Science & Development Intern
                     </h3>
                     <p className="text-[13px] text-zinc-500 mt-0.5">
@@ -308,7 +310,8 @@ export default function TerminalPortfolio() {
                 <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-green-500 ring-4 ring-[#09090b] group-hover:scale-110 transition-transform" />
                 <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-1">
                   <div>
-                    <h3 className="text-[14px] font-semibold text-zinc-100">
+                    {/* Added font-heading */}
+                    <h3 className="text-[14px] font-heading font-semibold text-zinc-100">
                       MITS Gwalior
                     </h3>
                     <p className="text-[13px] text-zinc-500 mt-0.5">
@@ -377,7 +380,8 @@ export default function TerminalPortfolio() {
                 {/* Right Side: Content */}
                 <div className="p-5 sm:p-6 flex-1 flex flex-col">
                   <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-4">
-                    <h3 className="text-[16px] font-semibold text-white tracking-tight flex items-center gap-2">
+                    {/* Added font-heading */}
+                    <h3 className="text-[16px] font-heading font-semibold text-white tracking-tight flex items-center gap-2">
                       {project.title}
                     </h3>
                     <div className="flex items-center gap-2">
@@ -431,7 +435,8 @@ export default function TerminalPortfolio() {
 function SectionHeader({ title }) {
   return (
     <div className="flex items-center gap-4 mb-2">
-      <h2 className="text-[14px] font-semibold tracking-wider uppercase text-white whitespace-nowrap">
+      {/* Added font-heading */}
+      <h2 className="text-[14px] font-heading font-semibold tracking-wider uppercase text-white whitespace-nowrap">
         {title}
       </h2>
       <div className="h-[1px] flex-1 bg-white/10"></div>
