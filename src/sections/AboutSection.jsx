@@ -3,39 +3,39 @@ import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 export default function AboutSection() {
   return (
-    <div className="w-full min-h-full bg-surface text-white flex flex-col font-primary selection:bg-accent/30 selection:text-white">
+    <div className="w-full min-h-full bg-[var(--color-surface)] text-[var(--color-text)] flex flex-col font-primary selection:bg-[var(--color-accent)] selection:text-white transition-colors duration-250">
       {/* Article / Identity Panel Block */}
-      <div className="p-8 border-b border-white/5 flex flex-col md:flex-row gap-8 items-start bg-gradient-to-b from-white/[0.02] to-transparent">
-        
+      <div className="p-8 border-b border-[var(--color-surface-border)] flex flex-col md:flex-row gap-8 items-start bg-gradient-to-b from-[var(--color-surface-border)] to-transparent transition-colors duration-250">
+
         {/* Native Style Profile Avatar Frame */}
-        <div className="w-20 h-20 rounded-[14px] border border-white/10 flex items-center justify-center bg-white/5 shadow-inner shrink-0 group relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-tr from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <FiUser size={36} className="text-white/60 group-hover:text-white transition-colors duration-300" />
+        <div className="w-20 h-20 rounded-[14px] border border-[var(--color-surface-border)] flex items-center justify-center bg-[var(--color-surface-inactive)] shadow-inner shrink-0 group relative overflow-hidden transition-colors duration-250">
+          <div className="absolute inset-0 bg-[var(--color-accent)] opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+          <FiUser size={36} className="text-[var(--color-text-secondary)] group-hover:text-[var(--color-text)] transition-colors duration-300" />
         </div>
 
         {/* Core Profile Title Data */}
         <div className="flex-1 space-y-1.5">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-tight text-white/95">
+            <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-text)] transition-colors duration-250">
               Siddharth Nirmale
             </h1>
-            <span className="text-[11px] font-medium text-accent bg-accent/10 px-2 py-0.5 rounded-full ring-1 ring-accent/20">
+            <span className="text-[11px] font-medium text-[var(--color-accent)] bg-[var(--color-accent)]/10 px-2 py-0.5 rounded-full ring-1 ring-[var(--color-accent)]/30 transition-colors duration-250">
               Available for Hire
             </span>
           </div>
-          
-          <p className="text-[14px] font-medium text-white/60 flex items-center gap-2">
-            <FiBriefcase size={14} className="text-white/40" />
+
+          <p className="text-[14px] font-medium text-[var(--color-text-secondary)] flex items-center gap-2 transition-colors duration-250">
+            <FiBriefcase size={14} className="text-[var(--color-text-tertiary)]" />
             Full-Stack Software Developer
           </p>
 
           {/* Quick Context Tags */}
-          <div className="flex flex-wrap gap-x-4 gap-y-1 pt-2 text-[12px] text-white/40 font-normal">
+          <div className="flex flex-wrap gap-x-4 gap-y-1 pt-2 text-[12px] text-[var(--color-text-tertiary)] font-normal transition-colors duration-250">
             <div className="flex items-center gap-1.5">
-              <FiMapPin size={13} className="text-white/30" />
+              <FiMapPin size={13} className="text-[var(--color-text-tertiary)] opacity-70" />
               Indore, India
             </div>
-            <div className="text-white/20">•</div>
+            <div className="text-[var(--color-surface-border)]">•</div>
             <div>MITS Gwalior (B.Tech)</div>
           </div>
         </div>
@@ -44,26 +44,26 @@ export default function AboutSection() {
       {/* Main Profile Editorial Space */}
       <div className="flex-1 p-8 space-y-6">
         <div className="space-y-3">
-          <h2 className="text-[11px] font-semibold text-white/40 uppercase tracking-wider">
+          <h2 className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider transition-colors duration-250">
             Overview
           </h2>
-          <p className="text-[14px] text-white/60 leading-relaxed max-w-2xl font-normal">
+          <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed max-w-2xl font-normal transition-colors duration-250">
             I build responsive web applications utilizing the MERN stack (MongoDB, Express, React, Node.js) paired with modern utility systems like Tailwind CSS. I prioritize writing scalable, performant client-side structures, maintaining optimized code logic, and creating seamless digital user experiences.
           </p>
         </div>
 
         <div className="space-y-3">
-          <h2 className="text-[11px] font-semibold text-white/40 uppercase tracking-wider">
+          <h2 className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider transition-colors duration-250">
             Current Focus
           </h2>
-          <p className="text-[14px] text-white/60 leading-relaxed max-w-2xl font-normal">
-            Developing responsive system frameworks, refining code patterns through daily technical problem solving, and building custom web animations.
+          <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed max-w-2xl font-normal transition-colors duration-250">
+            Developing responsive system frameworks and refining code patterns through daily technical problem-solving. Beyond traditional web development, I am actively engaged in creating and refining digital video animations, focusing on cinematic techniques such as drone-perspective tracking, timelapses, and product reveal sequences.
           </p>
         </div>
       </div>
 
       {/* Footer Utility Link Tray */}
-      <div className="p-5 px-8 border-t border-white/5 bg-[#202020]/40 flex flex-wrap gap-6 items-center justify-start">
+      <div className="p-5 px-8 border-t border-[var(--color-surface-border)] bg-[var(--color-surface-inactive)] flex flex-wrap gap-6 items-center justify-start transition-colors duration-250">
         <SocialLink
           icon={<FaGithub size={15} />}
           label="GitHub"
@@ -95,13 +95,13 @@ function SocialLink({ icon, label, href }) {
       className="
         flex items-center gap-2
         text-[12px] font-medium
-        text-white/50
-        hover:text-accent
-        transition-all duration-150
+        text-[var(--color-text-secondary)]
+        hover:text-[var(--color-accent)]
+        transition-colors duration-150
         group
       "
     >
-      <span className="text-white/40 group-hover:text-accent transition-colors duration-150">
+      <span className="text-[var(--color-text-tertiary)] group-hover:text-[var(--color-accent)] transition-colors duration-150">
         {icon}
       </span>
       {label}
