@@ -9,16 +9,16 @@
   --color-desktop: #111;
 
   /* Surfaces - True macOS Mojave Dark Mode Palette */
-  --color-surface-dark: #161616;
-  --color-surface: #262626;
-  --color-surface-inactive: #2D2D2D;
-  --color-surface-elevated: #373737;
+  --color-surface-dark: #161616;       /* Sidebar background */
+  --color-surface: #262626;            /* Main window active background */
+  --color-surface-inactive: #2D2D2D;   /* Inactive window background */
+  --color-surface-elevated: #373737;   /* Popovers / Context Menus / Tooltips */
 
   /* Borders & Dividers */
   --color-surface-border: rgba(255, 255, 255, 0.06);
   --color-window-border: rgba(0, 0, 0, 0.3);
 
-  /* Text */
+  /* Text - High contrast but soft standard system colors */
   --color-text: #FFFFFF;
   --color-text-secondary: rgba(255, 255, 255, 0.65);
   --color-text-tertiary: rgba(255, 255, 255, 0.35);
@@ -29,6 +29,10 @@
 
   --text-micro: 10px;
   --tracking-super-wide: 0.15em;
+
+  /* Shared dynamic variables for adaptive shadows */
+  --shadow-window: 0 20px 40px rgba(0, 0, 0, 0.45), 0 0 1px rgba(255, 255, 255, 0.1);
+  --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 @layer base {
@@ -48,57 +52,63 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.01em;
-    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth fade! */
+
+    /* Global smooth color transition when toggling */
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   }
 
-  /* LIGHT MODE OVERRIDES ☀️ */
+  /* ☀️ MOJAVE LIGHT THEME OVERRIDES */
   .light-theme {
-    --color-desktop: #D1D5DB; /* Lighter background wallpaper */
+    --color-desktop: #D1D5DB;            /* Soft gray wallpaper area */
 
-    --color-surface-dark: #E3E5E8; /* Light macOS sidebar */
-    --color-surface: #FFFFFF;      /* Main window */
-    --color-surface-inactive: #F6F6F6;
-    --color-surface-elevated: #FFFFFF;
+    --color-surface-dark: #E3E5E8;       /* Sidebar */
+    --color-surface: #FFFFFF;            /* Active window main surface */
+    --color-surface-inactive: #F6F6F6;   /* Inactive window main surface */
+    --color-surface-elevated: #FFFFFF;   /* Tooltips / Menus */
 
-    --color-surface-border: rgba(0, 0, 0, 0.1);
-    --color-window-border: rgba(0, 0, 0, 0.2);
+    --color-surface-border: rgba(0, 0, 0, 0.08);
+    --color-window-border: rgba(0, 0, 0, 0.15);
 
-    --color-text: #1C1C1E; /* Crisp dark text */
-    --color-text-secondary: rgba(0, 0, 0, 0.55);
+    --color-text: #1C1C1E;               /* Primary dark text */
+    --color-text-secondary: rgba(0, 0, 0, 0.6);
     --color-text-tertiary: rgba(0, 0, 0, 0.35);
+
+    /* Softer, realistic light-mode depth shadows */
+    --shadow-window: 0 20px 40px rgba(0, 0, 0, 0.12), 0 0 1px rgba(0, 0, 0, 0.2);
+    --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.08);
   }
 }
 
 @layer utilities {
-  /* Dark mode scrollbar (Default) */
+  /* macOS Minimalist Scrollbar Style (Adaptive) */
   .custom-scrollbar::-webkit-scrollbar {
     width: 7px;
     height: 7px;
   }
+
   .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
   }
+
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.12);
     border-radius: 999px;
   }
+
+  .light-theme .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+  }
+
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: var(--color-text-tertiary);
   }
 
-  /* Light mode scrollbar overrides */
-  .light-theme .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2);
-  }
-  .light-theme .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.4);
-  }
-
+  /* Shadow hooks utilizing our dynamic variables */
   .window-shadow {
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), 0 0 1px rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-window);
   }
 
   .popover-shadow {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-popover);
   }
 }
