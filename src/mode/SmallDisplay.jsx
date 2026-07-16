@@ -246,7 +246,7 @@ export default function TerminalPortfolio() {
 
         {/* --- Animated Skills Section --- */}
         <section className="space-y-5">
-          <SectionHeader title="Arsenal & Tools" />
+          <SectionHeader title="Skils and Tools" />
           <motion.div
             variants={staggerContainer}
             initial="hidden"
