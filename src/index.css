@@ -7,6 +7,7 @@
 
   /* Desktop Background / Wallpaper Area */
   --color-desktop: #111;
+  --color-desktop-dot: rgba(255, 255, 255, 0.14);
 
   /* Surfaces - True macOS Mojave Dark Mode Palette */
   --color-surface-dark: #161616;       /* Sidebar background */
@@ -60,6 +61,7 @@
   /* ☀️ MOJAVE LIGHT THEME OVERRIDES */
   .light-theme {
     --color-desktop: #D1D5DB;            /* Soft gray wallpaper area */
+    --color-desktop-dot: rgba(0, 0, 0, 0.12);
 
     --color-surface-dark: #E3E5E8;       /* Sidebar */
     --color-surface: #FFFFFF;            /* Active window main surface */
@@ -117,7 +119,7 @@
   background: rgba(255, 255, 255, 0.45);
   border-color: rgba(0, 0, 0, 0.06);
   box-shadow: 0 24px 50px rgba(0, 0, 0, 0.15);
-  
+
 }
 
 /* Keeps text, divider lines, and app active dots clean in light mode */
