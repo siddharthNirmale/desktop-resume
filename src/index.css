@@ -177,3 +177,17 @@
   background-color: rgba(0, 0, 0, 0.15);
 }
 }
+/* 🌊 VIEW TRANSITIONS API: MAGIC CIRCLE WAVE 🌊 */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1; /* Keep the old theme screenshot in the back */
+}
+
+::view-transition-new(root) {
+  z-index: 2; /* Put the new theme on top so the expanding circle reveals it */
+}

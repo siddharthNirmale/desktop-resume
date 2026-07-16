@@ -28,16 +28,58 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [menu.show]);
 
-  const handleThemeToggle = () => {
-    if (isLight) {
-      document.body.classList.remove('light-theme');
-      localStorage.setItem('theme', 'dark');
-      setIsLight(false);
-    } else {
-      document.body.classList.add('light-theme');
-      localStorage.setItem('theme', 'light');
-      setIsLight(true);
+  // 🌊 New Wave Animation Toggle Handler 🌊
+  const handleThemeToggle = (e) => {
+    const willBeLight = !isLight;
+
+    // 1. The core logic we want to run
+    const toggle = () => {
+      if (willBeLight) {
+        document.body.classList.add('light-theme');
+        localStorage.setItem('theme', 'light');
+        setIsLight(true);
+      } else {
+        document.body.classList.remove('light-theme');
+        localStorage.setItem('theme', 'dark');
+        setIsLight(false);
+      }
+    };
+
+    // 2. Fallback for older browsers that don't support View Transitions
+    if (!document.startViewTransition) {
+      toggle();
+      return;
     }
+
+    // 3. Get the exact mouse click coordinates
+    const x = e.clientX;
+    const y = e.clientY;
+
+    // 4. Calculate how big the circle needs to be to cover the whole screen
+    const endRadius = Math.hypot(
+      Math.max(x, innerWidth - x),
+      Math.max(y, innerHeight - y)
+    );
+
+    // 5. Tell the browser to take a snapshot, run the toggle, and prepare for animation
+    const transition = document.startViewTransition(toggle);
+
+    // 6. Animate the new theme in using a growing circular clip-path
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ],
+        },
+        {
+          duration: 600, // How fast the wave travels
+          easing: "ease-in-out",
+          pseudoElement: "::view-transition-new(root)",
+        }
+      );
+    });
   };
 
   const DockIcon = ({ id, icon: Icon, label, badge }) => {
@@ -81,11 +123,10 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
             e.preventDefault();
             setMenu({ show: true, x: e.clientX, y: e.clientY - 150, id });
           }}
-          className={`relative flex items-center justify-center w-[48px] h-[48px] rounded-[11px] transition-all duration-200 cursor-pointer ${
-            isOpen && !isMinimized
+          className={`relative flex items-center justify-center w-[48px] h-[48px] rounded-[11px] transition-all duration-200 cursor-pointer ${isOpen && !isMinimized
               ? 'text-white bg-white/5 shadow-inner border border-white/5'
               : 'text-white/70 hover:text-white hover:bg-white/10'
-          }`}
+            }`}
         >
           <Icon size={23} strokeWidth={1.75} className="drop-shadow-md transition-colors duration-200 label-icon" />
 
@@ -99,11 +140,10 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
         {/* Active Indicators: Translucent macOS System Dots */}
         {isOpen && (
           <div className="absolute -bottom-1.5 flex justify-center items-center h-2">
-            <div className={`rounded-full transition-all duration-300 ${
-              isMinimized
+            <div className={`rounded-full transition-all duration-300 ${isMinimized
                 ? 'w-[4px] h-[4px] bg-white/30'
                 : 'w-[4px] h-[4px] bg-white shadow-[0_0_6px_#fff]'
-            }`} />
+              }`} />
           </div>
         )}
       </div>
@@ -115,10 +155,10 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
       {/* Container utilizing authentic translucent dark glass overlay & subtle reflections */}
       <div className="px-3.5 py-2.5 bg-[#1C1C1E]/60 backdrop-blur-xl border border-white/10 rounded-[20px] flex items-end gap-2.5 shadow-[0_24px_50px_rgba(0,0,0,0.6)] ring-1 ring-black/40">
         <DockIcon id="about" icon={User} label="About Me" />
-        <DockIcon id="projects" icon={FolderCode} label="Projects"  />
+        <DockIcon id="projects" icon={FolderCode} label="Projects" />
         <DockIcon id="resume" icon={FileText} label="Curriculum Vitae" />
         <DockIcon id="notepad" icon={Notebook} label="Notes" />
-        <DockIcon id="contact" icon={Mail} label="Contact"  />
+        <DockIcon id="contact" icon={Mail} label="Contact" />
 
         {/* Glass vertical app partition divider */}
         <div className="w-[1px] h-9 bg-white/10 rounded-full mx-1 align-middle self-center" />
