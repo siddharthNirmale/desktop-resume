@@ -146,4 +146,28 @@
   color: #000000;
   background-color: rgba(0, 0, 0, 0.04);
 }
+
+/* Dynamic TopBar adaptations for light theme */
+.light-theme .custom-topbar {
+  background: rgba(255, 255, 255, 0.45);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* Crisp dark text and icons for light mode topbar */
+.light-theme .custom-topbar .topbar-text {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.light-theme .custom-topbar .topbar-icons {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.light-theme .custom-topbar .topbar-icons a:hover {
+  color: #000000;
+}
+
+.light-theme .custom-topbar .topbar-divider {
+  background-color: rgba(0, 0, 0, 0.15);
+}
 }

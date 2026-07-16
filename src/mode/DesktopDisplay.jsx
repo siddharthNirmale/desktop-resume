@@ -67,12 +67,12 @@ export default function DesktopDisplay() {
       // Integrated @theme classes: font-primary, text-text, and bg-desktop
       className="
         w-screen h-screen
-        relative overflow-hidden
-        font-primary
-        text-text
-        bg-desktop
-        select-none
-        transition-all duration-700
+  relative overflow-hidden
+  font-primary
+  text-[var(--color-text)]
+  bg-[var(--color-desktop)]
+  select-none
+  transition-colors duration-500
       "
       style={{
         backgroundImage: wallpaper ? `url(${wallpaper})` : "none",
