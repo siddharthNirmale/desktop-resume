@@ -111,4 +111,37 @@
   .popover-shadow {
     box-shadow: var(--shadow-popover);
   }
+
+  /* Dynamic dock adaptations for light theme */
+.light-theme .custom-dock-container > div {
+  background: rgba(255, 255, 255, 0.45);
+  border-color: rgba(0, 0, 0, 0.06);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.15);
+  
+}
+
+/* Keeps text, divider lines, and app active dots clean in light mode */
+.light-theme .custom-dock-container .text-white\/70 {
+  color: rgba(0, 0, 0, 0.65);
+}
+.light-theme .custom-dock-container .hover\:text-white:hover {
+  color: #000000;
+}
+.light-theme .custom-dock-container .hover\:bg-white\/10:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+.light-theme .custom-dock-container .bg-white\/10 {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+.light-theme .custom-dock-container .bg-white {
+  background-color: #000000;
+  box-shadow: 0 0 6px rgba(0,0,0,0.2);
+}
+.light-theme .custom-dock-container .bg-white\/30 {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+.light-theme .custom-dock-container .text-white {
+  color: #000000;
+  background-color: rgba(0, 0, 0, 0.04);
+}
 }
