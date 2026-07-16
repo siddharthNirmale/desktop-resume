@@ -10,12 +10,12 @@ export default function Terminal() {
     {
       type: "output",
       content: (
-        <div className="mb-6 pb-4 border-b border-white/5 flex flex-col gap-1">
-          <h1 className="text-lg font-semibold text-white/95 tracking-tight flex items-center gap-2">
-            <FiTerminal className="text-accent" /> Terminal — zsh
+        <div className="mb-6 pb-4 border-b border-[var(--color-surface-border)] flex flex-col gap-1 transition-colors duration-250">
+          <h1 className="text-lg font-semibold text-[var(--color-text)] tracking-tight flex items-center gap-2 transition-colors duration-250">
+            <FiTerminal className="text-[var(--color-accent)] transition-colors duration-250" /> Terminal — zsh
           </h1>
-          <p className="text-[12px] text-white/40">
-            Type <span className="text-accent font-medium">help</span> to list the available configuration nodes.
+          <p className="text-[12px] text-[var(--color-text-tertiary)] transition-colors duration-250">
+            Type <span className="text-[var(--color-accent)] font-medium transition-colors duration-250">help</span> to list the available configuration nodes.
           </p>
         </div>
       ),
@@ -49,12 +49,12 @@ export default function Terminal() {
               { cmd: "date", icon: <FiCalendar size={10} /> },
             ].map(({ cmd, icon }) => (
               <div key={cmd} className="flex items-center gap-2">
-                <span className="text-accent/60 flex items-center">{icon}</span>
-                <span className="text-white/80 font-medium">{cmd}</span>
+                <span className="text-[var(--color-accent)] opacity-80 flex items-center">{icon}</span>
+                <span className="text-[var(--color-text-secondary)] font-medium">{cmd}</span>
               </div>
             ))}
-            <div className="col-span-full flex items-center gap-2 mt-2 pt-2 border-t border-white/5 text-white/40">
-              <span className="text-accent/60"><FiTerminal size={10} /></span>
+            <div className="col-span-full flex items-center gap-2 mt-2 pt-2 border-t border-[var(--color-surface-border)] text-[var(--color-text-tertiary)]">
+              <span className="text-[var(--color-accent)] opacity-80"><FiTerminal size={10} /></span>
               <span>echo [text]</span>
             </div>
           </div>
@@ -69,10 +69,10 @@ export default function Terminal() {
       case "whoami":
         outputContent = (
           <div className="my-2 space-y-0.5">
-            <div className="text-white/95 font-semibold text-[14px]">
+            <div className="text-[var(--color-text)] font-semibold text-[14px]">
               Siddharth Nirmale
             </div>
-            <div className="text-white/50 text-[12px]">
+            <div className="text-[var(--color-text-tertiary)] text-[12px]">
               Full-Stack Software Developer
             </div>
           </div>
@@ -84,14 +84,14 @@ export default function Terminal() {
           <div className="flex flex-col gap-4 my-3 max-w-2xl">
             {skills.map((skillGroup) => (
               <div key={skillGroup.category}>
-                <div className="text-[11px] font-semibold text-white/40 uppercase tracking-wider mb-1.5">
+                <div className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider mb-1.5">
                   {skillGroup.category}
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {skillGroup.items.map((skill) => (
                     <span
                       key={skill}
-                      className="px-2.5 py-1 rounded bg-white/[0.03] border border-white/5 text-[12px] text-white/70 font-medium"
+                      className="px-2.5 py-1 rounded bg-[var(--color-surface-border)] border border-transparent text-[12px] text-[var(--color-text-secondary)] font-medium"
                     >
                       {skill}
                     </span>
@@ -109,24 +109,24 @@ export default function Terminal() {
             {projects.map((proj, idx) => (
               <div
                 key={idx}
-                className="border border-white/5 rounded-xl p-4 bg-[#202022]/40 space-y-2 shadow-sm"
+                className="border border-[var(--color-surface-border)] rounded-xl p-4 bg-[var(--color-surface-inactive)] space-y-2 shadow-sm"
               >
                 <div className="flex justify-between items-center">
-                  <h3 className="text-white/90 font-semibold text-[14px]">
+                  <h3 className="text-[var(--color-text)] font-semibold text-[14px]">
                     {proj.title}
                   </h3>
-                  <a href={proj.live} target="_blank" rel="noreferrer" className="text-white/30 text-[12px] hover:text-white/70 transition-colors">
+                  <a href={proj.live} target="_blank" rel="noreferrer" className="text-[var(--color-text-tertiary)] text-[12px] hover:text-[var(--color-accent)] transition-colors">
                     <FiExternalLink size={14} />
                   </a>
                 </div>
-                <p className="text-white/50 text-[13px] leading-relaxed">
+                <p className="text-[var(--color-text-secondary)] text-[13px] leading-relaxed">
                   {proj.bullets[0]}
                 </p>
                 <div className="flex flex-wrap gap-1.5 pt-1">
                   {proj.tech.split(' • ').map((t) => (
                     <span
                       key={t}
-                      className="text-[11px] font-medium px-2 py-0.5 rounded bg-white/[0.02] border border-white/5 text-white/40"
+                      className="text-[11px] font-medium px-2 py-0.5 rounded bg-[var(--color-surface-border)] border border-transparent text-[var(--color-text-tertiary)]"
                     >
                       {t}
                     </span>
@@ -148,15 +148,15 @@ export default function Terminal() {
         ];
 
         outputContent = (
-          <div className="flex flex-col gap-4 my-3 border-l border-white/5 ml-2 pl-4">
+          <div className="flex flex-col gap-4 my-3 border-l border-[var(--color-surface-border)] ml-2 pl-4">
             {jobs.map((job, idx) => (
               <div key={idx} className="relative space-y-0.5">
-                <div className="absolute -left-[21px] top-[6px] w-2 h-2 bg-accent rounded-full border border-surface shadow-[0_0_6px_var(--color-accent)]" />
-                <div className="text-white/90 text-[14px] font-semibold flex items-center gap-2">
-                  <FiBriefcase size={12} className="text-accent/70" />
+                <div className="absolute -left-[21px] top-[6px] w-2 h-2 bg-[var(--color-accent)] rounded-full border border-[var(--color-surface)] shadow-[0_0_6px_var(--color-accent)]" />
+                <div className="text-[var(--color-text)] text-[14px] font-semibold flex items-center gap-2">
+                  <FiBriefcase size={12} className="text-[var(--color-accent)] opacity-90" />
                   {job.role}
                 </div>
-                <div className="flex items-center gap-2 text-[12px] text-white/40">
+                <div className="flex items-center gap-2 text-[12px] text-[var(--color-text-tertiary)]">
                   <span>{job.company}</span>
                   <span>•</span>
                   <span>{job.year}</span>
@@ -169,9 +169,9 @@ export default function Terminal() {
 
       case "location":
         outputContent = (
-          <div className="flex items-center gap-3 my-2 text-[13px] text-white/70">
-            <FiMapPin size={14} className="text-accent" />
-            <span className="font-medium text-white/90">Indore, Madhya Pradesh, India</span>
+          <div className="flex items-center gap-3 my-2 text-[13px] text-[var(--color-text-secondary)]">
+            <FiMapPin size={14} className="text-[var(--color-accent)]" />
+            <span className="font-medium text-[var(--color-text)]">Indore, Madhya Pradesh, India</span>
           </div>
         );
         break;
@@ -179,8 +179,8 @@ export default function Terminal() {
       case "date":
         const now = new Date();
         outputContent = (
-          <div className="text-[13px] text-white/70 font-mono my-2 flex items-center gap-2">
-            <FiCalendar size={14} className="text-accent" />
+          <div className="text-[13px] text-[var(--color-text-secondary)] font-mono my-2 flex items-center gap-2">
+            <FiCalendar size={14} className="text-[var(--color-accent)]" />
             {now.toString()}
           </div>
         );
@@ -189,14 +189,14 @@ export default function Terminal() {
       default:
         if (command.startsWith("echo ")) {
           outputContent = (
-            <span className="text-white/80 font-mono">
+            <span className="text-[var(--color-text-secondary)] font-mono">
               {input.substring(5)}
             </span>
           );
         } else {
           outputContent = (
-            <span className="text-white/40 text-[13px]">
-              zsh: command not found: <span className="text-accent font-medium">{command}</span>
+            <span className="text-[var(--color-text-tertiary)] text-[13px]">
+              zsh: command not found: <span className="text-[var(--color-accent)] font-medium">{command}</span>
             </span>
           );
         }
@@ -212,31 +212,31 @@ export default function Terminal() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col p-6 bg-[#161616]/95 text-white/90 font-mono text-[13px] overflow-y-auto custom-scrollbar">
+    <div className="w-full h-full flex flex-col p-6 bg-[var(--color-surface-dark)] text-[var(--color-text)] font-mono text-[13px] overflow-y-auto custom-scrollbar transition-colors duration-250">
       {/* Scrollable Command Output Logs */}
       <div className="flex-1">
         {history.map((line, index) => (
           <div key={index} className="mb-2 leading-relaxed">
             {line.type === "command" ? (
-              <div className="flex items-center text-white/90 mt-4 mb-2">
-                <FiChevronRight className="text-accent mr-1 font-bold select-none" size={16} />
+              <div className="flex items-center text-[var(--color-text)] mt-4 mb-2 transition-colors duration-250">
+                <FiChevronRight className="text-[var(--color-accent)] mr-1 font-bold select-none transition-colors duration-250" size={16} />
                 <span className="font-medium tracking-wide">{line.content}</span>
               </div>
             ) : (
-              <div className="text-white/80 font-mono">{line.content}</div>
+              <div className="text-[var(--color-text-secondary)] font-mono transition-colors duration-250">{line.content}</div>
             )}
           </div>
         ))}
 
         {/* Real-time Interactive Input Line */}
         <div className="flex items-center mt-4">
-          <FiChevronRight className="text-accent mr-1 font-bold select-none" size={16} />
+          <FiChevronRight className="text-[var(--color-accent)] mr-1 font-bold select-none transition-colors duration-250" size={16} />
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleCommand}
-            className="flex-1 bg-transparent outline-none text-white font-mono tracking-wide placeholder:text-white/5"
+            className="flex-1 bg-transparent outline-none text-[var(--color-text)] font-mono tracking-wide placeholder:text-[var(--color-text-tertiary)] placeholder:opacity-50 transition-colors duration-250"
             autoFocus
             spellCheck="false"
             autoComplete="off"
