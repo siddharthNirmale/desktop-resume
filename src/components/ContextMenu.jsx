@@ -22,35 +22,34 @@ export default function ContextMenu({ x, y, onClose, toggleWindow, bringToFront 
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.1 }}
       style={{ top: y, left: x }}
-      onContextMenu={(e) => e.preventDefault()} 
-      // Mapped to surface and surface-border
-      className="fixed z-[999999] w-48 bg-surface border border-surface-border rounded-xl shadow-2xl py-1.5 overflow-hidden"
+      onContextMenu={(e) => e.preventDefault()}
+      // Swapped to surface-elevated and added your custom popover-shadow
+      className="fixed z-[999999] w-48 bg-[var(--color-surface-elevated)] border border-[var(--color-surface-border)] rounded-xl popover-shadow py-1.5 overflow-hidden transition-colors duration-250"
     >
-      <div className="px-3 py-1.5 mb-1 border-b border-surface-border/50">
-        {/* Unified with your global micro-typography system */}
-        <span className="text-micro font-bold text-neutral-500 uppercase tracking-super-wide font-primary">
+      <div className="px-3 py-1.5 mb-1 border-b border-[var(--color-surface-border)] transition-colors duration-250">
+        {/* Swapped neutral-500 to dynamic secondary text */}
+        <span className="text-micro font-bold text-[var(--color-text-secondary)] uppercase tracking-super-wide font-primary transition-colors duration-250">
           Desktop Actions
         </span>
       </div>
-      
+
       {menuItems.map((item) => (
         <button
           key={item.id}
           onClick={(e) => { e.stopPropagation(); openApp(item.id); }}
-          // Swapped hovers to text-accent and bg-surface-dark, standardized to text-xs
-          className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-neutral-400 hover:text-accent hover:bg-surface-dark transition-colors uppercase tracking-widest font-primary group"
+          // Hover uses surface-border to look like a native highlight
+          className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-[var(--color-text)] hover:text-[var(--color-accent)] hover:bg-[var(--color-surface-border)] transition-colors uppercase tracking-widest font-primary group"
         >
-          {/* Icon hover mapped to text-accent */}
-          <item.icon size={14} strokeWidth={2} className="text-neutral-500 group-hover:text-accent transition-colors" />
+          {/* Icons use secondary color until hovered */}
+          <item.icon size={14} strokeWidth={2} className="text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)] transition-colors duration-200" />
           {item.label}
         </button>
       ))}
-      
-      {/* Separator mapped to surface-border */}
-      <div className="h-px bg-surface-border/50 my-1 mx-2" />
-      
-      <button className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-neutral-600 cursor-not-allowed uppercase tracking-widest font-primary">
-        <Settings size={14} strokeWidth={2} />
+
+      <div className="h-px bg-[var(--color-surface-border)] my-1 mx-2 transition-colors duration-250" />
+
+      <button className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-[var(--color-text-tertiary)] opacity-60 cursor-not-allowed uppercase tracking-widest font-primary transition-colors duration-250">
+        <Settings size={14} strokeWidth={2} className="text-[var(--color-text-tertiary)]" />
         System Preferences
       </button>
     </motion.div>
