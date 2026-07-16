@@ -21,27 +21,30 @@ function WallpaperButton({ wp, setWallpaper }) {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <button 
-      onClick={() => setWallpaper(wp.url)} 
-      className="group relative h-11 w-11 flex-shrink-0 rounded-xl border border-white/5 overflow-hidden hover:border-accent transition-colors duration-200 bg-white/[0.02] cursor-default focus:outline-none"
+    <button
+      onClick={() => setWallpaper(wp.url)}
+      // Swapped borders and background to dynamic surface variables
+      className="group relative h-11 w-11 flex-shrink-0 rounded-xl border border-[var(--color-surface-border)] overflow-hidden hover:border-[var(--color-accent)] transition-colors duration-200 bg-[var(--color-surface-inactive)] cursor-default focus:outline-none"
     >
       {wp.id === 'default' ? (
         <div className="w-full h-full flex flex-col items-center justify-center gap-0.5">
-          <RefreshCw size={11} className="text-white/40 group-hover:text-accent transition-colors duration-150" />
-          <span className="text-[9px] font-medium text-white/30 capitalize tracking-normal group-hover:text-white transition-colors duration-150">
+          {/* Swapped text colors for the reset icon */}
+          <RefreshCw size={11} className="text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)] transition-colors duration-150" />
+          <span className="text-[9px] font-medium text-[var(--color-text-tertiary)] capitalize tracking-normal group-hover:text-[var(--color-text)] transition-colors duration-150">
             Reset
           </span>
         </div>
       ) : (
         <>
           {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-[#1C1C1E]">
-              <Loader2 size={11} className="animate-spin text-accent" />
+            // Loader background now adapts to light/dark
+            <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-surface)] transition-colors duration-250">
+              <Loader2 size={11} className="animate-spin text-[var(--color-accent)]" />
             </div>
           )}
-          <img 
-            src={wp.url} 
-            alt={wp.name} 
+          <img
+            src={wp.url}
+            alt={wp.name}
             className={`w-full h-full object-cover transition-all duration-300 opacity-50 group-hover:opacity-100 group-hover:scale-105 ${isLoading ? 'opacity-0' : ''}`}
             onLoad={() => setIsLoading(false)}
           />
@@ -68,7 +71,8 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
       onPointerDown={onFocus}
       style={{ zIndex, touchAction: "none" }}
       whileDrag={{ cursor: "grabbing" }}
-      className="absolute top-72 left-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4.5 cursor-grab flex flex-col gap-4 shadow-[0_20px_40px_rgba(0,0,0,0.5)] font-primary select-none pointer-events-auto"
+      // Added 'custom-widget' class and transition-colors
+      className="custom-widget absolute top-72 left-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4.5 cursor-grab flex flex-col gap-4 shadow-[0_20px_40px_rgba(0,0,0,0.5)] font-primary select-none pointer-events-auto transition-colors duration-250"
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0 }}
@@ -77,12 +81,12 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
       {/* SECTION 1: WALLPAPER BACKGROUNDS */}
       <div className="flex flex-col gap-2.5">
         <div className="flex justify-between items-center px-0.5">
-          <span className="text-[11px] font-medium text-white/40 uppercase tracking-wider">
+          <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider transition-colors duration-250">
             Desktop Wallpaper
           </span>
         </div>
-        
-        <div 
+
+        <div
           className="flex flex-row items-center gap-3 overflow-x-auto custom-scrollbar pb-1"
           onPointerDown={(e) => e.stopPropagation()}
         >
@@ -92,18 +96,18 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
         </div>
       </div>
 
-      {/* Subtle Divider Line */}
-      <div className="h-[1px] w-full bg-white/5" />
+      {/* Subtle Divider Line - Mapped to surface-border */}
+      <div className="h-[1px] w-full bg-[var(--color-surface-border)] transition-colors duration-250" />
 
       {/* SECTION 2: SYSTEM ACCENT COLOR */}
       <div className="flex flex-col gap-2.5">
         <div className="flex justify-between items-center px-0.5">
-          <span className="text-[11px] font-medium text-white/40 uppercase tracking-wider">
+          <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider transition-colors duration-250">
             System Accent
           </span>
         </div>
-        
-        <div 
+
+        <div
           className="flex flex-row items-center gap-3.5 px-0.5"
           onPointerDown={(e) => e.stopPropagation()}
         >
@@ -114,13 +118,14 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
                 key={color.id}
                 onClick={() => handleAccentChange(color.id, color.value)}
                 style={{ backgroundColor: color.value }}
+                // Updated the ring color to use your text variable so the highlight swaps to black in light mode!
                 className={`group relative h-[22px] w-[22px] rounded-full flex items-center justify-center transition-all duration-150 cursor-default hover:scale-105 active:scale-95 focus:outline-none
-                  ${isSelected ? 'ring-2 ring-offset-2 ring-offset-[#1C1C1E] ring-white' : 'opacity-80 hover:opacity-100'}
+                  ${isSelected ? 'ring-2 ring-offset-2 ring-offset-transparent ring-[var(--color-text)]' : 'opacity-80 hover:opacity-100'}
                 `}
                 title={color.name}
               >
                 {isSelected && (
-                  <Check size={10} className="text-black stroke-[3.5]" />
+                  <Check size={10} className="text-white drop-shadow-md stroke-[3.5]" />
                 )}
               </button>
             );

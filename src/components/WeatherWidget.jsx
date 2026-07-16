@@ -1,10 +1,10 @@
-import { 
-  Cloud, 
-  Sun, 
-  CloudRain, 
-  CloudLightning, 
-  CloudSnow, 
-  Loader2 
+import {
+  Cloud,
+  Sun,
+  CloudRain,
+  CloudLightning,
+  CloudSnow,
+  Loader2
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -16,7 +16,7 @@ const getWeatherDetails = (code) => {
   if (code >= 51 && code <= 67) return { label: 'Rain', Icon: CloudRain };
   if (code >= 71 && code <= 77) return { label: 'Snow', Icon: CloudSnow };
   if (code >= 95) return { label: 'Storm', Icon: CloudLightning };
-  return { label: 'Cloudy', Icon: Cloud }; 
+  return { label: 'Cloudy', Icon: Cloud };
 };
 
 export default function WeatherWidget({ constraintsRef, zIndex, onFocus }) {
@@ -43,7 +43,8 @@ export default function WeatherWidget({ constraintsRef, zIndex, onFocus }) {
       onPointerDown={onFocus}
       style={{ zIndex, touchAction: "none" }}
       whileDrag={{ cursor: "grabbing" }}
-      className="absolute top-14 left-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4.5 cursor-grab flex flex-col gap-3.5 shadow-[0_20px_40px_rgba(0,0,0,0.5)] font-primary select-none pointer-events-auto"
+      // Added custom-widget and transition-colors
+      className="custom-widget absolute top-14 left-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4.5 cursor-grab flex flex-col gap-3.5 shadow-[0_20px_40px_rgba(0,0,0,0.5)] font-primary select-none pointer-events-auto transition-colors duration-250"
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0 }}
@@ -51,11 +52,11 @@ export default function WeatherWidget({ constraintsRef, zIndex, onFocus }) {
     >
       {/* Widget Sub-Header */}
       <div className="flex justify-between items-center px-0.5">
-        <span className="text-[11px] font-medium text-white/40 uppercase tracking-wider">
+        <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider transition-colors duration-250">
           Weather
         </span>
         {!loading && (
-          <span className="text-[11px] font-medium text-white/30">
+          <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] transition-colors duration-250">
             Indore
           </span>
         )}
@@ -63,7 +64,7 @@ export default function WeatherWidget({ constraintsRef, zIndex, onFocus }) {
 
       {loading ? (
         <div className="h-[120px] flex items-center justify-center w-full">
-          <Loader2 className="animate-spin text-accent" size={18} />
+          <Loader2 className="animate-spin text-[var(--color-accent)]" size={18} />
         </div>
       ) : (
         <>
@@ -75,27 +76,27 @@ export default function WeatherWidget({ constraintsRef, zIndex, onFocus }) {
 
             return (
               <div className="flex flex-col gap-4 w-full">
-                
+
                 {/* Main Current Weather Display */}
                 <div className="flex items-center justify-between px-0.5">
-                  <CurrentIcon size={40} strokeWidth={1.25} className="text-accent drop-shadow-[0_0_8px_rgba(10,132,255,0.2)]" />
+                  <CurrentIcon size={40} strokeWidth={1.25} className="text-[var(--color-accent)] drop-shadow-md transition-colors duration-250" />
                   <div className="flex flex-col items-end">
                     <div className="flex items-start gap-1.5">
-                      <span className="text-[38px] font-light text-white/95 leading-none tracking-tight font-primary tabular-nums">
+                      <span className="text-[38px] font-light text-[var(--color-text)] leading-none tracking-tight font-primary tabular-nums transition-colors duration-250">
                         {Math.round(weatherData.current.temperature_2m)}°
                       </span>
-                      <span className="text-[12px] font-medium text-white/60 mt-0.5">
+                      <span className="text-[12px] font-medium text-[var(--color-text-secondary)] mt-0.5 transition-colors duration-250">
                         {currentLabel}
                       </span>
                     </div>
-                    <span className="text-[11px] font-medium text-white/30 mt-1.5 tracking-normal tabular-nums">
+                    <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] mt-1.5 tracking-normal tabular-nums transition-colors duration-250">
                       High: {todayHigh}° &nbsp;Low: {todayLow}°
                     </span>
                   </div>
                 </div>
 
                 {/* 4-Day Extended Forecast Row */}
-                <div className="flex justify-between items-center border-t border-white/5 pt-3.5 mt-0.5">
+                <div className="flex justify-between items-center border-t border-[var(--color-surface-border)] pt-3.5 mt-0.5 transition-colors duration-250">
                   {weatherData.daily.time.slice(1, 5).map((dateStr, index) => {
                     const actualIndex = index + 1;
                     const date = new Date(dateStr);
@@ -106,12 +107,12 @@ export default function WeatherWidget({ constraintsRef, zIndex, onFocus }) {
 
                     return (
                       <div key={dateStr} className="flex flex-col items-center gap-1.5">
-                        <span className="text-[10px] text-white/40 uppercase font-medium tracking-wider">
+                        <span className="text-[10px] text-[var(--color-text-tertiary)] uppercase font-medium tracking-wider transition-colors duration-250">
                           {dayName}
                         </span>
-                        <DayIcon size={15} strokeWidth={1.5} className="text-white/30" />
-                        <span className="text-[11px] text-white/50 font-medium tabular-nums">
-                          {high}°<span className="text-white/20">/</span>{low}°
+                        <DayIcon size={15} strokeWidth={1.5} className="text-[var(--color-text-tertiary)] transition-colors duration-250" />
+                        <span className="text-[11px] text-[var(--color-text-secondary)] font-medium tabular-nums transition-colors duration-250">
+                          {high}°<span className="text-[var(--color-text-tertiary)]">/</span>{low}°
                         </span>
                       </div>
                     );
