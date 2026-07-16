@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import useWindows from "../hooks/useWindows";
 import Background from "../components/Background";
@@ -28,11 +28,28 @@ import Terminal from "../sections/Terminal";
 import ResumeSection from "../sections/ResumeSection";
 
 export default function DesktopDisplay() {
-  const [wallpaper, setWallpaper] = useState("");
+  // 1. Initialize wallpaper directly from storage
+  const [wallpaper, setWallpaper] = useState(() => {
+    return localStorage.getItem("os-wallpaper") || "";
+  });
+
   const [isLoading, setIsLoading] = useState(false);
   const [menu, setMenu] = useState({ show: false, x: 0, y: 0 });
 
   const desktopRef = useRef(null);
+
+  // 2. Automatically save wallpaper whenever it changes
+  useEffect(() => {
+    localStorage.setItem("os-wallpaper", wallpaper);
+  }, [wallpaper]);
+
+  // 3. Apply the Accent Color to the document immediately on boot
+  useEffect(() => {
+    const savedAccent = localStorage.getItem("os-accent");
+    if (savedAccent) {
+      document.documentElement.style.setProperty("--color-accent", savedAccent);
+    }
+  }, []);
 
   const { windows, bringToFront, toggleWindow } = useWindows([
     { id: "about", title: "About", isOpen: true, type: "window", defaultWidth: 800, defaultHeight: 600 },
@@ -64,15 +81,14 @@ export default function DesktopDisplay() {
       ref={desktopRef}
       onContextMenu={handleContextMenu}
       onClick={closeMenu}
-      // Integrated @theme classes: font-primary, text-text, and bg-desktop
+      // Removed transition-colors so the View Transition wave animation is perfectly crisp!
       className="
         w-screen h-screen
-  relative overflow-hidden
-  font-primary
-  text-[var(--color-text)]
-  bg-[var(--color-desktop)]
-  select-none
-  transition-colors duration-500
+        relative overflow-hidden
+        font-primary
+        text-[var(--color-text)]
+        bg-[var(--color-desktop)]
+        select-none
       "
       style={{
         backgroundImage: wallpaper ? `url(${wallpaper})` : "none",
@@ -178,8 +194,8 @@ export default function DesktopDisplay() {
                   onMinimize={() => toggleWindow(win.id, "isMinimized", true)}
                   onFocus={() => bringToFront(win.id)}
                 >
-                  {/* Cleaned up interior wrapper to use global bg-surface */}
-                  <div className="w-full h-full min-h-0 bg-surface rounded-b-xl overflow-y-auto custom-scrollbar">
+                  {/* Cleaned up interior wrapper to use global dynamic bg-[var(--color-surface)] */}
+                  <div className="w-full h-full min-h-0 bg-[var(--color-surface)] rounded-b-xl overflow-y-auto custom-scrollbar transition-colors duration-250">
                     {win.id === "about" && <AboutSection />}
                     {win.id === "projects" && <ProjectsSection />}
                     {win.id === "resume" && <ResumeSection />}

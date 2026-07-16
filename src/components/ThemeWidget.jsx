@@ -23,12 +23,10 @@ function WallpaperButton({ wp, setWallpaper }) {
   return (
     <button
       onClick={() => setWallpaper(wp.url)}
-      // Swapped borders and background to dynamic surface variables
       className="group relative h-11 w-11 flex-shrink-0 rounded-xl border border-[var(--color-surface-border)] overflow-hidden hover:border-[var(--color-accent)] transition-colors duration-200 bg-[var(--color-surface-inactive)] cursor-default focus:outline-none"
     >
       {wp.id === 'default' ? (
         <div className="w-full h-full flex flex-col items-center justify-center gap-0.5">
-          {/* Swapped text colors for the reset icon */}
           <RefreshCw size={11} className="text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)] transition-colors duration-150" />
           <span className="text-[9px] font-medium text-[var(--color-text-tertiary)] capitalize tracking-normal group-hover:text-[var(--color-text)] transition-colors duration-150">
             Reset
@@ -37,7 +35,6 @@ function WallpaperButton({ wp, setWallpaper }) {
       ) : (
         <>
           {isLoading && (
-            // Loader background now adapts to light/dark
             <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-surface)] transition-colors duration-250">
               <Loader2 size={11} className="animate-spin text-[var(--color-accent)]" />
             </div>
@@ -55,11 +52,21 @@ function WallpaperButton({ wp, setWallpaper }) {
 }
 
 export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpaper }) {
-  const [activeAccent, setActiveAccent] = useState('ios-blue');
+  // 1. Initialize state by checking storage first!
+  const [activeAccent, setActiveAccent] = useState(() => {
+    const savedAccent = localStorage.getItem('os-accent');
+    if (savedAccent) {
+      const matched = ACCENT_COLORS.find(c => c.value === savedAccent);
+      return matched ? matched.id : 'ios-blue';
+    }
+    return 'ios-blue'; // Default fallback
+  });
 
+  // 2. Save choice to storage on click
   const handleAccentChange = (colorId, colorValue) => {
     setActiveAccent(colorId);
     document.documentElement.style.setProperty('--color-accent', colorValue);
+    localStorage.setItem('os-accent', colorValue);
   };
 
   return (
@@ -71,7 +78,6 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
       onPointerDown={onFocus}
       style={{ zIndex, touchAction: "none" }}
       whileDrag={{ cursor: "grabbing" }}
-      // Added 'custom-widget' class and transition-colors
       className="custom-widget absolute top-72 left-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4.5 cursor-grab flex flex-col gap-4 shadow-[0_20px_40px_rgba(0,0,0,0.5)] font-primary select-none pointer-events-auto transition-colors duration-250"
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -96,7 +102,6 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
         </div>
       </div>
 
-      {/* Subtle Divider Line - Mapped to surface-border */}
       <div className="h-[1px] w-full bg-[var(--color-surface-border)] transition-colors duration-250" />
 
       {/* SECTION 2: SYSTEM ACCENT COLOR */}
@@ -118,7 +123,6 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
                 key={color.id}
                 onClick={() => handleAccentChange(color.id, color.value)}
                 style={{ backgroundColor: color.value }}
-                // Updated the ring color to use your text variable so the highlight swaps to black in light mode!
                 className={`group relative h-[22px] w-[22px] rounded-full flex items-center justify-center transition-all duration-150 cursor-default hover:scale-105 active:scale-95 focus:outline-none
                   ${isSelected ? 'ring-2 ring-offset-2 ring-offset-transparent ring-[var(--color-text)]' : 'opacity-80 hover:opacity-100'}
                 `}
