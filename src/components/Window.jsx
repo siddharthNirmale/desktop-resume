@@ -17,10 +17,17 @@ export default function Window({
 
   useEffect(() => {
     const randomOffset = Math.floor(Math.random() * 30) - 15;
+    const centerTop = (window.innerHeight / 2) - (defaultHeight / 2) + randomOffset;
+    const centerLeft = (window.innerWidth / 2) - (defaultWidth / 2) + randomOffset;
+
     setSpawnPos({
-      top: (window.innerHeight / 2) - (defaultHeight / 2) + randomOffset,
-      left: (window.innerWidth / 2) - (defaultWidth / 2) + randomOffset
+      top: centerTop,
+      left: centerLeft
     });
+
+    // Set initial position to center
+    x.set(centerLeft);
+    y.set(centerTop);
   }, [defaultWidth, defaultHeight]);
 
   const toggleMaximize = () => {
@@ -55,12 +62,16 @@ export default function Window({
       dragConstraints={constraintsRef}
       onMouseDown={onFocus}
       style={{ zIndex, x, y, width, height }}
-      // Swapped 'bg-surface' to explicit var and mapped the dynamic border
       className={`absolute flex flex-col overflow-hidden bg-[var(--color-surface)] rounded-[8px] border border-[var(--color-window-border)] window-shadow transition-shadow duration-200 ${isMinimized ? 'hidden' : ''}`}
-      initial={{ top: spawnPos.top, left: spawnPos.left, opacity: 0, scale: 0.96 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.96 }}
-      transition={{ type: "spring", stiffness: 380, damping: 26 }}
+      initial={{ opacity: 0, scale: 0.5, x: spawnPos.left, y: spawnPos.top }}
+      animate={{ opacity: 1, scale: 1, x: spawnPos.left, y: spawnPos.top }}
+      exit={{ opacity: 0, scale: 0.5 }}
+      transition={{
+        type: "spring",
+        stiffness: 200,
+        damping: 20,
+        mass: 1
+      }}
     >
       {/* Top Header Shell - Now adapts to light/dark automatically */}
       <div className="h-[36px] min-h-[36px] flex items-center justify-between select-none bg-[var(--color-surface-inactive)] border-b border-[var(--color-surface-border)] relative transition-colors duration-250">
