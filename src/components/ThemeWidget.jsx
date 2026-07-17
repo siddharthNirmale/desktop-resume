@@ -2,11 +2,15 @@ import { useState, useEffect } from 'react';
 import { RefreshCw, Loader2, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+import one from "../assets/images/one.jpg"
+import two from "../assets/images/two.jpg"
+import three from "../assets/images/three.jpg"
+
 const WALLPAPERS = [
   { id: 'default', url: '', name: 'Default Canvas' },
-  { id: 'wp1', url: 'https://static1.squarespace.com/static/5e949a92e17d55230cd1d44f/t/6a1dcb7740331b7c4d0d6814/1780337617604/WWDC26_Mac.png', name: 'Dark Forest' },
-  { id: 'wp2', url: 'https://static1.squarespace.com/static/5e949a92e17d55230cd1d44f/t/6980fa4328829334c89817ff/1770060355992/FGrad_Feb03_Mac.png', name: 'Abstract Blue' },
-  { id: 'wp3', url: 'https://static1.squarespace.com/static/5e949a92e17d55230cd1d44f/t/6972579a8695ad2400d2ec01/1769101210900/OrangeTulip_Mac.png', name: 'Neon Glitch' },
+  { id: 'wp1', url: one, name: 'Dark Forest' },
+  { id: 'wp2', url: two, name: 'Abstract Blue' },
+  { id: 'wp3', url: three, name: 'Neon Glitch' },
 ];
 
 const ACCENT_COLORS = [
