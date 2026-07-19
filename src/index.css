@@ -177,6 +177,8 @@
   background-color: rgba(0, 0, 0, 0.15);
 }
 }
+
+
 /* 🌊 VIEW TRANSITIONS API: MAGIC CIRCLE WAVE 🌊 */
 ::view-transition-old(root),
 ::view-transition-new(root) {
