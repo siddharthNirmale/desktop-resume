@@ -24,9 +24,29 @@ const ACCENT_COLORS = [
 function WallpaperButton({ wp, setWallpaper }) {
   const [isLoading, setIsLoading] = useState(true);
 
+  const handleClick = (e) => {
+    const updateWallpaper = () => setWallpaper(wp.url);
+
+    if (!document.startViewTransition) {
+      updateWallpaper();
+      return;
+    }
+
+    const x = e.clientX;
+    const y = e.clientY;
+    const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+
+    const transition = document.startViewTransition(updateWallpaper);
+    transition.ready.then(() => {
+      document.documentElement.animate({
+        clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`],
+      }, { duration: 600, easing: "ease-in-out", pseudoElement: "::view-transition-new(root)" });
+    });
+  };
+
   return (
     <button
-      onClick={() => setWallpaper(wp.url)}
+      onClick={handleClick}
       className="group relative h-11 w-11 flex-shrink-0 rounded-xl border border-[var(--color-surface-border)] overflow-hidden hover:border-[var(--color-accent)] transition-colors duration-200 bg-[var(--color-surface-inactive)] cursor-default focus:outline-none"
     >
       {wp.id === 'default' ? (
