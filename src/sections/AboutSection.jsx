@@ -58,14 +58,14 @@ export default function AboutSection() {
               Selected Work
             </h2>
             <div className="space-y-4">
-              <ListItem
-                title="AI Refund Agent"
-                subtitle="Next.js, Groq AI, Zustand"
-                year="2026"
-              />
+
               <ListItem
                 title="Desktop Portfolio"
                 subtitle="React, Framer Motion, Vite"
+                year="2026"
+              /> <ListItem
+                title="AI Refund Agent"
+                subtitle="Next.js, Groq AI, Zustand"
                 year="2026"
               />
               <ListItem
