@@ -61,7 +61,7 @@ export default function AboutSection() {
 
               <ListItem
                 title="Desktop Portfolio"
-                subtitle="React, Framer Motion, Vite"
+                subtitle="React, Framer Motion, API"
                 year="2026"
               /> <ListItem
                 title="AI Refund Agent"
