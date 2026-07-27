@@ -96,7 +96,7 @@ export default function AboutSection() {
               Core Tech
             </h2>
             <p className="text-[14px] text-[var(--color-text-secondary)] font-medium leading-relaxed">
-              JavaScript, TypeScript, Python, React.js, Next.js, Node.js, Express, MongoDB, Tailwind CSS, Framer Motion.
+              JavaScript, TypeScript, C++, React.js, Next.js, Node.js, Express, MongoDB, Tailwind CSS, Framer Motion.
             </p>
           </div>
         </div>
