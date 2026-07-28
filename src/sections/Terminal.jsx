@@ -12,7 +12,7 @@ export default function Terminal() {
       content: (
         <div className="mb-6 pb-4 border-b border-[var(--color-surface-border)] flex flex-col gap-1 transition-colors duration-250">
           <h1 className="text-lg font-semibold text-[var(--color-text)] tracking-tight flex items-center gap-2 transition-colors duration-250">
-            <FiTerminal className="text-[var(--color-accent)] transition-colors duration-250" /> Terminal — zsh
+            <FiTerminal className="text-[var(--color-accent)] transition-colors duration-250" /> Terminal 
           </h1>
           <p className="text-[12px] text-[var(--color-text-tertiary)] transition-colors duration-250">
             Type <span className="text-[var(--color-accent)] font-medium transition-colors duration-250">help</span> to list the available configuration nodes.
