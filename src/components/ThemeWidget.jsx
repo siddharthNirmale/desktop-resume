@@ -2,7 +2,7 @@ import { useState, useEffect, memo, useCallback } from 'react';
 import { RefreshCw, Loader2, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-import one from "../assets/images/one.jpg";
+import one from "../assets/images/one.png";
 import two from "../assets/images/two.jpg";
 import three from "../assets/images/three.jpg";
 
