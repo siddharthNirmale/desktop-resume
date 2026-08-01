@@ -21,12 +21,12 @@ const ACCENT_COLORS = [
   { id: 'violet', value: '#BF5AF2', name: 'Violet' },
 ];
 
-// 🧠 Caches the base64 strings so we don't re-render canvases if the user closes and reopens the widget
+// Caches the base64 strings so we don't re-render canvases if the user closes and reopens the widget
 const thumbnailCache = {};
 
 const generateThumbnail = (src, size = 64) => {
   if (thumbnailCache[src]) {
-    return Promise.resolve(thumbnailCache[src]); // Return instantly if already generated
+    return Promise.resolve(thumbnailCache[src]);
   }
 
   return new Promise((resolve) => {
@@ -44,7 +44,7 @@ const generateThumbnail = (src, size = 64) => {
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
       const base64 = canvas.toDataURL('image/jpeg', 0.6);
-      thumbnailCache[src] = base64; // Save to cache!
+      thumbnailCache[src] = base64;
       resolve(base64);
     };
     img.onerror = () => resolve(src);
@@ -99,14 +99,13 @@ const WallpaperButton = memo(({ wp, setWallpaper }) => {
     transition.ready.then(() => {
       document.documentElement.animate({
         clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`],
-      }, { duration: 600, easing: "ease-in-out", pseudoElement: "::view-transition-new(root)" });
+      }, { duration: 400, easing: "cubic-bezier(0.25, 1, 0.5, 1)", pseudoElement: "::view-transition-new(root)" });
     });
   };
 
-  // 🛑 DO NOT RENDER anything but a skeleton if the thumbnail is still generating
   if (isThumbLoading) {
     return (
-      <div className="group relative h-11 w-11 flex-shrink-0 rounded-xl border border-[var(--color-surface-border)] bg-[var(--color-surface-inactive)] flex items-center justify-center">
+      <div className="group relative h-11 w-11 flex-shrink-0 rounded-[12px] border-t border-[var(--color-surface-border)] bg-[var(--color-surface-inactive)] flex items-center justify-center shadow-sm">
         <Loader2 size={11} className="animate-spin text-[var(--color-text-secondary)] opacity-50" />
       </div>
     );
@@ -116,7 +115,7 @@ const WallpaperButton = memo(({ wp, setWallpaper }) => {
     <button
       onClick={handleClick}
       disabled={isApplying}
-      className="group relative h-11 w-11 flex-shrink-0 rounded-xl border border-[var(--color-surface-border)] overflow-hidden hover:border-[var(--color-accent)] transition-colors duration-200 bg-[var(--color-surface-inactive)] cursor-default focus:outline-none disabled:opacity-80"
+      className="group relative h-11 w-11 flex-shrink-0 rounded-[12px] border-t border-[var(--color-surface-border)] overflow-hidden hover:border-[var(--color-accent)] transition-all duration-200 bg-[var(--color-surface-inactive)] cursor-default focus:outline-none disabled:opacity-80 shadow-sm"
     >
       {isApplying && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
@@ -135,8 +134,7 @@ const WallpaperButton = memo(({ wp, setWallpaper }) => {
         <img
           src={thumbUrl}
           alt={wp.name}
-          // 🚀 Because thumbUrl is a pre-calculated Base64 string, this renders instantly. No `onLoad` needed.
-          className="w-full h-full object-cover opacity-50 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
+          className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
         />
       )}
     </button>
@@ -147,17 +145,17 @@ const AccentButton = memo(({ color, isSelected, onSelect }) => (
   <button
     onClick={() => onSelect(color.id, color.value)}
     style={{ backgroundColor: color.value }}
-    className={`group relative h-[22px] w-[22px] rounded-full flex items-center justify-center transition-all duration-150 cursor-default hover:scale-105 active:scale-95 focus:outline-none
+    className={`group relative h-[22px] w-[22px] rounded-full flex items-center justify-center transition-all duration-150 cursor-default hover:scale-110 active:scale-95 focus:outline-none shadow-sm
       ${isSelected ? 'ring-2 ring-offset-2 ring-offset-transparent ring-[var(--color-text)]' : 'opacity-80 hover:opacity-100'}
     `}
     title={color.name}
   >
-    {/* Removed drop-shadow here to match the flat aesthetic */}
     {isSelected && (
       <Check size={10} className="text-white stroke-[3.5]" />
     )}
   </button>
 ));
+
 export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpaper }) {
   const [activeAccent, setActiveAccent] = useState(() => {
     const savedAccent = localStorage.getItem('os-accent');
@@ -183,12 +181,11 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
       onPointerDown={onFocus}
       style={{ zIndex, touchAction: "none", willChange: "transform, opacity" }}
       whileDrag={{ cursor: "grabbing" }}
-      // Increased blur, removed shadow, and applied rounded-[24px] for the cohesive Apple look
-      className="custom-widget absolute top-72 left-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-2xl border border-white/5 rounded-[24px] p-4.5 cursor-grab flex flex-col gap-4 font-primary select-none pointer-events-auto transition-colors duration-250"
+      className="custom-widget absolute top-72 left-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-2xl border-t border-white/5 rounded-[24px] p-4.5 cursor-grab flex flex-col gap-4 font-primary select-none pointer-events-auto transition-colors duration-200 shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ type: "spring", stiffness: 360, damping: 28 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
     >
       <div className="flex flex-col gap-2.5">
         <div className="flex justify-between items-center px-0.5">
