@@ -2,7 +2,6 @@ import { useState, useEffect, memo, useCallback } from 'react';
 import { RefreshCw, Loader2, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-// Just your original images! No manual thumbnails needed.
 import one from "../assets/images/one.jpg";
 import two from "../assets/images/two.jpg";
 import three from "../assets/images/three.jpg";
@@ -22,39 +21,43 @@ const ACCENT_COLORS = [
   { id: 'violet', value: '#BF5AF2', name: 'Violet' },
 ];
 
-// 🧠 The Hacker Way: Generates a tiny thumbnail entirely in memory
+// 🧠 Caches the base64 strings so we don't re-render canvases if the user closes and reopens the widget
+const thumbnailCache = {};
+
 const generateThumbnail = (src, size = 64) => {
+  if (thumbnailCache[src]) {
+    return Promise.resolve(thumbnailCache[src]); // Return instantly if already generated
+  }
+
   return new Promise((resolve) => {
     const img = new Image();
     img.src = src;
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      // Keep aspect ratio while scaling down
       const scale = size / Math.max(img.width, img.height);
       canvas.width = img.width * scale;
       canvas.height = img.height * scale;
 
       const ctx = canvas.getContext('2d');
-      // Smooth downscaling
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'medium';
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-      // Spit out a lightweight Base64 string
-      resolve(canvas.toDataURL('image/jpeg', 0.6));
+      const base64 = canvas.toDataURL('image/jpeg', 0.6);
+      thumbnailCache[src] = base64; // Save to cache!
+      resolve(base64);
     };
-    img.onerror = () => resolve(src); // Fallback to original if something fails
+    img.onerror = () => resolve(src);
   });
 };
 
 const WallpaperButton = memo(({ wp, setWallpaper }) => {
-  const [thumbUrl, setThumbUrl] = useState(null);
-  const [isThumbLoading, setIsThumbLoading] = useState(true);
+  const [thumbUrl, setThumbUrl] = useState(thumbnailCache[wp.url] || null);
+  const [isThumbLoading, setIsThumbLoading] = useState(!thumbnailCache[wp.url] && wp.id !== 'default');
   const [isApplying, setIsApplying] = useState(false);
 
-  // Auto-generate the thumbnail on mount
   useEffect(() => {
-    if (wp.id === 'default') return;
+    if (wp.id === 'default' || thumbUrl) return;
 
     let isMounted = true;
     generateThumbnail(wp.url).then((tinyImage) => {
@@ -65,13 +68,12 @@ const WallpaperButton = memo(({ wp, setWallpaper }) => {
     });
 
     return () => { isMounted = false; };
-  }, [wp.url, wp.id]);
+  }, [wp.url, wp.id, thumbUrl]);
 
   const handleClick = async (e) => {
     if (wp.id !== 'default') {
       setIsApplying(true);
 
-      // Preload the full-res version before doing the view transition
       await new Promise((resolve) => {
         const img = new Image();
         img.src = wp.url;
@@ -101,13 +103,21 @@ const WallpaperButton = memo(({ wp, setWallpaper }) => {
     });
   };
 
+  // 🛑 DO NOT RENDER anything but a skeleton if the thumbnail is still generating
+  if (isThumbLoading) {
+    return (
+      <div className="group relative h-11 w-11 flex-shrink-0 rounded-xl border border-[var(--color-surface-border)] bg-[var(--color-surface-inactive)] flex items-center justify-center">
+        <Loader2 size={11} className="animate-spin text-[var(--color-text-secondary)] opacity-50" />
+      </div>
+    );
+  }
+
   return (
     <button
       onClick={handleClick}
       disabled={isApplying}
       className="group relative h-11 w-11 flex-shrink-0 rounded-xl border border-[var(--color-surface-border)] overflow-hidden hover:border-[var(--color-accent)] transition-colors duration-200 bg-[var(--color-surface-inactive)] cursor-default focus:outline-none disabled:opacity-80"
     >
-      {/* Loading Overlay while applying */}
       {isApplying && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
           <Loader2 size={14} className="animate-spin text-white" />
@@ -122,20 +132,12 @@ const WallpaperButton = memo(({ wp, setWallpaper }) => {
           </span>
         </div>
       ) : (
-        <>
-          {isThumbLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-surface)] transition-colors duration-250">
-              <Loader2 size={11} className="animate-spin text-[var(--color-accent)]" />
-            </div>
-          )}
-          {thumbUrl && (
-            <img
-              src={thumbUrl} // 🎯 Using the generated Base64 tiny image!
-              alt={wp.name}
-              className={`w-full h-full object-cover transition-all duration-300 opacity-50 group-hover:opacity-100 group-hover:scale-105 ${isThumbLoading ? 'opacity-0' : ''}`}
-            />
-          )}
-        </>
+        <img
+          src={thumbUrl}
+          alt={wp.name}
+          // 🚀 Because thumbUrl is a pre-calculated Base64 string, this renders instantly. No `onLoad` needed.
+          className="w-full h-full object-cover opacity-50 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
+        />
       )}
     </button>
   );
@@ -179,11 +181,7 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
       dragConstraints={constraintsRef}
       dragElastic={0.08}
       onPointerDown={onFocus}
-      style={{
-        zIndex,
-        touchAction: "none",
-        willChange: "transform, opacity"
-      }}
+      style={{ zIndex, touchAction: "none", willChange: "transform, opacity" }}
       whileDrag={{ cursor: "grabbing" }}
       className="custom-widget absolute top-72 left-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4.5 cursor-grab flex flex-col gap-4 shadow-[0_20px_40px_rgba(0,0,0,0.5)] font-primary select-none pointer-events-auto transition-colors duration-250"
       initial={{ opacity: 0, scale: 0.96 }}
