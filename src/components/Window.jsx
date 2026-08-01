@@ -62,19 +62,21 @@ export default function Window({
       dragConstraints={constraintsRef}
       onMouseDown={onFocus}
       style={{ zIndex, x, y, width, height }}
-      className={`absolute flex flex-col overflow-hidden bg-[var(--color-surface)] rounded-[8px] border border-[var(--color-window-border)] window-shadow transition-shadow duration-200 ${isMinimized ? 'hidden' : ''}`}
-      initial={{ opacity: 0, scale: 0.5, x: spawnPos.left, y: spawnPos.top }}
+      // Reduced duration-200 to duration-75 for snappy shadows
+      className={`absolute flex flex-col overflow-hidden bg-[var(--color-surface)] rounded-[8px] border border-[var(--color-window-border)] window-shadow transition-shadow duration-75 ${isMinimized ? 'hidden' : ''}`}
+      initial={{ opacity: 0, scale: 0.8, x: spawnPos.left, y: spawnPos.top }} // Starting scale at 0.8 rather than 0.5 makes pop-in faster
       animate={{ opacity: 1, scale: 1, x: spawnPos.left, y: spawnPos.top }}
-      exit={{ opacity: 0, scale: 0.5 }}
+      exit={{ opacity: 0, scale: 0.9 }}
       transition={{
         type: "spring",
-        stiffness: 200,
-        damping: 20,
-        mass: 1
+        stiffness: 600, // Massive increase for speed
+        damping: 35,    // High damping to stop bouncing quickly
+        mass: 0.5       // Lighter mass for instant start/stop
       }}
     >
-      {/* Top Header Shell - Now adapts to light/dark automatically */}
-      <div className="h-[36px] min-h-[36px] flex items-center justify-between select-none bg-[var(--color-surface-inactive)] border-b border-[var(--color-surface-border)] relative transition-colors duration-250">
+      {/* Top Header Shell */}
+      {/* Reduced duration-250 to duration-100 */}
+      <div className="h-[36px] min-h-[36px] flex items-center justify-between select-none bg-[var(--color-surface-inactive)] border-b border-[var(--color-surface-border)] relative transition-colors duration-100">
 
         {/* Left Drag Area */}
         <div
@@ -82,7 +84,8 @@ export default function Window({
           onDoubleClick={toggleMaximize}
         >
           <div className="pointer-events-none">
-            <span className="text-[12px] font-medium text-[var(--color-text)] tracking-wide opacity-90 transition-colors duration-250">
+            {/* Reduced duration-250 to duration-100 */}
+            <span className="text-[12px] font-medium text-[var(--color-text)] tracking-wide opacity-90 transition-colors duration-100">
               {title}
             </span>
           </div>
@@ -97,7 +100,7 @@ export default function Window({
               onMinimize();
             }}
             onPointerDown={(e) => e.stopPropagation()}
-            className="w-[42px] h-[36px] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-border)] hover:text-[var(--color-text)] transition-colors duration-150 focus:outline-none cursor-default"
+            className="w-[42px] h-[36px] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-border)] hover:text-[var(--color-text)] transition-colors duration-75 focus:outline-none cursor-default"
             title="Minimize"
           >
             <Minus size={13} strokeWidth={2.5} />
@@ -110,7 +113,7 @@ export default function Window({
               toggleMaximize();
             }}
             onMouseDown={(e) => e.stopPropagation()}
-            className="w-[42px] h-[36px] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-border)] hover:text-[var(--color-text)] transition-colors duration-150 focus:outline-none cursor-default"
+            className="w-[42px] h-[36px] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-border)] hover:text-[var(--color-text)] transition-colors duration-75 focus:outline-none cursor-default"
             title={isFocused ? "Restore Down" : "Maximize"}
           >
             {isFocused ? (
@@ -120,14 +123,14 @@ export default function Window({
             )}
           </button>
 
-          {/* Close Icon - Keeps the red hover effect in both modes */}
+          {/* Close Icon */}
           <button
             onClick={(e) => {
               e.stopPropagation();
               onClose();
             }}
             onMouseDown={(e) => e.stopPropagation()}
-            className="w-[42px] h-[36px] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[#E81123] hover:text-white transition-colors duration-150 rounded-tr-[7px] focus:outline-none cursor-default"
+            className="w-[42px] h-[36px] flex items-center justify-center text-[var(--color-text-secondary)] hover:bg-[#E81123] hover:text-white transition-colors duration-75 rounded-tr-[7px] focus:outline-none cursor-default"
             title="Close"
           >
             <X size={14} strokeWidth={2.5} />
@@ -136,17 +139,17 @@ export default function Window({
       </div>
 
       {/* Window Body Workspace */}
-      <div className="flex-1 overflow-auto custom-scrollbar bg-[var(--color-surface)] relative transition-colors duration-250">
+      <div className="flex-1 overflow-auto custom-scrollbar bg-[var(--color-surface)] relative transition-colors duration-100">
         {children}
       </div>
 
-      {/* Resize Handle - Mapped to tertiary text color for subtlety */}
+      {/* Resize Handle */}
       {!isFocused && (
         <motion.div
           onPan={handleResize}
           className="absolute bottom-0 right-0 w-[14px] h-[14px] cursor-se-resize z-50 flex items-end justify-end p-[2px]"
         >
-          <svg width="10" height="10" viewBox="0 0 10 10" className="text-[var(--color-text-tertiary)] fill-current transition-colors duration-250">
+          <svg width="10" height="10" viewBox="0 0 10 10" className="text-[var(--color-text-tertiary)] fill-current transition-colors duration-100">
             <line x1="10" y1="0" x2="0" y2="10" stroke="currentColor" strokeWidth="1.2" />
             <line x1="10" y1="4" x2="4" y2="10" stroke="currentColor" strokeWidth="1.2" />
           </svg>
