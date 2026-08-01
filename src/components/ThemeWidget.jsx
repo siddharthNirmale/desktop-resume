@@ -1,7 +1,8 @@
-import { useState, memo, useCallback } from 'react';
+import { useState, useEffect, memo, useCallback } from 'react';
 import { RefreshCw, Loader2, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+// Just your original images! No manual thumbnails needed.
 import one from "../assets/images/one.jpg";
 import two from "../assets/images/two.jpg";
 import three from "../assets/images/three.jpg";
@@ -21,11 +22,66 @@ const ACCENT_COLORS = [
   { id: 'violet', value: '#BF5AF2', name: 'Violet' },
 ];
 
-// 🏎️ Memoized to prevent re-rendering when accent colors change
-const WallpaperButton = memo(({ wp, setWallpaper }) => {
-  const [isLoading, setIsLoading] = useState(true);
+// 🧠 The Hacker Way: Generates a tiny thumbnail entirely in memory
+const generateThumbnail = (src, size = 64) => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = src;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      // Keep aspect ratio while scaling down
+      const scale = size / Math.max(img.width, img.height);
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
 
-  const handleClick = (e) => {
+      const ctx = canvas.getContext('2d');
+      // Smooth downscaling
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'medium';
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // Spit out a lightweight Base64 string
+      resolve(canvas.toDataURL('image/jpeg', 0.6));
+    };
+    img.onerror = () => resolve(src); // Fallback to original if something fails
+  });
+};
+
+const WallpaperButton = memo(({ wp, setWallpaper }) => {
+  const [thumbUrl, setThumbUrl] = useState(null);
+  const [isThumbLoading, setIsThumbLoading] = useState(true);
+  const [isApplying, setIsApplying] = useState(false);
+
+  // Auto-generate the thumbnail on mount
+  useEffect(() => {
+    if (wp.id === 'default') return;
+
+    let isMounted = true;
+    generateThumbnail(wp.url).then((tinyImage) => {
+      if (isMounted) {
+        setThumbUrl(tinyImage);
+        setIsThumbLoading(false);
+      }
+    });
+
+    return () => { isMounted = false; };
+  }, [wp.url, wp.id]);
+
+  const handleClick = async (e) => {
+    if (wp.id !== 'default') {
+      setIsApplying(true);
+
+      // Preload the full-res version before doing the view transition
+      await new Promise((resolve) => {
+        const img = new Image();
+        img.src = wp.url;
+        img.onload = resolve;
+        img.onerror = resolve;
+      });
+
+      setIsApplying(false);
+    }
+
     const updateWallpaper = () => setWallpaper(wp.url);
 
     if (!document.startViewTransition) {
@@ -48,8 +104,16 @@ const WallpaperButton = memo(({ wp, setWallpaper }) => {
   return (
     <button
       onClick={handleClick}
-      className="group relative h-11 w-11 flex-shrink-0 rounded-xl border border-[var(--color-surface-border)] overflow-hidden hover:border-[var(--color-accent)] transition-colors duration-200 bg-[var(--color-surface-inactive)] cursor-default focus:outline-none"
+      disabled={isApplying}
+      className="group relative h-11 w-11 flex-shrink-0 rounded-xl border border-[var(--color-surface-border)] overflow-hidden hover:border-[var(--color-accent)] transition-colors duration-200 bg-[var(--color-surface-inactive)] cursor-default focus:outline-none disabled:opacity-80"
     >
+      {/* Loading Overlay while applying */}
+      {isApplying && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+          <Loader2 size={14} className="animate-spin text-white" />
+        </div>
+      )}
+
       {wp.id === 'default' ? (
         <div className="w-full h-full flex flex-col items-center justify-center gap-0.5">
           <RefreshCw size={11} className="text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)] transition-colors duration-150" />
@@ -59,26 +123,24 @@ const WallpaperButton = memo(({ wp, setWallpaper }) => {
         </div>
       ) : (
         <>
-          {isLoading && (
+          {isThumbLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-surface)] transition-colors duration-250">
               <Loader2 size={11} className="animate-spin text-[var(--color-accent)]" />
             </div>
           )}
-          <img
-            src={wp.url}
-            alt={wp.name}
-            loading="lazy" // 💤 Defers loading until the image is actually near the viewport
-            decoding="async" // ⚡ Prevents decoding from blocking the main thread
-            className={`w-full h-full object-cover transition-all duration-300 opacity-50 group-hover:opacity-100 group-hover:scale-105 ${isLoading ? 'opacity-0' : ''}`}
-            onLoad={() => setIsLoading(false)}
-          />
+          {thumbUrl && (
+            <img
+              src={thumbUrl} // 🎯 Using the generated Base64 tiny image!
+              alt={wp.name}
+              className={`w-full h-full object-cover transition-all duration-300 opacity-50 group-hover:opacity-100 group-hover:scale-105 ${isThumbLoading ? 'opacity-0' : ''}`}
+            />
+          )}
         </>
       )}
     </button>
   );
 });
 
-// 🏎️ Memoized so only the clicked button re-renders, not the whole list
 const AccentButton = memo(({ color, isSelected, onSelect }) => (
   <button
     onClick={() => onSelect(color.id, color.value)}
@@ -104,7 +166,6 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
     return 'ios-blue';
   });
 
-  // 🧠 useCallback prevents this function from being recreated on every render
   const handleAccentChange = useCallback((colorId, colorValue) => {
     setActiveAccent(colorId);
     document.documentElement.style.setProperty('--color-accent', colorValue);
@@ -121,7 +182,7 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
       style={{
         zIndex,
         touchAction: "none",
-        willChange: "transform, opacity" // 🚀 Forces GPU hardware acceleration for dragging
+        willChange: "transform, opacity"
       }}
       whileDrag={{ cursor: "grabbing" }}
       className="custom-widget absolute top-72 left-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4.5 cursor-grab flex flex-col gap-4 shadow-[0_20px_40px_rgba(0,0,0,0.5)] font-primary select-none pointer-events-auto transition-colors duration-250"
@@ -130,7 +191,6 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
       exit={{ opacity: 0 }}
       transition={{ type: "spring", stiffness: 360, damping: 28 }}
     >
-      {/* SECTION 1: WALLPAPER BACKGROUNDS */}
       <div className="flex flex-col gap-2.5">
         <div className="flex justify-between items-center px-0.5">
           <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider">
@@ -150,7 +210,6 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
 
       <div className="h-[1px] w-full bg-[var(--color-surface-border)]" />
 
-      {/* SECTION 2: SYSTEM ACCENT COLOR */}
       <div className="flex flex-col gap-2.5">
         <div className="flex justify-between items-center px-0.5">
           <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider">
