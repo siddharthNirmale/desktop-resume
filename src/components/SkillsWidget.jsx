@@ -46,8 +46,8 @@ export default function SkillsWidget({ constraintsRef, zIndex, onFocus }) {
       onPointerDown={onFocus}
       style={{ zIndex, touchAction: "none" }}
       whileDrag={{ cursor: "grabbing" }}
-      // Added custom-widget and transition-colors
-      className="custom-widget absolute bottom-8 right-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4.5 cursor-grab flex flex-col gap-3.5 shadow-[0_20px_40px_rgba(0,0,0,0.5)] font-primary select-none pointer-events-auto transition-colors duration-250"
+      // Increased blur, removed shadow, and applied rounded-[24px] for the cohesive Apple look
+      className="custom-widget absolute bottom-8 right-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-2xl border border-white/5 rounded-[24px] p-4.5 cursor-grab flex flex-col gap-3.5 font-primary select-none pointer-events-auto transition-colors duration-250"
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0 }}
@@ -66,7 +66,8 @@ export default function SkillsWidget({ constraintsRef, zIndex, onFocus }) {
           {skillSets.map((_, i) => (
             <div
               key={i}
-              className={`w-[4px] h-[4px] rounded-full transition-all duration-300 ${i === index ? 'bg-[var(--color-accent)] scale-110 shadow-[0_0_4px_var(--color-accent)]' : 'bg-[var(--color-surface-border)]'
+              // Removed the glow/shadow on the active dot to keep it flat and minimal
+              className={`w-[4px] h-[4px] rounded-full transition-all duration-300 ${i === index ? 'bg-[var(--color-accent)] scale-110' : 'bg-[var(--color-surface-border)]'
                 }`}
             />
           ))}

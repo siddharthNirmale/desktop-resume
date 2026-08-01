@@ -121,8 +121,8 @@ export default function GithubWidget({
         stiffness: 360,
         damping: 28,
       }}
-      // Added custom-widget and transition-colors
-      className="custom-widget absolute bottom-5 left-5 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4.5 cursor-grab shadow-[0_20px_40px_rgba(0,0,0,0.5)] select-none font-primary pointer-events-auto transition-colors duration-250"
+      // Increased blur, removed shadow, and applied rounded-[24px] for the cohesive Apple look
+      className="custom-widget absolute bottom-5 left-5 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-2xl border border-white/5 rounded-[24px] p-4.5 cursor-grab select-none font-primary pointer-events-auto transition-colors duration-250"
     >
       <div className="flex items-center justify-between mb-3.5 px-0.5">
         <span className="text-[11px] font-medium uppercase tracking-wider text-[var(--color-text-tertiary)] transition-colors duration-250">

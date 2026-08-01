@@ -152,12 +152,12 @@ const AccentButton = memo(({ color, isSelected, onSelect }) => (
     `}
     title={color.name}
   >
+    {/* Removed drop-shadow here to match the flat aesthetic */}
     {isSelected && (
-      <Check size={10} className="text-white drop-shadow-md stroke-[3.5]" />
+      <Check size={10} className="text-white stroke-[3.5]" />
     )}
   </button>
 ));
-
 export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpaper }) {
   const [activeAccent, setActiveAccent] = useState(() => {
     const savedAccent = localStorage.getItem('os-accent');
@@ -183,7 +183,8 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
       onPointerDown={onFocus}
       style={{ zIndex, touchAction: "none", willChange: "transform, opacity" }}
       whileDrag={{ cursor: "grabbing" }}
-      className="custom-widget absolute top-72 left-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4.5 cursor-grab flex flex-col gap-4 shadow-[0_20px_40px_rgba(0,0,0,0.5)] font-primary select-none pointer-events-auto transition-colors duration-250"
+      // Increased blur, removed shadow, and applied rounded-[24px] for the cohesive Apple look
+      className="custom-widget absolute top-72 left-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-2xl border border-white/5 rounded-[24px] p-4.5 cursor-grab flex flex-col gap-4 font-primary select-none pointer-events-auto transition-colors duration-250"
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0 }}

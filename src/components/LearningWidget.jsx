@@ -20,8 +20,8 @@ export default function LearningWidget({
       onPointerDown={onFocus}
       style={{ zIndex, touchAction: "none" }}
       whileDrag={{ cursor: "grabbing" }}
-      // Added custom-widget and transition-colors
-      className="custom-widget absolute top-60 right-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4.5 cursor-grab flex flex-col gap-3.5 shadow-[0_20px_40px_rgba(0,0,0,0.5)] font-primary select-none pointer-events-auto transition-colors duration-250"
+      // Increased blur, removed shadow, and applied rounded-[24px] for the cohesive Apple look
+      className="custom-widget absolute top-60 right-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-2xl border border-white/5 rounded-[24px] p-4.5 cursor-grab flex flex-col gap-3.5 font-primary select-none pointer-events-auto transition-colors duration-250"
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0 }}
@@ -38,9 +38,10 @@ export default function LearningWidget({
 
         {/* Subject Content Row */}
         <div className="flex items-center gap-3.5 px-0.5">
-          {/* Swapped hardcoded background for dynamic surface border */}
-          <div className="flex items-center justify-center h-[38px] w-[38px] rounded-full bg-[var(--color-surface-border)] border border-transparent flex-shrink-0 shadow-inner transition-colors duration-250">
-            <Target size={16} strokeWidth={1.5} className="text-[var(--color-accent)] drop-shadow-md transition-colors duration-250" />
+          {/* Removed shadow-inner to keep it flat */}
+          <div className="flex items-center justify-center h-[38px] w-[38px] rounded-full bg-[var(--color-surface-border)] border border-transparent flex-shrink-0 transition-colors duration-250">
+            {/* Removed drop-shadow-md to keep it flat */}
+            <Target size={16} strokeWidth={1.5} className="text-[var(--color-accent)] transition-colors duration-250" />
           </div>
           <div className="flex flex-col gap-1 min-w-0">
             <h3 className="text-[15px] font-medium text-[var(--color-text)] tracking-tight leading-none truncate transition-colors duration-250">
@@ -68,9 +69,10 @@ export default function LearningWidget({
             {[1, 2, 3, 4, 5].map((step) => (
               <div
                 key={step}
+                // Removed the glow/shadow on the active segments for the minimal aesthetic
                 className={`flex-1 rounded-full transition-all duration-300 ${step <= activeSegments
-                    ? 'bg-[var(--color-accent)] shadow-[0_0_6px_var(--color-accent)]'
-                    : 'bg-[var(--color-surface-border)]'
+                  ? 'bg-[var(--color-accent)]'
+                  : 'bg-[var(--color-surface-border)]'
                   }`}
               />
             ))}

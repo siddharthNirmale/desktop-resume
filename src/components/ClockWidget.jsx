@@ -74,8 +74,8 @@ export default function ClockWidget({ constraintsRef, zIndex, onFocus }) {
       onPointerDown={onFocus}
       style={{ zIndex, touchAction: "none" }}
       whileDrag={{ cursor: "grabbing" }}
-      // Added custom-widget class and transition-colors for smooth theme switching
-      className="custom-widget absolute top-14 right-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4.5 cursor-grab flex flex-col shadow-[0_20px_40px_rgba(0,0,0,0.5)] font-primary min-h-[175px] select-none pointer-events-auto transition-colors duration-250"
+      // Increased blur, removed shadow, and applied rounded-[24px] for the cohesive Apple look
+      className="custom-widget absolute top-14 right-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-2xl border border-white/5 rounded-[24px] p-4.5 cursor-grab flex flex-col font-primary min-h-[175px] select-none pointer-events-auto transition-colors duration-250"
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0 }}
