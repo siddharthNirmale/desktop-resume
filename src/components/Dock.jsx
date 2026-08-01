@@ -2,20 +2,18 @@ import { useState, useEffect, useRef } from 'react';
 import { User, FolderCode, FileText, Mail, Terminal, Notebook, Sun, Moon } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-// Premium Theme-Reactive App Tile Styling
+// Premium Theme-Reactive App Tile Styling with refined dual-tone effects
 const getAppIconStyle = (isLight) => {
-  // Now uses CSS variables so the border/backgrounds flip automatically
   return {
     wrapper: `w-[44px] h-[44px] flex items-center justify-center rounded-[12px]
-              bg-[var(--color-surface-inactive)] border border-[var(--color-surface-border)]
-              shadow-[0_4px_10px_rgba(0,0,0,0.1)]
-              transition-all duration-250`,
+              bg-[var(--color-surface-inactive)] border-t border-[var(--color-surface-border)]
+              shadow-[0_4px_12px_rgba(0,0,0,0.08)]
+              transition-all duration-200`,
     icon: isLight ? 'text-[var(--color-accent)]' : 'text-white'
   };
 };
 
 export default function Dock({ windows, toggleWindow, bringToFront }) {
-  const [menu, setMenu] = useState({ show: false, x: 0, y: 0, id: null });
   const [isLight, setIsLight] = useState(false);
   const dockRef = useRef(null);
 
@@ -43,7 +41,7 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
     transition.ready.then(() => {
       document.documentElement.animate({
         clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`],
-      }, { duration: 600, easing: "ease-in-out", pseudoElement: "::view-transition-new(root)" });
+      }, { duration: 400, easing: "cubic-bezier(0.25, 1, 0.5, 1)", pseudoElement: "::view-transition-new(root)" });
     });
   };
 
@@ -67,18 +65,19 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
 
     return (
       <div className="relative group flex flex-col items-center justify-center">
-        <span className="absolute -top-12 opacity-0 group-hover:opacity-100 transition-all bg-[var(--color-surface-dark)] border border-[var(--color-surface-border)] text-[var(--color-text)] text-[11px] px-3 py-1.5 rounded-md pointer-events-none z-[99999] shadow-lg whitespace-nowrap">
+        <span className="absolute -top-11 opacity-0 group-hover:opacity-100 transition-all duration-150 bg-[var(--color-surface-dark)] border-t border-[var(--color-surface-border)] text-[var(--color-text)] text-[11px] px-2.5 py-1 rounded-md pointer-events-none z-[99999] shadow-md whitespace-nowrap">
           {label}
         </span>
 
         <motion.button
-          whileHover={{ scale: 1.15, y: -6 }}
-          whileTap={{ scale: 0.92 }}
+          whileHover={{ scale: 1.12, y: -4 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
           onClick={handleClick}
           className="relative flex items-center justify-center w-[48px] h-[48px] transition-all cursor-pointer"
         >
-          <div className={`${wrapper} group-hover:border-[var(--color-accent)]`}>
-            <Icon size={22} strokeWidth={2} className={`${iconColor} transition-colors duration-250`} />
+          <div className={`${wrapper} group-hover:border-[var(--color-accent)] group-hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)]`}>
+            <Icon size={21} strokeWidth={2} className={`${iconColor} transition-colors duration-200 drop-shadow-sm`} />
           </div>
 
           {badge > 0 && (
@@ -89,8 +88,8 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
         </motion.button>
 
         {isOpen && (
-          <div className="absolute -bottom-2 flex justify-center items-center h-2">
-            <div className={`rounded-full transition-all ${isMinimized ? 'w-[4px] h-[4px] bg-[var(--color-text-tertiary)]' : 'w-[4px] h-[4px] bg-[var(--color-text)] shadow-[0_0_4px_var(--color-text)] opacity-80'}`} />
+          <div className="absolute -bottom-1.5 flex justify-center items-center h-2">
+            <div className={`rounded-full transition-all duration-200 ${isMinimized ? 'w-[3px] h-[3px] bg-[var(--color-text-tertiary)]' : 'w-[4px] h-[4px] bg-[var(--color-text)] shadow-[0_0_6px_var(--color-text)] opacity-90'}`} />
           </div>
         )}
       </div>
@@ -99,24 +98,25 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
 
   return (
     <div ref={dockRef} className="absolute bottom-3 left-1/2 -translate-x-1/2 z-[99999] pointer-events-auto">
-      <div className="px-3.5 py-2.5 bg-[var(--color-surface-inactive)] backdrop-blur-2xl border border-[var(--color-surface-border)] rounded-[22px] flex items-end gap-3 shadow-[0_24px_50px_rgba(0,0,0,0.1)] ring-1 ring-black/5 transition-colors duration-250">
+      <div className="px-3 py-2 bg-[var(--color-surface-inactive)] backdrop-blur-xl border-t border-[var(--color-surface-border)] rounded-[20px] flex items-end gap-2.5 shadow-[0_20px_40px_rgba(0,0,0,0.08)] ring-1 ring-black/5 transition-colors duration-200">
         <DockIcon id="about" icon={User} label="About Me" />
         <DockIcon id="projects" icon={FolderCode} label="Projects" />
         <DockIcon id="resume" icon={FileText} label="Resume" />
         <DockIcon id="notepad" icon={Notebook} label="Notes" />
         <DockIcon id="contact" icon={Mail} label="Contact" />
-        <div className="w-[1px] h-9 bg-[var(--color-surface-border)] rounded-full mx-1 align-middle self-center transition-colors duration-250" />
+        <div className="w-[1px] h-8 bg-[var(--color-surface-border)] rounded-full mx-1 self-center transition-colors duration-200" />
         <DockIcon id="terminal" icon={Terminal} label="Terminal" />
 
-        <div className="relative group flex flex-col items-center justify-center ml-1">
+        <div className="relative group flex flex-col items-center justify-center ml-0.5">
           <motion.button
-            whileHover={{ scale: 1.15, y: -6 }}
-            whileTap={{ scale: 0.92 }}
+            whileHover={{ scale: 1.12, y: -4 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
             onClick={handleThemeToggle}
             className="relative flex items-center justify-center w-[48px] h-[48px] transition-all cursor-pointer"
           >
-            <div className="w-[44px] h-[44px] flex items-center justify-center rounded-[12px] bg-[var(--color-surface-border)] border border-[var(--color-surface-border)] hover:border-[var(--color-accent)] transition-colors duration-250">
-              {isLight ? <Moon size={22} className="text-[var(--color-accent)]" /> : <Sun size={22} className="text-amber-400" />}
+            <div className="w-[44px] h-[44px] flex items-center justify-center rounded-[12px] bg-[var(--color-surface-inactive)] border-t border-[var(--color-surface-border)] hover:border-[var(--color-accent)] shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all duration-200">
+              {isLight ? <Moon size={21} strokeWidth={2} className="text-[var(--color-accent)]" /> : <Sun size={21} strokeWidth={2} className="text-amber-400" />}
             </div>
           </motion.button>
         </div>
