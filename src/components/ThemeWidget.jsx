@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, memo, useCallback } from 'react';
 import { RefreshCw, Loader2, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-import one from "../assets/images/one.jpg"
-import two from "../assets/images/two.jpg"
-import three from "../assets/images/three.jpg"
+import one from "../assets/images/one.jpg";
+import two from "../assets/images/two.jpg";
+import three from "../assets/images/three.jpg";
 
 const WALLPAPERS = [
   { id: 'default', url: '', name: 'Default Canvas' },
@@ -21,7 +21,8 @@ const ACCENT_COLORS = [
   { id: 'violet', value: '#BF5AF2', name: 'Violet' },
 ];
 
-function WallpaperButton({ wp, setWallpaper }) {
+// 🏎️ Memoized to prevent re-rendering when accent colors change
+const WallpaperButton = memo(({ wp, setWallpaper }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const handleClick = (e) => {
@@ -66,6 +67,8 @@ function WallpaperButton({ wp, setWallpaper }) {
           <img
             src={wp.url}
             alt={wp.name}
+            loading="lazy" // 💤 Defers loading until the image is actually near the viewport
+            decoding="async" // ⚡ Prevents decoding from blocking the main thread
             className={`w-full h-full object-cover transition-all duration-300 opacity-50 group-hover:opacity-100 group-hover:scale-105 ${isLoading ? 'opacity-0' : ''}`}
             onLoad={() => setIsLoading(false)}
           />
@@ -73,25 +76,40 @@ function WallpaperButton({ wp, setWallpaper }) {
       )}
     </button>
   );
-}
+});
+
+// 🏎️ Memoized so only the clicked button re-renders, not the whole list
+const AccentButton = memo(({ color, isSelected, onSelect }) => (
+  <button
+    onClick={() => onSelect(color.id, color.value)}
+    style={{ backgroundColor: color.value }}
+    className={`group relative h-[22px] w-[22px] rounded-full flex items-center justify-center transition-all duration-150 cursor-default hover:scale-105 active:scale-95 focus:outline-none
+      ${isSelected ? 'ring-2 ring-offset-2 ring-offset-transparent ring-[var(--color-text)]' : 'opacity-80 hover:opacity-100'}
+    `}
+    title={color.name}
+  >
+    {isSelected && (
+      <Check size={10} className="text-white drop-shadow-md stroke-[3.5]" />
+    )}
+  </button>
+));
 
 export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpaper }) {
-  // 1. Initialize state by checking storage first!
   const [activeAccent, setActiveAccent] = useState(() => {
     const savedAccent = localStorage.getItem('os-accent');
     if (savedAccent) {
       const matched = ACCENT_COLORS.find(c => c.value === savedAccent);
       return matched ? matched.id : 'ios-blue';
     }
-    return 'ios-blue'; // Default fallback
+    return 'ios-blue';
   });
 
-  // 2. Save choice to storage on click
-  const handleAccentChange = (colorId, colorValue) => {
+  // 🧠 useCallback prevents this function from being recreated on every render
+  const handleAccentChange = useCallback((colorId, colorValue) => {
     setActiveAccent(colorId);
     document.documentElement.style.setProperty('--color-accent', colorValue);
     localStorage.setItem('os-accent', colorValue);
-  };
+  }, []);
 
   return (
     <motion.div
@@ -100,7 +118,11 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
       dragConstraints={constraintsRef}
       dragElastic={0.08}
       onPointerDown={onFocus}
-      style={{ zIndex, touchAction: "none" }}
+      style={{
+        zIndex,
+        touchAction: "none",
+        willChange: "transform, opacity" // 🚀 Forces GPU hardware acceleration for dragging
+      }}
       whileDrag={{ cursor: "grabbing" }}
       className="custom-widget absolute top-72 left-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4.5 cursor-grab flex flex-col gap-4 shadow-[0_20px_40px_rgba(0,0,0,0.5)] font-primary select-none pointer-events-auto transition-colors duration-250"
       initial={{ opacity: 0, scale: 0.96 }}
@@ -111,7 +133,7 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
       {/* SECTION 1: WALLPAPER BACKGROUNDS */}
       <div className="flex flex-col gap-2.5">
         <div className="flex justify-between items-center px-0.5">
-          <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider transition-colors duration-250">
+          <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider">
             Desktop Wallpaper
           </span>
         </div>
@@ -126,12 +148,12 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
         </div>
       </div>
 
-      <div className="h-[1px] w-full bg-[var(--color-surface-border)] transition-colors duration-250" />
+      <div className="h-[1px] w-full bg-[var(--color-surface-border)]" />
 
       {/* SECTION 2: SYSTEM ACCENT COLOR */}
       <div className="flex flex-col gap-2.5">
         <div className="flex justify-between items-center px-0.5">
-          <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider transition-colors duration-250">
+          <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider">
             System Accent
           </span>
         </div>
@@ -140,24 +162,14 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, setWallpa
           className="flex flex-row items-center gap-3.5 px-0.5"
           onPointerDown={(e) => e.stopPropagation()}
         >
-          {ACCENT_COLORS.map((color) => {
-            const isSelected = activeAccent === color.id;
-            return (
-              <button
-                key={color.id}
-                onClick={() => handleAccentChange(color.id, color.value)}
-                style={{ backgroundColor: color.value }}
-                className={`group relative h-[22px] w-[22px] rounded-full flex items-center justify-center transition-all duration-150 cursor-default hover:scale-105 active:scale-95 focus:outline-none
-                  ${isSelected ? 'ring-2 ring-offset-2 ring-offset-transparent ring-[var(--color-text)]' : 'opacity-80 hover:opacity-100'}
-                `}
-                title={color.name}
-              >
-                {isSelected && (
-                  <Check size={10} className="text-white drop-shadow-md stroke-[3.5]" />
-                )}
-              </button>
-            );
-          })}
+          {ACCENT_COLORS.map((color) => (
+            <AccentButton
+              key={color.id}
+              color={color}
+              isSelected={activeAccent === color.id}
+              onSelect={handleAccentChange}
+            />
+          ))}
         </div>
       </div>
     </motion.div>

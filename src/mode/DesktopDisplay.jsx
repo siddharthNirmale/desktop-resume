@@ -1,49 +1,69 @@
-import { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback, Suspense, lazy } from "react";
 import { AnimatePresence } from "framer-motion";
+import { Loader2 } from "lucide-react";
 import useWindows from "../hooks/useWindows";
-import Background from "../components/Background";
 
-// System Components
+// 🚀 CORE SYSTEM (Keep static so the desktop paints instantly)
+import Background from "../components/Background";
 import Window from "../components/Window";
 import Dock from "../components/Dock";
-
 import ContextMenu from "../components/ContextMenu";
 import TopBar from "../components/TopBar";
 import Preloader from "../components/Preloader";
 
-// Desktop Widgets
-import ClockWidget from "../components/ClockWidget";
-import GithubWidget from "../components/GithubWidget";
-import LearningWidget from "../components/LearningWidget";
-import WeatherWidget from "../components/WeatherWidget";
-import ThemeWidget from "../components/ThemeWidget";
-import SkillsWidget from "../components/SkillsWidget";
+// 💤 LAZY LOADED WIDGETS (Only fetched if they are 'isOpen')
+const ClockWidget = lazy(() => import("../components/ClockWidget"));
+const GithubWidget = lazy(() => import("../components/GithubWidget"));
+const LearningWidget = lazy(() => import("../components/LearningWidget"));
+const WeatherWidget = lazy(() => import("../components/WeatherWidget"));
+const ThemeWidget = lazy(() => import("../components/ThemeWidget"));
+const SkillsWidget = lazy(() => import("../components/SkillsWidget"));
 
-// App Sections
-import AboutSection from "../sections/AboutSection";
-import ProjectsSection from "../sections/ProjectsSection";
-import Notepad from "../sections/Notepad";
-import ContactSection from "../sections/ContactSection";
-import Terminal from "../sections/Terminal";
-import ResumeSection from "../sections/ResumeSection";
+// 💤 LAZY LOADED APPS (Fetched ONLY when the user clicks their icon in the dock)
+const AboutSection = lazy(() => import("../sections/AboutSection"));
+const ProjectsSection = lazy(() => import("../sections/ProjectsSection"));
+const Notepad = lazy(() => import("../sections/Notepad"));
+const ContactSection = lazy(() => import("../sections/ContactSection"));
+const Terminal = lazy(() => import("../sections/Terminal"));
+const ResumeSection = lazy(() => import("../sections/ResumeSection"));
+
+// 🗺️ COMPONENT MAPS (Replaces the massive if/else chains for O(1) lookups)
+const WIDGET_MAP = {
+  clock: ClockWidget,
+  github: GithubWidget,
+  learning: LearningWidget,
+  weather: WeatherWidget,
+  skills: SkillsWidget,
+  theme: ThemeWidget,
+};
+
+const APP_MAP = {
+  about: AboutSection,
+  projects: ProjectsSection,
+  resume: ResumeSection,
+  notepad: Notepad,
+  contact: ContactSection,
+  terminal: Terminal,
+};
+
+// Sleek loading fallback while the JS chunk is downloading
+const AppLoader = () => (
+  <div className="w-full h-full flex items-center justify-center bg-[var(--color-surface)]">
+    <Loader2 className="w-6 h-6 animate-spin text-[var(--color-accent)] opacity-50" />
+  </div>
+);
 
 export default function DesktopDisplay() {
-  // 1. Initialize wallpaper directly from storage
-  const [wallpaper, setWallpaper] = useState(() => {
-    return localStorage.getItem("os-wallpaper") || "";
-  });
-
+  const [wallpaper, setWallpaper] = useState(() => localStorage.getItem("os-wallpaper") || "");
   const [isLoading, setIsLoading] = useState(false);
   const [menu, setMenu] = useState({ show: false, x: 0, y: 0 });
 
   const desktopRef = useRef(null);
 
-  // 2. Automatically save wallpaper whenever it changes
   useEffect(() => {
     localStorage.setItem("os-wallpaper", wallpaper);
   }, [wallpaper]);
 
-  // 3. Apply the Accent Color to the document immediately on boot
   useEffect(() => {
     const savedAccent = localStorage.getItem("os-accent");
     if (savedAccent) {
@@ -67,29 +87,22 @@ export default function DesktopDisplay() {
     { id: "skills", title: "Skills", isOpen: true, type: "widget" },
   ]);
 
-  const handleContextMenu = (e) => {
+  // 🧠 useCallback prevents re-creating these functions on every single render
+  const handleContextMenu = useCallback((e) => {
     e.preventDefault();
     setMenu({ show: true, x: e.clientX, y: e.clientY });
-  };
+  }, []);
 
-  const closeMenu = () => {
-    if (menu.show) setMenu({ show: false, x: 0, y: 0 });
-  };
+  const closeMenu = useCallback(() => {
+    setMenu((prev) => (prev.show ? { show: false, x: 0, y: 0 } : prev));
+  }, []);
 
   return (
     <div
       ref={desktopRef}
       onContextMenu={handleContextMenu}
       onClick={closeMenu}
-      // Removed transition-colors so the View Transition wave animation is perfectly crisp!
-      className="
-        w-screen h-screen
-        relative overflow-hidden
-        font-primary
-        text-[var(--color-text)]
-        bg-[var(--color-desktop)]
-        select-none
-      "
+      className="w-screen h-screen relative overflow-hidden font-primary text-[var(--color-text)] bg-[var(--color-desktop)] select-none"
       style={{
         backgroundImage: wallpaper ? `url(${wallpaper})` : "none",
         backgroundSize: "cover",
@@ -97,19 +110,14 @@ export default function DesktopDisplay() {
       }}
     >
       <AnimatePresence>
-        {isLoading && (
-          <Preloader onLoadingComplete={() => setIsLoading(false)} />
-        )}
+        {isLoading && <Preloader onLoadingComplete={() => setIsLoading(false)} />}
       </AnimatePresence>
 
       {!isLoading && (
         <>
           <TopBar />
-
-          {/* Background layer only when no wallpaper */}
           {!wallpaper && <Background />}
 
-          {/* Context Menu */}
           <AnimatePresence>
             {menu.show && (
               <ContextMenu
@@ -122,89 +130,53 @@ export default function DesktopDisplay() {
             )}
           </AnimatePresence>
 
-          {/* Widgets Layer */}
+          {/* LAYER 1: WIDGETS */}
           {windows
             .filter((w) => w.type === "widget" && w.isOpen)
-            .map((widget) => (
-              <div key={widget.id}>
-                {widget.id === "clock" && (
-                  <ClockWidget
+            .map((widget) => {
+              const WidgetComponent = WIDGET_MAP[widget.id];
+              if (!WidgetComponent) return null;
+
+              return (
+                <Suspense key={widget.id} fallback={null}>
+                  <WidgetComponent
                     constraintsRef={desktopRef}
                     zIndex={widget.zIndex || 1}
                     onFocus={() => bringToFront(widget.id)}
+                    // Pass specific props dynamically based on ID if needed
+                    {...(widget.id === "learning" && { progress: 55, topic: "Frontend Optimization", subtopic: "Next.js 14" })}
+                    {...(widget.id === "theme" && { setWallpaper })}
                   />
-                )}
+                </Suspense>
+              );
+            })}
 
-                {widget.id === "github" && (
-                  <GithubWidget
-                    constraintsRef={desktopRef}
-                    zIndex={widget.zIndex || 1}
-                    onFocus={() => bringToFront(widget.id)}
-                  />
-                )}
-
-                {widget.id === "learning" && (
-                  <LearningWidget
-                    constraintsRef={desktopRef}
-                    zIndex={widget.zIndex || 1}
-                    onFocus={() => bringToFront(widget.id)}
-                    progress={55}
-                    topic="Frontend Optimization"
-                    subtopic="Next.js 14"
-                  />
-                )}
-
-                {widget.id === "weather" && (
-                  <WeatherWidget
-                    constraintsRef={desktopRef}
-                    zIndex={widget.zIndex || 1}
-                    onFocus={() => bringToFront(widget.id)}
-                  />
-                )}
-
-                {widget.id === "skills" && (
-                  <SkillsWidget
-                    constraintsRef={desktopRef}
-                    zIndex={widget.zIndex || 1}
-                    onFocus={() => bringToFront(widget.id)}
-                  />
-                )}
-
-                {widget.id === "theme" && (
-                  <ThemeWidget
-                    constraintsRef={desktopRef}
-                    zIndex={widget.zIndex || 1}
-                    onFocus={() => bringToFront(widget.id)}
-                    setWallpaper={setWallpaper}
-                  />
-                )}
-              </div>
-            ))}
-
-          {/* Windows Layer */}
+          {/* LAYER 2: WINDOWS */}
           <AnimatePresence>
             {windows
               .filter((w) => w.type === "window" && w.isOpen)
-              .map((win) => (
-                <Window
-                  key={win.id}
-                  {...win}
-                  constraintsRef={desktopRef}
-                  onClose={() => toggleWindow(win.id, "isOpen", false)}
-                  onMinimize={() => toggleWindow(win.id, "isMinimized", true)}
-                  onFocus={() => bringToFront(win.id)}
-                >
-                  {/* Cleaned up interior wrapper to use global dynamic bg-[var(--color-surface)] */}
-                  <div className="w-full h-full min-h-0 bg-[var(--color-surface)] rounded-b-xl overflow-y-auto custom-scrollbar transition-colors duration-250">
-                    {win.id === "about" && <AboutSection />}
-                    {win.id === "projects" && <ProjectsSection />}
-                    {win.id === "resume" && <ResumeSection />}
-                    {win.id === "notepad" && <Notepad />}
-                    {win.id === "contact" && <ContactSection />}
-                    {win.id === "terminal" && <Terminal />}
-                  </div>
-                </Window>
-              ))}
+              .map((win) => {
+                const AppComponent = APP_MAP[win.id];
+                if (!AppComponent) return null;
+
+                return (
+                  <Window
+                    key={win.id}
+                    {...win}
+                    constraintsRef={desktopRef}
+                    onClose={() => toggleWindow(win.id, "isOpen", false)}
+                    onMinimize={() => toggleWindow(win.id, "isMinimized", true)}
+                    onFocus={() => bringToFront(win.id)}
+                  >
+                    <div className="w-full h-full min-h-0 bg-[var(--color-surface)] rounded-b-xl overflow-y-auto custom-scrollbar transition-colors duration-250">
+                      {/* Suspense handles the network request gap when they click an app for the first time */}
+                      <Suspense fallback={<AppLoader />}>
+                        <AppComponent />
+                      </Suspense>
+                    </div>
+                  </Window>
+                );
+              })}
           </AnimatePresence>
 
           <Dock
