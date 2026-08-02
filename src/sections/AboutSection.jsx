@@ -40,7 +40,7 @@ export default function AboutSection() {
 
           {/* Experience */}
           <div className="space-y-5">
-            <h2 className="text-[11px] font-bold uppercase tracking-super-wide text-[var(--color-text-tertiary)]">
+            <h2 className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-text-tertiary)]">
               Experience
             </h2>
             <div className="space-y-4">
@@ -54,16 +54,16 @@ export default function AboutSection() {
 
           {/* Top Projects */}
           <div className="space-y-5">
-            <h2 className="text-[11px] font-bold uppercase tracking-super-wide text-[var(--color-text-tertiary)]">
+            <h2 className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-text-tertiary)]">
               Selected Work
             </h2>
             <div className="space-y-4">
-
               <ListItem
                 title="Desktop Portfolio"
                 subtitle="React, Framer Motion, API"
                 year="2026"
-              /> <ListItem
+              />
+              <ListItem
                 title="AI Refund Agent"
                 subtitle="Next.js, Groq AI, Zustand"
                 year="2026"
@@ -81,7 +81,7 @@ export default function AboutSection() {
         {/* Education & Core Tech */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pt-8 border-t border-[var(--color-surface-border)]">
           <div className="space-y-5">
-            <h2 className="text-[11px] font-bold uppercase tracking-super-wide text-[var(--color-text-tertiary)]">
+            <h2 className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-text-tertiary)]">
               Education
             </h2>
             <ListItem
@@ -92,7 +92,7 @@ export default function AboutSection() {
           </div>
 
           <div className="space-y-5">
-            <h2 className="text-[11px] font-bold uppercase tracking-super-wide text-[var(--color-text-tertiary)]">
+            <h2 className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-text-tertiary)]">
               Core Tech
             </h2>
             <p className="text-[14px] text-[var(--color-text-secondary)] font-medium leading-relaxed">
