@@ -1,79 +1,264 @@
-import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Lenis from "lenis";
 
-export default function Preloader({ onLoadingComplete }) {
-  const [text, setText] = useState('STARTING');
+const STAGES = [
+  { progress: 0, label: "" },
+  { progress: 20, label: "Loading" },
+  { progress: 42, label: "Loading" },
+  { progress: 65, label: "Loading" },
+  { progress: 84, label: "Loading" },
+  { progress: 100, label: "Ready" },
+];
 
-  // 🌟 NEW: Check theme and accent instantly so the preloader matches the user's saved OS settings!
+export default function SiddharthPreloader({ onLoadingComplete }) {
+  const [stageIdx, setStageIdx] = useState(0);
+  const [finished, setFinished] = useState(false);
+  const [reveal, setReveal] = useState(false);
+
+  const stage = STAGES[stageIdx];
+
+  // Lenis
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+    const lenis = new Lenis({
+      duration: 1.1,
+      smoothWheel: true,
+      syncTouch: true,
+    });
 
-    if (savedTheme === 'light' || (!savedTheme && prefersLight)) {
-      document.body.classList.add('light-theme');
-    }
+    let raf;
 
-    const savedAccent = localStorage.getItem("os-accent");
-    if (savedAccent) {
-      document.documentElement.style.setProperty("--color-accent", savedAccent);
-    }
-  }, []);
+    const update = (time) => {
+      lenis.raf(time);
+      raf = requestAnimationFrame(update);
+    };
 
-  useEffect(() => {
-    // Sequence of boot steps
-    const sequence = ['STARTING', 'INITIALIZING', 'BOOTING', 'READY'];
-    let index = 0;
-
-    const interval = setInterval(() => {
-      index++;
-      if (index < sequence.length) {
-        setText(sequence[index]);
-      } else {
-        clearInterval(interval);
-      }
-    }, 600);
-
-    const timer = setTimeout(() => {
-      onLoadingComplete();
-    }, 2500);
+    raf = requestAnimationFrame(update);
 
     return () => {
-      clearInterval(interval);
-      clearTimeout(timer);
+      cancelAnimationFrame(raf);
+      lenis.destroy();
     };
-  }, [onLoadingComplete]);
+  }, []);
+
+  // Loading sequence
+  useEffect(() => {
+    if (stageIdx === STAGES.length - 1) {
+      const timer = setTimeout(() => {
+        setReveal(true);
+      }, 350);
+
+      return () => clearTimeout(timer);
+    }
+
+    const delay = stageIdx === 0 ? 220 : 170;
+
+    const timer = setTimeout(() => {
+      setStageIdx((current) => current + 1);
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [stageIdx]);
 
   return (
-    <motion.div
-      // Explicitly mapped to var(--color-desktop) to prevent flash of wrong color on load
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-[var(--color-desktop)] font-mono transition-colors duration-250"
-      initial={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <div className="flex flex-col items-center gap-6">
+    <AnimatePresence>
+      {!finished && (
         <motion.div
-          // Swapped text-white for dynamic text variable
-          className="text-[var(--color-text)] text-3xl md:text-5xl tracking-widest uppercase font-bold transition-colors duration-250"
-          key={text}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          className="
+            fixed
+            inset-0
+            z-[9999]
+            overflow-hidden
+            bg-[#0a0a0a]
+            text-[#f5f5f5]
+            select-none
+          "
+          initial={{ opacity: 1 }}
         >
-          {text}
-        </motion.div>
+          {/* -----------------------------------------
+              MAIN CONTENT
+          ----------------------------------------- */}
 
-        {/* Loader track mapped to surface-border */}
-        <div className="w-32 h-[2px] bg-[var(--color-surface-border)] overflow-hidden transition-colors duration-250">
           <motion.div
-            // Loader fill mapped perfectly to your global accent color
-            className="h-full bg-[var(--color-accent)] transition-colors duration-250"
-            initial={{ width: '0%' }}
-            animate={{ width: '100%' }}
-            transition={{ duration: 2.2, ease: "linear" }}
+            className="
+              absolute
+              inset-0
+              flex
+              items-center
+              justify-center
+            "
+            animate={{
+              opacity: reveal ? 0 : 1,
+            }}
+            transition={{
+              duration: 0.15,
+            }}
+          >
+            <div className="flex w-full flex-col items-center">
+
+              {/* NAME */}
+              <div className="overflow-hidden">
+                <motion.h1
+                  initial={{
+                    y: "100%",
+                  }}
+                  animate={{
+                    y: 0,
+                  }}
+                  transition={{
+                    duration: 0.65,
+                    ease: [0.76, 0, 0.24, 1],
+                  }}
+                  className="
+                    font-['SF_Pro_Display',-apple-system,BlinkMacSystemFont,'Helvetica_Neue',sans-serif]
+                    text-[clamp(52px,10vw,100px)]
+                    font-bold
+                    leading-[0.9]
+                    tracking-[-0.06em]
+                  "
+                >
+                  Siddharth
+                </motion.h1>
+              </div>
+
+              {/* STATUS */}
+              <div className="mt-8 h-[16px] overflow-hidden">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={stage.label}
+                    initial={{
+                      y: 16,
+                      opacity: 0,
+                    }}
+                    animate={{
+                      y: 0,
+                      opacity: 1,
+                    }}
+                    exit={{
+                      y: -16,
+                      opacity: 0,
+                    }}
+                    transition={{
+                      duration: 0.2,
+                      ease: "easeOut",
+                    }}
+                    className="
+                      block
+                      text-[11px]
+                      font-bold
+                      uppercase
+                      tracking-[0.18em]
+                      text-[#666]
+                    "
+                  >
+                    {stage.label}
+                  </motion.span>
+                </AnimatePresence>
+              </div>
+
+              {/* PROGRESS */}
+              <div
+                className="
+                  mt-6
+                  h-[3px]
+                  w-[220px]
+                  overflow-hidden
+                  bg-[#222]
+                "
+              >
+                <motion.div
+                  className="h-full bg-[#f5f5f5]"
+                  animate={{
+                    width: `${stage.progress}%`,
+                  }}
+                  transition={{
+                    duration: 0.25,
+                    ease: [0.76, 0, 0.24, 1],
+                  }}
+                />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* -----------------------------------------
+              CENTER HOLE REVEAL
+          ----------------------------------------- */}
+
+          <motion.div
+            className="
+              pointer-events-none
+              absolute
+              left-1/2
+              top-1/2
+              aspect-square
+              w-[20px]
+              -translate-x-1/2
+              -translate-y-1/2
+              rounded-full
+              bg-[#f5f5f5]
+            "
+            initial={{
+              scale: 0,
+              opacity: 0,
+            }}
+            animate={
+              reveal
+                ? {
+                  scale: 150,
+                  opacity: 1,
+                }
+                : {
+                  scale: 0,
+                  opacity: 0,
+                }
+            }
+            transition={{
+              scale: {
+                duration: 0.85,
+                ease: [0.76, 0, 0.24, 1],
+              },
+              opacity: {
+                duration: 0.05,
+              },
+            }}
+            onAnimationComplete={() => {
+              if (reveal) {
+                setFinished(true);
+                onLoadingComplete?.();
+              }
+            }}
           />
-        </div>
-      </div>
-    </motion.div>
+
+          {/* -----------------------------------------
+              REVEAL MASK
+          ----------------------------------------- */}
+
+          <motion.div
+            className="
+              pointer-events-none
+              absolute
+              inset-0
+              bg-[#f5f5f5]
+            "
+            initial={{
+              clipPath: "circle(0px at 50% 50%)",
+            }}
+            animate={
+              reveal
+                ? {
+                  clipPath: "circle(150vmax at 50% 50%)",
+                }
+                : {
+                  clipPath: "circle(0px at 50% 50%)",
+                }
+            }
+            transition={{
+              duration: 0.85,
+              ease: [0.76, 0, 0.24, 1],
+            }}
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
