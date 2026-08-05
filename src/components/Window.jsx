@@ -35,6 +35,8 @@ export default function Window({
     y: 0,
   });
 
+  const resizeState = useRef(null);
+
   const centerWindow = () => {
     const left = (window.innerWidth - defaultWidth) / 2;
     const top = (window.innerHeight - defaultHeight) / 2;
@@ -131,27 +133,177 @@ export default function Window({
     }
   };
 
-  const handleResize = (_, info) => {
+  /*
+   * ---------------------------------------------------------
+   * RESIZE SYSTEM
+   * ---------------------------------------------------------
+   *
+   * Supported directions:
+   *
+   * n  = top
+   * s  = bottom
+   * e  = right
+   * w  = left
+   * ne = top-right
+   * nw = top-left
+   * se = bottom-right
+   * sw = bottom-left
+   */
+
+  const startResize = (event, direction) => {
     if (isMaximized) return;
 
-    const nextWidth = Math.max(
-      420,
-      Math.min(
-        window.innerWidth - x.get() - 20,
-        width.get() + info.delta.x
-      )
-    );
+    event.preventDefault();
+    event.stopPropagation();
 
-    const nextHeight = Math.max(
-      320,
-      Math.min(
-        window.innerHeight - y.get() - 20,
-        height.get() + info.delta.y
-      )
-    );
+    onFocus?.();
+
+    resizeState.current = {
+      direction,
+      startX: event.clientX,
+      startY: event.clientY,
+      startWidth: width.get(),
+      startHeight: height.get(),
+      startLeft: x.get(),
+      startTop: y.get(),
+    };
+
+    window.addEventListener("pointermove", handleResizeMove);
+    window.addEventListener("pointerup", stopResize);
+  };
+
+  const handleResizeMove = (event) => {
+    const state = resizeState.current;
+
+    if (!state) return;
+
+    const {
+      direction,
+      startX,
+      startY,
+      startWidth,
+      startHeight,
+      startLeft,
+      startTop,
+    } = state;
+
+    const deltaX = event.clientX - startX;
+    const deltaY = event.clientY - startY;
+
+    const MIN_WIDTH = 420;
+    const MIN_HEIGHT = 320;
+
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    let nextWidth = startWidth;
+    let nextHeight = startHeight;
+    let nextX = startLeft;
+    let nextY = startTop;
+
+    /*
+     * RIGHT
+     */
+    if (direction.includes("e")) {
+      nextWidth = startWidth + deltaX;
+
+      nextWidth = Math.max(
+        MIN_WIDTH,
+        Math.min(
+          nextWidth,
+          viewportWidth - startLeft - 20
+        )
+      );
+    }
+
+    /*
+     * LEFT
+     */
+    if (direction.includes("w")) {
+      const proposedWidth = startWidth - deltaX;
+
+      nextWidth = Math.max(
+        MIN_WIDTH,
+        Math.min(
+          proposedWidth,
+          startLeft + startWidth - 20
+        )
+      );
+
+      nextX = startLeft + (startWidth - nextWidth);
+    }
+
+    /*
+     * BOTTOM
+     */
+    if (direction.includes("s")) {
+      nextHeight = startHeight + deltaY;
+
+      nextHeight = Math.max(
+        MIN_HEIGHT,
+        Math.min(
+          nextHeight,
+          viewportHeight - startTop - 20
+        )
+      );
+    }
+
+    /*
+     * TOP
+     */
+    if (direction.includes("n")) {
+      const proposedHeight = startHeight - deltaY;
+
+      nextHeight = Math.max(
+        MIN_HEIGHT,
+        Math.min(
+          proposedHeight,
+          startTop + startHeight - 20
+        )
+      );
+
+      nextY = startTop + (startHeight - nextHeight);
+    }
 
     width.set(nextWidth);
     height.set(nextHeight);
+    x.set(nextX);
+    y.set(nextY);
+  };
+
+  const stopResize = () => {
+    resizeState.current = null;
+
+    window.removeEventListener("pointermove", handleResizeMove);
+    window.removeEventListener("pointerup", stopResize);
+  };
+
+  useEffect(() => {
+    return () => {
+      window.removeEventListener("pointermove", handleResizeMove);
+      window.removeEventListener("pointerup", stopResize);
+    };
+  }, []);
+
+  /*
+   * ---------------------------------------------------------
+   * RESIZE HANDLE
+   * ---------------------------------------------------------
+   */
+
+  const ResizeHandle = ({ direction, className }) => {
+    return (
+      <div
+        onPointerDown={(event) =>
+          startResize(event, direction)
+        }
+        className={`
+          absolute
+          z-[100]
+          ${className}
+        `}
+      />
+    );
   };
 
   if (isMinimized) return null;
@@ -226,9 +378,7 @@ export default function Window({
               scale: isMaximized ? 1 : 0.8,
             }}
             transition={{ duration: 0.15 }}
-          >
-
-          </motion.div>
+          ></motion.div>
         </div>
 
         <div className="pointer-events-none mx-auto flex items-center">
@@ -331,59 +481,157 @@ export default function Window({
       </motion.div>
 
       {!isMaximized && (
-        <motion.div
-          onPan={handleResize}
-          whileHover={{
-            scale: 1.12,
-            opacity: 1,
-          }}
-          className="
-            absolute
-            bottom-0
-            right-0
-            z-50
-            flex
-            h-[18px]
-            w-[18px]
-            cursor-se-resize
-            items-end
-            justify-end
-            p-[3px]
-            opacity-50
-          "
-        >
-          <svg
-            width="11"
-            height="11"
-            viewBox="0 0 11 11"
-            className="text-[var(--color-text-tertiary)]"
+        <>
+          {/* TOP */}
+          <ResizeHandle
+            direction="n"
+            className="
+              top-0
+              left-[10px]
+              right-[10px]
+              h-[7px]
+              cursor-n-resize
+            "
+          />
+
+          {/* BOTTOM */}
+          <ResizeHandle
+            direction="s"
+            className="
+              bottom-0
+              left-[10px]
+              right-[10px]
+              h-[7px]
+              cursor-s-resize
+            "
+          />
+
+          {/* LEFT */}
+          <ResizeHandle
+            direction="w"
+            className="
+              left-0
+              top-[10px]
+              bottom-[10px]
+              w-[7px]
+              cursor-w-resize
+            "
+          />
+
+          {/* RIGHT */}
+          <ResizeHandle
+            direction="e"
+            className="
+              right-0
+              top-[10px]
+              bottom-[10px]
+              w-[7px]
+              cursor-e-resize
+            "
+          />
+
+          {/* TOP-LEFT */}
+          <ResizeHandle
+            direction="nw"
+            className="
+              left-0
+              top-0
+              h-[14px]
+              w-[14px]
+              cursor-nw-resize
+            "
+          />
+
+          {/* TOP-RIGHT */}
+          <ResizeHandle
+            direction="ne"
+            className="
+              right-0
+              top-0
+              h-[14px]
+              w-[14px]
+              cursor-ne-resize
+            "
+          />
+
+          {/* BOTTOM-LEFT */}
+          <ResizeHandle
+            direction="sw"
+            className="
+              bottom-0
+              left-0
+              h-[14px]
+              w-[14px]
+              cursor-sw-resize
+            "
+          />
+
+          {/* BOTTOM-RIGHT */}
+          <ResizeHandle
+            direction="se"
+            className="
+              bottom-0
+              right-0
+              h-[18px]
+              w-[18px]
+              cursor-se-resize
+            "
+          />
+
+          {/* EXISTING BOTTOM-RIGHT VISUAL */}
+          <motion.div
+            whileHover={{
+              scale: 1.12,
+              opacity: 1,
+            }}
+            className="
+              pointer-events-none
+              absolute
+              bottom-0
+              right-0
+              z-[101]
+              flex
+              h-[18px]
+              w-[18px]
+              items-end
+              justify-end
+              p-[3px]
+              opacity-50
+            "
           >
-            <line
-              x1="11"
-              y1="0"
-              x2="0"
-              y2="11"
-              stroke="currentColor"
-              strokeWidth="1"
-            />
-            <line
-              x1="11"
-              y1="4"
-              x2="4"
-              y2="11"
-              stroke="currentColor"
-              strokeWidth="1"
-            />
-            <line
-              x1="11"
-              y1="8"
-              x2="8"
-              y2="11"
-              stroke="currentColor"
-              strokeWidth="1"
-            />
-          </svg>
-        </motion.div>
+            <svg
+              width="11"
+              height="11"
+              viewBox="0 0 11 11"
+              className="text-[var(--color-text-tertiary)]"
+            >
+              <line
+                x1="11"
+                y1="0"
+                x2="0"
+                y2="11"
+                stroke="currentColor"
+                strokeWidth="1"
+              />
+              <line
+                x1="11"
+                y1="4"
+                x2="4"
+                y2="11"
+                stroke="currentColor"
+                strokeWidth="1"
+              />
+              <line
+                x1="11"
+                y1="8"
+                x2="8"
+                y2="11"
+                stroke="currentColor"
+                strokeWidth="1"
+              />
+            </svg>
+          </motion.div>
+        </>
       )}
     </motion.div>
   );
