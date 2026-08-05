@@ -1,7 +1,7 @@
 import { motion, animate, useMotionValue } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import Lenis from "lenis";
-import { Minus, Square, Copy, X } from "lucide-react";
+import { Minus, Square, X } from "lucide-react";
 
 export default function Window({
   id,
@@ -20,8 +20,11 @@ export default function Window({
   const bodyRef = useRef(null);
   const contentRef = useRef(null);
 
+  const resizeState = useRef(null);
+
   const [isMaximized, setIsMaximized] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
 
   const width = useMotionValue(defaultWidth);
   const height = useMotionValue(defaultHeight);
@@ -34,8 +37,6 @@ export default function Window({
     x: 0,
     y: 0,
   });
-
-  const resizeState = useRef(null);
 
   const centerWindow = () => {
     const left = (window.innerWidth - defaultWidth) / 2;
@@ -133,22 +134,9 @@ export default function Window({
     }
   };
 
-  /*
-   * ---------------------------------------------------------
-   * RESIZE SYSTEM
-   * ---------------------------------------------------------
-   *
-   * Supported directions:
-   *
-   * n  = top
-   * s  = bottom
-   * e  = right
-   * w  = left
-   * ne = top-right
-   * nw = top-left
-   * se = bottom-right
-   * sw = bottom-left
-   */
+  // ============================================================
+  // RESIZE
+  // ============================================================
 
   const startResize = (event, direction) => {
     if (isMaximized) return;
@@ -158,18 +146,28 @@ export default function Window({
 
     onFocus?.();
 
+    // Lock the exact pointer that started the resize.
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+
     resizeState.current = {
       direction,
-      startX: event.clientX,
-      startY: event.clientY,
+
+      // Exact mouse position when grabbing the edge.
+      startMouseX: event.clientX,
+      startMouseY: event.clientY,
+
+      // Exact window geometry when grabbing the edge.
+      startX: x.get(),
+      startY: y.get(),
       startWidth: width.get(),
       startHeight: height.get(),
-      startLeft: x.get(),
-      startTop: y.get(),
     };
+
+    setIsResizing(true);
 
     window.addEventListener("pointermove", handleResizeMove);
     window.addEventListener("pointerup", stopResize);
+    window.addEventListener("pointercancel", stopResize);
   };
 
   const handleResizeMove = (event) => {
@@ -179,31 +177,35 @@ export default function Window({
 
     const {
       direction,
+      startMouseX,
+      startMouseY,
       startX,
       startY,
       startWidth,
       startHeight,
-      startLeft,
-      startTop,
     } = state;
 
-    const deltaX = event.clientX - startX;
-    const deltaY = event.clientY - startY;
+    const deltaX = event.clientX - startMouseX;
+    const deltaY = event.clientY - startMouseY;
 
     const MIN_WIDTH = 420;
     const MIN_HEIGHT = 320;
 
+    const EDGE_MARGIN = 20;
+
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
 
+    let nextX = startX;
+    let nextY = startY;
+
     let nextWidth = startWidth;
     let nextHeight = startHeight;
-    let nextX = startLeft;
-    let nextY = startTop;
 
-    /*
-     * RIGHT
-     */
+    // ------------------------------------------------------------
+    // RIGHT
+    // ------------------------------------------------------------
+
     if (direction.includes("e")) {
       nextWidth = startWidth + deltaX;
 
@@ -211,31 +213,35 @@ export default function Window({
         MIN_WIDTH,
         Math.min(
           nextWidth,
-          viewportWidth - startLeft - 20
+          viewportWidth - startX - EDGE_MARGIN
         )
       );
     }
 
-    /*
-     * LEFT
-     */
+    // ------------------------------------------------------------
+    // LEFT
+    // ------------------------------------------------------------
+
     if (direction.includes("w")) {
-      const proposedWidth = startWidth - deltaX;
+      const mouseX = event.clientX;
 
-      nextWidth = Math.max(
-        MIN_WIDTH,
-        Math.min(
-          proposedWidth,
-          startLeft + startWidth - 20
-        )
+      const minimumX = EDGE_MARGIN;
+      const maximumX =
+        startX + startWidth - MIN_WIDTH;
+
+      nextX = Math.max(
+        minimumX,
+        Math.min(mouseX, maximumX)
       );
 
-      nextX = startLeft + (startWidth - nextWidth);
+      nextWidth =
+        startX + startWidth - nextX;
     }
 
-    /*
-     * BOTTOM
-     */
+    // ------------------------------------------------------------
+    // BOTTOM
+    // ------------------------------------------------------------
+
     if (direction.includes("s")) {
       nextHeight = startHeight + deltaY;
 
@@ -243,27 +249,34 @@ export default function Window({
         MIN_HEIGHT,
         Math.min(
           nextHeight,
-          viewportHeight - startTop - 20
+          viewportHeight - startY - EDGE_MARGIN
         )
       );
     }
 
-    /*
-     * TOP
-     */
+    // ------------------------------------------------------------
+    // TOP
+    // ------------------------------------------------------------
+
     if (direction.includes("n")) {
-      const proposedHeight = startHeight - deltaY;
+      const mouseY = event.clientY;
 
-      nextHeight = Math.max(
-        MIN_HEIGHT,
-        Math.min(
-          proposedHeight,
-          startTop + startHeight - 20
-        )
+      const minimumY = EDGE_MARGIN;
+      const maximumY =
+        startY + startHeight - MIN_HEIGHT;
+
+      nextY = Math.max(
+        minimumY,
+        Math.min(mouseY, maximumY)
       );
 
-      nextY = startTop + (startHeight - nextHeight);
+      nextHeight =
+        startY + startHeight - nextY;
     }
+
+    // ------------------------------------------------------------
+    // APPLY
+    // ------------------------------------------------------------
 
     width.set(nextWidth);
     height.set(nextHeight);
@@ -274,32 +287,61 @@ export default function Window({
   const stopResize = () => {
     resizeState.current = null;
 
-    window.removeEventListener("pointermove", handleResizeMove);
-    window.removeEventListener("pointerup", stopResize);
+    setIsResizing(false);
+
+    window.removeEventListener(
+      "pointermove",
+      handleResizeMove
+    );
+
+    window.removeEventListener(
+      "pointerup",
+      stopResize
+    );
+
+    window.removeEventListener(
+      "pointercancel",
+      stopResize
+    );
   };
 
   useEffect(() => {
     return () => {
-      window.removeEventListener("pointermove", handleResizeMove);
-      window.removeEventListener("pointerup", stopResize);
+      window.removeEventListener(
+        "pointermove",
+        handleResizeMove
+      );
+
+      window.removeEventListener(
+        "pointerup",
+        stopResize
+      );
+
+      window.removeEventListener(
+        "pointercancel",
+        stopResize
+      );
     };
   }, []);
 
-  /*
-   * ---------------------------------------------------------
-   * RESIZE HANDLE
-   * ---------------------------------------------------------
-   */
+  // ============================================================
+  // RESIZE HANDLE
+  // ============================================================
 
-  const ResizeHandle = ({ direction, className }) => {
+  const ResizeHandle = ({
+    direction,
+    className,
+  }) => {
     return (
       <div
-        onPointerDown={(event) =>
-          startResize(event, direction)
-        }
+        onPointerDown={(event) => {
+          event.stopPropagation();
+          startResize(event, direction);
+        }}
         className={`
           absolute
           z-[100]
+          touch-none
           ${className}
         `}
       />
@@ -311,11 +353,11 @@ export default function Window({
   return (
     <motion.div
       ref={windowRef}
-      drag
+      drag={!isResizing}
       dragMomentum={false}
       dragElastic={0.02}
       dragConstraints={constraintsRef}
-      dragListener={true}
+      dragListener={!isResizing}
       onMouseDown={onFocus}
       style={{
         x,
@@ -332,7 +374,9 @@ export default function Window({
       animate={{
         opacity: mounted ? 1 : 0,
         scale: mounted ? 1 : 0.86,
-        filter: mounted ? "blur(0px)" : "blur(12px)",
+        filter: mounted
+          ? "blur(0px)"
+          : "blur(12px)",
       }}
       transition={{
         type: "spring",
@@ -356,6 +400,10 @@ export default function Window({
         will-change-transform
       "
     >
+      {/* ======================================================
+          HEADER
+      ====================================================== */}
+
       <div
         className="
           window-header-drag
@@ -377,8 +425,10 @@ export default function Window({
               opacity: isMaximized ? 1 : 0,
               scale: isMaximized ? 1 : 0.8,
             }}
-            transition={{ duration: 0.15 }}
-          ></motion.div>
+            transition={{
+              duration: 0.15,
+            }}
+          />
         </div>
 
         <div className="pointer-events-none mx-auto flex items-center">
@@ -396,12 +446,16 @@ export default function Window({
         </div>
 
         <div className="absolute right-0 top-0 flex h-full">
+          {/* MINIMIZE */}
+
           <button
             onClick={(e) => {
               e.stopPropagation();
               onMinimize();
             }}
-            onPointerDown={(e) => e.stopPropagation()}
+            onPointerDown={(e) =>
+              e.stopPropagation()
+            }
             className="
               flex
               h-full
@@ -414,15 +468,22 @@ export default function Window({
               dark:hover:bg-white/10
             "
           >
-            <Minus size={14} strokeWidth={1.5} />
+            <Minus
+              size={14}
+              strokeWidth={1.5}
+            />
           </button>
+
+          {/* MAXIMIZE */}
 
           <button
             onClick={(e) => {
               e.stopPropagation();
               toggleMaximize();
             }}
-            onPointerDown={(e) => e.stopPropagation()}
+            onPointerDown={(e) =>
+              e.stopPropagation()
+            }
             className="
               flex
               h-full
@@ -435,15 +496,22 @@ export default function Window({
               dark:hover:bg-white/10
             "
           >
-            <Square size={12} strokeWidth={1.5} />
+            <Square
+              size={12}
+              strokeWidth={1.5}
+            />
           </button>
+
+          {/* CLOSE */}
 
           <button
             onClick={(e) => {
               e.stopPropagation();
               onClose();
             }}
-            onPointerDown={(e) => e.stopPropagation()}
+            onPointerDown={(e) =>
+              e.stopPropagation()
+            }
             className="
               flex
               h-full
@@ -456,10 +524,17 @@ export default function Window({
               hover:text-white
             "
           >
-            <X size={14} strokeWidth={1.5} />
+            <X
+              size={14}
+              strokeWidth={1.5}
+            />
           </button>
         </div>
       </div>
+
+      {/* ======================================================
+          CONTENT
+      ====================================================== */}
 
       <motion.div
         ref={bodyRef}
@@ -480,93 +555,105 @@ export default function Window({
         </div>
       </motion.div>
 
+      {/* ======================================================
+          8-WAY RESIZE
+      ====================================================== */}
+
       {!isMaximized && (
         <>
           {/* TOP */}
+
           <ResizeHandle
             direction="n"
             className="
               top-0
               left-[10px]
               right-[10px]
-              h-[7px]
+              h-[8px]
               cursor-n-resize
             "
           />
 
           {/* BOTTOM */}
+
           <ResizeHandle
             direction="s"
             className="
               bottom-0
               left-[10px]
               right-[10px]
-              h-[7px]
+              h-[8px]
               cursor-s-resize
             "
           />
 
           {/* LEFT */}
+
           <ResizeHandle
             direction="w"
             className="
               left-0
               top-[10px]
               bottom-[10px]
-              w-[7px]
+              w-[8px]
               cursor-w-resize
             "
           />
 
           {/* RIGHT */}
+
           <ResizeHandle
             direction="e"
             className="
               right-0
               top-[10px]
               bottom-[10px]
-              w-[7px]
+              w-[8px]
               cursor-e-resize
             "
           />
 
-          {/* TOP-LEFT */}
+          {/* TOP LEFT */}
+
           <ResizeHandle
             direction="nw"
             className="
               left-0
               top-0
-              h-[14px]
-              w-[14px]
+              h-[16px]
+              w-[16px]
               cursor-nw-resize
             "
           />
 
-          {/* TOP-RIGHT */}
+          {/* TOP RIGHT */}
+
           <ResizeHandle
             direction="ne"
             className="
               right-0
               top-0
-              h-[14px]
-              w-[14px]
+              h-[16px]
+              w-[16px]
               cursor-ne-resize
             "
           />
 
-          {/* BOTTOM-LEFT */}
+          {/* BOTTOM LEFT */}
+
           <ResizeHandle
             direction="sw"
             className="
               bottom-0
               left-0
-              h-[14px]
-              w-[14px]
+              h-[16px]
+              w-[16px]
               cursor-sw-resize
             "
           />
 
-          {/* BOTTOM-RIGHT */}
+          {/* BOTTOM RIGHT */}
+
           <ResizeHandle
             direction="se"
             className="
@@ -578,7 +665,10 @@ export default function Window({
             "
           />
 
-          {/* EXISTING BOTTOM-RIGHT VISUAL */}
+          {/* ==================================================
+              BOTTOM RIGHT RESIZE INDICATOR
+          ================================================== */}
+
           <motion.div
             whileHover={{
               scale: 1.12,
@@ -613,6 +703,7 @@ export default function Window({
                 stroke="currentColor"
                 strokeWidth="1"
               />
+
               <line
                 x1="11"
                 y1="4"
@@ -621,6 +712,7 @@ export default function Window({
                 stroke="currentColor"
                 strokeWidth="1"
               />
+
               <line
                 x1="11"
                 y1="8"
