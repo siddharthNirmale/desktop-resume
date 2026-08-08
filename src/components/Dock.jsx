@@ -1,10 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Sun, Moon } from "lucide-react";
-import { motion } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  AnimatePresence,
+} from "framer-motion";
 
-// ---------------------------------------------------------
-// Image Imports & Array
-// ---------------------------------------------------------
 import About from "../assets/images/About.png";
 import Contact from "../assets/images/Contact.png";
 import Notes from "../assets/images/Notes.png";
@@ -12,435 +15,424 @@ import Projects from "../assets/images/Projects.png";
 import Resume from "../assets/images/Resume.png";
 import Terminal from "../assets/images/Terminal.png";
 
-const Icon = [
-  { name: "About", image: About },
-  { name: "Contact", image: Contact },
-  { name: "Notes", image: Notes },
-  { name: "Projects", image: Projects },
-  { name: "Resume", image: Resume },
-  { name: "Terminal", image: Terminal },
-];
+// ─── physics ────────────────────────────────────────────
+const DOCK_ICON_SIZE = 52;   // resting px
+const DOCK_ICON_MAX = 80;   // peak magnified px
+const MAGNIFY_RADIUS = 130;  // influence zone px
+const SPRING = { stiffness: 350, damping: 28, mass: 0.55 };
 
-// ---------------------------------------------------------
-// App Icon Styling
-// ---------------------------------------------------------
-
-const getAppIconStyle = () => {
-  return {
-    wrapper: `
-      w-[44px] h-[44px]
-      flex items-center justify-center
-      rounded-[16px]
-      bg-[var(--color-surface-inactive)]
-      border-t border-[var(--color-surface-border)]
-      shadow-[0_8px_16px_rgba(0,0,0,0.12)]
-      transition-all duration-300
-    `,
-  };
-};
-
-// ---------------------------------------------------------
-// Dock
-// ---------------------------------------------------------
-
-export default function Dock({ windows, toggleWindow, bringToFront }) {
-  const [isLight, setIsLight] = useState(false);
-  const dockRef = useRef(null);
-
-  // -------------------------------------------------------
-  // Initialize theme
-  // -------------------------------------------------------
+// ─── per-icon magnification hook ────────────────────────
+function useMagnify(mouseX, ref) {
+  const dist = useMotionValue(Infinity);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
+    return mouseX.on("change", (mx) => {
+      if (!ref.current) return;
+      const { left, width } = ref.current.getBoundingClientRect();
+      dist.set(Math.abs(mx - (left + width / 2)));
+    });
+  }, [mouseX, ref, dist]);
 
-    let theme;
+  const rawScale = useTransform(
+    dist,
+    [0, MAGNIFY_RADIUS],
+    [DOCK_ICON_MAX / DOCK_ICON_SIZE, 1],
+    { clamp: true }
+  );
+  const rawY = useTransform(dist, [0, MAGNIFY_RADIUS], [-14, 0], { clamp: true });
 
-    if (savedTheme === "light" || savedTheme === "dark") {
-      theme = savedTheme;
-    } else {
-      theme = window.matchMedia("(prefers-color-scheme: light)").matches
-        ? "light"
-        : "dark";
-    }
-
-    const light = theme === "light";
-
-    setIsLight(light);
-
-    // Always keep the root element in sync
-    document.documentElement.classList.toggle("light-theme", light);
-
-    // Also keep body synced if your existing CSS depends on it
-    document.body.classList.toggle("light-theme", light);
-  }, []);
-
-  // -------------------------------------------------------
-  // Theme Toggle
-  // -------------------------------------------------------
-
-  const handleThemeToggle = (e) => {
-    const nextTheme = isLight ? "dark" : "light";
-    const nextIsLight = nextTheme === "light";
-
-    const applyTheme = () => {
-      document.documentElement.classList.toggle("light-theme", nextIsLight);
-      document.body.classList.toggle("light-theme", nextIsLight);
-
-      localStorage.setItem("theme", nextTheme);
-
-      setIsLight(nextIsLight);
-    };
-
-    // Fallback for browsers without View Transitions
-    if (typeof document.startViewTransition !== "function") {
-      applyTheme();
-      return;
-    }
-
-    const x = e.clientX;
-    const y = e.clientY;
-
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-    const endRadius = Math.hypot(
-      Math.max(x, width - x),
-      Math.max(y, height - y)
-    );
-
-    const transition = document.startViewTransition(applyTheme);
-
-    transition.ready
-      .then(() => {
-        document.documentElement.animate(
-          {
-            clipPath: [
-              `circle(0px at ${x}px ${y}px)`,
-              `circle(${endRadius}px at ${x}px ${y}px)`,
-            ],
-          },
-          {
-            duration: 400,
-            easing: "cubic-bezier(0.25, 1, 0.5, 1)",
-            pseudoElement: "::view-transition-new(root)",
-          }
-        );
-      })
-      .catch(() => {
-        // View transition failed.
-        // Theme itself has already been applied.
-      });
+  return {
+    scale: useSpring(rawScale, SPRING),
+    y: useSpring(rawY, SPRING),
   };
+}
 
-  // -------------------------------------------------------
-  // Dock App Icon
-  // -------------------------------------------------------
+// ─── icon gradient palette ───────────────────────────────
+const ICON_GRADIENTS = {
+  about: ["#2a2a72", "#009ffd"],
+  projects: ["#f7971e", "#ffd200"],
+  resume: ["#c94b4b", "#4b134f"],
+  notepad: ["#f5af19", "#f12711"],
+  contact: ["#11998e", "#38ef7d"],
+  terminal: ["#1a1a1a", "#363636"],
+  theme: ["#283048", "#859398"],
+};
 
-  const DockIcon = ({ id, image, label, badge }) => {
-    const win = windows?.find((window) => window.id === id);
+function iconBg(id) {
+  const [a, b] = ICON_GRADIENTS[id] ?? ["#333", "#666"];
+  return `linear-gradient(145deg, ${a}, ${b})`;
+}
 
-    // Widgets don't appear in the dock
-    if (win?.type === "widget") {
-      return null;
-    }
+// ─── glass shell shared by every icon ───────────────────
+function IconShell({ id, size, children }) {
+  return (
+    <div
+      style={{
+        width: size,
+        height: size,
+        borderRadius: Math.round(size * 0.27),
+        background: iconBg(id),
+        position: "relative",
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        border: "1px solid rgba(255,255,255,0.18)",
+        boxShadow: "0 8px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.22)",
+        flexShrink: 0,
+      }}
+    >
+      {/* top gloss */}
+      <span
+        style={{
+          position: "absolute",
+          inset: "0 0 auto 0",
+          height: "52%",
+          background: "linear-gradient(180deg,rgba(255,255,255,0.18) 0%,rgba(255,255,255,0) 100%)",
+          borderRadius: `${Math.round(size * 0.27)}px ${Math.round(size * 0.27)}px 0 0`,
+          pointerEvents: "none",
+        }}
+      />
+      {children}
+    </div>
+  );
+}
 
-    const isOpen = win?.isOpen;
-    const isMinimized = win?.isMinimized;
-
-    const { wrapper } = getAppIconStyle();
-
-    const handleClick = () => {
-      if (!win) return;
-
-      // Closed → Open
-      if (!isOpen) {
-        toggleWindow(id, "isOpen", true);
-        bringToFront(id);
-        return;
-      }
-
-      // Minimized → Restore
-      if (isMinimized) {
-        toggleWindow(id, "isMinimized", false);
-        bringToFront(id);
-        return;
-      }
-
-      // Already open
-      const activeWindows = windows.filter(
-        (window) =>
-          window.type === "window" && window.isOpen && !window.isMinimized
-      );
-
-      const maxZ = Math.max(
-        ...activeWindows.map((window) => window.zIndex || 0),
-        0
-      );
-
-      // Active window → Minimize
-      if (win.zIndex === maxZ) {
-        toggleWindow(id, "isMinimized", true);
-      } else {
-        // Inactive window → Bring to front
-        bringToFront(id);
-      }
-    };
-
-    return (
-      <div className="relative group flex flex-col items-center justify-center">
-        {/* Tooltip */}
-        <span
-          className="
-            absolute -top-12
-            opacity-0
-            group-hover:opacity-100
-            transition-all duration-200
-            bg-[var(--color-surface-dark)]
-            border-t border-[var(--color-surface-border)]
-            text-[var(--color-text)]
-            text-[12px] font-medium
-            px-3 py-1.5
-            rounded-md
-            pointer-events-none
-            z-[99999]
-            shadow-lg
-            whitespace-nowrap
-          "
+// ─── tooltip ────────────────────────────────────────────
+function Tooltip({ label, visible }) {
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.span
+          initial={{ opacity: 0, y: 6, scale: 0.88 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 4, scale: 0.92 }}
+          transition={{ duration: 0.13, ease: "easeOut" }}
+          style={{
+            position: "absolute",
+            bottom: "calc(100% + 10px)",
+            left: "50%",
+            transform: "translateX(-50%)",
+            whiteSpace: "nowrap",
+            fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
+            fontSize: 12,
+            fontWeight: 500,
+            letterSpacing: "-0.01em",
+            color: "rgba(255,255,255,0.92)",
+            background: "rgba(22,22,26,0.88)",
+            border: "1px solid rgba(255,255,255,0.13)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+            padding: "5px 11px",
+            borderRadius: 9,
+            pointerEvents: "none",
+            zIndex: 99999,
+            boxShadow: "0 4px 18px rgba(0,0,0,0.32)",
+          }}
         >
           {label}
-        </span>
+        </motion.span>
+      )}
+    </AnimatePresence>
+  );
+}
 
-        {/* App Button */}
-        <motion.button
-          type="button"
-          whileHover={{
-            scale: 1.2,
-            y: -6,
-          }}
-          whileTap={{
-            scale: 0.95,
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 400,
-            damping: 20,
-          }}
-          onClick={handleClick}
-          className="
-            relative
-            flex items-center justify-center
-            w-[64px] h-[64px]
-            transition-all
-            cursor-pointer
-          "
-        >
-          <div
-            className={`
-              ${wrapper}
-              group-hover:border-[var(--color-accent)]
-              group-hover:shadow-[0_12px_24px_rgba(0,0,0,0.2)]
-            `}
-          >
-            <img
-              src={image}
-              alt={label}
-              className="w-10 h-10 object-contain drop-shadow-md transition-transform duration-300 group-hover:scale-105"
-            />
-          </div>
-
-          {/* Notification Badge */}
-          {badge > 0 && (
-            <div
-              className="
-                absolute -top-1 -right-1
-                min-w-[20px] h-[20px]
-                px-1.5
-                bg-[#FF3B30]
-                text-white
-                text-[11px]
-                font-bold
-                rounded-full
-                flex items-center justify-center
-                border-2 border-[var(--color-surface-inactive)]
-                shadow-md
-                z-10
-              "
-            >
-              {badge}
-            </div>
-          )}
-        </motion.button>
-
-        {/* Open / Minimized Indicator */}
+// ─── running dot ────────────────────────────────────────
+function RunningDot({ isOpen, isMinimized }) {
+  return (
+    <div style={{ height: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <AnimatePresence>
         {isOpen && (
-          <div
-            className="
-              absolute -bottom-2.5
-              flex justify-center items-center
-              h-2
-            "
-          >
-            <div
-              className={`
-                rounded-full
-                transition-all duration-300
-                ${isMinimized
-                  ? `
-                      w-[4px] h-[4px]
-                      bg-[var(--color-text-tertiary)]
-                    `
-                  : `
-                      w-[5px] h-[5px]
-                      bg-[var(--color-text)]
-                      shadow-[0_0_8px_var(--color-text)]
-                      opacity-90
-                    `
-                }
-              `}
-            />
-          </div>
+          <motion.div
+            key={isMinimized ? "min" : "open"}
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: isMinimized ? 0.38 : 0.82 }}
+            exit={{ scale: 0, opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            style={{
+              width: isMinimized ? 3 : 4,
+              height: isMinimized ? 3 : 4,
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.9)",
+              boxShadow: isMinimized ? "none" : "0 0 6px 1px rgba(255,255,255,0.55)",
+            }}
+          />
         )}
-      </div>
-    );
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ─── DockIcon ────────────────────────────────────────────
+function DockIcon({ id, image, label, badge, windows, toggleWindow, bringToFront, mouseX }) {
+  const ref = useRef(null);
+  const { scale, y } = useMagnify(mouseX, ref);
+  const [hovered, setHovered] = useState(false);
+  const [tapping, setTapping] = useState(false);
+
+  const win = windows?.find((w) => w.id === id);
+  const isOpen = win?.isOpen;
+  const isMinimized = win?.isMinimized;
+
+  if (win?.type === "widget") return null;
+
+  const handleClick = useCallback(() => {
+    if (!win) return;
+    setTapping(true);
+    setTimeout(() => setTapping(false), 500);
+
+    if (!isOpen) { toggleWindow(id, "isOpen", true); bringToFront(id); return; }
+    if (isMinimized) { toggleWindow(id, "isMinimized", false); bringToFront(id); return; }
+
+    const activeWins = windows.filter((w) => w.type === "window" && w.isOpen && !w.isMinimized);
+    const maxZ = Math.max(...activeWins.map((w) => w.zIndex ?? 0), 0);
+    win.zIndex === maxZ ? toggleWindow(id, "isMinimized", true) : bringToFront(id);
+  }, [win, isOpen, isMinimized, windows, id, toggleWindow, bringToFront]);
+
+  // bounce animation when opening
+  const bounceVariants = {
+    idle: { y: 0 },
+    tapping: {
+      y: [0, -18, 0, -10, 0, -5, 0],
+      transition: { duration: 0.52, ease: "easeOut" },
+    },
   };
 
-  // -------------------------------------------------------
-  // Render
-  // -------------------------------------------------------
+  const iconPx = DOCK_ICON_SIZE;
 
   return (
     <div
-      ref={dockRef}
-      className="
-        absolute
-        bottom-4
-        left-1/2
-        -translate-x-1/2
-        z-[99999]
-        pointer-events-auto
-      "
+      ref={ref}
+      style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", width: iconPx + 20 }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      <div
-        className="
-          px-4 py-3
-          bg-[var(--color-surface-inactive)]
-          backdrop-blur-xl
-          border-t border-[var(--color-surface-border)]
-          rounded-[24px]
-          flex items-end
-          gap-3
-          shadow-[0_24px_48px_rgba(0,0,0,0.15)]
-          ring-1 ring-black/5
-          transition-colors duration-300
-        "
+      <Tooltip label={label} visible={hovered} />
+
+      <motion.button
+        type="button"
+        style={{ scale, y, background: "none", border: "none", padding: 0, cursor: "pointer", outline: "none", display: "flex", flexDirection: "column", alignItems: "center" }}
+        variants={bounceVariants}
+        animate={tapping ? "tapping" : "idle"}
+        whileTap={{ scale: 0.86, transition: { type: "spring", stiffness: 500, damping: 20 } }}
+        onClick={handleClick}
+        aria-label={label}
       >
-        <DockIcon id="about" image={About} label="About Me" />
-        <DockIcon id="projects" image={Projects} label="Projects" />
-        <DockIcon id="resume" image={Resume} label="Resume" />
-        <DockIcon id="notepad" image={Notes} label="Notes" />
-        <DockIcon id="contact" image={Contact} label="Contact" />
+        <IconShell id={id} size={iconPx}>
+          <img
+            src={image}
+            alt={label}
+            draggable={false}
+            style={{ width: iconPx * 0.70, height: iconPx * 0.70, objectFit: "contain", pointerEvents: "none", userSelect: "none" }}
+          />
+        </IconShell>
 
-        {/* Divider */}
-        <div
-          className="
-            w-[2px]
-            h-10
-            bg-[var(--color-surface-border)]
-            rounded-full
-            mx-2
-            self-center
-            transition-colors duration-200
-            opacity-70
-          "
-        />
+        {/* badge */}
+        <AnimatePresence>
+          {badge > 0 && (
+            <motion.div
+              initial={{ scale: 0.3, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.3, opacity: 0 }}
+              style={{
+                position: "absolute", top: -4, right: -2,
+                minWidth: 18, height: 18, padding: "0 4px",
+                background: "#FF3B30",
+                color: "#fff", fontSize: 10, fontWeight: 700,
+                borderRadius: 999,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                border: "2px solid rgba(0,0,0,0.45)",
+                boxShadow: "0 2px 8px rgba(255,59,48,0.6)",
+                zIndex: 10,
+              }}
+            >
+              {badge}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.button>
 
-        <DockIcon id="terminal" image={Terminal} label="Terminal" />
+      <RunningDot isOpen={isOpen} isMinimized={isMinimized} />
+    </div>
+  );
+}
 
-        {/* -------------------------------------------------
-            Theme Toggle
-        ------------------------------------------------- */}
+// ─── ThemeButton ─────────────────────────────────────────
+function ThemeButton({ isLight, onToggle, mouseX }) {
+  const ref = useRef(null);
+  const { scale, y } = useMagnify(mouseX, ref);
+  const [hovered, setHovered] = useState(false);
+  const iconPx = DOCK_ICON_SIZE;
 
-        <div className="relative group flex flex-col items-center justify-center ml-1">
-          {/* Tooltip */}
-          <span
-            className="
-              absolute -top-12
-              opacity-0
-              group-hover:opacity-100
-              transition-all duration-200
-              bg-[var(--color-surface-dark)]
-              border-t border-[var(--color-surface-border)]
-              text-[var(--color-text)]
-              text-[12px] font-medium
-              px-3 py-1.5
-              rounded-md
-              pointer-events-none
-              z-[99999]
-              shadow-lg
-              whitespace-nowrap
-            "
-          >
-            {isLight ? "Switch to Dark" : "Switch to Light"}
-          </span>
+  return (
+    <div
+      ref={ref}
+      style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", width: iconPx + 20 }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <Tooltip label={isLight ? "Dark Mode" : "Light Mode"} visible={hovered} />
 
-          <motion.button
-            type="button"
-            aria-label={
-              isLight ? "Switch to dark mode" : "Switch to light mode"
-            }
-            aria-pressed={isLight}
-            whileHover={{
-              scale: 1.2,
-              y: -6,
-            }}
-            whileTap={{
-              scale: 0.95,
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 400,
-              damping: 20,
-            }}
-            onClick={handleThemeToggle}
-            className="
-              relative
-              flex items-center justify-center
-              w-[64px] h-[64px]
-              transition-all
-              cursor-pointer
-            "
-          >
-            <div
-              className="
-                w-[56px] h-[56px]
-                flex items-center justify-center
-                rounded-[16px]
-                bg-[var(--color-surface-inactive)]
-                border-t border-[var(--color-surface-border)]
-                hover:border-[var(--color-accent)]
-                shadow-[0_8px_16px_rgba(0,0,0,0.12)]
-                group-hover:shadow-[0_12px_24px_rgba(0,0,0,0.2)]
-                transition-all duration-300
-              "
+      <motion.button
+        type="button"
+        style={{ scale, y, background: "none", border: "none", padding: 0, cursor: "pointer", outline: "none" }}
+        whileTap={{ scale: 0.86, transition: { type: "spring", stiffness: 500, damping: 20 } }}
+        onClick={onToggle}
+        aria-label={isLight ? "Switch to dark mode" : "Switch to light mode"}
+      >
+        <IconShell id="theme" size={iconPx}>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={isLight ? "moon" : "sun"}
+              initial={{ opacity: 0, rotate: -40, scale: 0.55 }}
+              animate={{ opacity: 1, rotate: 0, scale: 1 }}
+              exit={{ opacity: 0, rotate: 40, scale: 0.55 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              style={{ display: "flex" }}
             >
               {isLight ? (
-                <Moon
-                  size={28}
-                  strokeWidth={2}
-                  className="text-[var(--color-accent)] transition-transform group-hover:scale-105"
-                />
+                <Moon size={26} strokeWidth={1.7} color="rgba(180,170,255,0.95)" />
               ) : (
-                <Sun
-                  size={28}
-                  strokeWidth={2}
-                  className="text-amber-400 transition-transform group-hover:scale-105"
-                />
+                <Sun size={26} strokeWidth={1.7} color="rgba(255,220,80,0.95)" />
               )}
-            </div>
-          </motion.button>
-        </div>
-      </div>
+            </motion.div>
+          </AnimatePresence>
+        </IconShell>
+      </motion.button>
+
+      {/* spacer to match RunningDot height */}
+      <div style={{ height: 8 }} />
+    </div>
+  );
+}
+
+// ─── Separator ───────────────────────────────────────────
+function Sep() {
+  return (
+    <div
+      style={{
+        width: 1,
+        height: 36,
+        margin: "0 6px 12px",
+        background: "linear-gradient(180deg,transparent,rgba(255,255,255,0.22),transparent)",
+        flexShrink: 0,
+        alignSelf: "flex-end",
+      }}
+    />
+  );
+}
+
+// ─── Dock ─────────────────────────────────────────────────
+export default function Dock({ windows, toggleWindow, bringToFront }) {
+  const [isLight, setIsLight] = useState(false);
+  const mouseX = useMotionValue(Infinity);
+  const dockRef = useRef(null);
+
+  // init theme
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+    const prefLight = window.matchMedia("(prefers-color-scheme: light)").matches;
+    const light = saved ? saved === "light" : prefLight;
+    setIsLight(light);
+    document.documentElement.classList.toggle("light-theme", light);
+    document.body.classList.toggle("light-theme", light);
+  }, []);
+
+  // mouse tracking
+  const onMouseMove = useCallback((e) => mouseX.set(e.clientX), [mouseX]);
+  const onMouseLeave = useCallback(() => mouseX.set(Infinity), [mouseX]);
+
+  // theme toggle with view-transition ripple
+  const handleThemeToggle = useCallback((e) => {
+    const nextLight = !isLight;
+
+    const apply = () => {
+      document.documentElement.classList.toggle("light-theme", nextLight);
+      document.body.classList.toggle("light-theme", nextLight);
+      localStorage.setItem("theme", nextLight ? "light" : "dark");
+      setIsLight(nextLight);
+    };
+
+    if (typeof document.startViewTransition !== "function") { apply(); return; }
+
+    const { clientX: x, clientY: y } = e;
+    const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    const t = document.startViewTransition(apply);
+    t.ready.then(() => {
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
+        { duration: 440, easing: "cubic-bezier(0.22,1,0.36,1)", pseudoElement: "::view-transition-new(root)" }
+      );
+    }).catch(() => { });
+  }, [isLight]);
+
+  const shared = { windows, toggleWindow, bringToFront, mouseX };
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        bottom: 16,
+        left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: 99999,
+        pointerEvents: "auto",
+      }}
+    >
+      <motion.div
+        ref={dockRef}
+        onMouseMove={onMouseMove}
+        onMouseLeave={onMouseLeave}
+        initial={{ y: 110, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 240, damping: 25, delay: 0.08 }}
+        style={{
+          position: "relative",
+          display: "flex",
+          alignItems: "flex-end",
+          padding: "10px 14px 10px",
+          gap: 4,
+          borderRadius: 24,
+          background: "rgba(255,255,255,0.10)",
+          border: "1px solid rgba(255,255,255,0.20)",
+          backdropFilter: "blur(44px) saturate(200%)",
+          WebkitBackdropFilter: "blur(44px) saturate(200%)",
+          boxShadow: [
+            "0 28px 64px rgba(0,0,0,0.40)",
+            "0 8px 20px rgba(0,0,0,0.22)",
+            "inset 0 2px 0 rgba(255,255,255,0.18)",
+            "inset 0 -1px 0 rgba(0,0,0,0.15)",
+          ].join(", "),
+        }}
+      >
+        {/* top-edge gloss line */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 24,
+            right: 24,
+            height: 1,
+            background: "linear-gradient(90deg,transparent,rgba(255,255,255,0.55),transparent)",
+            borderRadius: 999,
+            pointerEvents: "none",
+          }}
+        />
+
+        <DockIcon id="about" image={About} label="About Me"  {...shared} />
+        <DockIcon id="projects" image={Projects} label="Projects"  {...shared} />
+        <DockIcon id="resume" image={Resume} label="Resume"    {...shared} />
+        <DockIcon id="notepad" image={Notes} label="Notes"     {...shared} />
+        <DockIcon id="contact" image={Contact} label="Contact"   {...shared} />
+
+        <Sep />
+
+        <DockIcon id="terminal" image={Terminal} label="Terminal"  {...shared} />
+
+        <Sep />
+
+        <ThemeButton isLight={isLight} onToggle={handleThemeToggle} mouseX={mouseX} />
+      </motion.div>
     </div>
   );
 }
