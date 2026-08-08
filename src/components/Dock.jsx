@@ -1,34 +1,41 @@
 import { useState, useEffect, useRef } from "react";
-import {
-  User,
-  FolderCode,
-  FileText,
-  Mail,
-  Terminal,
-  Notebook,
-  Sun,
-  Moon,
-} from "lucide-react";
+import { Sun, Moon } from "lucide-react";
 import { motion } from "framer-motion";
+
+// ---------------------------------------------------------
+// Image Imports & Array
+// ---------------------------------------------------------
+import About from "../assets/images/About.png";
+import Contact from "../assets/images/Contact.png";
+import Notes from "../assets/images/Notes.png";
+import Projects from "../assets/images/Projects.png";
+import Resume from "../assets/images/Resume.png";
+import Terminal from "../assets/images/Terminal.png";
+
+const Icon = [
+  { name: "About", image: About },
+  { name: "Contact", image: Contact },
+  { name: "Notes", image: Notes },
+  { name: "Projects", image: Projects },
+  { name: "Resume", image: Resume },
+  { name: "Terminal", image: Terminal },
+];
 
 // ---------------------------------------------------------
 // App Icon Styling
 // ---------------------------------------------------------
 
-const getAppIconStyle = (isLight) => {
+const getAppIconStyle = () => {
   return {
     wrapper: `
       w-[44px] h-[44px]
       flex items-center justify-center
-      rounded-[12px]
+      rounded-[16px]
       bg-[var(--color-surface-inactive)]
       border-t border-[var(--color-surface-border)]
-      shadow-[0_4px_12px_rgba(0,0,0,0.08)]
-      transition-all duration-200
+      shadow-[0_8px_16px_rgba(0,0,0,0.12)]
+      transition-all duration-300
     `,
-    icon: isLight
-      ? "text-[var(--color-accent)]"
-      : "text-white",
   };
 };
 
@@ -36,11 +43,7 @@ const getAppIconStyle = (isLight) => {
 // Dock
 // ---------------------------------------------------------
 
-export default function Dock({
-  windows,
-  toggleWindow,
-  bringToFront,
-}) {
+export default function Dock({ windows, toggleWindow, bringToFront }) {
   const [isLight, setIsLight] = useState(false);
   const dockRef = useRef(null);
 
@@ -56,9 +59,7 @@ export default function Dock({
     if (savedTheme === "light" || savedTheme === "dark") {
       theme = savedTheme;
     } else {
-      theme = window.matchMedia(
-        "(prefers-color-scheme: light)"
-      ).matches
+      theme = window.matchMedia("(prefers-color-scheme: light)").matches
         ? "light"
         : "dark";
     }
@@ -68,16 +69,10 @@ export default function Dock({
     setIsLight(light);
 
     // Always keep the root element in sync
-    document.documentElement.classList.toggle(
-      "light-theme",
-      light
-    );
+    document.documentElement.classList.toggle("light-theme", light);
 
     // Also keep body synced if your existing CSS depends on it
-    document.body.classList.toggle(
-      "light-theme",
-      light
-    );
+    document.body.classList.toggle("light-theme", light);
   }, []);
 
   // -------------------------------------------------------
@@ -89,15 +84,8 @@ export default function Dock({
     const nextIsLight = nextTheme === "light";
 
     const applyTheme = () => {
-      document.documentElement.classList.toggle(
-        "light-theme",
-        nextIsLight
-      );
-
-      document.body.classList.toggle(
-        "light-theme",
-        nextIsLight
-      );
+      document.documentElement.classList.toggle("light-theme", nextIsLight);
+      document.body.classList.toggle("light-theme", nextIsLight);
 
       localStorage.setItem("theme", nextTheme);
 
@@ -105,9 +93,7 @@ export default function Dock({
     };
 
     // Fallback for browsers without View Transitions
-    if (
-      typeof document.startViewTransition !== "function"
-    ) {
+    if (typeof document.startViewTransition !== "function") {
       applyTheme();
       return;
     }
@@ -123,8 +109,7 @@ export default function Dock({
       Math.max(y, height - y)
     );
 
-    const transition =
-      document.startViewTransition(applyTheme);
+    const transition = document.startViewTransition(applyTheme);
 
     transition.ready
       .then(() => {
@@ -137,10 +122,8 @@ export default function Dock({
           },
           {
             duration: 400,
-            easing:
-              "cubic-bezier(0.25, 1, 0.5, 1)",
-            pseudoElement:
-              "::view-transition-new(root)",
+            easing: "cubic-bezier(0.25, 1, 0.5, 1)",
+            pseudoElement: "::view-transition-new(root)",
           }
         );
       })
@@ -154,15 +137,8 @@ export default function Dock({
   // Dock App Icon
   // -------------------------------------------------------
 
-  const DockIcon = ({
-    id,
-    icon: Icon,
-    label,
-    badge,
-  }) => {
-    const win = windows.find(
-      (window) => window.id === id
-    );
+  const DockIcon = ({ id, image, label, badge }) => {
+    const win = windows?.find((window) => window.id === id);
 
     // Widgets don't appear in the dock
     if (win?.type === "widget") {
@@ -172,10 +148,7 @@ export default function Dock({
     const isOpen = win?.isOpen;
     const isMinimized = win?.isMinimized;
 
-    const {
-      wrapper,
-      icon: iconColor,
-    } = getAppIconStyle(isLight);
+    const { wrapper } = getAppIconStyle();
 
     const handleClick = () => {
       if (!win) return;
@@ -197,25 +170,17 @@ export default function Dock({
       // Already open
       const activeWindows = windows.filter(
         (window) =>
-          window.type === "window" &&
-          window.isOpen &&
-          !window.isMinimized
+          window.type === "window" && window.isOpen && !window.isMinimized
       );
 
       const maxZ = Math.max(
-        ...activeWindows.map(
-          (window) => window.zIndex || 0
-        ),
+        ...activeWindows.map((window) => window.zIndex || 0),
         0
       );
 
       // Active window → Minimize
       if (win.zIndex === maxZ) {
-        toggleWindow(
-          id,
-          "isMinimized",
-          true
-        );
+        toggleWindow(id, "isMinimized", true);
       } else {
         // Inactive window → Bring to front
         bringToFront(id);
@@ -227,19 +192,19 @@ export default function Dock({
         {/* Tooltip */}
         <span
           className="
-            absolute -top-11
+            absolute -top-12
             opacity-0
             group-hover:opacity-100
-            transition-all duration-150
+            transition-all duration-200
             bg-[var(--color-surface-dark)]
             border-t border-[var(--color-surface-border)]
             text-[var(--color-text)]
-            text-[11px]
-            px-2.5 py-1
+            text-[12px] font-medium
+            px-3 py-1.5
             rounded-md
             pointer-events-none
             z-[99999]
-            shadow-md
+            shadow-lg
             whitespace-nowrap
           "
         >
@@ -250,8 +215,8 @@ export default function Dock({
         <motion.button
           type="button"
           whileHover={{
-            scale: 1.12,
-            y: -4,
+            scale: 1.2,
+            y: -6,
           }}
           whileTap={{
             scale: 0.95,
@@ -259,13 +224,13 @@ export default function Dock({
           transition={{
             type: "spring",
             stiffness: 400,
-            damping: 25,
+            damping: 20,
           }}
           onClick={handleClick}
           className="
             relative
             flex items-center justify-center
-            w-[48px] h-[48px]
+            w-[64px] h-[64px]
             transition-all
             cursor-pointer
           "
@@ -274,17 +239,13 @@ export default function Dock({
             className={`
               ${wrapper}
               group-hover:border-[var(--color-accent)]
-              group-hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)]
+              group-hover:shadow-[0_12px_24px_rgba(0,0,0,0.2)]
             `}
           >
-            <Icon
-              size={21}
-              strokeWidth={2}
-              className={`
-                ${iconColor}
-                transition-colors duration-200
-                drop-shadow-sm
-              `}
+            <img
+              src={image}
+              alt={label}
+              className="w-10 h-10 object-contain drop-shadow-md transition-transform duration-300 group-hover:scale-105"
             />
           </div>
 
@@ -293,16 +254,16 @@ export default function Dock({
             <div
               className="
                 absolute -top-1 -right-1
-                min-w-[16px] h-[16px]
-                px-1
+                min-w-[20px] h-[20px]
+                px-1.5
                 bg-[#FF3B30]
                 text-white
-                text-[10px]
-                font-semibold
+                text-[11px]
+                font-bold
                 rounded-full
                 flex items-center justify-center
-                border border-black/20
-                shadow-sm
+                border-2 border-[var(--color-surface-inactive)]
+                shadow-md
                 z-10
               "
             >
@@ -315,7 +276,7 @@ export default function Dock({
         {isOpen && (
           <div
             className="
-              absolute -bottom-1.5
+              absolute -bottom-2.5
               flex justify-center items-center
               h-2
             "
@@ -323,16 +284,16 @@ export default function Dock({
             <div
               className={`
                 rounded-full
-                transition-all duration-200
+                transition-all duration-300
                 ${isMinimized
                   ? `
-                      w-[3px] h-[3px]
+                      w-[4px] h-[4px]
                       bg-[var(--color-text-tertiary)]
                     `
                   : `
-                      w-[4px] h-[4px]
+                      w-[5px] h-[5px]
                       bg-[var(--color-text)]
-                      shadow-[0_0_6px_var(--color-text)]
+                      shadow-[0_0_8px_var(--color-text)]
                       opacity-90
                     `
                 }
@@ -353,7 +314,7 @@ export default function Dock({
       ref={dockRef}
       className="
         absolute
-        bottom-3
+        bottom-4
         left-1/2
         -translate-x-1/2
         z-[99999]
@@ -362,107 +323,76 @@ export default function Dock({
     >
       <div
         className="
-          px-3 py-2
+          px-4 py-3
           bg-[var(--color-surface-inactive)]
           backdrop-blur-xl
           border-t border-[var(--color-surface-border)]
-          rounded-[20px]
+          rounded-[24px]
           flex items-end
-          gap-2.5
-          shadow-[0_20px_40px_rgba(0,0,0,0.08)]
+          gap-3
+          shadow-[0_24px_48px_rgba(0,0,0,0.15)]
           ring-1 ring-black/5
-          transition-colors duration-200
+          transition-colors duration-300
         "
       >
-        <DockIcon
-          id="about"
-          icon={User}
-          label="About Me"
-        />
-
-        <DockIcon
-          id="projects"
-          icon={FolderCode}
-          label="Projects"
-        />
-
-        <DockIcon
-          id="resume"
-          icon={FileText}
-          label="Resume"
-        />
-
-        <DockIcon
-          id="notepad"
-          icon={Notebook}
-          label="Notes"
-        />
-
-        <DockIcon
-          id="contact"
-          icon={Mail}
-          label="Contact"
-        />
+        <DockIcon id="about" image={About} label="About Me" />
+        <DockIcon id="projects" image={Projects} label="Projects" />
+        <DockIcon id="resume" image={Resume} label="Resume" />
+        <DockIcon id="notepad" image={Notes} label="Notes" />
+        <DockIcon id="contact" image={Contact} label="Contact" />
 
         {/* Divider */}
         <div
           className="
-            w-[1px]
-            h-8
+            w-[2px]
+            h-10
             bg-[var(--color-surface-border)]
             rounded-full
-            mx-1
+            mx-2
             self-center
             transition-colors duration-200
+            opacity-70
           "
         />
 
-        <DockIcon
-          id="terminal"
-          icon={Terminal}
-          label="Terminal"
-        />
+        <DockIcon id="terminal" image={Terminal} label="Terminal" />
 
         {/* -------------------------------------------------
             Theme Toggle
         ------------------------------------------------- */}
 
-        <div className="relative group flex flex-col items-center justify-center ml-0.5">
+        <div className="relative group flex flex-col items-center justify-center ml-1">
           {/* Tooltip */}
           <span
             className="
-              absolute -top-11
+              absolute -top-12
               opacity-0
               group-hover:opacity-100
-              transition-all duration-150
+              transition-all duration-200
               bg-[var(--color-surface-dark)]
               border-t border-[var(--color-surface-border)]
               text-[var(--color-text)]
-              text-[11px]
-              px-2.5 py-1
+              text-[12px] font-medium
+              px-3 py-1.5
               rounded-md
               pointer-events-none
               z-[99999]
-              shadow-md
+              shadow-lg
               whitespace-nowrap
             "
           >
-            {isLight
-              ? "Switch to Dark"
-              : "Switch to Light"}
+            {isLight ? "Switch to Dark" : "Switch to Light"}
           </span>
 
           <motion.button
             type="button"
             aria-label={
-              isLight
-                ? "Switch to dark mode"
-                : "Switch to light mode"
+              isLight ? "Switch to dark mode" : "Switch to light mode"
             }
             aria-pressed={isLight}
             whileHover={{
-              scale: 1.12,
-              y: -4,
+              scale: 1.2,
+              y: -6,
             }}
             whileTap={{
               scale: 0.95,
@@ -470,40 +400,41 @@ export default function Dock({
             transition={{
               type: "spring",
               stiffness: 400,
-              damping: 25,
+              damping: 20,
             }}
             onClick={handleThemeToggle}
             className="
               relative
               flex items-center justify-center
-              w-[48px] h-[48px]
+              w-[64px] h-[64px]
               transition-all
               cursor-pointer
             "
           >
             <div
               className="
-                w-[44px] h-[44px]
+                w-[56px] h-[56px]
                 flex items-center justify-center
-                rounded-[12px]
+                rounded-[16px]
                 bg-[var(--color-surface-inactive)]
                 border-t border-[var(--color-surface-border)]
                 hover:border-[var(--color-accent)]
-                shadow-[0_4px_12px_rgba(0,0,0,0.08)]
-                transition-all duration-200
+                shadow-[0_8px_16px_rgba(0,0,0,0.12)]
+                group-hover:shadow-[0_12px_24px_rgba(0,0,0,0.2)]
+                transition-all duration-300
               "
             >
               {isLight ? (
                 <Moon
-                  size={21}
+                  size={28}
                   strokeWidth={2}
-                  className="text-[var(--color-accent)]"
+                  className="text-[var(--color-accent)] transition-transform group-hover:scale-105"
                 />
               ) : (
                 <Sun
-                  size={21}
+                  size={28}
                   strokeWidth={2}
-                  className="text-amber-400"
+                  className="text-amber-400 transition-transform group-hover:scale-105"
                 />
               )}
             </div>
