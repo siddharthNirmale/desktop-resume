@@ -16,9 +16,9 @@ import Resume from "../assets/images/Resume.png";
 import Terminal from "../assets/images/Terminal.png";
 
 // ─── physics ────────────────────────────────────────────
-const DOCK_ICON_SIZE = 52;   // resting px
-const DOCK_ICON_MAX = 80;   // peak magnified px
-const MAGNIFY_RADIUS = 130;  // influence zone px
+const DOCK_ICON_SIZE = 39;   // resting px  (was 52, –25%)
+const DOCK_ICON_MAX = 60;   // peak magnified px (was 80, –25%)
+const MAGNIFY_RADIUS = 98;   // influence zone px (was 130, –25%)
 const SPRING = { stiffness: 350, damping: 28, mass: 0.55 };
 
 // ─── per-icon magnification hook ────────────────────────
@@ -147,7 +147,7 @@ function RunningDot({ isOpen, isMinimized }) {
             key={isMinimized ? "min" : "open"}
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: isMinimized ? 0.38 : 0.82 }}
-            exit={{ scale: 0, opacity: 0 }}
+            exit  = {{ scale: 0, opacity: 0 }}
             transition={{ duration: 0.18 }}
             style={{
               width: isMinimized ? 3 : 4,
@@ -286,14 +286,14 @@ function ThemeButton({ isLight, onToggle, mouseX }) {
               key={isLight ? "moon" : "sun"}
               initial={{ opacity: 0, rotate: -40, scale: 0.55 }}
               animate={{ opacity: 1, rotate: 0, scale: 1 }}
-              exit={{ opacity: 0, rotate: 40, scale: 0.55 }}
+              exit=   {{ opacity: 0, rotate: 40, scale: 0.55 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
               style={{ display: "flex" }}
             >
               {isLight ? (
-                <Moon size={26} strokeWidth={1.7} color="rgba(180,170,255,0.95)" />
+                <Moon size={20} strokeWidth={1.7} color="rgba(180,170,255,0.95)" />
               ) : (
-                <Sun size={26} strokeWidth={1.7} color="rgba(255,220,80,0.95)" />
+                <Sun size={20} strokeWidth={1.7} color="rgba(255,220,80,0.95)" />
               )}
             </motion.div>
           </AnimatePresence>
@@ -312,8 +312,8 @@ function Sep() {
     <div
       style={{
         width: 1,
-        height: 36,
-        margin: "0 6px 12px",
+        height: 27,
+        margin: "0 5px 9px",
         background: "linear-gradient(180deg,transparent,rgba(255,255,255,0.22),transparent)",
         flexShrink: 0,
         alignSelf: "flex-end",
@@ -390,7 +390,7 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
           position: "relative",
           display: "flex",
           alignItems: "flex-end",
-          padding: "10px 14px 10px",
+          padding: "8px 10px 8px",
           gap: 4,
           borderRadius: 24,
           background: "rgba(255,255,255,0.10)",
