@@ -1,140 +1,166 @@
-import { FiMapPin, FiBriefcase, FiMail, FiArrowUpRight } from "react-icons/fi";
+import {
+  FiMapPin,
+  FiBriefcase,
+  FiMail,
+  FiArrowUpRight,
+} from "react-icons/fi";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 export default function AboutSection() {
   return (
-    // Main Window Body - Adapts to surface background automatically
-    <div className="w-full min-h-full bg-[var(--color-surface)] text-[var(--color-text)] font-primary transition-colors duration-250 flex flex-col custom-scrollbar overflow-y-auto">
+    <div className="flex min-h-full flex-col bg-[var(--color-surface)] text-[var(--color-text)]">
+      {/* Hero */}
+      <section className="px-8 py-10 md:px-12 md:py-14">
+        <div className="max-w-3xl">
+          <p className="mb-4 text-[13px] font-medium tracking-wide text-[var(--color-text-tertiary)]">
+            ABOUT
+          </p>
 
-      {/* Header Section */}
-      <div className="p-8 md:p-12 pb-6">
-        <div className="flex flex-col gap-6">
+          <h1 className="text-4xl font-semibold tracking-[-0.035em] md:text-6xl">
+            Siddharth Nirmale.
+          </h1>
 
-          {/* Title & 1-Line Description */}
-          <div className="space-y-3">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-[var(--color-text)]">
-              Siddharth Nirmale.
-            </h1>
-            <p className="text-lg md:text-xl font-medium text-[var(--color-text-secondary)] tracking-tight max-w-2xl">
-              I build sleek, intelligent full-stack experiences with React, Next.js, and AI. 🚀
-            </p>
-          </div>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed tracking-[-0.01em] text-[var(--color-text-secondary)] md:text-xl">
+            I build sleek, intelligent full-stack experiences with React,
+            Next.js, and AI.
+          </p>
 
-          {/* Quick Badges */}
-          <div className="flex flex-wrap gap-3 text-[13px] font-medium pt-2">
-            <span className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--color-surface-inactive)] rounded-full text-[var(--color-text-secondary)] border border-[var(--color-surface-border)] shadow-sm">
-              <FiBriefcase className="text-[var(--color-text-tertiary)]" /> Full-Stack Developer
+          {/* Context */}
+          <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 text-[13px] font-medium text-[var(--color-text-secondary)]">
+            <span className="flex items-center gap-2">
+              <FiBriefcase className="text-[var(--color-text-tertiary)]" />
+              Full-Stack Developer
             </span>
-            <span className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--color-surface-inactive)] rounded-full text-[var(--color-text-secondary)] border border-[var(--color-surface-border)] shadow-sm">
-              <FiMapPin className="text-[var(--color-text-tertiary)]" /> Indore, India
+
+            <span className="flex items-center gap-2">
+              <FiMapPin className="text-[var(--color-text-tertiary)]" />
+              Indore, India
             </span>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Minimalist Details Section */}
-      <div className="px-8 md:px-12 pb-12 space-y-10 flex-1">
-
-        {/* Experience & Projects (Minimal Grid) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pt-8 border-t border-[var(--color-surface-border)]">
-
+      {/* Content */}
+      <main className="flex-1 px-8 pb-10 md:px-12">
+        <div className="grid grid-cols-1 gap-x-16 gap-y-12 border-t border-[var(--color-surface-border)] pt-8 md:grid-cols-2">
           {/* Experience */}
-          <div className="space-y-5">
-            <h2 className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-text-tertiary)]">
-              Experience
-            </h2>
-            <div className="space-y-4">
-              <ListItem
-                title="Data Science & Dev Intern"
-                subtitle="Personifwy • Machine Learning Pipelines"
-                year="2024"
-              />
-            </div>
-          </div>
+          <ContentGroup title="Experience">
+            <ListItem
+              title="Data Science & Dev Intern"
+              subtitle="Personifwy · Machine Learning Pipelines"
+              year="2024"
+            />
+          </ContentGroup>
 
-          {/* Top Projects */}
-          <div className="space-y-5">
-            <h2 className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-text-tertiary)]">
-              Selected Work
-            </h2>
-            <div className="space-y-4">
-              <ListItem
-                title="Desktop Portfolio"
-                subtitle="React, Framer Motion, API"
-                year="2026"
-              />
-              <ListItem
-                title="AI Refund Agent"
-                subtitle="Next.js, Groq AI, Zustand"
-                year="2026"
-              />
-              <ListItem
-                title="Thumbmax"
-                subtitle="Node.js, Gemini API, Cloudinary"
-                year="2025"
-              />
-            </div>
-          </div>
+          {/* Selected Work */}
+          <ContentGroup title="Selected Work">
+            <ListItem
+              title="Desktop Portfolio"
+              subtitle="React · Framer Motion · APIs"
+              year="2026"
+            />
 
-        </div>
+            <ListItem
+              title="AI Refund Agent"
+              subtitle="Next.js · Groq AI · Zustand"
+              year="2026"
+            />
 
-        {/* Education & Core Tech */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pt-8 border-t border-[var(--color-surface-border)]">
-          <div className="space-y-5">
-            <h2 className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-text-tertiary)]">
-              Education
-            </h2>
+            <ListItem
+              title="Thumbmax"
+              subtitle="Node.js · Gemini API · Cloudinary"
+              year="2025"
+            />
+          </ContentGroup>
+
+          {/* Education */}
+          <ContentGroup title="Education">
             <ListItem
               title="B.Tech in Electronics & Telecom"
-              subtitle="MITS Gwalior • 8.49 CGPA"
+              subtitle="MITS Gwalior · 8.49 CGPA"
               year="2020—2024"
             />
-          </div>
+          </ContentGroup>
 
-          <div className="space-y-5">
-            <h2 className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-text-tertiary)]">
-              Core Tech
-            </h2>
-            <p className="text-[14px] text-[var(--color-text-secondary)] font-medium leading-relaxed">
-              JavaScript, TypeScript, C++, React.js, Next.js, Node.js, Express, MongoDB, Tailwind CSS, Framer Motion.
+          {/* Core Tech */}
+          <ContentGroup title="Core Tech">
+            <p className="max-w-xl text-[14px] leading-7 text-[var(--color-text-secondary)]">
+              JavaScript, TypeScript, C++, React.js, Next.js, Node.js,
+              Express, MongoDB, Tailwind CSS, Framer Motion.
             </p>
-          </div>
+          </ContentGroup>
         </div>
+      </main>
 
-      </div>
+      {/* Footer */}
+      <footer className="border-t border-[var(--color-surface-border)] px-8 py-5 md:px-12">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+          <SocialLink
+            icon={<FaGithub size={15} />}
+            label="GitHub"
+            href="https://github.com/siddharthNirmale"
+          />
 
-      {/* Footer Links - Uses Inactive Surface for contrast */}
-      <div className="p-5 md:px-12 bg-[var(--color-surface-inactive)] border-t border-[var(--color-surface-border)] flex flex-wrap gap-6 items-center mt-auto">
-        <SocialLink icon={<FaGithub size={16} />} label="GitHub" href="https://github.com/siddharthNirmale" />
-        <SocialLink icon={<FaLinkedin size={16} />} label="LinkedIn" href="https://linkedin.com/in/siddharth-nirmale" />
-        <SocialLink icon={<FiMail size={16} />} label="Email" href="mailto:siddharth175nirmale1@gmail.com" />
-        <SocialLink icon={<FiArrowUpRight size={16} />} label="Portfolio" href="https://siddharthn-portfolio.vercel.app" />
-      </div>
+          <SocialLink
+            icon={<FaLinkedin size={15} />}
+            label="LinkedIn"
+            href="https://linkedin.com/in/siddharth-nirmale"
+          />
 
+          <SocialLink
+            icon={<FiMail size={15} />}
+            label="Email"
+            href="mailto:siddharth175nirmale1@gmail.com"
+          />
+
+          <SocialLink
+            icon={<FiArrowUpRight size={15} />}
+            label="Portfolio"
+            href="https://siddharthn-portfolio.vercel.app"
+          />
+        </div>
+      </footer>
     </div>
   );
 }
 
-/* ---------------- HELPER COMPONENTS ---------------- */
+/* ---------------- CONTENT GROUP ---------------- */
+
+function ContentGroup({ title, children }) {
+  return (
+    <section className="space-y-5">
+      <h2 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-tertiary)]">
+        {title}
+      </h2>
+
+      <div className="space-y-1">{children}</div>
+    </section>
+  );
+}
+
+/* ---------------- LIST ITEM ---------------- */
 
 function ListItem({ title, subtitle, year }) {
   return (
-    <div className="group flex justify-between items-start gap-4 cursor-default">
-      <div>
-        {/* Uses the Mojave Blue accent on hover */}
-        <h3 className="text-[14px] font-semibold text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors duration-200">
+    <div className="group flex items-start justify-between gap-6 rounded-xl py-3 transition-colors duration-200 hover:bg-[var(--color-surface-inactive)]">
+      <div className="min-w-0">
+        <h3 className="text-[14px] font-medium tracking-[-0.01em] text-[var(--color-text)]">
           {title}
         </h3>
-        <p className="text-[13px] text-[var(--color-text-secondary)] mt-0.5 transition-colors duration-200">
+
+        <p className="mt-1 text-[13px] leading-5 text-[var(--color-text-secondary)]">
           {subtitle}
         </p>
       </div>
-      <span className="text-[12px] font-medium text-[var(--color-text-tertiary)] whitespace-nowrap pt-0.5 transition-colors duration-200">
+
+      <span className="shrink-0 pt-0.5 text-[12px] font-medium tabular-nums text-[var(--color-text-tertiary)]">
         {year}
       </span>
     </div>
   );
 }
+
+/* ---------------- SOCIAL LINK ---------------- */
 
 function SocialLink({ icon, label, href }) {
   return (
@@ -142,10 +168,13 @@ function SocialLink({ icon, label, href }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-2 text-[13px] font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors duration-200"
+      className="group flex items-center gap-2 text-[13px] font-medium text-[var(--color-text-secondary)] transition-colors duration-200 hover:text-[var(--color-text)]"
     >
-      <span className="opacity-80 transition-colors duration-200">{icon}</span>
-      {label}
+      <span className="text-[var(--color-text-tertiary)] transition-colors duration-200 group-hover:text-[var(--color-text)]">
+        {icon}
+      </span>
+
+      <span>{label}</span>
     </a>
   );
 }
