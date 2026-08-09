@@ -1,5 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Sun, Moon } from "lucide-react";
+import {
+  Sun,
+  Moon,
+  User,
+  Briefcase,
+  FileText,
+  SquarePen,
+  Mail,
+  Terminal
+} from "lucide-react";
 import {
   motion,
   useMotionValue,
@@ -8,18 +17,10 @@ import {
   AnimatePresence,
 } from "framer-motion";
 
-import About from "../assets/images/About.png";
-import Contact from "../assets/images/Contact.png";
-import Notes from "../assets/images/Notes.png";
-import Projects from "../assets/images/Projects.png";
-import Resume from "../assets/images/Resume.png";
-import Terminal from "../assets/images/Terminal.png";
-
 // ─── Apple-Tuned Physics ────────────────────────────────
-const DOCK_ICON_SIZE = 42;   // Slightly larger resting state for legibility
-const DOCK_ICON_MAX = 64;    // Peak magnification
-const MAGNIFY_RADIUS = 110;  // Smoother, wider influence zone
-// Heavier mass and damping for that buttery macOS feel
+const DOCK_ICON_SIZE = 42;
+const DOCK_ICON_MAX = 64;
+const MAGNIFY_RADIUS = 110;
 const SPRING = { stiffness: 400, damping: 32, mass: 0.8 };
 
 // ─── per-icon magnification hook ────────────────────────
@@ -40,7 +41,6 @@ function useMagnify(mouseX, ref) {
     [DOCK_ICON_MAX / DOCK_ICON_SIZE, 1],
     { clamp: true }
   );
-  // Subtle vertical lift when hovering, mimicking the native dock arch
   const rawY = useTransform(dist, [0, MAGNIFY_RADIUS], [-10, 0], { clamp: true });
 
   return {
@@ -72,7 +72,6 @@ function IconShell({ id, size, children }) {
       style={{
         width: size,
         height: size,
-        // Apple's exact CSS squircle approximation
         borderRadius: "22.5%",
         background: iconBg(id),
         position: "relative",
@@ -81,12 +80,10 @@ function IconShell({ id, size, children }) {
         alignItems: "center",
         justifyContent: "center",
         border: "1px solid rgba(255,255,255,0.2)",
-        // Softer, deeper shadows for a 3D physical object feel
         boxShadow: "0 10px 20px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.4)",
         flexShrink: 0,
       }}
     >
-      {/* top gloss - adjusted for smoother blending */}
       <span
         style={{
           position: "absolute",
@@ -118,8 +115,8 @@ function Tooltip({ label, visible }) {
             transform: "translateX(-50%)",
             whiteSpace: "nowrap",
             fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-            fontSize: 13, // Slightly larger for native feel
-            fontWeight: 400, // Reduced weight for HIG aesthetic
+            fontSize: 13,
+            fontWeight: 400,
             letterSpacing: "0.2px",
             color: "rgba(255,255,255,0.95)",
             background: "rgba(30, 30, 30, 0.75)",
@@ -127,7 +124,7 @@ function Tooltip({ label, visible }) {
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
             padding: "6px 12px",
-            borderRadius: 6, // Sharper native tooltip border radius
+            borderRadius: 6,
             pointerEvents: "none",
             zIndex: 99999,
             boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
@@ -167,7 +164,8 @@ function RunningDot({ isOpen, isMinimized }) {
 }
 
 // ─── DockIcon ────────────────────────────────────────────
-function DockIcon({ id, image, label, badge, windows, toggleWindow, bringToFront, mouseX }) {
+// Note: Changed `image` to `icon: IconComponent`
+function DockIcon({ id, icon: IconComponent, label, badge, windows, toggleWindow, bringToFront, mouseX }) {
   const ref = useRef(null);
   const { scale, y } = useMagnify(mouseX, ref);
   const [hovered, setHovered] = useState(false);
@@ -182,7 +180,7 @@ function DockIcon({ id, image, label, badge, windows, toggleWindow, bringToFront
   const handleClick = useCallback(() => {
     if (!win) return;
     setTapping(true);
-    setTimeout(() => setTapping(false), 800); // Extended timeout to fit new animation
+    setTimeout(() => setTapping(false), 800);
 
     if (!isOpen) { toggleWindow(id, "isOpen", true); bringToFront(id); return; }
     if (isMinimized) { toggleWindow(id, "isMinimized", false); bringToFront(id); return; }
@@ -192,7 +190,6 @@ function DockIcon({ id, image, label, badge, windows, toggleWindow, bringToFront
     win.zIndex === maxZ ? toggleWindow(id, "isMinimized", true) : bringToFront(id);
   }, [win, isOpen, isMinimized, windows, id, toggleWindow, bringToFront]);
 
-  // Refined native-feeling launch bounce (gravity-based)
   const bounceVariants = {
     idle: { y: 0 },
     tapping: {
@@ -200,7 +197,7 @@ function DockIcon({ id, image, label, badge, windows, toggleWindow, bringToFront
       transition: {
         duration: 0.7,
         times: [0, 0.3, 0.55, 0.8, 1],
-        ease: ["easeOut", "easeIn", "easeOut", "easeIn"] // Mimics gravity
+        ease: ["easeOut", "easeIn", "easeOut", "easeIn"]
       },
     },
   };
@@ -221,16 +218,16 @@ function DockIcon({ id, image, label, badge, windows, toggleWindow, bringToFront
         style={{ scale, y, background: "none", border: "none", padding: 0, cursor: "pointer", outline: "none", display: "flex", flexDirection: "column", alignItems: "center" }}
         variants={bounceVariants}
         animate={tapping ? "tapping" : "idle"}
-        whileTap={{ scale: 0.9, transition: { duration: 0.1 } }} // Snappier click state
+        whileTap={{ scale: 0.9, transition: { duration: 0.1 } }}
         onClick={handleClick}
         aria-label={label}
       >
         <IconShell id={id} size={iconPx}>
-          <img
-            src={image}
-            alt={label}
-            draggable={false}
-            style={{ width: iconPx * 0.70, height: iconPx * 0.70, objectFit: "contain", pointerEvents: "none", userSelect: "none" }}
+          {/* Using Lucide React Icons here */}
+          <IconComponent
+            size={iconPx * 0.55}
+            color="rgba(255,255,255,0.9)"
+            strokeWidth={1.8}
           />
         </IconShell>
 
@@ -244,7 +241,7 @@ function DockIcon({ id, image, label, badge, windows, toggleWindow, bringToFront
               style={{
                 position: "absolute", top: -4, right: -2,
                 minWidth: 20, height: 20, padding: "0 6px",
-                background: "#FF3B30", // Authentic iOS red
+                background: "#FF3B30",
                 color: "#fff", fontSize: 11, fontWeight: 600,
                 borderRadius: 999,
                 display: "flex", alignItems: "center", justifyContent: "center",
@@ -298,9 +295,9 @@ function ThemeButton({ isLight, onToggle, mouseX }) {
               style={{ display: "flex" }}
             >
               {isLight ? (
-                <Moon size={20} strokeWidth={1.7} color="rgba(255,255,255,0.9)" />
+                <Moon size={iconPx * 0.55} strokeWidth={1.8} color="rgba(255,255,255,0.9)" />
               ) : (
-                <Sun size={20} strokeWidth={1.7} color="rgba(255,220,80,0.95)" />
+                <Sun size={iconPx * 0.55} strokeWidth={1.8} color="rgba(255,220,80,0.95)" />
               )}
             </motion.div>
           </AnimatePresence>
@@ -344,7 +341,7 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
   }, []);
 
   const onMouseMove = useCallback((e) => mouseX.set(e.clientX), [mouseX]);
-  const onMouseLeave = useCallback(() => mouseX.set(Infinity), [mouseX]);
+  const onMouseLeave = useCallback((e) => mouseX.set(Infinity), [mouseX]);
 
   const handleThemeToggle = useCallback((e) => {
     const nextLight = !isLight;
@@ -375,7 +372,7 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
     <div
       style={{
         position: "absolute",
-        bottom: 12, // Slightly tighter to the bottom edge
+        bottom: 12,
         left: "50%",
         transform: "translateX(-50%)",
         zIndex: 99999,
@@ -395,8 +392,7 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
           alignItems: "flex-end",
           padding: "8px 12px 6px",
           gap: 6,
-          borderRadius: 24, // Matches native dock curvature well
-          // More native glassmorphism
+          borderRadius: 24,
           background: "rgba(255, 255, 255, 0.08)",
           border: "0.5px solid rgba(255,255,255,0.15)",
           backdropFilter: "blur(50px) saturate(180%)",
@@ -404,15 +400,16 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
           boxShadow: "0 30px 60px rgba(0,0,0,0.3), 0 10px 20px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.2)",
         }}
       >
-        <DockIcon id="about" image={About} label="About Me"  {...shared} />
-        <DockIcon id="projects" image={Projects} label="Projects"  {...shared} />
-        <DockIcon id="resume" image={Resume} label="Resume"    {...shared} />
-        <DockIcon id="notepad" image={Notes} label="Notes"     {...shared} />
-        <DockIcon id="contact" image={Contact} label="Contact"   {...shared} />
+        {/* Pass the Lucide component directly via the `icon` prop */}
+        <DockIcon id="about" icon={User} label="About Me"  {...shared} />
+        <DockIcon id="projects" icon={Briefcase} label="Projects"  {...shared} />
+        <DockIcon id="resume" icon={FileText} label="Resume"    {...shared} />
+        <DockIcon id="notepad" icon={SquarePen} label="Notes"     {...shared} />
+        <DockIcon id="contact" icon={Mail} label="Contact"   {...shared} />
 
         <Sep />
 
-        <DockIcon id="terminal" image={Terminal} label="Terminal"  {...shared} />
+        <DockIcon id="terminal" icon={Terminal} label="Terminal"  {...shared} />
 
         <Sep />
 
