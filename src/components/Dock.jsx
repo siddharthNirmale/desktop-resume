@@ -15,11 +15,12 @@ import Projects from "../assets/images/Projects.png";
 import Resume from "../assets/images/Resume.png";
 import Terminal from "../assets/images/Terminal.png";
 
-// ─── physics ────────────────────────────────────────────
-const DOCK_ICON_SIZE = 39;   // resting px  (was 52, –25%)
-const DOCK_ICON_MAX = 60;   // peak magnified px (was 80, –25%)
-const MAGNIFY_RADIUS = 98;   // influence zone px (was 130, –25%)
-const SPRING = { stiffness: 350, damping: 28, mass: 0.55 };
+// ─── Apple-Tuned Physics ────────────────────────────────
+const DOCK_ICON_SIZE = 42;   // Slightly larger resting state for legibility
+const DOCK_ICON_MAX = 64;    // Peak magnification
+const MAGNIFY_RADIUS = 110;  // Smoother, wider influence zone
+// Heavier mass and damping for that buttery macOS feel
+const SPRING = { stiffness: 400, damping: 32, mass: 0.8 };
 
 // ─── per-icon magnification hook ────────────────────────
 function useMagnify(mouseX, ref) {
@@ -39,7 +40,8 @@ function useMagnify(mouseX, ref) {
     [DOCK_ICON_MAX / DOCK_ICON_SIZE, 1],
     { clamp: true }
   );
-  const rawY = useTransform(dist, [0, MAGNIFY_RADIUS], [-14, 0], { clamp: true });
+  // Subtle vertical lift when hovering, mimicking the native dock arch
+  const rawY = useTransform(dist, [0, MAGNIFY_RADIUS], [-10, 0], { clamp: true });
 
   return {
     scale: useSpring(rawScale, SPRING),
@@ -63,33 +65,34 @@ function iconBg(id) {
   return `linear-gradient(145deg, ${a}, ${b})`;
 }
 
-// ─── glass shell shared by every icon ───────────────────
+// ─── Glass shell shared by every icon ───────────────────
 function IconShell({ id, size, children }) {
   return (
     <div
       style={{
         width: size,
         height: size,
-        borderRadius: Math.round(size * 0.27),
+        // Apple's exact CSS squircle approximation
+        borderRadius: "22.5%",
         background: iconBg(id),
         position: "relative",
         overflow: "hidden",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        border: "1px solid rgba(255,255,255,0.18)",
-        boxShadow: "0 8px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.22)",
+        border: "1px solid rgba(255,255,255,0.2)",
+        // Softer, deeper shadows for a 3D physical object feel
+        boxShadow: "0 10px 20px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.4)",
         flexShrink: 0,
       }}
     >
-      {/* top gloss */}
+      {/* top gloss - adjusted for smoother blending */}
       <span
         style={{
           position: "absolute",
           inset: "0 0 auto 0",
-          height: "52%",
-          background: "linear-gradient(180deg,rgba(255,255,255,0.18) 0%,rgba(255,255,255,0) 100%)",
-          borderRadius: `${Math.round(size * 0.27)}px ${Math.round(size * 0.27)}px 0 0`,
+          height: "50%",
+          background: "linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 100%)",
           pointerEvents: "none",
         }}
       />
@@ -104,30 +107,30 @@ function Tooltip({ label, visible }) {
     <AnimatePresence>
       {visible && (
         <motion.span
-          initial={{ opacity: 0, y: 6, scale: 0.88 }}
+          initial={{ opacity: 0, y: 10, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 4, scale: 0.92 }}
-          transition={{ duration: 0.13, ease: "easeOut" }}
+          exit={{ opacity: 0, y: 5, scale: 0.95 }}
+          transition={{ duration: 0.15, ease: "easeOut" }}
           style={{
             position: "absolute",
-            bottom: "calc(100% + 10px)",
+            bottom: "calc(100% + 14px)",
             left: "50%",
             transform: "translateX(-50%)",
             whiteSpace: "nowrap",
             fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-            fontSize: 12,
-            fontWeight: 500,
-            letterSpacing: "-0.01em",
-            color: "rgba(255,255,255,0.92)",
-            background: "rgba(22,22,26,0.88)",
-            border: "1px solid rgba(255,255,255,0.13)",
-            backdropFilter: "blur(16px)",
-            WebkitBackdropFilter: "blur(16px)",
-            padding: "5px 11px",
-            borderRadius: 9,
+            fontSize: 13, // Slightly larger for native feel
+            fontWeight: 400, // Reduced weight for HIG aesthetic
+            letterSpacing: "0.2px",
+            color: "rgba(255,255,255,0.95)",
+            background: "rgba(30, 30, 30, 0.75)",
+            border: "0.5px solid rgba(255,255,255,0.15)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            padding: "6px 12px",
+            borderRadius: 6, // Sharper native tooltip border radius
             pointerEvents: "none",
             zIndex: 99999,
-            boxShadow: "0 4px 18px rgba(0,0,0,0.32)",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
           }}
         >
           {label}
@@ -140,21 +143,21 @@ function Tooltip({ label, visible }) {
 // ─── running dot ────────────────────────────────────────
 function RunningDot({ isOpen, isMinimized }) {
   return (
-    <div style={{ height: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ height: 8, display: "flex", alignItems: "center", justifyContent: "center", marginTop: 4 }}>
       <AnimatePresence>
         {isOpen && (
           <motion.div
             key={isMinimized ? "min" : "open"}
             initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: isMinimized ? 0.38 : 0.82 }}
-            exit  = {{ scale: 0, opacity: 0 }}
-            transition={{ duration: 0.18 }}
+            animate={{ scale: 1, opacity: isMinimized ? 0.4 : 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
             style={{
-              width: isMinimized ? 3 : 4,
-              height: isMinimized ? 3 : 4,
+              width: 4,
+              height: 4,
               borderRadius: "50%",
-              background: "rgba(255,255,255,0.9)",
-              boxShadow: isMinimized ? "none" : "0 0 6px 1px rgba(255,255,255,0.55)",
+              background: "#e5e5e5",
+              boxShadow: isMinimized ? "none" : "0 0 4px rgba(255,255,255,0.5)",
             }}
           />
         )}
@@ -179,7 +182,7 @@ function DockIcon({ id, image, label, badge, windows, toggleWindow, bringToFront
   const handleClick = useCallback(() => {
     if (!win) return;
     setTapping(true);
-    setTimeout(() => setTapping(false), 500);
+    setTimeout(() => setTapping(false), 800); // Extended timeout to fit new animation
 
     if (!isOpen) { toggleWindow(id, "isOpen", true); bringToFront(id); return; }
     if (isMinimized) { toggleWindow(id, "isMinimized", false); bringToFront(id); return; }
@@ -189,12 +192,16 @@ function DockIcon({ id, image, label, badge, windows, toggleWindow, bringToFront
     win.zIndex === maxZ ? toggleWindow(id, "isMinimized", true) : bringToFront(id);
   }, [win, isOpen, isMinimized, windows, id, toggleWindow, bringToFront]);
 
-  // bounce animation when opening
+  // Refined native-feeling launch bounce (gravity-based)
   const bounceVariants = {
     idle: { y: 0 },
     tapping: {
-      y: [0, -18, 0, -10, 0, -5, 0],
-      transition: { duration: 0.52, ease: "easeOut" },
+      y: [0, -25, 0, -12, 0],
+      transition: {
+        duration: 0.7,
+        times: [0, 0.3, 0.55, 0.8, 1],
+        ease: ["easeOut", "easeIn", "easeOut", "easeIn"] // Mimics gravity
+      },
     },
   };
 
@@ -214,7 +221,7 @@ function DockIcon({ id, image, label, badge, windows, toggleWindow, bringToFront
         style={{ scale, y, background: "none", border: "none", padding: 0, cursor: "pointer", outline: "none", display: "flex", flexDirection: "column", alignItems: "center" }}
         variants={bounceVariants}
         animate={tapping ? "tapping" : "idle"}
-        whileTap={{ scale: 0.86, transition: { type: "spring", stiffness: 500, damping: 20 } }}
+        whileTap={{ scale: 0.9, transition: { duration: 0.1 } }} // Snappier click state
         onClick={handleClick}
         aria-label={label}
       >
@@ -236,13 +243,13 @@ function DockIcon({ id, image, label, badge, windows, toggleWindow, bringToFront
               exit={{ scale: 0.3, opacity: 0 }}
               style={{
                 position: "absolute", top: -4, right: -2,
-                minWidth: 18, height: 18, padding: "0 4px",
-                background: "#FF3B30",
-                color: "#fff", fontSize: 10, fontWeight: 700,
+                minWidth: 20, height: 20, padding: "0 6px",
+                background: "#FF3B30", // Authentic iOS red
+                color: "#fff", fontSize: 11, fontWeight: 600,
                 borderRadius: 999,
                 display: "flex", alignItems: "center", justifyContent: "center",
-                border: "2px solid rgba(0,0,0,0.45)",
-                boxShadow: "0 2px 8px rgba(255,59,48,0.6)",
+                border: "1px solid rgba(0,0,0,0.1)",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
                 zIndex: 10,
               }}
             >
@@ -276,7 +283,7 @@ function ThemeButton({ isLight, onToggle, mouseX }) {
       <motion.button
         type="button"
         style={{ scale, y, background: "none", border: "none", padding: 0, cursor: "pointer", outline: "none" }}
-        whileTap={{ scale: 0.86, transition: { type: "spring", stiffness: 500, damping: 20 } }}
+        whileTap={{ scale: 0.9, transition: { duration: 0.1 } }}
         onClick={onToggle}
         aria-label={isLight ? "Switch to dark mode" : "Switch to light mode"}
       >
@@ -286,12 +293,12 @@ function ThemeButton({ isLight, onToggle, mouseX }) {
               key={isLight ? "moon" : "sun"}
               initial={{ opacity: 0, rotate: -40, scale: 0.55 }}
               animate={{ opacity: 1, rotate: 0, scale: 1 }}
-              exit=   {{ opacity: 0, rotate: 40, scale: 0.55 }}
+              exit={{ opacity: 0, rotate: 40, scale: 0.55 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
               style={{ display: "flex" }}
             >
               {isLight ? (
-                <Moon size={20} strokeWidth={1.7} color="rgba(180,170,255,0.95)" />
+                <Moon size={20} strokeWidth={1.7} color="rgba(255,255,255,0.9)" />
               ) : (
                 <Sun size={20} strokeWidth={1.7} color="rgba(255,220,80,0.95)" />
               )}
@@ -300,8 +307,7 @@ function ThemeButton({ isLight, onToggle, mouseX }) {
         </IconShell>
       </motion.button>
 
-      {/* spacer to match RunningDot height */}
-      <div style={{ height: 8 }} />
+      <div style={{ height: 12 }} />
     </div>
   );
 }
@@ -312,9 +318,9 @@ function Sep() {
     <div
       style={{
         width: 1,
-        height: 27,
-        margin: "0 5px 9px",
-        background: "linear-gradient(180deg,transparent,rgba(255,255,255,0.22),transparent)",
+        height: 32,
+        margin: "0 8px 14px",
+        background: "rgba(255,255,255,0.15)",
         flexShrink: 0,
         alignSelf: "flex-end",
       }}
@@ -328,7 +334,6 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
   const mouseX = useMotionValue(Infinity);
   const dockRef = useRef(null);
 
-  // init theme
   useEffect(() => {
     const saved = localStorage.getItem("theme");
     const prefLight = window.matchMedia("(prefers-color-scheme: light)").matches;
@@ -338,11 +343,9 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
     document.body.classList.toggle("light-theme", light);
   }, []);
 
-  // mouse tracking
   const onMouseMove = useCallback((e) => mouseX.set(e.clientX), [mouseX]);
   const onMouseLeave = useCallback(() => mouseX.set(Infinity), [mouseX]);
 
-  // theme toggle with view-transition ripple
   const handleThemeToggle = useCallback((e) => {
     const nextLight = !isLight;
 
@@ -372,7 +375,7 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
     <div
       style={{
         position: "absolute",
-        bottom: 16,
+        bottom: 12, // Slightly tighter to the bottom edge
         left: "50%",
         transform: "translateX(-50%)",
         zIndex: 99999,
@@ -390,35 +393,17 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
           position: "relative",
           display: "flex",
           alignItems: "flex-end",
-          padding: "8px 10px 8px",
-          gap: 4,
-          borderRadius: 24,
-          background: "rgba(255,255,255,0.10)",
-          border: "1px solid rgba(255,255,255,0.20)",
-          backdropFilter: "blur(44px) saturate(200%)",
-          WebkitBackdropFilter: "blur(44px) saturate(200%)",
-          boxShadow: [
-            "0 28px 64px rgba(0,0,0,0.40)",
-            "0 8px 20px rgba(0,0,0,0.22)",
-            "inset 0 2px 0 rgba(255,255,255,0.18)",
-            "inset 0 -1px 0 rgba(0,0,0,0.15)",
-          ].join(", "),
+          padding: "8px 12px 6px",
+          gap: 6,
+          borderRadius: 24, // Matches native dock curvature well
+          // More native glassmorphism
+          background: "rgba(255, 255, 255, 0.08)",
+          border: "0.5px solid rgba(255,255,255,0.15)",
+          backdropFilter: "blur(50px) saturate(180%)",
+          WebkitBackdropFilter: "blur(50px) saturate(180%)",
+          boxShadow: "0 30px 60px rgba(0,0,0,0.3), 0 10px 20px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.2)",
         }}
       >
-        {/* top-edge gloss line */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 24,
-            right: 24,
-            height: 1,
-            background: "linear-gradient(90deg,transparent,rgba(255,255,255,0.55),transparent)",
-            borderRadius: 999,
-            pointerEvents: "none",
-          }}
-        />
-
         <DockIcon id="about" image={About} label="About Me"  {...shared} />
         <DockIcon id="projects" image={Projects} label="Projects"  {...shared} />
         <DockIcon id="resume" image={Resume} label="Resume"    {...shared} />
