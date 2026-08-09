@@ -1,40 +1,144 @@
 @import "tailwindcss";
 
 @theme {
-  /* Accent - Mojave Blue */
-  --color-accent: #0A84FF;
-  --color-accent-hover: #0070E0;
+  /* =========================================================
+     ACCENT
+     ========================================================= */
 
-  /* Desktop Background / Wallpaper Area */
-  --color-desktop: #111;
-  --color-desktop-dot: rgba(255, 255, 255, 0.14);
+  --color-accent: #0a84ff;
+  --color-accent-hover: #0077ed;
+  --color-accent-soft: rgba(10, 132, 255, 0.12);
+  --color-accent-focus: rgba(10, 132, 255, 0.28);
 
-  /* Surfaces - True macOS Mojave Dark Mode Palette */
-  --color-surface-dark: #161616;       /* Sidebar background */
-  --color-surface: #262626;            /* Main window active background */
-  --color-surface-inactive: #2D2D2D;   /* Inactive window background */
-  --color-surface-elevated: #373737;   /* Popovers / Context Menus / Tooltips */
 
-  /* Borders & Dividers */
-  --color-surface-border: rgba(255, 255, 255, 0.06);
-  --color-window-border: rgba(0, 0, 0, 0.3);
+  /* =========================================================
+     DESKTOP
+     ========================================================= */
 
-  /* Text - High contrast but soft standard system colors */
-  --color-text: #FFFFFF;
-  --color-text-secondary: rgba(255, 255, 255, 0.65);
-  --color-text-tertiary: rgba(255, 255, 255, 0.35);
+  --color-desktop: #111111;
+  --color-desktop-dot: rgba(255, 255, 255, 0.08);
 
-  /* Typography */
-  --font-primary: Verdana, Geneva, sans-serif;
-  --font-heading: Georgia, "Times New Roman", Times, serif;
+
+  /* =========================================================
+     SURFACES
+
+     Keep surfaces visually quiet.
+     Hierarchy comes from contrast, spacing and depth,
+     rather than excessive decoration.
+     ========================================================= */
+
+  --color-surface-dark: #181818;
+  --color-surface: #1f1f1f;
+  --color-surface-inactive: #242424;
+  --color-surface-elevated: #2a2a2a;
+
+  --color-surface-hover: rgba(255, 255, 255, 0.06);
+  --color-surface-active: rgba(255, 255, 255, 0.10);
+
+
+  /* =========================================================
+     BORDERS & DIVIDERS
+     ========================================================= */
+
+  --color-surface-border: rgba(255, 255, 255, 0.07);
+  --color-surface-border-strong: rgba(255, 255, 255, 0.11);
+  --color-window-border: rgba(255, 255, 255, 0.08);
+  --color-divider: rgba(255, 255, 255, 0.07);
+
+
+  /* =========================================================
+     TEXT HIERARCHY
+     ========================================================= */
+
+  --color-text: #f5f5f7;
+  --color-text-secondary: rgba(245, 245, 247, 0.68);
+  --color-text-tertiary: rgba(245, 245, 247, 0.42);
+  --color-text-disabled: rgba(245, 245, 247, 0.25);
+
+
+  /* =========================================================
+     TYPOGRAPHY
+     ========================================================= */
+
+  --font-primary:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Inter,
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  --font-heading:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Inter,
+    Helvetica,
+    Arial,
+    sans-serif;
 
   --text-micro: 10px;
-  --tracking-super-wide: 0.15em;
 
-  /* Shared dynamic variables for adaptive shadows */
-  --shadow-window: 0 20px 40px rgba(0, 0, 0, 0.45), 0 0 1px rgba(255, 255, 255, 0.1);
-  --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --tracking-tight: -0.025em;
+  --tracking-normal: -0.01em;
+  --tracking-wide: 0.04em;
+  --tracking-super-wide: 0.12em;
+
+
+  /* =========================================================
+     RADIUS
+     ========================================================= */
+
+  --radius-control: 8px;
+  --radius-card: 12px;
+  --radius-window: 14px;
+  --radius-popover: 12px;
+  --radius-pill: 999px;
+
+
+  /* =========================================================
+     DEPTH
+
+     Shadows are deliberately restrained.
+     Depth should communicate hierarchy, not decoration.
+     ========================================================= */
+
+  --shadow-window:
+    0 18px 45px rgba(0, 0, 0, 0.28),
+    0 2px 8px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+
+  --shadow-window-focused:
+    0 24px 55px rgba(0, 0, 0, 0.34),
+    0 3px 10px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+
+  --shadow-popover:
+    0 12px 32px rgba(0, 0, 0, 0.24),
+    0 2px 8px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+
+  --shadow-subtle:
+    0 2px 8px rgba(0, 0, 0, 0.12);
+
+
+  /* =========================================================
+     MOTION
+     ========================================================= */
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --duration-fast: 120ms;
+  --duration-normal: 220ms;
+  --duration-slow: 360ms;
 }
+
+
+/* =========================================================
+   BASE
+   ========================================================= */
 
 @layer base {
   html,
@@ -46,43 +150,168 @@
     padding: 0;
   }
 
+  html {
+    background: var(--color-desktop);
+    color-scheme: dark;
+  }
+
   body {
     background: var(--color-desktop);
     color: var(--color-text);
+
     font-family: var(--font-primary);
+    font-size: 15px;
+    line-height: 1.5;
+
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    letter-spacing: -0.01em;
 
-    /* Global smooth color transition when toggling */
-    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    letter-spacing: var(--tracking-normal);
+
+    /*
+      Keep global transitions restrained.
+      Large blanket transitions can make the interface
+      feel sluggish and make state changes less clear.
+    */
+    transition:
+      background-color var(--duration-normal) var(--ease-standard),
+      color var(--duration-normal) var(--ease-standard);
   }
 
-  /* ☀️ MOJAVE LIGHT THEME OVERRIDES */
-  .light-theme {
-    --color-desktop: #D1D5DB;            /* Soft gray wallpaper area */
-    --color-desktop-dot: rgba(0, 0, 0, 0.12);
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 
-    --color-surface-dark: #E3E5E8;       /* Sidebar */
-    --color-surface: #FFFFFF;            /* Active window main surface */
-    --color-surface-inactive: #F6F6F6;   /* Inactive window main surface */
-    --color-surface-elevated: #FFFFFF;   /* Tooltips / Menus */
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
 
-    --color-surface-border: rgba(0, 0, 0, 0.08);
-    --color-window-border: rgba(0, 0, 0, 0.15);
+  button {
+    color: inherit;
+  }
 
-    --color-text: #1C1C1E;               /* Primary dark text */
-    --color-text-secondary: rgba(0, 0, 0, 0.6);
-    --color-text-tertiary: rgba(0, 0, 0, 0.35);
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 
-    /* Softer, realistic light-mode depth shadows */
-    --shadow-window: 0 20px 40px rgba(0, 0, 0, 0.12), 0 0 1px rgba(0, 0, 0, 0.2);
-    --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.08);
+  ::selection {
+    background: var(--color-accent);
+    color: #ffffff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
   }
 }
 
+
+/* =========================================================
+   LIGHT THEME
+   ========================================================= */
+
+.light-theme {
+  color-scheme: light;
+
+  /* Desktop */
+
+  --color-desktop: #e7e8eb;
+  --color-desktop-dot: rgba(0, 0, 0, 0.07);
+
+
+  /* Surfaces */
+
+  --color-surface-dark: #f0f1f3;
+  --color-surface: #ffffff;
+  --color-surface-inactive: #f7f7f8;
+  --color-surface-elevated: #ffffff;
+
+  --color-surface-hover: rgba(0, 0, 0, 0.045);
+  --color-surface-active: rgba(0, 0, 0, 0.075);
+
+
+  /* Borders */
+
+  --color-surface-border: rgba(0, 0, 0, 0.075);
+  --color-surface-border-strong: rgba(0, 0, 0, 0.12);
+  --color-window-border: rgba(0, 0, 0, 0.10);
+  --color-divider: rgba(0, 0, 0, 0.075);
+
+
+  /* Text */
+
+  --color-text: #1d1d1f;
+  --color-text-secondary: rgba(29, 29, 31, 0.68);
+  --color-text-tertiary: rgba(29, 29, 31, 0.44);
+  --color-text-disabled: rgba(29, 29, 31, 0.25);
+
+
+  /* Depth */
+
+  --shadow-window:
+    0 18px 45px rgba(0, 0, 0, 0.11),
+    0 2px 8px rgba(0, 0, 0, 0.07),
+    0 0 0 1px rgba(0, 0, 0, 0.04);
+
+  --shadow-window-focused:
+    0 24px 55px rgba(0, 0, 0, 0.14),
+    0 3px 10px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+
+  --shadow-popover:
+    0 12px 32px rgba(0, 0, 0, 0.10),
+    0 2px 8px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(0, 0, 0, 0.04);
+
+  --shadow-subtle:
+    0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+
+/* =========================================================
+   UTILITIES
+   ========================================================= */
+
 @layer utilities {
-  /* macOS Minimalist Scrollbar Style (Adaptive) */
+
+  /* ---------------------------------------------------------
+     WINDOW DEPTH
+     --------------------------------------------------------- */
+
+  .window-shadow {
+    box-shadow: var(--shadow-window);
+  }
+
+  .window-shadow-focused {
+    box-shadow: var(--shadow-window-focused);
+  }
+
+  .popover-shadow {
+    box-shadow: var(--shadow-popover);
+  }
+
+  .subtle-shadow {
+    box-shadow: var(--shadow-subtle);
+  }
+
+
+  /* ---------------------------------------------------------
+     CUSTOM SCROLLBAR
+     --------------------------------------------------------- */
+
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color:
+      rgba(255, 255, 255, 0.14)
+      transparent;
+  }
+
   .custom-scrollbar::-webkit-scrollbar {
     width: 7px;
     height: 7px;
@@ -93,93 +322,240 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 999px;
-  }
-
-  .light-theme .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.14);
+    border-radius: var(--radius-pill);
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: var(--color-text-tertiary);
+    background: rgba(255, 255, 255, 0.22);
   }
 
-  /* Shadow hooks utilizing our dynamic variables */
-  .window-shadow {
-    box-shadow: var(--shadow-window);
+  .light-theme .custom-scrollbar {
+    scrollbar-color:
+      rgba(0, 0, 0, 0.16)
+      transparent;
   }
 
-  .popover-shadow {
+  .light-theme .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.16);
+  }
+
+  .light-theme .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.24);
+  }
+
+
+  /* ---------------------------------------------------------
+     DOCK
+
+     The dock should feel like one coherent surface,
+     not a collection of individual effects.
+     --------------------------------------------------------- */
+
+  .custom-dock-container > div {
+    border: 1px solid var(--color-surface-border);
+    box-shadow: var(--shadow-popover);
+
+    transition:
+      background-color var(--duration-normal) var(--ease-standard),
+      border-color var(--duration-normal) var(--ease-standard),
+      box-shadow var(--duration-normal) var(--ease-standard);
+  }
+
+  .light-theme .custom-dock-container > div {
+    background: rgba(255, 255, 255, 0.78);
+    border-color: rgba(0, 0, 0, 0.07);
     box-shadow: var(--shadow-popover);
   }
 
-  /* Dynamic dock adaptations for light theme */
-.light-theme .custom-dock-container > div {
-  background: rgba(255, 255, 255, 0.45);
-  border-color: rgba(0, 0, 0, 0.06);
-  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.15);
 
-}
+  /* Dock text */
 
-/* Keeps text, divider lines, and app active dots clean in light mode */
-.light-theme .custom-dock-container .text-white\/70 {
-  color: rgba(0, 0, 0, 0.65);
-}
-.light-theme .custom-dock-container .hover\:text-white:hover {
-  color: #000000;
-}
-.light-theme .custom-dock-container .hover\:bg-white\/10:hover {
-  background-color: rgba(0, 0, 0, 0.06);
-}
-.light-theme .custom-dock-container .bg-white\/10 {
-  background-color: rgba(0, 0, 0, 0.12);
-}
-.light-theme .custom-dock-container .bg-white {
-  background-color: #000000;
-  box-shadow: 0 0 6px rgba(0,0,0,0.2);
-}
-.light-theme .custom-dock-container .bg-white\/30 {
-  background-color: rgba(0, 0, 0, 0.25);
-}
-.light-theme .custom-dock-container .text-white {
-  color: #000000;
-  background-color: rgba(0, 0, 0, 0.04);
-}
+  .light-theme .custom-dock-container .text-white\/70 {
+    color: rgba(0, 0, 0, 0.62);
+  }
 
-/* Dynamic TopBar adaptations for light theme */
-.light-theme .custom-topbar {
-  background: rgba(255, 255, 255, 0.45);
-  border-bottom-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-}
-
-/* Dynamic Widget adaptations for light theme */
-.light-theme .custom-widget {
-  background: rgba(255, 255, 255, 0.55);
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-}
-/* Crisp dark text and icons for light mode topbar */
-.light-theme .custom-topbar .topbar-text {
-  color: rgba(0, 0, 0, 0.85);
-}
-
-.light-theme .custom-topbar .topbar-icons {
-  color: rgba(0, 0, 0, 0.65);
-}
-
-.light-theme .custom-topbar .topbar-icons a:hover {
-  color: #000000;
-}
-
-.light-theme .custom-topbar .topbar-divider {
-  background-color: rgba(0, 0, 0, 0.15);
-}
-}
+  .light-theme .custom-dock-container .hover\:text-white:hover {
+    color: #000000;
+  }
 
 
-/* 🌊 VIEW TRANSITIONS API: MAGIC CIRCLE WAVE 🌊 */
+  /* Dock hover */
+
+  .light-theme .custom-dock-container .hover\:bg-white\/10:hover {
+    background-color: rgba(0, 0, 0, 0.055);
+  }
+
+
+  /* Dock active states */
+
+  .light-theme .custom-dock-container .bg-white\/10 {
+    background-color: rgba(0, 0, 0, 0.08);
+  }
+
+  .light-theme .custom-dock-container .bg-white {
+    background-color: #1d1d1f;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+  }
+
+  .light-theme .custom-dock-container .bg-white\/30 {
+    background-color: rgba(0, 0, 0, 0.22);
+  }
+
+  .light-theme .custom-dock-container .text-white {
+    color: #1d1d1f;
+    background-color: rgba(0, 0, 0, 0.035);
+  }
+
+
+  /* ---------------------------------------------------------
+     TOP BAR
+     --------------------------------------------------------- */
+
+  .custom-topbar {
+    transition:
+      background-color var(--duration-normal) var(--ease-standard),
+      border-color var(--duration-normal) var(--ease-standard),
+      color var(--duration-normal) var(--ease-standard);
+  }
+
+  .light-theme .custom-topbar {
+    background: rgba(255, 255, 255, 0.78);
+    border-bottom-color: rgba(0, 0, 0, 0.075);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.04);
+  }
+
+  .light-theme .custom-topbar .topbar-text {
+    color: rgba(0, 0, 0, 0.82);
+  }
+
+  .light-theme .custom-topbar .topbar-icons {
+    color: rgba(0, 0, 0, 0.62);
+  }
+
+  .light-theme .custom-topbar .topbar-icons a:hover {
+    color: #000000;
+  }
+
+  .light-theme .custom-topbar .topbar-divider {
+    background-color: rgba(0, 0, 0, 0.13);
+  }
+
+
+  /* ---------------------------------------------------------
+     WIDGETS
+
+     Widgets remain visually quiet so information stays
+     more important than the container.
+     --------------------------------------------------------- */
+
+  .custom-widget {
+    transition:
+      background-color var(--duration-normal) var(--ease-standard),
+      border-color var(--duration-normal) var(--ease-standard),
+      box-shadow var(--duration-normal) var(--ease-standard);
+  }
+
+  .light-theme .custom-widget {
+    background: rgba(255, 255, 255, 0.78);
+    border-color: rgba(0, 0, 0, 0.075);
+    box-shadow: var(--shadow-subtle);
+  }
+
+
+  /* ---------------------------------------------------------
+     INTERACTION HELPERS
+     --------------------------------------------------------- */
+
+  .interactive {
+    transition:
+      background-color var(--duration-fast) var(--ease-standard),
+      color var(--duration-fast) var(--ease-standard),
+      border-color var(--duration-fast) var(--ease-standard),
+      opacity var(--duration-fast) var(--ease-standard),
+      transform var(--duration-fast) var(--ease-standard);
+  }
+
+  .interactive:hover {
+    background-color: var(--color-surface-hover);
+  }
+
+  .interactive:active {
+    transform: scale(0.98);
+  }
+
+
+  /* ---------------------------------------------------------
+     DIVIDER
+     --------------------------------------------------------- */
+
+  .surface-divider {
+    background-color: var(--color-divider);
+  }
+
+
+  /* ---------------------------------------------------------
+     TEXT HIERARCHY
+     --------------------------------------------------------- */
+
+  .text-primary {
+    color: var(--color-text);
+  }
+
+  .text-secondary {
+    color: var(--color-text-secondary);
+  }
+
+  .text-tertiary {
+    color: var(--color-text-tertiary);
+  }
+
+  .text-disabled {
+    color: var(--color-text-disabled);
+  }
+
+
+  /* ---------------------------------------------------------
+     ACCENT
+     --------------------------------------------------------- */
+
+  .accent-text {
+    color: var(--color-accent);
+  }
+
+  .accent-surface {
+    background-color: var(--color-accent-soft);
+  }
+
+  .accent-focus {
+    box-shadow: 0 0 0 3px var(--color-accent-focus);
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* =========================================================
+   VIEW TRANSITIONS
+
+   The transition should communicate that the same interface
+   is changing state rather than replacing the entire page.
+   ========================================================= */
+
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
@@ -187,9 +563,9 @@
 }
 
 ::view-transition-old(root) {
-  z-index: 1; /* Keep the old theme screenshot in the back */
+  z-index: 1;
 }
 
 ::view-transition-new(root) {
-  z-index: 2; /* Put the new theme on top so the expanding circle reveals it */
+  z-index: 2;
 }
