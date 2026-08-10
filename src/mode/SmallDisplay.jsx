@@ -8,6 +8,8 @@ import {
   FiDownload,
   FiClock,
   FiCpu,
+  FiSun,
+  FiMoon,
 } from "react-icons/fi";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import {
@@ -91,8 +93,8 @@ const fadeUpVariant = {
   },
 };
 
-// --- OPTIMIZATION: Extracted Clock Component ---
-const LiveClock = () => {
+// --- Extracted Clock Component ---
+const LiveClock = ({ isDark }) => {
   const [currentTime, setCurrentTime] = useState("");
 
   useEffect(() => {
@@ -106,13 +108,13 @@ const LiveClock = () => {
         })
       );
     };
-    updateTime(); // initial call
+    updateTime();
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <span className="flex items-center gap-1">
+    <span className={`flex items-center gap-1 ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
       <FiClock size={12} /> {currentTime || "Loading..."}
     </span>
   );
@@ -120,6 +122,7 @@ const LiveClock = () => {
 
 export default function TerminalPortfolio() {
   const [visibleMonths, setVisibleMonths] = useState(12);
+  const [isDark, setIsDark] = useState(true);
 
   // Responsive Layout Effect for GitHub Calendar (Optimized with debounce)
   useEffect(() => {
@@ -136,7 +139,7 @@ export default function TerminalPortfolio() {
         } else {
           setVisibleMonths(12);
         }
-      }, 150); // 150ms debounce
+      }, 150);
     };
 
     handleResize();
@@ -147,8 +150,7 @@ export default function TerminalPortfolio() {
     };
   }, []);
 
-  // Memoize download handler to prevent recreation on every render
-   const handleDownload = () => {
+  const handleDownload = () => {
     const resumeUrl = resume;
     const link = document.createElement("a");
     link.href = resumeUrl;
@@ -158,25 +160,21 @@ export default function TerminalPortfolio() {
     document.body.removeChild(link);
   };
 
-  // Memoize the calendar transform function
   const transformCalendarData = useCallback(
     (data) => filterResponsiveMonths(data, visibleMonths),
     [visibleMonths]
   );
 
   return (
-    // Deep black modern background - updated font-sans to font-primary
-    <div className="h-screen w-full bg-black text-zinc-400 font-primary overflow-y-auto custom-scrollbar selection:bg-zinc-800 selection:text-white">
+    <div className={`h-screen w-full transition-colors duration-300 ${isDark ? "bg-black text-zinc-400 selection:bg-zinc-800 selection:text-white" : "bg-zinc-50 text-zinc-600 selection:bg-zinc-200 selection:text-black"} font-primary overflow-y-auto custom-scrollbar`}>
       <style>{`
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: ${isDark ? "#27272a" : "#d4d4d8"}; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: ${isDark ? "#3f3f46" : "#a1a1aa"}; }
       `}</style>
 
-      {/* Adjusted padding for mobile (py-12 instead of py-20) */}
       <div className="max-w-3xl mx-auto px-6 py-12 sm:py-20 space-y-16 sm:space-y-20">
-
         {/* --- Profile Header --- */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -184,27 +182,39 @@ export default function TerminalPortfolio() {
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="flex flex-col sm:flex-row gap-6 sm:gap-8 items-start"
         >
-          <motion.div
-            whileHover={{ scale: 1.05, rotate: -2 }}
-            className="w-24 h-24 shrink-0 rounded-2xl bg-[#09090b] border border-white/10 flex items-center justify-center relative shadow-[0_0_30px_rgba(255,255,255,0.03)] cursor-pointer transition-colors hover:border-white/20 mx-auto sm:mx-0"
-          >
-            <span className="text-4xl">👨‍💻</span>
-            <span className="absolute bottom-1.5 right-1.5 w-3.5 h-3.5 bg-green-500 border-2 border-[#09090b] rounded-full"></span>
-          </motion.div>
+          <div className="relative mx-auto sm:mx-0">
+            <motion.div
+              whileHover={{ scale: 1.05, rotate: -2 }}
+              className={`w-24 h-24 shrink-0 rounded-2xl ${isDark ? "bg-[#09090b] border-white/10 hover:border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.03)]" : "bg-white border-zinc-200 hover:border-zinc-300 shadow-xl"} border flex items-center justify-center relative cursor-pointer transition-colors`}
+            >
+              <span className="text-4xl">👨‍💻</span>
+            </motion.div>
+
+            {/* Interactive Theme Toggle Button integrated right at the avatar corner */}
+            <motion.button
+              onClick={() => setIsDark(!isDark)}
+              whileHover={{ scale: 1.15 }}
+              whileTap={{ scale: 0.9 }}
+              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              className={`absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-full flex items-center justify-center border-2 shadow-md transition-colors cursor-pointer ${isDark
+                  ? "bg-green-500 border-[#09090b] text-black hover:bg-green-400"
+                  : "bg-green-600 border-white text-white hover:bg-green-500"
+                }`}
+            >
+              {isDark ? <FiSun size={12} strokeWidth={2.5} /> : <FiMoon size={12} strokeWidth={2.5} />}
+            </motion.button>
+          </div>
 
           <div className="space-y-4 flex-1 text-center sm:text-left">
             <div>
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-1">
-                {/* Added font-heading */}
-                <h1 className="text-2xl font-heading font-bold text-white tracking-tight">
+                <h1 className={`text-2xl font-heading font-bold tracking-tight ${isDark ? "text-white" : "text-zinc-900"}`}>
                   Siddharth Nirmale
                 </h1>
-                {/* Upgraded Breathing Status Badge */}
-                <span className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-green-400 bg-green-400/10 px-2.5 py-1 rounded-full border border-green-400/20 shadow-[0_0_10px_rgba(74,222,128,0.1)]">
+                <span className={`flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border ${isDark ? "text-green-400 bg-green-400/10 border-green-400/20 shadow-[0_0_10px_rgba(74,222,128,0.1)]" : "text-green-700 bg-green-100 border-green-300"}`}>
                   <span className="relative flex h-1.5 w-1.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
-                    <br />
                   </span>
                   Available for Opportunities
                 </span>
@@ -213,22 +223,22 @@ export default function TerminalPortfolio() {
                 @siddharthNirmale
               </p>
 
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-4 text-[12px] text-zinc-400 font-medium">
-                <span className="flex items-center gap-1.5 border border-white/10 bg-white/5 px-2.5 py-1 rounded-md text-zinc-300">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-4 text-[12px] font-medium">
+                <span className={`flex items-center gap-1.5 border px-2.5 py-1 rounded-md ${isDark ? "border-white/10 bg-white/5 text-zinc-300" : "border-zinc-200 bg-zinc-100 text-zinc-700"}`}>
                   Building Scalable Apps ✦
                 </span>
-                <span className="flex items-center gap-1">
+                <span className={`flex items-center gap-1 ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
                   <FiMapPin size={12} /> Indore, India
                 </span>
-                <LiveClock />
+                <LiveClock isDark={isDark} />
               </div>
             </div>
 
-            <p className="text-[14px] leading-relaxed max-w-2xl text-zinc-400">
+            <p className={`text-[14px] leading-relaxed max-w-2xl ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
               Full Stack Developer passionate about building scalable web
               applications and solving real-world problems. I enjoy developing
               modern applications with{" "}
-              <strong className="text-zinc-200 font-semibold">
+              <strong className={`font-semibold ${isDark ? "text-zinc-200" : "text-zinc-900"}`}>
                 React, Next.js, Node.js, Express.js, and MongoDB
               </strong>
               , integrating AI services, and creating responsive user experiences
@@ -236,17 +246,17 @@ export default function TerminalPortfolio() {
             </p>
 
             <div className="flex flex-wrap justify-center sm:justify-start gap-2 pt-2">
-              <ActionButton icon={<FaLinkedin />} text="LinkedIn" href="https://linkedin.com/in/siddharth-nirmale" />
-              <ActionButton icon={<FaGithub />} text="GitHub" href="https://github.com/siddharthNirmale" />
-              <ActionButton icon={<FiMail />} text="Email Me" href="mailto:siddharth175nirmale1@gmail.com" />
-              <ActionButton icon={<FiDownload />} text="Resume" onClick={handleDownload} isButton primary />
+              <ActionButton icon={<FaLinkedin />} text="LinkedIn" href="https://linkedin.com/in/siddharth-nirmale" isDark={isDark} />
+              <ActionButton icon={<FaGithub />} text="GitHub" href="https://github.com/siddharthNirmale" isDark={isDark} />
+              <ActionButton icon={<FiMail />} text="Email Me" href="mailto:siddharth175nirmale1@gmail.com" isDark={isDark} />
+              <ActionButton icon={<FiDownload />} text="Resume" onClick={handleDownload} isButton primary isDark={isDark} />
             </div>
           </div>
         </motion.div>
 
         {/* --- Animated Skills Section --- */}
         <section className="space-y-5">
-          <SectionHeader title="Skills and Tools" />
+          <SectionHeader title="Skills and Tools" isDark={isDark} />
           <motion.div
             variants={staggerContainer}
             initial="hidden"
@@ -261,9 +271,12 @@ export default function TerminalPortfolio() {
                     key={skill}
                     variants={fadeUpVariant}
                     whileHover={{ y: -2, scale: 1.02 }}
-                    className="flex items-center gap-2 text-[13px] font-medium text-zinc-300 bg-white/5 border border-white/5 px-3 py-1.5 rounded-md hover:bg-white/10 hover:border-white/10 transition-colors cursor-default shadow-sm"
+                    className={`flex items-center gap-2 text-[13px] font-medium border px-3 py-1.5 rounded-md transition-colors cursor-default shadow-sm ${isDark
+                        ? "text-zinc-300 bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10"
+                        : "text-zinc-700 bg-white border-zinc-200 hover:bg-zinc-100 hover:border-zinc-300 shadow-sm"
+                      }`}
                   >
-                    <span className="text-zinc-400">
+                    <span className={isDark ? "text-zinc-400" : "text-zinc-500"}>
                       {iconMap[skill] || <FiCpu size={14} />}
                     </span>
                     {skill}
@@ -282,55 +295,49 @@ export default function TerminalPortfolio() {
           transition={{ duration: 0.5 }}
           className="space-y-5"
         >
-          <SectionHeader title="Experience & Education" />
-          <div className="border border-white/10 rounded-2xl bg-[#09090b] p-6 space-y-8 shadow-[0_0_20px_rgba(0,0,0,0.5)] overflow-hidden">
-            {/* Timeline */}
-            <div className="relative border-l border-white/10 ml-2.5 space-y-8">
-              {/* Experience Entry */}
+          <SectionHeader title="Experience & Education" isDark={isDark} />
+          <div className={`border rounded-2xl p-6 space-y-8 overflow-hidden shadow-xl ${isDark ? "border-white/10 bg-[#09090b] shadow-[0_0_20px_rgba(0,0,0,0.5)]" : "border-zinc-200 bg-white shadow-sm"}`}>
+            <div className={`relative border-l ml-2.5 space-y-8 ${isDark ? "border-white/10" : "border-zinc-200"}`}>
               <div className="relative pl-7 group">
-                <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-blue-500 ring-4 ring-[#09090b] group-hover:scale-110 transition-transform" />
+                <div className={`absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-blue-500 ring-4 group-hover:scale-110 transition-transform ${isDark ? "ring-[#09090b]" : "ring-white"}`} />
                 <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-1">
                   <div>
-                    {/* Added font-heading */}
-                    <h3 className="text-[14px] font-heading font-semibold text-zinc-100">
+                    <h3 className={`text-[14px] font-heading font-semibold ${isDark ? "text-zinc-100" : "text-zinc-900"}`}>
                       Data Science & Development Intern
                     </h3>
                     <p className="text-[13px] text-zinc-500 mt-0.5">
                       Personifwy | Remote
                     </p>
                   </div>
-                  <span className="text-[11px] font-mono text-zinc-400 border border-white/10 bg-white/5 rounded px-2 py-1 w-fit mt-1 sm:mt-0">
+                  <span className={`text-[11px] font-mono border rounded px-2 py-1 w-fit mt-1 sm:mt-0 ${isDark ? "text-zinc-400 border-white/10 bg-white/5" : "text-zinc-600 border-zinc-200 bg-zinc-100"}`}>
                     Jan 2024 - May 2024
                   </span>
                 </div>
               </div>
 
-              {/* Education Entry */}
               <div className="relative pl-7 group">
-                <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-green-500 ring-4 ring-[#09090b] group-hover:scale-110 transition-transform" />
+                <div className={`absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-green-500 ring-4 group-hover:scale-110 transition-transform ${isDark ? "ring-[#09090b]" : "ring-white"}`} />
                 <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-1">
                   <div>
-                    {/* Added font-heading */}
-                    <h3 className="text-[14px] font-heading font-semibold text-zinc-100">
+                    <h3 className={`text-[14px] font-heading font-semibold ${isDark ? "text-zinc-100" : "text-zinc-900"}`}>
                       MITS Gwalior
                     </h3>
                     <p className="text-[13px] text-zinc-500 mt-0.5">
                       B.Tech Electronics & Telecom (CGPA: 8.49)
                     </p>
                   </div>
-                  <span className="text-[11px] font-mono text-zinc-400 border border-white/10 bg-white/5 rounded px-2 py-1 w-fit mt-1 sm:mt-0">
+                  <span className={`text-[11px] font-mono border rounded px-2 py-1 w-fit mt-1 sm:mt-0 ${isDark ? "text-zinc-400 border-white/10 bg-white/5" : "text-zinc-600 border-zinc-200 bg-zinc-100"}`}>
                     2020 - 2024
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* GitHub Contribution Graph */}
-            <div className="pt-6 border-t border-white/5 overflow-x-auto custom-scrollbar">
+            <div className={`pt-6 border-t overflow-x-auto custom-scrollbar ${isDark ? "border-white/5" : "border-zinc-100"}`}>
               <div className="pb-3 flex flex-col items-center sm:items-start w-full min-w-[300px] opacity-90 hover:opacity-100 transition-opacity">
                 <GitHubCalendar
                   username="siddharthNirmale"
-                  colorScheme="dark"
+                  colorScheme={isDark ? "dark" : "light"}
                   transformData={transformCalendarData}
                   blockSize={9}
                   blockMargin={3}
@@ -345,7 +352,7 @@ export default function TerminalPortfolio() {
 
         {/* --- Projects Section --- */}
         <section className="space-y-5">
-          <SectionHeader title="Selected Projects" />
+          <SectionHeader title="Selected Projects" isDark={isDark} />
           <motion.div
             variants={staggerContainer}
             initial="hidden"
@@ -357,43 +364,37 @@ export default function TerminalPortfolio() {
               <motion.div
                 key={idx}
                 variants={fadeUpVariant}
-                className="flex flex-col sm:flex-row border border-white/10 rounded-2xl overflow-hidden bg-[#09090b] hover:border-white/20 transition-all duration-300 group shadow-[0_0_20px_rgba(0,0,0,0.5)]"
+                className={`flex flex-col sm:flex-row border rounded-2xl overflow-hidden transition-all duration-300 group shadow-xl ${isDark
+                    ? "border-white/10 bg-[#09090b] hover:border-white/20 shadow-[0_0_20px_rgba(0,0,0,0.5)]"
+                    : "border-zinc-200 bg-white hover:border-zinc-300 shadow-sm"
+                  }`}
               >
-                {/* Left Side: Image area - Added explicit widths for flex layout */}
-                <div className="relative w-full sm:w-2/5 md:w-1/3 h-48 sm:h-auto overflow-hidden bg-black/40 border-b sm:border-b-0 sm:border-r border-black/20 shrink-0 flex items-center justify-center p-4">
-
-                  {/* 🌟 THE FUN GLOW EFFECT 🌟 */}
+                <div className={`relative w-full sm:w-2/5 md:w-1/3 h-48 sm:h-auto overflow-hidden shrink-0 flex items-center justify-center p-4 border-b sm:border-b-0 ${isDark ? "bg-black/40 border-black/20 sm:border-r" : "bg-zinc-100 border-zinc-200 sm:border-r"}`}>
                   <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-fuchsia-600 to-cyan-500 blur-md opacity-20 group-hover:opacity-80 group-hover:blur-xl group-hover:scale-110 transition-all duration-500 z-0" />
-
-                  {/* Subtle dark gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#161616]/80 to-transparent z-10 opacity-60 group-hover:opacity-30 transition-opacity duration-300" />
-
-                  {/* Actual Image - Added loading="lazy" */}
+                  <div className={`absolute inset-0 bg-gradient-to-t z-10 opacity-60 group-hover:opacity-30 transition-opacity duration-300 ${isDark ? "from-[#161616]/80 to-transparent" : "from-zinc-200/80 to-transparent"}`} />
                   <img
                     src={project.image || "/placeholder.jpg"}
                     alt={project.title}
                     loading="lazy"
-                    className="relative w-full h-full object-cover rounded-lg shadow-2xl shadow-black/60 z-20 transform scale-100 group-hover:scale-[1.04] transition-transform duration-500 ease-out"
+                    className="relative w-full h-full object-cover rounded-lg shadow-2xl shadow-black/60 z-25 transform scale-100 group-hover:scale-[1.04] transition-transform duration-500 ease-out"
                   />
                 </div>
 
-                {/* Right Side: Content */}
                 <div className="p-5 sm:p-6 flex-1 flex flex-col">
                   <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-4">
-                    {/* Added font-heading */}
-                    <h3 className="text-[16px] font-heading font-semibold text-white tracking-tight flex items-center gap-2">
+                    <h3 className={`text-[16px] font-heading font-semibold tracking-tight flex items-center gap-2 ${isDark ? "text-white" : "text-zinc-900"}`}>
                       {project.title}
                     </h3>
                     <div className="flex items-center gap-2">
-                      <LinkBadge icon={<FiExternalLink size={12} />} text="Live" href={project.live} />
-                      <LinkBadge icon={<FaGithub size={12} />} text="Repo" href={project.github} />
+                      <LinkBadge icon={<FiExternalLink size={12} />} text="Live" href={project.live} isDark={isDark} />
+                      <LinkBadge icon={<FaGithub size={12} />} text="Repo" href={project.github} isDark={isDark} />
                     </div>
                   </div>
 
-                  <ul className="text-[13px] text-zinc-400 leading-relaxed mb-6 flex-1 list-none space-y-2">
+                  <ul className={`text-[13px] leading-relaxed mb-6 flex-1 list-none space-y-2 ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
                     {project.bullets.map((bullet, i) => (
                       <li key={i} className="flex gap-2">
-                        <span className="text-zinc-700 mt-1">▹</span>
+                        <span className={isDark ? "text-zinc-700 mt-1" : "text-zinc-400 mt-1"}>▹</span>
                         <span>{bullet}</span>
                       </li>
                     ))}
@@ -404,7 +405,10 @@ export default function TerminalPortfolio() {
                       {project.tech.split(" • ").map((tech) => (
                         <span
                           key={tech}
-                          className="text-[11px] font-medium px-2.5 py-1 bg-white/5 border border-white/5 rounded-md text-zinc-300"
+                          className={`text-[11px] font-medium px-2.5 py-1 border rounded-md ${isDark
+                              ? "bg-white/5 border-white/5 text-zinc-300"
+                              : "bg-zinc-100 border-zinc-200 text-zinc-700"
+                            }`}
                         >
                           {tech}
                         </span>
@@ -419,7 +423,7 @@ export default function TerminalPortfolio() {
 
         {/* Footer */}
         <section className="pt-4 pb-12">
-          <div className="flex items-center justify-between border-t border-white/10 pt-6">
+          <div className={`flex items-center justify-between border-t pt-6 ${isDark ? "border-white/10" : "border-zinc-200"}`}>
             <p className="text-[12px] text-zinc-500 font-medium">
               © {new Date().getFullYear()} Siddharth Nirmale
             </p>
@@ -432,25 +436,31 @@ export default function TerminalPortfolio() {
 
 /* ---------------- UI COMPONENTS ---------------- */
 
-function SectionHeader({ title }) {
+function SectionHeader({ title, isDark }) {
   return (
     <div className="flex items-center gap-4 mb-2">
-      {/* Added font-heading */}
-      <h2 className="text-[14px] font-heading font-semibold tracking-wider uppercase text-white whitespace-nowrap">
+      <h2 className={`text-[14px] font-heading font-semibold tracking-wider uppercase whitespace-nowrap ${isDark ? "text-white" : "text-zinc-900"}`}>
         {title}
       </h2>
-      <div className="h-[1px] flex-1 bg-white/10"></div>
+      <div className={`h-[1px] flex-1 ${isDark ? "bg-white/10" : "bg-zinc-200"}`}></div>
     </div>
   );
 }
 
-function ActionButton({ icon, text, href, onClick, isButton, primary }) {
+function ActionButton({ icon, text, href, onClick, isButton, primary, isDark }) {
   const baseClasses =
     "inline-flex items-center justify-center gap-2 px-3 py-1.5 text-[12px] font-semibold rounded-md transition-all cursor-pointer border";
 
-  const styles = primary
-    ? "bg-white text-black border-transparent hover:bg-zinc-200 shadow-sm hover:scale-105 active:scale-95"
-    : "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95";
+  let styles = "";
+  if (primary) {
+    styles = isDark
+      ? "bg-white text-black border-transparent hover:bg-zinc-200 shadow-sm hover:scale-105 active:scale-95"
+      : "bg-zinc-900 text-white border-transparent hover:bg-zinc-800 shadow-sm hover:scale-105 active:scale-95";
+  } else {
+    styles = isDark
+      ? "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95"
+      : "bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-100 hover:text-zinc-900 hover:scale-105 active:scale-95 shadow-sm";
+  }
 
   if (isButton) {
     return (
@@ -471,13 +481,16 @@ function ActionButton({ icon, text, href, onClick, isButton, primary }) {
   );
 }
 
-function LinkBadge({ icon, text, href }) {
+function LinkBadge({ icon, text, href, isDark }) {
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white/5 border border-white/10 rounded text-[11px] font-medium text-zinc-300 hover:bg-white/10 hover:text-white transition-all hover:scale-105 active:scale-95"
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 border rounded text-[11px] font-medium transition-all hover:scale-105 active:scale-95 ${isDark
+          ? "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white"
+          : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 shadow-sm"
+        }`}
     >
       {icon} {text}
     </a>
