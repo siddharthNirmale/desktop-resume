@@ -20,38 +20,57 @@ export default function ContextMenu({ x, y, onClose, toggleWindow, bringToFront 
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.1 }}
+      transition={{ duration: 0.1, ease: "easeOut" }}
       style={{ top: y, left: x }}
       onContextMenu={(e) => e.preventDefault()}
-      // Swapped to surface-elevated and added your custom popover-shadow
-      className="fixed z-[999999] w-48 bg-[var(--color-surface-elevated)] border border-[var(--color-surface-border)] rounded-xl popover-shadow py-1.5 overflow-hidden transition-colors duration-250"
+      className="
+        fixed z-[999999] w-56 py-1.5
+        bg-[var(--color-surface-elevated)]/85 backdrop-blur-2xl
+        border border-[var(--color-surface-border)] rounded-xl
+        popover-shadow overflow-hidden font-primary
+      "
     >
-      <div className="px-3 py-1.5 mb-1 border-b border-[var(--color-surface-border)] transition-colors duration-250">
-        {/* Swapped neutral-500 to dynamic secondary text */}
-        <span className="text-micro font-bold text-[var(--color-text-secondary)] uppercase tracking-super-wide font-primary transition-colors duration-250">
+      {/* Header (Kept uppercase but softened) */}
+      <div className="px-3 py-1.5 mb-1">
+        <span className="text-[10px] font-semibold text-[var(--color-text-secondary)] uppercase tracking-[0.06em]">
           Desktop Actions
         </span>
       </div>
 
-      {menuItems.map((item) => (
-        <button
-          key={item.id}
-          onClick={(e) => { e.stopPropagation(); openApp(item.id); }}
-          // Hover uses surface-border to look like a native highlight
-          className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-[var(--color-text)] hover:text-[var(--color-accent)] hover:bg-[var(--color-surface-border)] transition-colors uppercase tracking-widest font-primary group"
-        >
-          {/* Icons use secondary color until hovered */}
-          <item.icon size={14} strokeWidth={2} className="text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)] transition-colors duration-200" />
-          {item.label}
+      {/* Menu Items Wrapper (Allows for inner padding so hover states have border-radius) */}
+      <div className="flex flex-col px-1.5">
+        {menuItems.map((item) => (
+          <button
+            key={item.id}
+            onClick={(e) => { e.stopPropagation(); openApp(item.id); }}
+            className="
+              w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-[6px]
+              text-[13px] font-medium text-[var(--color-text)]
+              hover:bg-[var(--color-accent)] hover:text-white
+              transition-colors cursor-default group focus:outline-none
+            "
+          >
+            {/* Icons flip to white to match the accent background on hover (macOS style) */}
+            <item.icon
+              size={14}
+              strokeWidth={2}
+              className="text-[var(--color-text-secondary)] group-hover:text-white transition-colors"
+            />
+            {item.label}
+          </button>
+        ))}
+
+        <div className="surface-divider h-[1px] w-full my-1 opacity-60" />
+
+        <button className="
+          w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-[6px]
+          text-[13px] font-medium text-[var(--color-text-tertiary)]
+          opacity-60 cursor-not-allowed focus:outline-none
+        ">
+          <Settings size={14} strokeWidth={2} className="text-[var(--color-text-tertiary)]" />
+          System Preferences
         </button>
-      ))}
-
-      <div className="h-px bg-[var(--color-surface-border)] my-1 mx-2 transition-colors duration-250" />
-
-      <button className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-[var(--color-text-tertiary)] opacity-60 cursor-not-allowed uppercase tracking-widest font-primary transition-colors duration-250">
-        <Settings size={14} strokeWidth={2} className="text-[var(--color-text-tertiary)]" />
-        System Preferences
-      </button>
+      </div>
     </motion.div>
   );
 }
