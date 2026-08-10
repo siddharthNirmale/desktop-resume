@@ -1,75 +1,51 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import useWindows from "./hooks/useWindows";
-import Preloader from "./components/Preloader";
 
-// Display Modes
+// Hooks
+import useWindows from "./hooks/useWindows";
+import useIsMobile from "./hooks/useIsMobile";
+import useContextMenu from "./hooks/useContextMenu";
+
+// Components
+import Preloader from "./components/Preloader";
 import DesktopDisplay from "./mode/DesktopDisplay";
 import SmallDisplay from "./mode/SmallDisplay";
 
+// Config (Centralized outside the render cycle)
+import { initialWindowsConfig } from "./config/windowsConfig";
+
 export default function App() {
-  const [wallpaper, setWallpaper] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [menu, setMenu] = useState({ show: false, x: 0, y: 0 });
-  const [isMobile, setIsMobile] = useState(false);
+  const [wallpaper, setWallpaper] = useState("");
 
   const desktopRef = useRef(null);
 
-  // Responsive screen size listener (Up to 768 handles iPads/Tablets and below)
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  // Abstracted logic into custom hooks for clean architecture
+  const isMobile = useIsMobile(768);
+  const { menu, handleContextMenu, closeMenu } = useContextMenu(isMobile);
 
-  // Viewport-percentage calculation helpers for safe initialization
-  const vw = (pct) => (typeof window !== "undefined" ? Math.round(window.innerWidth * pct) : 800);
-  const vh = (pct) => (typeof window !== "undefined" ? Math.round(window.innerHeight * pct) : 600);
-
-  const { windows, bringToFront, toggleWindow } = useWindows([
-    { id: "about", title: "About", isOpen: true, type: "window", defaultWidth: vw(0.7), defaultHeight: vh(0.75) },
-    { id: "projects", title: "Projects", isOpen: false, type: "window", defaultWidth: vw(0.7), defaultHeight: vh(0.75) },
-    { id: "notepad", title: "Notes", isOpen: false, type: "window", defaultWidth: vw(0.6), defaultHeight: vh(0.65) },
-    { id: "contact", title: "Contact", isOpen: false, type: "window", defaultWidth: vw(0.5), defaultHeight: vh(0.6) },
-    { id: "terminal", title: "Terminal", isOpen: false, type: "window", defaultWidth: vw(0.6), defaultHeight: vh(0.55) },
-    { id: "resume", title: "Resume", isOpen: false, type: "window", defaultWidth: vw(0.7), defaultHeight: vh(0.8) },
-
-    { id: "clock", title: "Local Time", isOpen: true, type: "widget" },
-    { id: "github", title: "Contributions", isOpen: true, type: "widget" },
-    { id: "learning", title: "Learning", isOpen: true, type: "widget" },
-    { id: "weather", title: "Weather", isOpen: true, type: "widget" },
-    { id: "theme", title: "Appearance", isOpen: true, type: "widget" },
-    { id: "skills", title: "Skills", isOpen: true, type: "widget" },
-  ]);
-
-  const handleContextMenu = (e) => {
-    if (isMobile) return;
-    e.preventDefault();
-    setMenu({ show: true, x: e.clientX, y: e.clientY });
-  };
-
-  const closeMenu = () => {
-    if (menu.show) setMenu({ show: false, x: 0, y: 0 });
-  };
+  // Passed centralized config to the windows manager
+  const { windows, bringToFront, toggleWindow } = useWindows(initialWindowsConfig);
 
   return (
-    <div
+    <main
       ref={desktopRef}
       onContextMenu={handleContextMenu}
       onClick={closeMenu}
-      className="w-screen h-screen relative overflow-hidden select-none"
+      className="relative w-screen h-screen overflow-hidden select-none bg-black text-white"
     >
-      <AnimatePresence>
+      {/* PRINCIPLE: Fluid, purposeful motion for state changes */}
+      <AnimatePresence mode="wait">
         {isLoading && (
-          <Preloader onLoadingComplete={() => setIsLoading(false)} />
+          <Preloader
+            key="preloader"
+            onLoadingComplete={() => setIsLoading(false)}
+          />
         )}
       </AnimatePresence>
 
       {!isLoading && (
-        <>
+        <div className="absolute inset-0 w-full h-full">
           {isMobile ? (
             <SmallDisplay
               windows={windows}
@@ -78,18 +54,18 @@ export default function App() {
             />
           ) : (
             <DesktopDisplay
+              desktopRef={desktopRef}
               windows={windows}
               toggleWindow={toggleWindow}
               bringToFront={bringToFront}
               menu={menu}
               closeMenu={closeMenu}
-              desktopRef={desktopRef}
-              setWallpaper={setWallpaper}
               wallpaper={wallpaper}
+              setWallpaper={setWallpaper}
             />
           )}
-        </>
+        </div>
       )}
-    </div>
+    </main>
   );
 }

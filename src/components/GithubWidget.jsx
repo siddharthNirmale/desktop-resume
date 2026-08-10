@@ -4,45 +4,67 @@ import { motion } from 'framer-motion';
 
 const GitHubCalendar = GitHubCalendarNamespace.default || GitHubCalendarNamespace.GitHubCalendar;
 
-export default function GithubWidget({
-  constraintsRef,
-  zIndex,
-  onFocus,
-}) {
+// ============================================================
+// HELPER FUNCTIONS (Extracted from render cycle)
+// ============================================================
+const hexToRgb = (hex) => {
+  const clean = hex.replace('#', '');
+  return {
+    r: parseInt(clean.substring(0, 2), 16),
+    g: parseInt(clean.substring(2, 4), 16),
+    b: parseInt(clean.substring(4, 6), 16),
+  };
+};
+
+const filterLastFiveMonths = (contributions) => {
+  const today = new Date();
+  const startWindow = new Date();
+  startWindow.setDate(today.getDate() - 150);
+
+  return contributions.filter((day) => {
+    const date = new Date(day.date);
+    return date >= startWindow && date <= today;
+  });
+};
+
+// ============================================================
+// GITHUB WIDGET
+// ============================================================
+export default function GithubWidget({ constraintsRef, zIndex, onFocus }) {
   const [isReady, setIsReady] = useState(false);
   const [accent, setAccent] = useState('#0A84FF');
   const [isLightMode, setIsLightMode] = useState(false);
 
+  // Sync React state with Vanilla DOM mutations (Theme & Accent)
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     const root = document.documentElement;
     const body = document.body;
 
     const updateThemeState = () => {
-      // 1. Get the current accent color
       const currentAccent = getComputedStyle(root).getPropertyValue('--color-accent').trim() || '#0A84FF';
       setAccent(currentAccent);
-
-      // 2. Check if body has the light theme class active
       setIsLightMode(body.classList.contains('light-theme'));
     };
 
+    // Initial sync
     updateThemeState();
 
+    // Listen for DOM changes
     const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
+      for (const mutation of mutations) {
         if (mutation.type === 'attributes') {
           updateThemeState();
         }
-      });
+      }
     });
 
-    // Observe root for style changes (accent) and body for class changes (light/dark toggle)
     observer.observe(root, { attributes: true, attributeFilter: ['style'] });
     observer.observe(body, { attributes: true, attributeFilter: ['class'] });
 
-    const timer = setTimeout(() => {
-      setIsReady(true);
-    }, 600);
+    // Delay showing the widget slightly for smoother entry
+    const timer = setTimeout(() => setIsReady(true), 600);
 
     return () => {
       clearTimeout(timer);
@@ -51,19 +73,9 @@ export default function GithubWidget({
   }, []);
 
   const customTheme = useMemo(() => {
-    const hexToRgb = (hex) => {
-      const clean = hex.replace('#', '');
-      return {
-        r: parseInt(clean.substring(0, 2), 16),
-        g: parseInt(clean.substring(2, 4), 16),
-        b: parseInt(clean.substring(4, 6), 16),
-      };
-    };
-
     const { r, g, b } = hexToRgb(accent);
 
     return {
-      // Standard dark mode palette (white empty squares)
       dark: [
         'rgba(255, 255, 255, 0.04)',
         `rgba(${r}, ${g}, ${b}, 0.25)`,
@@ -71,7 +83,6 @@ export default function GithubWidget({
         `rgba(${r}, ${g}, ${b}, 0.75)`,
         accent,
       ],
-      // Light mode palette (dark empty squares for contrast)
       light: [
         'rgba(0, 0, 0, 0.04)',
         `rgba(${r}, ${g}, ${b}, 0.35)`,
@@ -82,17 +93,6 @@ export default function GithubWidget({
     };
   }, [accent]);
 
-  const filterLastFiveMonths = (contributions) => {
-    const today = new Date();
-    const startWindow = new Date();
-    startWindow.setDate(today.getDate() - 150);
-
-    return contributions.filter((day) => {
-      const date = new Date(day.date);
-      return date >= startWindow && date <= today;
-    });
-  };
-
   return (
     <motion.div
       drag
@@ -100,36 +100,25 @@ export default function GithubWidget({
       dragConstraints={constraintsRef}
       dragElastic={0.08}
       onPointerDown={onFocus}
-      style={{
-        zIndex,
-        touchAction: 'none',
-      }}
-      whileDrag={{
-        cursor: 'grabbing',
-      }}
-      initial={{
-        opacity: 0,
-        scale: 0.96,
-      }}
-      animate={{
-        opacity: 1,
-        scale: 1,
-      }}
-      exit={{ opacity: 0 }}
-      transition={{
-        type: 'spring',
-        stiffness: 360,
-        damping: 28,
-      }}
-      // Increased blur, removed shadow, and applied rounded-[24px] for the cohesive Apple look
-      className="custom-widget absolute bottom-5 left-5 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-2xl border border-white/5 rounded-[24px] p-4.5 cursor-grab select-none font-primary pointer-events-auto transition-colors duration-250"
+      style={{ zIndex, touchAction: 'none', willChange: 'transform, opacity' }}
+      whileDrag={{ cursor: 'grabbing', scale: 1.015 }}
+      initial={{ opacity: 0, scale: 0.96, y: 10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.96, y: 8 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+      className="
+        custom-widget absolute bottom-5 left-6 w-[280px]
+        bg-[var(--color-surface)]/80 backdrop-blur-2xl
+        border border-[var(--color-surface-border)] rounded-[var(--radius-window)]
+        p-4.5 cursor-grab select-none pointer-events-auto popover-shadow
+      "
     >
       <div className="flex items-center justify-between mb-3.5 px-0.5">
-        <span className="text-[11px] font-medium uppercase tracking-wider text-[var(--color-text-tertiary)] transition-colors duration-250">
+        <span className="text-[11px] font-medium uppercase tracking-wider text-[var(--color-text-tertiary)]">
           Contributions
         </span>
         {isReady && (
-          <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] font-mono tracking-wide transition-colors duration-250">
+          <span className="text-[11px] font-medium font-mono tracking-wide text-[var(--color-text-tertiary)]">
             siddharthNirmale
           </span>
         )}
@@ -142,7 +131,6 @@ export default function GithubWidget({
         {GitHubCalendar && (
           <GitHubCalendar
             username="siddharthNirmale"
-            // Dynamically flip the package's internal color scheme
             colorScheme={isLightMode ? "light" : "dark"}
             theme={customTheme}
             transformData={filterLastFiveMonths}
@@ -153,7 +141,6 @@ export default function GithubWidget({
             hideColorLegend
             hideTotalCount
             style={{
-              // Passed our CSS variable directly to the inline style for text!
               color: 'var(--color-text-tertiary)',
               fontFamily: 'var(--font-primary)',
             }}

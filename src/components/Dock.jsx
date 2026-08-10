@@ -1,21 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import {
-  Sun,
-  Moon,
-  User,
-  Briefcase,
-  FileText,
-  SquarePen,
-  Mail,
-  Terminal
-} from "lucide-react";
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
+import { Sun, Moon, User, Briefcase, FileText, SquarePen, Mail, Terminal } from "lucide-react";
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 
 // ─── Apple-Tuned Physics ────────────────────────────────
 const DOCK_ICON_SIZE = 42;
@@ -23,33 +8,17 @@ const DOCK_ICON_MAX = 64;
 const MAGNIFY_RADIUS = 110;
 const SPRING = { stiffness: 400, damping: 32, mass: 0.8 };
 
-// ─── per-icon magnification hook ────────────────────────
-function useMagnify(mouseX, ref) {
-  const dist = useMotionValue(Infinity);
+// ─── Dock Configuration ─────────────────────────────────
+const DOCK_ITEMS = [
+  { id: "about", icon: User, label: "About Me" },
+  { id: "projects", icon: Briefcase, label: "Projects" },
+  { id: "resume", icon: FileText, label: "Resume" },
+  { id: "notepad", icon: SquarePen, label: "Notes" },
+  { id: "contact", icon: Mail, label: "Contact" },
+  { id: "sep1", type: "separator" },
+  { id: "terminal", icon: Terminal, label: "Terminal" },
+];
 
-  useEffect(() => {
-    return mouseX.on("change", (mx) => {
-      if (!ref.current) return;
-      const { left, width } = ref.current.getBoundingClientRect();
-      dist.set(Math.abs(mx - (left + width / 2)));
-    });
-  }, [mouseX, ref, dist]);
-
-  const rawScale = useTransform(
-    dist,
-    [0, MAGNIFY_RADIUS],
-    [DOCK_ICON_MAX / DOCK_ICON_SIZE, 1],
-    { clamp: true }
-  );
-  const rawY = useTransform(dist, [0, MAGNIFY_RADIUS], [-10, 0], { clamp: true });
-
-  return {
-    scale: useSpring(rawScale, SPRING),
-    y: useSpring(rawY, SPRING),
-  };
-}
-
-// ─── icon gradient palette ───────────────────────────────
 const ICON_GRADIENTS = {
   about: ["#2a2a72", "#009ffd"],
   projects: ["#f7971e", "#ffd200"],
@@ -65,40 +34,40 @@ function iconBg(id) {
   return `linear-gradient(145deg, ${a}, ${b})`;
 }
 
-// ─── Glass shell shared by every icon ───────────────────
+// ─── Custom Hooks ───────────────────────────────────────
+function useMagnify(mouseX, ref) {
+  const dist = useMotionValue(Infinity);
+
+  useEffect(() => {
+    return mouseX.on("change", (mx) => {
+      if (!ref.current) return;
+      const { left, width } = ref.current.getBoundingClientRect();
+      dist.set(Math.abs(mx - (left + width / 2)));
+    });
+  }, [mouseX, ref, dist]);
+
+  const rawScale = useTransform(dist, [0, MAGNIFY_RADIUS], [DOCK_ICON_MAX / DOCK_ICON_SIZE, 1], { clamp: true });
+  const rawY = useTransform(dist, [0, MAGNIFY_RADIUS], [-10, 0], { clamp: true });
+
+  return {
+    scale: useSpring(rawScale, SPRING),
+    y: useSpring(rawY, SPRING),
+  };
+}
+
+// ─── Shared UI Components ───────────────────────────────
 function IconShell({ id, size, children }) {
   return (
     <div
-      style={{
-        width: size,
-        height: size,
-        borderRadius: "22.5%",
-        background: iconBg(id),
-        position: "relative",
-        overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        border: "1px solid rgba(255,255,255,0.2)",
-        boxShadow: "0 10px 20px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.4)",
-        flexShrink: 0,
-      }}
+      className="relative flex shrink-0 items-center justify-center overflow-hidden border border-white/20 shadow-[0_10px_20px_rgba(0,0,0,0.25),inset_0_1px_1px_rgba(255,255,255,0.4)]"
+      style={{ width: size, height: size, borderRadius: "22.5%", background: iconBg(id) }}
     >
-      <span
-        style={{
-          position: "absolute",
-          inset: "0 0 auto 0",
-          height: "50%",
-          background: "linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 100%)",
-          pointerEvents: "none",
-        }}
-      />
+      <span className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/25 to-transparent pointer-events-none" />
       {children}
     </div>
   );
 }
 
-// ─── tooltip ────────────────────────────────────────────
 function Tooltip({ label, visible }) {
   return (
     <AnimatePresence>
@@ -108,27 +77,12 @@ function Tooltip({ label, visible }) {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 5, scale: 0.95 }}
           transition={{ duration: 0.15, ease: "easeOut" }}
-          style={{
-            position: "absolute",
-            bottom: "calc(100% + 14px)",
-            left: "50%",
-            transform: "translateX(-50%)",
-            whiteSpace: "nowrap",
-            fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-            fontSize: 13,
-            fontWeight: 400,
-            letterSpacing: "0.2px",
-            color: "rgba(255,255,255,0.95)",
-            background: "rgba(30, 30, 30, 0.75)",
-            border: "0.5px solid rgba(255,255,255,0.15)",
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
-            padding: "6px 12px",
-            borderRadius: 6,
-            pointerEvents: "none",
-            zIndex: 99999,
-            boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-          }}
+          className="
+            absolute bottom-[calc(100%+14px)] left-1/2 -translate-x-1/2
+            whitespace-nowrap px-3 py-1.5 rounded-md pointer-events-none z-[99999]
+            font-primary text-[13px] tracking-wide text-white/95
+            bg-[#1e1e1e]/75 backdrop-blur-xl border border-white/15 shadow-lg
+          "
         >
           {label}
         </motion.span>
@@ -137,10 +91,9 @@ function Tooltip({ label, visible }) {
   );
 }
 
-// ─── running dot ────────────────────────────────────────
 function RunningDot({ isOpen, isMinimized }) {
   return (
-    <div style={{ height: 8, display: "flex", alignItems: "center", justifyContent: "center", marginTop: 4 }}>
+    <div className="flex h-2 items-center justify-center mt-1">
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -149,13 +102,7 @@ function RunningDot({ isOpen, isMinimized }) {
             animate={{ scale: 1, opacity: isMinimized ? 0.4 : 1 }}
             exit={{ scale: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            style={{
-              width: 4,
-              height: 4,
-              borderRadius: "50%",
-              background: "#e5e5e5",
-              boxShadow: isMinimized ? "none" : "0 0 4px rgba(255,255,255,0.5)",
-            }}
+            className={`w-1 h-1 rounded-full bg-[#e5e5e5] ${!isMinimized ? "shadow-[0_0_4px_rgba(255,255,255,0.5)]" : ""}`}
           />
         )}
       </AnimatePresence>
@@ -163,8 +110,11 @@ function RunningDot({ isOpen, isMinimized }) {
   );
 }
 
-// ─── DockIcon ────────────────────────────────────────────
-// Note: Changed `image` to `icon: IconComponent`
+function Sep() {
+  return <div className="w-[1px] h-8 mx-2 mb-3.5 bg-white/15 shrink-0 self-end" />;
+}
+
+// ─── DockIcon ───────────────────────────────────────────
 function DockIcon({ id, icon: IconComponent, label, badge, windows, toggleWindow, bringToFront, mouseX }) {
   const ref = useRef(null);
   const { scale, y } = useMagnify(mouseX, ref);
@@ -194,20 +144,15 @@ function DockIcon({ id, icon: IconComponent, label, badge, windows, toggleWindow
     idle: { y: 0 },
     tapping: {
       y: [0, -25, 0, -12, 0],
-      transition: {
-        duration: 0.7,
-        times: [0, 0.3, 0.55, 0.8, 1],
-        ease: ["easeOut", "easeIn", "easeOut", "easeIn"]
-      },
+      transition: { duration: 0.7, times: [0, 0.3, 0.55, 0.8, 1], ease: ["easeOut", "easeIn", "easeOut", "easeIn"] },
     },
   };
-
-  const iconPx = DOCK_ICON_SIZE;
 
   return (
     <div
       ref={ref}
-      style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", width: iconPx + 20 }}
+      className="relative flex flex-col items-center justify-end"
+      style={{ width: DOCK_ICON_SIZE + 20 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -215,40 +160,25 @@ function DockIcon({ id, icon: IconComponent, label, badge, windows, toggleWindow
 
       <motion.button
         type="button"
-        style={{ scale, y, background: "none", border: "none", padding: 0, cursor: "pointer", outline: "none", display: "flex", flexDirection: "column", alignItems: "center" }}
+        style={{ scale, y }}
+        className="flex flex-col items-center bg-transparent border-none p-0 cursor-pointer outline-none"
         variants={bounceVariants}
         animate={tapping ? "tapping" : "idle"}
         whileTap={{ scale: 0.9, transition: { duration: 0.1 } }}
-        onClick={handleClick}
         aria-label={label}
+        onClick={handleClick}
       >
-        <IconShell id={id} size={iconPx}>
-          {/* Using Lucide React Icons here */}
-          <IconComponent
-            size={iconPx * 0.55}
-            color="rgba(255,255,255,0.9)"
-            strokeWidth={1.8}
-          />
+        <IconShell id={id} size={DOCK_ICON_SIZE}>
+          <IconComponent size={DOCK_ICON_SIZE * 0.55} color="rgba(255,255,255,0.9)" strokeWidth={1.8} />
         </IconShell>
 
-        {/* badge */}
         <AnimatePresence>
           {badge > 0 && (
             <motion.div
               initial={{ scale: 0.3, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.3, opacity: 0 }}
-              style={{
-                position: "absolute", top: -4, right: -2,
-                minWidth: 20, height: 20, padding: "0 6px",
-                background: "#FF3B30",
-                color: "#fff", fontSize: 11, fontWeight: 600,
-                borderRadius: 999,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                border: "1px solid rgba(0,0,0,0.1)",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
-                zIndex: 10,
-              }}
+              className="absolute -top-1 -right-0.5 min-w-[20px] h-5 px-1.5 flex items-center justify-center rounded-full bg-[#FF3B30] text-white text-[11px] font-semibold border border-black/10 shadow-md z-10"
             >
               {badge}
             </motion.div>
@@ -261,17 +191,17 @@ function DockIcon({ id, icon: IconComponent, label, badge, windows, toggleWindow
   );
 }
 
-// ─── ThemeButton ─────────────────────────────────────────
+// ─── ThemeButton ────────────────────────────────────────
 function ThemeButton({ isLight, onToggle, mouseX }) {
   const ref = useRef(null);
   const { scale, y } = useMagnify(mouseX, ref);
   const [hovered, setHovered] = useState(false);
-  const iconPx = DOCK_ICON_SIZE;
 
   return (
     <div
       ref={ref}
-      style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", width: iconPx + 20 }}
+      className="relative flex flex-col items-center justify-end"
+      style={{ width: DOCK_ICON_SIZE + 20 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -279,12 +209,13 @@ function ThemeButton({ isLight, onToggle, mouseX }) {
 
       <motion.button
         type="button"
-        style={{ scale, y, background: "none", border: "none", padding: 0, cursor: "pointer", outline: "none" }}
+        style={{ scale, y }}
+        className="flex flex-col items-center bg-transparent border-none p-0 cursor-pointer outline-none"
         whileTap={{ scale: 0.9, transition: { duration: 0.1 } }}
         onClick={onToggle}
         aria-label={isLight ? "Switch to dark mode" : "Switch to light mode"}
       >
-        <IconShell id="theme" size={iconPx}>
+        <IconShell id="theme" size={DOCK_ICON_SIZE}>
           <AnimatePresence mode="wait">
             <motion.div
               key={isLight ? "moon" : "sun"}
@@ -292,47 +223,31 @@ function ThemeButton({ isLight, onToggle, mouseX }) {
               animate={{ opacity: 1, rotate: 0, scale: 1 }}
               exit={{ opacity: 0, rotate: 40, scale: 0.55 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              style={{ display: "flex" }}
+              className="flex"
             >
               {isLight ? (
-                <Moon size={iconPx * 0.55} strokeWidth={1.8} color="rgba(255,255,255,0.9)" />
+                <Moon size={DOCK_ICON_SIZE * 0.55} strokeWidth={1.8} color="rgba(255,255,255,0.9)" />
               ) : (
-                <Sun size={iconPx * 0.55} strokeWidth={1.8} color="rgba(255,220,80,0.95)" />
+                <Sun size={DOCK_ICON_SIZE * 0.55} strokeWidth={1.8} color="rgba(255,220,80,0.95)" />
               )}
             </motion.div>
           </AnimatePresence>
         </IconShell>
       </motion.button>
 
-      <div style={{ height: 12 }} />
+      <div className="h-3" />
     </div>
   );
 }
 
-// ─── Separator ───────────────────────────────────────────
-function Sep() {
-  return (
-    <div
-      style={{
-        width: 1,
-        height: 32,
-        margin: "0 8px 14px",
-        background: "rgba(255,255,255,0.15)",
-        flexShrink: 0,
-        alignSelf: "flex-end",
-      }}
-    />
-  );
-}
-
-// ─── Dock ─────────────────────────────────────────────────
+// ─── Main Dock Component ────────────────────────────────
 export default function Dock({ windows, toggleWindow, bringToFront }) {
   const [isLight, setIsLight] = useState(false);
   const mouseX = useMotionValue(Infinity);
   const dockRef = useRef(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem("theme");
+    const saved = localStorage.getItem("os-theme");
     const prefLight = window.matchMedia("(prefers-color-scheme: light)").matches;
     const light = saved ? saved === "light" : prefLight;
     setIsLight(light);
@@ -341,7 +256,7 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
   }, []);
 
   const onMouseMove = useCallback((e) => mouseX.set(e.clientX), [mouseX]);
-  const onMouseLeave = useCallback((e) => mouseX.set(Infinity), [mouseX]);
+  const onMouseLeave = useCallback(() => mouseX.set(Infinity), [mouseX]);
 
   const handleThemeToggle = useCallback((e) => {
     const nextLight = !isLight;
@@ -349,14 +264,14 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
     const apply = () => {
       document.documentElement.classList.toggle("light-theme", nextLight);
       document.body.classList.toggle("light-theme", nextLight);
-      localStorage.setItem("theme", nextLight ? "light" : "dark");
+      localStorage.setItem("os-theme", nextLight ? "light" : "dark");
       setIsLight(nextLight);
     };
 
     if (typeof document.startViewTransition !== "function") { apply(); return; }
 
     const { clientX: x, clientY: y } = e;
-    const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    const r = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
     const t = document.startViewTransition(apply);
     t.ready.then(() => {
       document.documentElement.animate(
@@ -369,16 +284,7 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
   const shared = { windows, toggleWindow, bringToFront, mouseX };
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        bottom: 12,
-        left: "50%",
-        transform: "translateX(-50%)",
-        zIndex: 99999,
-        pointerEvents: "auto",
-      }}
-    >
+    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-[99999] pointer-events-auto">
       <motion.div
         ref={dockRef}
         onMouseMove={onMouseMove}
@@ -386,33 +292,17 @@ export default function Dock({ windows, toggleWindow, bringToFront }) {
         initial={{ y: 110, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 240, damping: 25, delay: 0.08 }}
-        style={{
-          position: "relative",
-          display: "flex",
-          alignItems: "flex-end",
-          padding: "8px 12px 6px",
-          gap: 6,
-          borderRadius: 24,
-          background: "rgba(255, 255, 255, 0.08)",
-          border: "0.5px solid rgba(255,255,255,0.15)",
-          backdropFilter: "blur(50px) saturate(180%)",
-          WebkitBackdropFilter: "blur(50px) saturate(180%)",
-          boxShadow: "0 30px 60px rgba(0,0,0,0.3), 0 10px 20px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.2)",
-        }}
+        className="
+          relative flex items-end px-3 pt-2 pb-1.5 gap-1.5 rounded-[24px]
+          bg-white/10 border border-white/15 backdrop-blur-2xl saturate-150
+          shadow-[0_30px_60px_rgba(0,0,0,0.3),0_10px_20px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.2)]
+        "
       >
-        {/* Pass the Lucide component directly via the `icon` prop */}
-        <DockIcon id="about" icon={User} label="About Me"  {...shared} />
-        <DockIcon id="projects" icon={Briefcase} label="Projects"  {...shared} />
-        <DockIcon id="resume" icon={FileText} label="Resume"    {...shared} />
-        <DockIcon id="notepad" icon={SquarePen} label="Notes"     {...shared} />
-        <DockIcon id="contact" icon={Mail} label="Contact"   {...shared} />
-
+        {DOCK_ITEMS.map((item) => {
+          if (item.type === "separator") return <Sep key={item.id} />;
+          return <DockIcon key={item.id} {...item} {...shared} />;
+        })}
         <Sep />
-
-        <DockIcon id="terminal" icon={Terminal} label="Terminal"  {...shared} />
-
-        <Sep />
-
         <ThemeButton isLight={isLight} onToggle={handleThemeToggle} mouseX={mouseX} />
       </motion.div>
     </div>
