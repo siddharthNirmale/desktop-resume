@@ -49,9 +49,8 @@ const iconMap = {
 
 export default function ResumeSection() {
   const handleDownload = () => {
-    const resumeUrl = resume;
     const link = document.createElement("a");
-    link.href = resumeUrl;
+    link.href = resume;
     link.setAttribute("download", "Siddharth_Nirmale_Resume.pdf");
     document.body.appendChild(link);
     link.click();
@@ -59,14 +58,14 @@ export default function ResumeSection() {
   };
 
   return (
-    <div className="w-full min-h-full bg-[var(--color-surface)] text-[var(--color-text)] flex flex-col font-primary selection:bg-[var(--color-accent)] selection:text-white transition-colors duration-250">
+    <div className="w-full min-h-full bg-[var(--color-surface)] text-[var(--color-text)] flex flex-col font-primary selection:bg-[var(--color-accent)] selection:text-white">
       {/* Editorial Sub-Header Area */}
-      <div className="px-8 py-5 border-b border-[var(--color-surface-border)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-b from-[var(--color-surface-border)] to-transparent shrink-0 transition-colors duration-250">
+      <header className="px-8 py-5 border-b border-[var(--color-surface-border)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-b from-[var(--color-surface-border)] to-transparent shrink-0">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-[var(--color-text)] transition-colors duration-250">
+          <h1 className="text-xl font-semibold tracking-tight text-[var(--color-text)]">
             Siddharth_Resume.pdf
           </h1>
-          <p className="text-[12px] text-[var(--color-text-tertiary)] mt-0.5 transition-colors duration-250">
+          <p className="text-[12px] text-[var(--color-text-tertiary)] mt-0.5">
             Here is my professional resume, showcasing my skills, projects, and academic achievements. You can download the PDF version for your reference.
           </p>
         </div>
@@ -75,33 +74,32 @@ export default function ResumeSection() {
         <div className="flex items-center gap-4">
           <button
             onClick={handleDownload}
-            // Button keeps explicit white text so it always contrasts against dynamic accent colors
-            className="flex items-center gap-2 py-1.5 px-3 rounded-md bg-[var(--color-accent)] text-white text-[12px] font-medium hover:brightness-110 active:brightness-90 transition-all duration-150 shadow-sm focus:outline-none"
+            className="flex items-center gap-2 py-1.5 px-3 rounded-md bg-[var(--color-accent)] text-white text-[12px] font-medium hover:brightness-110 active:brightness-90 transition-all duration-150 shadow-sm focus:outline-none cursor-default"
           >
             <FiDownload size={13} />
             Download PDF
           </button>
         </div>
-      </div>
+      </header>
 
       {/* Main Document Workspace Scroll Area */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-8 max-w-4xl w-full mx-auto space-y-8">
+      <main className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-8 max-w-4xl w-full mx-auto space-y-8">
 
         {/* Personal Header Identity Grid */}
-        <div className="flex flex-col md:flex-row justify-between items-start gap-6 pb-6 border-b border-[var(--color-surface-border)] transition-colors duration-250">
+        <div className="flex flex-col md:flex-row justify-between items-start gap-6 pb-6 border-b border-[var(--color-surface-border)]">
           <div className="space-y-1">
-            <h2 className="text-2xl font-bold tracking-tight text-[var(--color-text)] transition-colors duration-250">
+            <h2 className="text-2xl font-bold tracking-tight text-[var(--color-text)]">
               Siddharth Nirmale
             </h2>
-            <p className="text-[14px] font-medium text-[var(--color-accent)] transition-colors duration-250">
+            <p className="text-[14px] font-medium text-[var(--color-accent)]">
               Full Stack Software Developer
             </p>
-            <p className="text-[12px] text-[var(--color-text-tertiary)] flex items-center gap-1.5 pt-1 transition-colors duration-250">
+            <p className="text-[12px] text-[var(--color-text-tertiary)] flex items-center gap-1.5 pt-1">
               <FiMapPin size={12} /> Indore, India
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-[13px] text-[var(--color-text-secondary)] font-normal transition-colors duration-250">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-[13px] text-[var(--color-text-secondary)] font-normal">
             <Info icon={<FiPhone size={13} />} text="+91 77238 24225" href="tel:+917723824225" />
             <Info icon={<FiMail size={13} />} text="siddharth175nirmale1@gmail.com" href="mailto:siddharth175nirmale1@gmail.com" />
             <Info icon={<FaGithub size={13} />} text="github.com/siddharthNirmale" href="https://github.com/siddharthNirmale" />
@@ -125,14 +123,14 @@ export default function ResumeSection() {
             <SectionTitle icon={<GraduationCap size={15} />} title="Education" />
             <Panel title="Madhav Institute of Technology & Science (MITS)">
               <div className="flex justify-between items-start flex-wrap gap-2">
-                <p className="text-[14px] text-[var(--color-text-secondary)] transition-colors duration-250">
+                <p className="text-[14px] text-[var(--color-text-secondary)]">
                   B.Tech Engineering in Electronics & Telecommunication
                 </p>
-                <span className="text-[12px] text-[var(--color-text-tertiary)] font-medium transition-colors duration-250">
+                <span className="text-[12px] text-[var(--color-text-tertiary)] font-medium">
                   2020 — 2024
                 </span>
               </div>
-              <p className="text-[12px] text-[var(--color-accent)] font-medium mt-1 transition-colors duration-250">
+              <p className="text-[12px] text-[var(--color-accent)] font-medium mt-1">
                 Graduated with Honors Summary | Cumulative Grade: 8.49 / 10
               </p>
             </Panel>
@@ -145,25 +143,25 @@ export default function ResumeSection() {
               {projects.map((project) => (
                 <Panel key={project.title} title={project.title}>
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-[11px] font-semibold text-[var(--color-accent)] uppercase tracking-wider transition-colors duration-250">
+                    <span className="text-[11px] font-semibold text-[var(--color-accent)] uppercase tracking-wider">
                       {project.tech}
                     </span>
-                    <span className="text-[12px] text-[var(--color-text-tertiary)] font-medium transition-colors duration-250">
+                    <span className="text-[12px] text-[var(--color-text-tertiary)] font-medium">
                       {project.year}
                     </span>
                   </div>
 
-                  <ul className="space-y-1.5 text-[13px] text-[var(--color-text-secondary)] pl-4 list-disc marker:text-[var(--color-text-tertiary)] transition-colors duration-250">
+                  <ul className="space-y-1.5 text-[13px] text-[var(--color-text-secondary)] pl-4 list-disc marker:text-[var(--color-text-tertiary)]">
                     {project.bullets.map((item, index) => (
                       <li key={index} className="leading-relaxed">{item}</li>
                     ))}
                   </ul>
 
                   <a
-                    href={`${project.live}`}
+                    href={project.live}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 mt-4 text-[12px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors border border-[var(--color-surface-border)] rounded-md px-2.5 py-1 bg-[var(--color-surface-border)] hover:bg-[var(--color-surface-inactive)]"
+                    className="inline-flex items-center gap-1.5 mt-4 text-[12px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors border border-[var(--color-surface-border)] rounded-md px-2.5 py-1 bg-[var(--color-surface-border)] hover:bg-[var(--color-surface-inactive)] cursor-default"
                   >
                     <FiExternalLink size={12} />
                     Production Build
@@ -176,10 +174,10 @@ export default function ResumeSection() {
           {/* Skills Core Grid System */}
           <div className="space-y-4">
             <SectionTitle icon={<Briefcase size={14} />} title="Technical Core Competencies" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[var(--color-surface-inactive)] rounded-xl p-5 border border-[var(--color-surface-border)] transition-colors duration-250">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[var(--color-surface-inactive)] rounded-xl p-5 border border-[var(--color-surface-border)]">
               {skills.map((skillGroup) => (
                 <div key={skillGroup.category} className="space-y-2">
-                  <div className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider transition-colors duration-250">
+                  <div className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider">
                     {skillGroup.category}
                   </div>
                   <div className="flex flex-wrap gap-1.5">
@@ -197,7 +195,7 @@ export default function ResumeSection() {
           </div>
 
         </div>
-      </div>
+      </main>
     </div>
   );
 }
@@ -206,7 +204,7 @@ export default function ResumeSection() {
 
 function SectionTitle({ icon, title }) {
   return (
-    <div className="flex items-center gap-2 pb-1.5 border-b border-[var(--color-surface-border)] transition-colors duration-250">
+    <div className="flex items-center gap-2 pb-1.5 border-b border-[var(--color-surface-border)]">
       <span className="text-[var(--color-text-tertiary)]">{icon}</span>
       <h3 className="text-[12px] font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">
         {title}
@@ -217,7 +215,7 @@ function SectionTitle({ icon, title }) {
 
 function Panel({ title, children }) {
   return (
-    <div className="bg-[var(--color-surface-inactive)] border border-[var(--color-surface-border)] rounded-xl p-5 space-y-3 shadow-sm hover:border-[var(--color-window-border)] transition-colors duration-250">
+    <div className="bg-[var(--color-surface-inactive)] border border-[var(--color-surface-border)] rounded-xl p-5 space-y-3 shadow-sm hover:border-[var(--color-window-border)] transition-colors duration-200">
       {title && (
         <h4 className="text-[15px] font-semibold text-[var(--color-text)] tracking-tight">
           {title}
@@ -234,7 +232,7 @@ function Info({ icon, text, href }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-2.5 text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors duration-150 truncate group"
+      className="flex items-center gap-2.5 text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors truncate group cursor-default"
     >
       <span className="text-[var(--color-text-tertiary)] group-hover:text-[var(--color-accent)] transition-colors">{icon}</span>
       <span className="truncate font-medium">{text}</span>
@@ -244,11 +242,11 @@ function Info({ icon, text, href }) {
 
 function StatCard({ label, value }) {
   return (
-    <div className="bg-[var(--color-surface-inactive)] border border-[var(--color-surface-border)] rounded-xl p-4 text-center shadow-sm transition-colors duration-250">
-      <div className="text-[10px] font-medium uppercase tracking-wider text-[var(--color-text-tertiary)] transition-colors duration-250">
+    <div className="bg-[var(--color-surface-inactive)] border border-[var(--color-surface-border)] rounded-xl p-4 text-center shadow-sm">
+      <div className="text-[10px] font-medium uppercase tracking-wider text-[var(--color-text-tertiary)]">
         {label}
       </div>
-      <div className="mt-1 text-xl sm:text-2xl font-semibold text-[var(--color-text)] tracking-tight transition-colors duration-250">
+      <div className="mt-1 text-xl sm:text-2xl font-semibold text-[var(--color-text)] tracking-tight">
         {value}
       </div>
     </div>
@@ -257,8 +255,8 @@ function StatCard({ label, value }) {
 
 function TechBadge({ label, icon }) {
   return (
-    <div className="flex items-center gap-1.5 border border-transparent bg-[var(--color-surface-border)] px-2.5 py-1 rounded-md text-[12px] font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-inactive)] hover:border-[var(--color-surface-border)] hover:text-[var(--color-text)] transition-all duration-150">
-      {icon && <span className="text-[var(--color-text-tertiary)] text-[11px] transition-colors">{icon}</span>}
+    <div className="flex items-center gap-1.5 border border-transparent bg-[var(--color-surface-border)] px-2.5 py-1 rounded-md text-[12px] font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-inactive)] hover:border-[var(--color-surface-border)] hover:text-[var(--color-text)] transition-all duration-150 cursor-default">
+      {icon && <span className="text-[var(--color-text-tertiary)] text-[11px]">{icon}</span>}
       {label}
     </div>
   );

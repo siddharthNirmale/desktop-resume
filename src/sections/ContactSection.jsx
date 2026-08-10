@@ -3,34 +3,34 @@ import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 export default function ContactSection() {
   return (
-    <div className="w-full min-h-full bg-[var(--color-surface)] text-[var(--color-text)] flex flex-col font-primary selection:bg-[var(--color-accent)] selection:text-white transition-colors duration-250">
+    <div className="w-full min-h-full bg-[var(--color-surface)] text-[var(--color-text)] flex flex-col font-primary selection:bg-[var(--color-accent)] selection:text-white">
 
       {/* Sub-Header */}
-      <div className="px-8 py-5 border-b border-[var(--color-surface-border)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-b from-[var(--color-surface-border)] to-transparent shrink-0 transition-colors duration-250">
+      <header className="px-8 py-5 border-b border-[var(--color-surface-border)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-b from-[var(--color-surface-border)] to-transparent shrink-0">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-[var(--color-text)] transition-colors duration-250">
+          <h1 className="text-xl font-semibold tracking-tight text-[var(--color-text)]">
             Contact Channels
           </h1>
-          <p className="text-[12px] text-[var(--color-text-tertiary)] mt-0.5 transition-colors duration-250">
+          <p className="text-[12px] text-[var(--color-text-tertiary)] mt-0.5">
             Direct links to email, phone, and professional profiles.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 text-[12px] text-[var(--color-text-secondary)] font-medium transition-colors duration-250">
-          <span className="w-2 h-2 bg-[var(--color-accent)] rounded-full shadow-[0_0_8px_var(--color-accent)] animate-pulse transition-colors duration-250" />
+        <div className="flex items-center gap-2 text-[12px] text-[var(--color-text-secondary)] font-medium">
+          <span className="w-2 h-2 bg-[var(--color-accent)] rounded-full shadow-[0_0_8px_var(--color-accent)] animate-pulse" />
           Active
         </div>
-      </div>
+      </header>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-8 space-y-6 max-w-2xl w-full mx-auto">
+      <main className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-8 space-y-6 max-w-2xl w-full mx-auto">
 
-        {/* Direct Contacts */}
-        <div className="space-y-2">
-          <h2 className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider px-1 transition-colors duration-250">
+        {/* Direct Communications */}
+        <section className="space-y-2">
+          <h2 className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider px-1">
             Communications
           </h2>
-          <div className="bg-[var(--color-surface-inactive)] rounded-xl border border-[var(--color-surface-border)] overflow-hidden shadow-sm divide-y divide-[var(--color-surface-border)] transition-colors duration-250">
+          <div className="bg-[var(--color-surface-inactive)] rounded-xl border border-[var(--color-surface-border)] overflow-hidden shadow-sm divide-y divide-[var(--color-surface-border)]">
             <ContactCard
               icon={<FiMail size={15} />}
               label="Email"
@@ -44,14 +44,14 @@ export default function ContactSection() {
               href="tel:+917723824225"
             />
           </div>
-        </div>
+        </section>
 
-        {/* Profiles */}
-        <div className="space-y-2">
-          <h2 className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider px-1 transition-colors duration-250">
+        {/* Professional Networks */}
+        <section className="space-y-2">
+          <h2 className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider px-1">
             Networks
           </h2>
-          <div className="bg-[var(--color-surface-inactive)] rounded-xl border border-[var(--color-surface-border)] overflow-hidden shadow-sm divide-y divide-[var(--color-surface-border)] transition-colors duration-250">
+          <div className="bg-[var(--color-surface-inactive)] rounded-xl border border-[var(--color-surface-border)] overflow-hidden shadow-sm divide-y divide-[var(--color-surface-border)]">
             <ContactCard
               icon={<FaGithub size={15} />}
               label="GitHub"
@@ -71,23 +71,24 @@ export default function ContactSection() {
               href="#"
             />
           </div>
-        </div>
-      </div>
+        </section>
+      </main>
 
       {/* Footer */}
-      <div className="p-3 text-center text-[11px] font-normal text-[var(--color-text-tertiary)] opacity-80 border-t border-[var(--color-surface-border)] bg-[var(--color-surface-inactive)] shrink-0 select-none transition-colors duration-250">
+      <footer className="p-3 text-center text-[11px] font-normal text-[var(--color-text-tertiary)] opacity-80 border-t border-[var(--color-surface-border)] bg-[var(--color-surface-inactive)] shrink-0 select-none">
         Secure Handshake Verified
-      </div>
+      </footer>
 
     </div>
   );
 }
 
+/* ---------------- HELPER COMPONENTS ---------------- */
+
 function ContactCard({ icon, label, value, href }) {
   const isLink = href !== "#";
 
   const content = (
-    // Uses surface-border on hover for a subtle native-feeling highlight
     <div className="w-full px-5 py-4 flex items-center justify-between group bg-transparent hover:bg-[var(--color-surface-border)] transition-colors duration-150">
       <div className="flex items-center gap-4 min-w-0">
         <div className="text-[var(--color-text-tertiary)] group-hover:text-[var(--color-accent)] transition-colors duration-150 shrink-0">
@@ -95,7 +96,7 @@ function ContactCard({ icon, label, value, href }) {
         </div>
 
         <div className="flex flex-col min-w-0">
-          <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] uppercase tracking-wide transition-colors duration-150">
+          <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] uppercase tracking-wide">
             {label}
           </span>
           <span className="text-[14px] font-medium text-[var(--color-text-secondary)] group-hover:text-[var(--color-text)] transition-colors duration-150 truncate mt-0.5">
@@ -113,10 +114,10 @@ function ContactCard({ icon, label, value, href }) {
   );
 
   return isLink ? (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="block focus:outline-none">
+    <a href={href} target="_blank" rel="noopener noreferrer" className="block focus:outline-none cursor-default">
       {content}
     </a>
   ) : (
-    <div className="block">{content}</div>
+    <div className="block cursor-default">{content}</div>
   );
 }
