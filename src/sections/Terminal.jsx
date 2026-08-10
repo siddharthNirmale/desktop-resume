@@ -10,12 +10,12 @@ export default function Terminal() {
     {
       type: "output",
       content: (
-        <div className="mb-6 pb-4 border-b border-[var(--color-surface-border)] flex flex-col gap-1 transition-colors duration-250">
-          <h1 className="text-lg font-semibold text-[var(--color-text)] tracking-tight flex items-center gap-2 transition-colors duration-250">
-            <FiTerminal className="text-[var(--color-accent)] transition-colors duration-250" /> Terminal 
+        <div className="mb-6 pb-4 border-b border-[var(--color-surface-border)] flex flex-col gap-1">
+          <h1 className="text-lg font-semibold text-[var(--color-text)] tracking-tight flex items-center gap-2">
+            <FiTerminal className="text-[var(--color-accent)]" /> Terminal
           </h1>
-          <p className="text-[12px] text-[var(--color-text-tertiary)] transition-colors duration-250">
-            Type <span className="text-[var(--color-accent)] font-medium transition-colors duration-250">help</span> to list the available configuration nodes.
+          <p className="text-[12px] text-[var(--color-text-tertiary)]">
+            Type <span className="text-[var(--color-accent)] font-medium">help</span> to list the available configuration nodes.
           </p>
         </div>
       ),
@@ -91,7 +91,7 @@ export default function Terminal() {
                   {skillGroup.items.map((skill) => (
                     <span
                       key={skill}
-                      className="px-2.5 py-1 rounded bg-[var(--color-surface-border)] border border-transparent text-[12px] text-[var(--color-text-secondary)] font-medium"
+                      className="px-2.5 py-1 rounded bg-[var(--color-surface-border)] border border-transparent text-[12px] text-[var(--color-text-secondary)] font-medium cursor-default"
                     >
                       {skill}
                     </span>
@@ -126,7 +126,7 @@ export default function Terminal() {
                   {proj.tech.split(' • ').map((t) => (
                     <span
                       key={t}
-                      className="text-[11px] font-medium px-2 py-0.5 rounded bg-[var(--color-surface-border)] border border-transparent text-[var(--color-text-tertiary)]"
+                      className="text-[11px] font-medium px-2 py-0.5 rounded bg-[var(--color-surface-border)] border border-transparent text-[var(--color-text-tertiary)] cursor-default"
                     >
                       {t}
                     </span>
@@ -193,7 +193,7 @@ export default function Terminal() {
               {input.substring(5)}
             </span>
           );
-        } else {
+        } else if (command.length > 0) {
           outputContent = (
             <span className="text-[var(--color-text-tertiary)] text-[13px]">
               zsh: command not found: <span className="text-[var(--color-accent)] font-medium">{command}</span>
@@ -212,31 +212,31 @@ export default function Terminal() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col p-6 bg-[var(--color-surface-dark)] text-[var(--color-text)] font-mono text-[13px] overflow-y-auto custom-scrollbar transition-colors duration-250">
+    <div className="w-full h-full flex flex-col p-6 bg-[var(--color-surface-dark)] text-[var(--color-text)] font-mono text-[13px] overflow-y-auto custom-scrollbar">
       {/* Scrollable Command Output Logs */}
       <div className="flex-1">
         {history.map((line, index) => (
           <div key={index} className="mb-2 leading-relaxed">
             {line.type === "command" ? (
-              <div className="flex items-center text-[var(--color-text)] mt-4 mb-2 transition-colors duration-250">
-                <FiChevronRight className="text-[var(--color-accent)] mr-1 font-bold select-none transition-colors duration-250" size={16} />
+              <div className="flex items-center text-[var(--color-text)] mt-4 mb-2">
+                <FiChevronRight className="text-[var(--color-accent)] mr-1 font-bold select-none" size={16} />
                 <span className="font-medium tracking-wide">{line.content}</span>
               </div>
             ) : (
-              <div className="text-[var(--color-text-secondary)] font-mono transition-colors duration-250">{line.content}</div>
+              <div className="text-[var(--color-text-secondary)] font-mono">{line.content}</div>
             )}
           </div>
         ))}
 
         {/* Real-time Interactive Input Line */}
         <div className="flex items-center mt-4">
-          <FiChevronRight className="text-[var(--color-accent)] mr-1 font-bold select-none transition-colors duration-250" size={16} />
+          <FiChevronRight className="text-[var(--color-accent)] mr-1 font-bold select-none" size={16} />
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleCommand}
-            className="flex-1 bg-transparent outline-none text-[var(--color-text)] font-mono tracking-wide placeholder:text-[var(--color-text-tertiary)] placeholder:opacity-50 transition-colors duration-250"
+            className="flex-1 bg-transparent outline-none text-[var(--color-text)] font-mono tracking-wide placeholder:text-[var(--color-text-tertiary)] placeholder:opacity-50"
             autoFocus
             spellCheck="false"
             autoComplete="off"

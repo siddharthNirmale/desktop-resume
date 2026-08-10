@@ -3,11 +3,11 @@ import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 export default function AboutSection() {
   return (
-    // Main Window Body - Adapts to surface background automatically
-    <div className="w-full min-h-full bg-[var(--color-surface)] text-[var(--color-text)] font-primary transition-colors duration-250 flex flex-col custom-scrollbar overflow-y-auto">
+    // Main Window Body
+    <div className="w-full h-full bg-[var(--color-surface)] text-[var(--color-text)] font-primary flex flex-col custom-scrollbar overflow-y-auto">
 
       {/* Header Section */}
-      <div className="p-8 md:p-12 pb-6">
+      <section className="p-8 md:p-12 pb-6">
         <div className="flex flex-col gap-6">
 
           {/* Title & 1-Line Description */}
@@ -30,10 +30,10 @@ export default function AboutSection() {
             </span>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Minimalist Details Section */}
-      <div className="px-8 md:px-12 pb-12 space-y-10 flex-1">
+      <section className="px-8 md:px-12 pb-12 space-y-10 flex-1">
 
         {/* Experience & Projects (Minimal Grid) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pt-8 border-t border-[var(--color-surface-border)]">
@@ -101,15 +101,15 @@ export default function AboutSection() {
           </div>
         </div>
 
-      </div>
+      </section>
 
       {/* Footer Links - Uses Inactive Surface for contrast */}
-      <div className="p-5 md:px-12 bg-[var(--color-surface-inactive)] border-t border-[var(--color-surface-border)] flex flex-wrap gap-6 items-center mt-auto">
+      <footer className="p-5 md:px-12 bg-[var(--color-surface-inactive)] border-t border-[var(--color-surface-border)] flex flex-wrap gap-6 items-center mt-auto">
         <SocialLink icon={<FaGithub size={16} />} label="GitHub" href="https://github.com/siddharthNirmale" />
         <SocialLink icon={<FaLinkedin size={16} />} label="LinkedIn" href="https://linkedin.com/in/siddharth-nirmale" />
         <SocialLink icon={<FiMail size={16} />} label="Email" href="mailto:siddharth175nirmale1@gmail.com" />
         <SocialLink icon={<FiArrowUpRight size={16} />} label="Portfolio" href="https://siddharthn-portfolio.vercel.app" />
-      </div>
+      </footer>
 
     </div>
   );
@@ -121,15 +121,14 @@ function ListItem({ title, subtitle, year }) {
   return (
     <div className="group flex justify-between items-start gap-4 cursor-default">
       <div>
-        {/* Uses the Mojave Blue accent on hover */}
-        <h3 className="text-[14px] font-semibold text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors duration-200">
+        <h3 className="text-[14px] font-semibold text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">
           {title}
         </h3>
-        <p className="text-[13px] text-[var(--color-text-secondary)] mt-0.5 transition-colors duration-200">
+        <p className="text-[13px] text-[var(--color-text-secondary)] mt-0.5">
           {subtitle}
         </p>
       </div>
-      <span className="text-[12px] font-medium text-[var(--color-text-tertiary)] whitespace-nowrap pt-0.5 transition-colors duration-200">
+      <span className="text-[12px] font-medium text-[var(--color-text-tertiary)] whitespace-nowrap pt-0.5">
         {year}
       </span>
     </div>
@@ -142,9 +141,9 @@ function SocialLink({ icon, label, href }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-2 text-[13px] font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors duration-200"
+      className="flex items-center gap-2 text-[13px] font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors"
     >
-      <span className="opacity-80 transition-colors duration-200">{icon}</span>
+      <span className="opacity-80">{icon}</span>
       {label}
     </a>
   );
