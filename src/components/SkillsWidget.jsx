@@ -6,6 +6,7 @@ import {
 } from 'react-icons/si';
 import { FiCpu } from 'react-icons/fi';
 
+// Defined outside render cycle to preserve memory
 const skillSets = [
   {
     name: 'Core', items: [
@@ -44,21 +45,26 @@ export default function SkillsWidget({ constraintsRef, zIndex, onFocus }) {
       dragConstraints={constraintsRef}
       dragElastic={0.08}
       onPointerDown={onFocus}
-      style={{ zIndex, touchAction: "none" }}
-      whileDrag={{ cursor: "grabbing" }}
-      // Increased blur, removed shadow, and applied rounded-[24px] for the cohesive Apple look
-      className="custom-widget absolute bottom-8 right-6 w-[280px] bg-[#1C1C1E]/50 backdrop-blur-2xl border border-white/5 rounded-[24px] p-4.5 cursor-grab flex flex-col gap-3.5 font-primary select-none pointer-events-auto transition-colors duration-250"
-      initial={{ opacity: 0, scale: 0.96 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0 }}
+      style={{ zIndex, touchAction: "none", willChange: "transform, opacity" }}
+      whileDrag={{ cursor: "grabbing", scale: 1.015 }}
+      initial={{ opacity: 0, scale: 0.96, y: 10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.96, y: 8 }}
       transition={{ type: "spring", stiffness: 360, damping: 28 }}
+      className="
+        custom-widget absolute bottom-8 right-6 w-[280px]
+        bg-[var(--color-surface)]/80 backdrop-blur-2xl
+        border border-[var(--color-surface-border)] rounded-[var(--radius-window)]
+        p-4.5 cursor-grab flex flex-col gap-3.5 font-primary
+        select-none pointer-events-auto popover-shadow
+      "
     >
       {/* Widget Header */}
       <div className="flex justify-between items-center px-0.5 select-none">
-        <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider flex items-center gap-1.5 transition-colors duration-250">
+        <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider flex items-center gap-1.5">
           <span>Stack</span>
           <span className="text-[var(--color-surface-border)]">/</span>
-          <span className="text-[var(--color-accent)] font-semibold capitalize transition-colors duration-250">{skillSets[index].name}</span>
+          <span className="text-[var(--color-accent)] font-semibold capitalize">{skillSets[index].name}</span>
         </span>
 
         {/* Progress Tracker Dots */}
@@ -66,7 +72,6 @@ export default function SkillsWidget({ constraintsRef, zIndex, onFocus }) {
           {skillSets.map((_, i) => (
             <div
               key={i}
-              // Removed the glow/shadow on the active dot to keep it flat and minimal
               className={`w-[4px] h-[4px] rounded-full transition-all duration-300 ${i === index ? 'bg-[var(--color-accent)] scale-110' : 'bg-[var(--color-surface-border)]'
                 }`}
             />
@@ -89,13 +94,17 @@ export default function SkillsWidget({ constraintsRef, zIndex, onFocus }) {
             {skillSets[index].items.map((skill) => (
               <div
                 key={skill.name}
-                // Mapped to our dynamic semantic variables for background, border, and text
-                className="group flex items-center gap-2.5 bg-[var(--color-surface-border)] border border-transparent px-3 py-2 rounded-xl text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-inactive)] hover:border-[var(--color-surface-border)] hover:text-[var(--color-text)] transition-all duration-150 cursor-default"
+                className="
+                  group flex items-center gap-2.5 px-3 py-2 rounded-xl cursor-default
+                  bg-[var(--color-surface-inactive)] border border-transparent
+                  text-[var(--color-text-secondary)] transition-all duration-150
+                  hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)]
+                "
               >
                 <span className="text-[14px] text-[var(--color-text-tertiary)] group-hover:text-[var(--color-accent)] transition-colors duration-150 shrink-0">
                   {skill.icon}
                 </span>
-                <span className="text-[12px] font-medium tracking-tight truncate mt-0.5 transition-colors duration-250">
+                <span className="text-[12px] font-medium tracking-tight truncate mt-0.5">
                   {skill.name}
                 </span>
               </div>

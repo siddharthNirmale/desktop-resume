@@ -1,7 +1,24 @@
 import { useState, useEffect } from 'react';
 import { FiGithub, FiLinkedin, FiMail } from 'react-icons/fi';
-// import { FaApple } from 'react-icons/fa'; // (Left in case you add it back!)
 
+// ============================================================
+// FORMATTERS (Hoisted out of the render cycle for performance)
+// ============================================================
+const timeFormatter = new Intl.DateTimeFormat("en-US", {
+  hour: "numeric",
+  minute: "2-digit",
+  hour12: true,
+});
+
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
+  weekday: "short",
+  month: "short",
+  day: "numeric",
+});
+
+// ============================================================
+// TOP BAR COMPONENT
+// ============================================================
 export default function TopBar() {
   const [time, setTime] = useState(new Date());
 
@@ -10,41 +27,32 @@ export default function TopBar() {
     return () => clearInterval(timer);
   }, []);
 
-  const formatTime = (date) => {
-    return date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
-
-  const formatDate = (date) => {
-    return date.toLocaleDateString("en-US", {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
   return (
-    <div className="custom-topbar absolute top-0 left-0 w-full h-[24px] min-h-[24px] bg-[#1C1C1E]/60 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-4 z-[999999] select-none shadow-[0_1px_4px_rgba(0,0,0,0.3)] font-primary transition-colors duration-250">
-
+    <header
+      className="
+        custom-topbar
+        w-full h-full
+        flex items-center justify-between px-4
+        bg-[var(--color-surface-dark)]/70 backdrop-blur-xl
+        border-b border-[var(--color-surface-border)]
+        shadow-sm font-primary select-none
+      "
+    >
       {/* Left Menu Cluster */}
       <div className="flex items-center gap-4.5">
-        {/* Application Core Branding Menu Items */}
-        <span className="topbar-text text-[13px] font-semibold text-white/90 tracking-normal cursor-default transition-colors duration-250">
+        <span className="topbar-text text-[13px] font-semibold text-[var(--color-text)] tracking-normal cursor-default">
           Siddharth Nirmale
         </span>
       </div>
 
       {/* Right System Tray Cluster */}
-      <div className="topbar-icons flex items-center gap-4 text-white/70 transition-colors duration-250">
-        {/* Working External Resource Connections */}
+      <div className="topbar-icons flex items-center gap-4 text-[var(--color-text-secondary)]">
+        {/* External Links */}
         <a
           href="https://github.com/siddharthNirmale"
           target="_blank"
           rel="noreferrer"
-          className="hover:text-white transition-colors cursor-default"
+          className="hover:text-[var(--color-text)] transition-colors cursor-default"
           title="GitHub Profile"
         >
           <FiGithub size={13} />
@@ -53,27 +61,27 @@ export default function TopBar() {
           href="https://linkedin.com/in/siddharth-nirmale"
           target="_blank"
           rel="noreferrer"
-          className="hover:text-white transition-colors cursor-default"
+          className="hover:text-[var(--color-text)] transition-colors cursor-default"
           title="LinkedIn Profile"
         >
           <FiLinkedin size={13} />
         </a>
         <a
           href="mailto:siddharth175nirmale1@gmail.com"
-          className="hover:text-white transition-colors cursor-default"
+          className="hover:text-[var(--color-text)] transition-colors cursor-default"
           title="Send Email"
         >
           <FiMail size={13} />
         </a>
 
-        {/* Hairline Divider Node */}
-        <div className="topbar-divider w-[1px] h-3 bg-white/10 transition-colors duration-250" />
+        {/* Hairline Divider */}
+        <div className="topbar-divider w-[1px] h-3 bg-[var(--color-divider)]" />
 
-        {/* Calendar Date & Live Clock Text Block */}
-        <span className="topbar-text text-[13px] font-medium text-white/90 tracking-normal cursor-default whitespace-nowrap transition-colors duration-250">
-          {formatDate(time)} &nbsp; {formatTime(time)}
+        {/* Calendar Date & Live Clock */}
+        <span className="topbar-text text-[13px] font-medium text-[var(--color-text)] tracking-normal cursor-default whitespace-nowrap">
+          {dateFormatter.format(time)} &nbsp; {timeFormatter.format(time)}
         </span>
       </div>
-    </div>
+    </header>
   );
 }
