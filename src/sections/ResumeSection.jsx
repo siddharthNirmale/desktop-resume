@@ -6,46 +6,11 @@ import {
   FiDownload,
 } from "react-icons/fi";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import {
-  SiJavascript,
-  SiTypescript,
-  SiPython,
-  SiHtml5,
-  SiReact,
-  SiNextdotjs,
-  SiTailwindcss,
-  SiBootstrap,
-  SiVite,
-  SiNodedotjs,
-  SiExpress,
-  SiMongodb,
-  SiFirebase,
-  SiGit,
-} from "react-icons/si";
-import { TbBrandCpp } from "react-icons/tb";
 import { GraduationCap, Code2, Briefcase } from "lucide-react";
 import projects from "../data/project";
 import skills from "../data/skills";
 import resume from "../data/resume";
-
-const iconMap = {
-  JavaScript: <SiJavascript />,
-  TypeScript: <SiTypescript />,
-  Python: <SiPython />,
-  "C++": <TbBrandCpp />,
-  HTML5: <SiHtml5 />,
-  "React.js": <SiReact />,
-  "Next.js": <SiNextdotjs />,
-  "Tailwind CSS": <SiTailwindcss />,
-  Bootstrap: <SiBootstrap />,
-  Vite: <SiVite />,
-  "Node.js": <SiNodedotjs />,
-  "Express.js": <SiExpress />,
-  MongoDB: <SiMongodb />,
-  Firebase: <SiFirebase />,
-  Git: <SiGit />,
-  GitHub: <FaGithub />,
-};
+import iconMap from "../utils/iconMap";
 
 export default function ResumeSection() {
   const handleDownload = () => {

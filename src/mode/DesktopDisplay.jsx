@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, Suspense, lazy, useEffect } from "react";
+import { useRef, useMemo, Suspense, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
 

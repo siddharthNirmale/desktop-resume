@@ -2,8 +2,16 @@ import { motion, animate, useMotionValue } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { Minus, Square, X } from "lucide-react";
 
+function ResizeHandle({ direction, className, onStartResize }) {
+  return (
+    <div
+      onPointerDown={(e) => onStartResize(e, direction)}
+      className={`absolute z-[100] touch-none ${className}`}
+    />
+  );
+}
+
 export default function Window({
-  id,
   title,
   isMinimized,
   zIndex,
@@ -41,15 +49,13 @@ export default function Window({
     y.set(top);
 
     const handleResize = () => {
-      if (!isMaximized) {
-        x.set((window.innerWidth - width.get()) / 2);
-        y.set((window.innerHeight - height.get()) / 2);
-      }
+      x.set((window.innerWidth - width.get()) / 2);
+      y.set((window.innerHeight - height.get()) / 2);
     };
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [defaultWidth, defaultHeight]);
+  }, [defaultWidth, defaultHeight, height, width, x, y]);
 
   const animateTo = (motionValue, value) => {
     animate(motionValue, value, {
@@ -159,23 +165,16 @@ export default function Window({
     window.removeEventListener("pointercancel", stopResize);
   };
 
-  const ResizeHandle = ({ direction, className }) => (
-    <div
-      onPointerDown={(e) => startResize(e, direction)}
-      className={`absolute z-[100] touch-none ${className}`}
-    />
-  );
-
   if (isMinimized) return null;
 
   return (
     <motion.div
       ref={windowRef}
       drag={!isResizing}
+      dragHandleClassName="window-header-drag"
       dragMomentum={false}
       dragElastic={0.02}
       dragConstraints={constraintsRef}
-      dragListener={!isResizing}
       onMouseDown={onFocus}
       style={{ x, y, width, height, zIndex }}
       initial={{ opacity: 0, scale: 0.92 }}
@@ -262,14 +261,14 @@ export default function Window({
       ====================================================== */}
       {!isMaximized && (
         <>
-          <ResizeHandle direction="n" className="top-0 left-[10px] right-[10px] h-[6px] cursor-n-resize" />
-          <ResizeHandle direction="s" className="bottom-0 left-[10px] right-[10px] h-[6px] cursor-s-resize" />
-          <ResizeHandle direction="w" className="left-0 top-[10px] bottom-[10px] w-[6px] cursor-w-resize" />
-          <ResizeHandle direction="e" className="right-0 top-[10px] bottom-[10px] w-[6px] cursor-e-resize" />
-          <ResizeHandle direction="nw" className="left-0 top-0 h-[12px] w-[12px] cursor-nw-resize" />
-          <ResizeHandle direction="ne" className="right-0 top-0 h-[12px] w-[12px] cursor-ne-resize" />
-          <ResizeHandle direction="sw" className="bottom-0 left-0 h-[12px] w-[12px] cursor-sw-resize" />
-          <ResizeHandle direction="se" className="bottom-0 right-0 h-[12px] w-[12px] cursor-se-resize" />
+          <ResizeHandle direction="n" className="top-0 left-[10px] right-[10px] h-[6px] cursor-n-resize" onStartResize={startResize} />
+          <ResizeHandle direction="s" className="bottom-0 left-[10px] right-[10px] h-[6px] cursor-s-resize" onStartResize={startResize} />
+          <ResizeHandle direction="w" className="left-0 top-[10px] bottom-[10px] w-[6px] cursor-w-resize" onStartResize={startResize} />
+          <ResizeHandle direction="e" className="right-0 top-[10px] bottom-[10px] w-[6px] cursor-e-resize" onStartResize={startResize} />
+          <ResizeHandle direction="nw" className="left-0 top-0 h-[12px] w-[12px] cursor-nw-resize" onStartResize={startResize} />
+          <ResizeHandle direction="ne" className="right-0 top-0 h-[12px] w-[12px] cursor-ne-resize" onStartResize={startResize} />
+          <ResizeHandle direction="sw" className="bottom-0 left-0 h-[12px] w-[12px] cursor-sw-resize" onStartResize={startResize} />
+          <ResizeHandle direction="se" className="bottom-0 right-0 h-[12px] w-[12px] cursor-se-resize" onStartResize={startResize} />
         </>
       )}
     </motion.div>

@@ -1,4 +1,4 @@
-import { useState, useCallback, memo } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { RefreshCw, Loader2, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -35,7 +35,7 @@ const WallpaperButton = memo(({ wp, setWallpaper, onWallpaperTransition }) => {
   const [isApplying, setIsApplying] = useState(false);
 
   // Lazy load thumbnails on mount
-  useState(() => {
+  useEffect(() => {
     if (wp.id === "default") return;
     let mounted = true;
     generateThumbnail(wp.url).then((tinyImage) => {
@@ -43,8 +43,10 @@ const WallpaperButton = memo(({ wp, setWallpaper, onWallpaperTransition }) => {
       setThumbUrl(tinyImage);
       setIsThumbLoading(false);
     });
-    return () => (mounted = false);
-  });
+    return () => {
+      mounted = false;
+    };
+  }, [wp.id, wp.url]);
 
   const handleClick = async () => {
     if (isApplying) return;

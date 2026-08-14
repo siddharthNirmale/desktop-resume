@@ -138,7 +138,7 @@ export default function Terminal() {
         );
         break;
 
-      case "experience":
+      case "experience": {
         const jobs = [
           {
             role: "Data Science & Development Intern",
@@ -166,6 +166,7 @@ export default function Terminal() {
           </div>
         );
         break;
+      }
 
       case "location":
         outputContent = (
@@ -176,7 +177,7 @@ export default function Terminal() {
         );
         break;
 
-      case "date":
+      case "date": {
         const now = new Date();
         outputContent = (
           <div className="text-[13px] text-[var(--color-text-secondary)] font-mono my-2 flex items-center gap-2">
@@ -185,6 +186,7 @@ export default function Terminal() {
           </div>
         );
         break;
+      }
 
       default:
         if (command.startsWith("echo ")) {

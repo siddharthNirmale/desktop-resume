@@ -15,13 +15,16 @@ export default function ContextMenu({ x, y, onClose, toggleWindow, bringToFront 
     { id: 'projects', label: 'View Projects', icon: FolderCode },
   ];
 
+  const posX = typeof window !== "undefined" ? Math.min(x, window.innerWidth - 230) : x;
+  const posY = typeof window !== "undefined" ? Math.min(y, window.innerHeight - 180) : y;
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.1, ease: "easeOut" }}
-      style={{ top: y, left: x }}
+      style={{ top: posY, left: posX }}
       onContextMenu={(e) => e.preventDefault()}
       className="
         fixed z-[999999] w-56 py-1.5

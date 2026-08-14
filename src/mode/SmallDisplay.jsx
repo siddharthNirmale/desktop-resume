@@ -12,47 +12,12 @@ import {
   FiMoon,
 } from "react-icons/fi";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import {
-  SiJavascript,
-  SiTypescript,
-  SiPython,
-  SiHtml5,
-  SiReact,
-  SiNextdotjs,
-  SiTailwindcss,
-  SiBootstrap,
-  SiVite,
-  SiNodedotjs,
-  SiExpress,
-  SiMongodb,
-  SiFirebase,
-  SiGit,
-} from "react-icons/si";
-import { TbBrandCpp } from "react-icons/tb";
 
-// Import centralized data
+// Import centralized data & utilities
 import projects from "../data/project";
 import skills from "../data/skills";
 import resume from "../data/resume";
-
-const iconMap = {
-  JavaScript: <SiJavascript />,
-  TypeScript: <SiTypescript />,
-  Python: <SiPython />,
-  "C++": <TbBrandCpp />,
-  HTML5: <SiHtml5 />,
-  "React.js": <SiReact />,
-  "Next.js": <SiNextdotjs />,
-  "Tailwind CSS": <SiTailwindcss />,
-  Bootstrap: <SiBootstrap />,
-  Vite: <SiVite />,
-  "Node.js": <SiNodedotjs />,
-  "Express.js": <SiExpress />,
-  MongoDB: <SiMongodb />,
-  Firebase: <SiFirebase />,
-  Git: <SiGit />,
-  GitHub: <FaGithub />,
-};
+import iconMap from "../utils/iconMap";
 
 // Robust date filter that correctly handles crossing over into previous years
 const filterResponsiveMonths = (contributions, monthsToShow) => {
@@ -196,10 +161,11 @@ export default function TerminalPortfolio() {
               whileHover={{ scale: 1.15 }}
               whileTap={{ scale: 0.9 }}
               title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              className={`absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-full flex items-center justify-center border-2 shadow-md transition-colors cursor-pointer ${isDark
+              className={`absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-full flex items-center justify-center border-2 shadow-md transition-colors cursor-pointer ${
+                isDark
                   ? "bg-green-500 border-[#09090b] text-black hover:bg-green-400"
                   : "bg-green-600 border-white text-white hover:bg-green-500"
-                }`}
+              }`}
             >
               {isDark ? <FiSun size={12} strokeWidth={2.5} /> : <FiMoon size={12} strokeWidth={2.5} />}
             </motion.button>
@@ -271,10 +237,11 @@ export default function TerminalPortfolio() {
                     key={skill}
                     variants={fadeUpVariant}
                     whileHover={{ y: -2, scale: 1.02 }}
-                    className={`flex items-center gap-2 text-[13px] font-medium border px-3 py-1.5 rounded-md transition-colors cursor-default shadow-sm ${isDark
+                    className={`flex items-center gap-2 text-[13px] font-medium border px-3 py-1.5 rounded-md transition-colors cursor-default shadow-sm ${
+                      isDark
                         ? "text-zinc-300 bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10"
                         : "text-zinc-700 bg-white border-zinc-200 hover:bg-zinc-100 hover:border-zinc-300 shadow-sm"
-                      }`}
+                    }`}
                   >
                     <span className={isDark ? "text-zinc-400" : "text-zinc-500"}>
                       {iconMap[skill] || <FiCpu size={14} />}
@@ -360,14 +327,15 @@ export default function TerminalPortfolio() {
             viewport={{ once: true, margin: "-50px" }}
             className="space-y-5"
           >
-            {projects.map((project, idx) => (
+            {projects.map((project) => (
               <motion.div
-                key={idx}
+                key={project.id || project.title}
                 variants={fadeUpVariant}
-                className={`flex flex-col sm:flex-row border rounded-2xl overflow-hidden transition-all duration-300 group shadow-xl ${isDark
+                className={`flex flex-col sm:flex-row border rounded-2xl overflow-hidden transition-all duration-300 group shadow-xl ${
+                  isDark
                     ? "border-white/10 bg-[#09090b] hover:border-white/20 shadow-[0_0_20px_rgba(0,0,0,0.5)]"
                     : "border-zinc-200 bg-white hover:border-zinc-300 shadow-sm"
-                  }`}
+                }`}
               >
                 <div className={`relative w-full sm:w-2/5 md:w-1/3 h-48 sm:h-auto overflow-hidden shrink-0 flex items-center justify-center p-4 border-b sm:border-b-0 ${isDark ? "bg-black/40 border-black/20 sm:border-r" : "bg-zinc-100 border-zinc-200 sm:border-r"}`}>
                   <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-fuchsia-600 to-cyan-500 blur-md opacity-20 group-hover:opacity-80 group-hover:blur-xl group-hover:scale-110 transition-all duration-500 z-0" />
@@ -405,10 +373,11 @@ export default function TerminalPortfolio() {
                       {project.tech.split(" • ").map((tech) => (
                         <span
                           key={tech}
-                          className={`text-[11px] font-medium px-2.5 py-1 border rounded-md ${isDark
+                          className={`text-[11px] font-medium px-2.5 py-1 border rounded-md ${
+                            isDark
                               ? "bg-white/5 border-white/5 text-zinc-300"
                               : "bg-zinc-100 border-zinc-200 text-zinc-700"
-                            }`}
+                          }`}
                         >
                           {tech}
                         </span>
@@ -451,16 +420,13 @@ function ActionButton({ icon, text, href, onClick, isButton, primary, isDark }) 
   const baseClasses =
     "inline-flex items-center justify-center gap-2 px-3 py-1.5 text-[12px] font-semibold rounded-md transition-all cursor-pointer border";
 
-  let styles = "";
-  if (primary) {
-    styles = isDark
+  const styles = primary
+    ? isDark
       ? "bg-white text-black border-transparent hover:bg-zinc-200 shadow-sm hover:scale-105 active:scale-95"
-      : "bg-zinc-900 text-white border-transparent hover:bg-zinc-800 shadow-sm hover:scale-105 active:scale-95";
-  } else {
-    styles = isDark
-      ? "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95"
-      : "bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-100 hover:text-zinc-900 hover:scale-105 active:scale-95 shadow-sm";
-  }
+      : "bg-zinc-900 text-white border-transparent hover:bg-zinc-800 shadow-sm hover:scale-105 active:scale-95"
+    : isDark
+    ? "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95"
+    : "bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-100 hover:text-zinc-900 hover:scale-105 active:scale-95 shadow-sm";
 
   if (isButton) {
     return (
@@ -487,10 +453,11 @@ function LinkBadge({ icon, text, href, isDark }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 border rounded text-[11px] font-medium transition-all hover:scale-105 active:scale-95 ${isDark
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 border rounded text-[11px] font-medium transition-all hover:scale-105 active:scale-95 ${
+        isDark
           ? "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white"
           : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 shadow-sm"
-        }`}
+      }`}
     >
       {icon} {text}
     </a>

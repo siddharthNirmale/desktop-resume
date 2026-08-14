@@ -125,8 +125,6 @@ function DockIcon({ id, icon: IconComponent, label, badge, windows, toggleWindow
   const isOpen = win?.isOpen;
   const isMinimized = win?.isMinimized;
 
-  if (win?.type === "widget") return null;
-
   const handleClick = useCallback(() => {
     if (!win) return;
     setTapping(true);
@@ -139,6 +137,8 @@ function DockIcon({ id, icon: IconComponent, label, badge, windows, toggleWindow
     const maxZ = Math.max(...activeWins.map((w) => w.zIndex ?? 0), 0);
     win.zIndex === maxZ ? toggleWindow(id, "isMinimized", true) : bringToFront(id);
   }, [win, isOpen, isMinimized, windows, id, toggleWindow, bringToFront]);
+
+  if (win?.type === "widget") return null;
 
   const bounceVariants = {
     idle: { y: 0 },
@@ -242,18 +242,19 @@ function ThemeButton({ isLight, onToggle, mouseX }) {
 
 // ─── Main Dock Component ────────────────────────────────
 export default function Dock({ windows, toggleWindow, bringToFront }) {
-  const [isLight, setIsLight] = useState(false);
+  const [isLight, setIsLight] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const saved = localStorage.getItem("os-theme");
+    const prefLight = window.matchMedia("(prefers-color-scheme: light)").matches;
+    return saved ? saved === "light" : prefLight;
+  });
   const mouseX = useMotionValue(Infinity);
   const dockRef = useRef(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem("os-theme");
-    const prefLight = window.matchMedia("(prefers-color-scheme: light)").matches;
-    const light = saved ? saved === "light" : prefLight;
-    setIsLight(light);
-    document.documentElement.classList.toggle("light-theme", light);
-    document.body.classList.toggle("light-theme", light);
-  }, []);
+    document.documentElement.classList.toggle("light-theme", isLight);
+    document.body.classList.toggle("light-theme", isLight);
+  }, [isLight]);
 
   const onMouseMove = useCallback((e) => mouseX.set(e.clientX), [mouseX]);
   const onMouseLeave = useCallback(() => mouseX.set(Infinity), [mouseX]);

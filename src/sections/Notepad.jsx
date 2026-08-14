@@ -8,7 +8,6 @@ export default function Notepad() {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    setIsSaving(true);
     localStorage.setItem("web-os-notepad", text);
 
     const timeout = setTimeout(() => {
@@ -18,8 +17,14 @@ export default function Notepad() {
     return () => clearTimeout(timeout);
   }, [text]);
 
+  const handleChange = (e) => {
+    setIsSaving(true);
+    setText(e.target.value);
+  };
+
   const handleClear = () => {
     if (window.confirm("Are you sure you want to discard all text?")) {
+      setIsSaving(true);
       setText("");
     }
   };
@@ -52,7 +57,7 @@ export default function Notepad() {
       {/* Editor Body Textarea Workspace */}
       <textarea
         value={text}
-        onChange={(e) => setText(e.target.value)}
+        onChange={handleChange}
         placeholder="Start typing your notes here..."
         spellCheck="false"
         className="

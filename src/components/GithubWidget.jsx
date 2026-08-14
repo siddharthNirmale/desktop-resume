@@ -1,18 +1,24 @@
 import { useState, useEffect, useMemo } from 'react';
-import * as GitHubCalendarNamespace from 'react-github-calendar';
+import { GitHubCalendar } from 'react-github-calendar';
 import { motion } from 'framer-motion';
-
-const GitHubCalendar = GitHubCalendarNamespace.default || GitHubCalendarNamespace.GitHubCalendar;
 
 // ============================================================
 // HELPER FUNCTIONS (Extracted from render cycle)
 // ============================================================
 const hexToRgb = (hex) => {
-  const clean = hex.replace('#', '');
+  if (!hex || typeof hex !== 'string') return { r: 10, g: 132, b: 255 };
+  let clean = hex.replace('#', '').trim();
+  if (clean.length === 3) {
+    clean = clean.split('').map(c => c + c).join('');
+  }
+  if (clean.length !== 6) return { r: 10, g: 132, b: 255 };
+  const r = parseInt(clean.substring(0, 2), 16);
+  const g = parseInt(clean.substring(2, 4), 16);
+  const b = parseInt(clean.substring(4, 6), 16);
   return {
-    r: parseInt(clean.substring(0, 2), 16),
-    g: parseInt(clean.substring(2, 4), 16),
-    b: parseInt(clean.substring(4, 6), 16),
+    r: Number.isNaN(r) ? 10 : r,
+    g: Number.isNaN(g) ? 132 : g,
+    b: Number.isNaN(b) ? 255 : b,
   };
 };
 
