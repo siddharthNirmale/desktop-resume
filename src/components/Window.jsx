@@ -1,6 +1,7 @@
 import { motion, animate, useMotionValue } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
-import { Minus, Square, X } from "lucide-react";
+import { XIcon as X } from "lucide-animated";
+import { Minus, Square } from "lucide-react";;
 
 function ResizeHandle({ direction, className, onStartResize }) {
   return (

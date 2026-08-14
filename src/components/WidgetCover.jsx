@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { X } from "lucide-react";
+import { XIcon as X } from "lucide-animated";;
 
 export default function WidgetCover({
   title,

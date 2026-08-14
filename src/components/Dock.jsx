@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Sun, Moon, User, Briefcase, FileText, SquarePen, Mail, Terminal } from "lucide-react";
+import { SunIcon as Sun, MoonIcon as Moon, UserIcon as User, FileTextIcon as FileText, SquarePenIcon as SquarePen, TerminalIcon as Terminal } from "lucide-animated";
+import { Briefcase, Mail } from "lucide-react";;
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 
 // ─── Apple-Tuned Physics ────────────────────────────────

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause, RotateCcw } from 'lucide-react';
+import { PlayIcon as Play, PauseIcon as Pause, RotateCcwIcon as RotateCcw } from "lucide-animated";;
 import WidgetCover from "./WidgetCover";
 
 // ============================================================

@@ -60,4 +60,4 @@ export default function useWindows(initialWindows) {
   }, []);
 
   return { windows, bringToFront, toggleWindow };
-}
+}

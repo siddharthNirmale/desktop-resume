@@ -1,6 +1,6 @@
 import { useRef, useMemo, Suspense, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
-import { Loader2 } from "lucide-react";
+import { LoaderIcon as Loader2 } from "lucide-animated";;
 
 // Components
 import Background from "../components/Background";

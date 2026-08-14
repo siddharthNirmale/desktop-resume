@@ -1,4 +1,4 @@
-import { Target } from 'lucide-react';
+import { Target } from "lucide-react";;
 import WidgetCover from './WidgetCover';
 
 export default function LearningWidget({

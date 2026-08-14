@@ -1,4 +1,5 @@
-import { Cloud, Sun, CloudRain, CloudLightning, CloudSnow, Loader2 } from 'lucide-react';
+import { SunIcon as Sun, CloudRainIcon as CloudRain, CloudLightningIcon as CloudLightning, CloudSnowIcon as CloudSnow, LoaderIcon as Loader2 } from "lucide-animated";
+import { Cloud } from "lucide-react";;
 import { useState, useEffect } from 'react';
 import WidgetCover from './WidgetCover';
 

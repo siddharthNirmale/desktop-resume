@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Terminal, FileText, FolderCode, Settings } from 'lucide-react';
+import { TerminalIcon as Terminal, FileTextIcon as FileText, FolderCodeIcon as FolderCode, SettingsIcon as Settings } from "lucide-animated";;
 
 export default function ContextMenu({ x, y, onClose, toggleWindow, bringToFront }) {
   const openApp = (id) => {

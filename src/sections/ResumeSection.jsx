@@ -6,7 +6,8 @@ import {
   FiDownload,
 } from "react-icons/fi";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { GraduationCap, Code2, Briefcase } from "lucide-react";
+import { GraduationCapIcon as GraduationCap } from "lucide-animated";
+import { Code2, Briefcase } from "lucide-react";;
 import projects from "../data/project";
 import skills from "../data/skills";
 import resume from "../data/resume";

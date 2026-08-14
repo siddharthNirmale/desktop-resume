@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, memo } from "react";
-import { RefreshCw, Loader2, Check } from "lucide-react";
+import { RefreshCwIcon as RefreshCw, LoaderIcon as Loader2, CheckIcon as Check } from "lucide-animated";;
 import { motion, AnimatePresence } from "framer-motion";
 import WidgetCover from "./WidgetCover";
 import { generateThumbnail, preloadImage } from "../utils/imageUtils";
