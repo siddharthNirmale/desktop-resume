@@ -337,14 +337,12 @@ export default function TerminalPortfolio() {
                     : "border-zinc-200 bg-white hover:border-zinc-300 shadow-sm"
                 }`}
               >
-                <div className={`relative w-full sm:w-2/5 md:w-1/3 h-48 sm:h-auto overflow-hidden shrink-0 flex items-center justify-center p-4 border-b sm:border-b-0 ${isDark ? "bg-black/40 border-black/20 sm:border-r" : "bg-zinc-100 border-zinc-200 sm:border-r"}`}>
-                  <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-fuchsia-600 to-cyan-500 blur-md opacity-20 group-hover:opacity-80 group-hover:blur-xl group-hover:scale-110 transition-all duration-500 z-0" />
-                  <div className={`absolute inset-0 bg-gradient-to-t z-10 opacity-60 group-hover:opacity-30 transition-opacity duration-300 ${isDark ? "from-[#161616]/80 to-transparent" : "from-zinc-200/80 to-transparent"}`} />
+                <div className={`relative w-full sm:w-2/5 md:w-1/3 h-48 sm:h-auto overflow-hidden shrink-0 flex items-center justify-center p-3.5 border-b sm:border-b-0 ${isDark ? "bg-black/40 border-black/20 sm:border-r" : "bg-zinc-100 border-zinc-200 sm:border-r"}`}>
                   <img
                     src={project.image || "/placeholder.jpg"}
                     alt={project.title}
                     loading="lazy"
-                    className="relative w-full h-full object-cover rounded-lg shadow-2xl shadow-black/60 z-25 transform scale-100 group-hover:scale-[1.04] transition-transform duration-500 ease-out"
+                    className="relative w-full h-full object-cover rounded-lg border border-white/10 shadow-md z-10 transform scale-100 group-hover:scale-[1.03] transition-transform duration-500 ease-out"
                   />
                 </div>
 

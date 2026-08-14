@@ -53,7 +53,7 @@ export default function ResumeSection() {
         {/* Personal Header Identity Grid */}
         <div className="flex flex-col md:flex-row justify-between items-start gap-6 pb-6 border-b border-[var(--color-surface-border)]">
           <div className="space-y-1">
-            <h2 className="text-2xl font-bold tracking-tight text-[var(--color-text)]">
+            <h2 className="text-2xl font-heading font-bold tracking-tight text-[var(--color-text)]">
               Siddharth Nirmale
             </h2>
             <p className="text-[14px] font-medium text-[var(--color-accent)]">

@@ -43,12 +43,28 @@ export const APP_MAP = {
 
 // ============================================================
 // WIDGET PROPS
-// Keeps widget-specific static data outside the render logic.
+// Keeps widget-specific static data and initial layout outside the render logic.
 // ============================================================
 export const WIDGET_PROPS = {
+  weather: {
+    positionStyle: { top: "20px", left: "20px" },
+  },
+  theme: {
+    positionStyle: { top: "214px", left: "20px" },
+  },
+  github: {
+    positionStyle: { top: "410px", left: "20px" },
+  },
+  clock: {
+    positionStyle: { top: "20px", right: "20px" },
+  },
   learning: {
+    positionStyle: { top: "214px", right: "20px" },
     progress: 55,
     topic: "Frontend Optimization",
     subtopic: "Next.js 14",
+  },
+  skills: {
+    positionStyle: { top: "374px", right: "20px" },
   },
 };

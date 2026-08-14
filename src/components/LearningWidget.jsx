@@ -1,77 +1,62 @@
 import { Target } from 'lucide-react';
-import { motion } from 'framer-motion';
+import WidgetCover from './WidgetCover';
 
 export default function LearningWidget({
   constraintsRef,
   zIndex,
   onFocus,
+  onClose,
+  positionStyle,
   progress = 55,
   topic = "Frontend Optimization",
-  subtopic = "Next.js"
+  subtopic = "Next.js App Router",
 }) {
-  const activeSegments = Math.round((progress / 100) * 5);
+  const segments = 8;
+  const filledCount = Math.round((progress / 100) * segments);
 
   return (
-    <motion.div
-      drag
-      dragMomentum={false}
-      dragConstraints={constraintsRef}
-      dragElastic={0.08}
-      onPointerDown={onFocus}
-      style={{ zIndex, touchAction: "none", willChange: "transform, opacity" }}
-      whileDrag={{ cursor: "grabbing", scale: 1.015 }}
-      initial={{ opacity: 0, scale: 0.96, y: 10 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.96, y: 8 }}
-      transition={{ type: "spring", stiffness: 360, damping: 28 }}
-      className="
-        custom-widget absolute top-60 right-6 w-[280px]
-        bg-[var(--color-surface)]/80 backdrop-blur-2xl
-        border border-[var(--color-surface-border)] rounded-[var(--radius-window)]
-        p-4.5 cursor-grab flex flex-col gap-3.5 font-primary
-        select-none pointer-events-auto popover-shadow
-      "
+    <WidgetCover
+      id="learning"
+      title="Focus"
+      zIndex={zIndex}
+      onClose={onClose}
+      onFocus={onFocus}
+      constraintsRef={constraintsRef}
+      positionStyle={positionStyle || { top: "214px", right: "20px" }}
     >
-      {/* Widget Header */}
-      <div className="flex justify-between items-center px-0.5">
-        <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] uppercase tracking-wider">
-          Focus
-        </span>
-      </div>
-
       <div className="flex flex-col gap-4 w-full">
-        {/* Subject Content Row */}
-        <div className="flex items-center gap-3.5 px-0.5">
-          <div className="flex items-center justify-center h-[38px] w-[38px] rounded-full bg-[var(--color-surface-inactive)] border border-transparent flex-shrink-0">
-            <Target size={16} strokeWidth={1.5} className="text-[var(--color-accent)]" />
+        {/* Subject Row */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center h-[38px] w-[38px] rounded-[12px] bg-[var(--color-surface-inactive)] border border-[var(--color-surface-border)] shrink-0">
+            <Target size={16} strokeWidth={1.75} className="text-[var(--color-accent)]" />
           </div>
-          <div className="flex flex-col gap-1 min-w-0">
-            <h3 className="text-[15px] font-medium text-[var(--color-text)] tracking-tight leading-none truncate">
+          <div className="flex flex-col gap-0.5 min-w-0">
+            <h3 className="text-[14px] font-heading font-semibold text-[var(--color-text)] tracking-tight leading-none truncate">
               {topic}
             </h3>
-            <span className="text-[11px] font-medium text-[var(--color-text-secondary)] truncate">
+            <span className="text-[11px] text-[var(--color-text-tertiary)] truncate">
               {subtopic}
             </span>
           </div>
         </div>
 
-        {/* Segmented Progress Tracker */}
-        <div className="flex flex-col gap-2 px-0.5">
-          <div className="flex justify-between items-center text-[11px] font-medium tracking-normal">
-            <span className="text-[var(--color-text-tertiary)]">
+        {/* Progress Section */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-heading font-semibold uppercase tracking-[0.08em] text-[var(--color-text-disabled)]">
               Progress
             </span>
-            <span className="text-[var(--color-accent)] font-semibold tabular-nums">
+            <span className="text-[11px] font-mono font-semibold text-[var(--color-accent)] tabular-nums">
               {progress}%
             </span>
           </div>
 
-          {/* Segmented Track Bar Grid */}
-          <div className="flex gap-1.5 h-[4px] w-full mt-0.5">
-            {[1, 2, 3, 4, 5].map((step) => (
+          {/* Segmented Track */}
+          <div className="flex gap-1 h-[3px] w-full">
+            {Array.from({ length: segments }, (_, i) => (
               <div
-                key={step}
-                className={`flex-1 rounded-full transition-all duration-300 ${step <= activeSegments
+                key={i}
+                className={`flex-1 rounded-full transition-colors duration-400 ${i < filledCount
                     ? 'bg-[var(--color-accent)]'
                     : 'bg-[var(--color-surface-border)]'
                   }`}
@@ -80,6 +65,6 @@ export default function LearningWidget({
           </div>
         </div>
       </div>
-    </motion.div>
+    </WidgetCover>
   );
 }

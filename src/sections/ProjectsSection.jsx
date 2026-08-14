@@ -11,7 +11,7 @@ export default function ProjectsSection() {
       {/* Finder-style View Header */}
       <header className="px-8 py-5 border-b border-[var(--color-surface-border)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-b from-[var(--color-surface-border)] to-transparent shrink-0">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-[var(--color-text)]">
+          <h1 className="text-xl font-heading font-bold tracking-tight text-[var(--color-text)]">
             Projects
           </h1>
           <p className="text-[12px] text-[var(--color-text-tertiary)] mt-0.5">
@@ -49,18 +49,11 @@ function ProjectCard({ project, index }) {
     >
       {/* Product Card Image Wrapper */}
       <div className="h-44 md:h-48 relative p-3 md:p-4 overflow-hidden bg-[var(--color-surface-dark)] border-b border-[var(--color-surface-border)] flex items-center justify-center">
-
-        {/* 🌟 GLOW EFFECT 🌟 */}
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-fuchsia-600 to-cyan-500 blur-md opacity-20 group-hover:opacity-80 group-hover:blur-xl group-hover:scale-110 transition-all duration-500 z-0" />
-
-        {/* Subtle gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-surface-inactive)] to-transparent z-10 opacity-80 group-hover:opacity-30 transition-opacity duration-300" />
-
         {/* Image */}
         <img
           src={project.image || "/placeholder.jpg"}
           alt={project.title}
-          className="relative w-full h-full object-cover rounded-lg shadow-[0_20px_40px_rgba(0,0,0,0.4)] z-20 transform scale-100 group-hover:scale-[1.04] transition-transform duration-500 ease-out"
+          className="relative w-full h-full object-cover rounded-lg border border-white/10 shadow-md z-20 transform scale-100 group-hover:scale-[1.03] transition-transform duration-500 ease-out"
         />
       </div>
 

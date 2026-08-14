@@ -88,6 +88,7 @@ export default function DesktopDisplay({
                     constraintsRef={workspaceRef}
                     zIndex={widget.zIndex ?? 1}
                     onFocus={() => bringToFront(widget.id)}
+                    onClose={() => toggleWindow(widget.id, "isOpen", false)}
                     {...(WIDGET_PROPS[widget.id] || {})}
                     {...(widget.id === "theme" ? { setWallpaper } : {})}
                   />

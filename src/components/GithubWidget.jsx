@@ -1,16 +1,14 @@
 import { useState, useEffect, useMemo } from 'react';
 import { GitHubCalendar } from 'react-github-calendar';
-import { motion } from 'framer-motion';
+import WidgetCover from './WidgetCover';
 
 // ============================================================
-// HELPER FUNCTIONS (Extracted from render cycle)
+// HELPERS
 // ============================================================
 const hexToRgb = (hex) => {
   if (!hex || typeof hex !== 'string') return { r: 10, g: 132, b: 255 };
   let clean = hex.replace('#', '').trim();
-  if (clean.length === 3) {
-    clean = clean.split('').map(c => c + c).join('');
-  }
+  if (clean.length === 3) clean = clean.split('').map((c) => c + c).join('');
   if (clean.length !== 6) return { r: 10, g: 132, b: 255 };
   const r = parseInt(clean.substring(0, 2), 16);
   const g = parseInt(clean.substring(2, 4), 16);
@@ -24,135 +22,104 @@ const hexToRgb = (hex) => {
 
 const filterLastFiveMonths = (contributions) => {
   const today = new Date();
-  const startWindow = new Date();
-  startWindow.setDate(today.getDate() - 150);
-
+  const start = new Date();
+  start.setDate(today.getDate() - 150);
   return contributions.filter((day) => {
-    const date = new Date(day.date);
-    return date >= startWindow && date <= today;
+    const d = new Date(day.date);
+    return d >= start && d <= today;
   });
 };
 
 // ============================================================
 // GITHUB WIDGET
 // ============================================================
-export default function GithubWidget({ constraintsRef, zIndex, onFocus }) {
+export default function GithubWidget({ constraintsRef, zIndex, onFocus, onClose, positionStyle }) {
   const [isReady, setIsReady] = useState(false);
   const [accent, setAccent] = useState('#0A84FF');
-  const [isLightMode, setIsLightMode] = useState(false);
+  const [isLight, setIsLight] = useState(false);
 
-  // Sync React state with Vanilla DOM mutations (Theme & Accent)
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     const root = document.documentElement;
     const body = document.body;
 
-    const updateThemeState = () => {
-      const currentAccent = getComputedStyle(root).getPropertyValue('--color-accent').trim() || '#0A84FF';
-      setAccent(currentAccent);
-      setIsLightMode(body.classList.contains('light-theme'));
+    const sync = () => {
+      const acc = getComputedStyle(root).getPropertyValue('--color-accent').trim() || '#0A84FF';
+      setAccent(acc);
+      setIsLight(body.classList.contains('light-theme'));
     };
 
-    // Initial sync
-    updateThemeState();
+    sync();
 
-    // Listen for DOM changes
     const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        if (mutation.type === 'attributes') {
-          updateThemeState();
-        }
+      for (const m of mutations) {
+        if (m.type === 'attributes') sync();
       }
     });
 
     observer.observe(root, { attributes: true, attributeFilter: ['style'] });
     observer.observe(body, { attributes: true, attributeFilter: ['class'] });
 
-    // Delay showing the widget slightly for smoother entry
-    const timer = setTimeout(() => setIsReady(true), 600);
-
-    return () => {
-      clearTimeout(timer);
-      observer.disconnect();
-    };
+    const t = setTimeout(() => setIsReady(true), 600);
+    return () => { clearTimeout(t); observer.disconnect(); };
   }, []);
 
-  const customTheme = useMemo(() => {
+  const theme = useMemo(() => {
     const { r, g, b } = hexToRgb(accent);
-
     return {
       dark: [
         'rgba(255, 255, 255, 0.04)',
-        `rgba(${r}, ${g}, ${b}, 0.25)`,
-        `rgba(${r}, ${g}, ${b}, 0.50)`,
-        `rgba(${r}, ${g}, ${b}, 0.75)`,
+        `rgba(${r}, ${g}, ${b}, 0.22)`,
+        `rgba(${r}, ${g}, ${b}, 0.48)`,
+        `rgba(${r}, ${g}, ${b}, 0.74)`,
         accent,
       ],
       light: [
-        'rgba(0, 0, 0, 0.04)',
-        `rgba(${r}, ${g}, ${b}, 0.35)`,
-        `rgba(${r}, ${g}, ${b}, 0.60)`,
-        `rgba(${r}, ${g}, ${b}, 0.85)`,
+        'rgba(0, 0, 0, 0.05)',
+        `rgba(${r}, ${g}, ${b}, 0.30)`,
+        `rgba(${r}, ${g}, ${b}, 0.58)`,
+        `rgba(${r}, ${g}, ${b}, 0.82)`,
         accent,
-      ]
+      ],
     };
   }, [accent]);
 
   return (
-    <motion.div
-      drag
-      dragMomentum={false}
-      dragConstraints={constraintsRef}
-      dragElastic={0.08}
-      onPointerDown={onFocus}
-      style={{ zIndex, touchAction: 'none', willChange: 'transform, opacity' }}
-      whileDrag={{ cursor: 'grabbing', scale: 1.015 }}
-      initial={{ opacity: 0, scale: 0.96, y: 10 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.96, y: 8 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-      className="
-        custom-widget absolute bottom-5 left-6 w-[280px]
-        bg-[var(--color-surface)]/80 backdrop-blur-2xl
-        border border-[var(--color-surface-border)] rounded-[var(--radius-window)]
-        p-4.5 cursor-grab select-none pointer-events-auto popover-shadow
-      "
+    <WidgetCover
+      id="github"
+      title="Contributions"
+      zIndex={zIndex}
+      onClose={onClose}
+      onFocus={onFocus}
+      constraintsRef={constraintsRef}
+      positionStyle={positionStyle || { top: "410px", left: "20px" }}
     >
-      <div className="flex items-center justify-between mb-3.5 px-0.5">
-        <span className="text-[11px] font-medium uppercase tracking-wider text-[var(--color-text-tertiary)]">
-          Contributions
-        </span>
-        {isReady && (
-          <span className="text-[11px] font-medium font-mono tracking-wide text-[var(--color-text-tertiary)]">
-            siddharthNirmale
-          </span>
-        )}
-      </div>
-
       <div
-        className={`flex justify-center transition-all duration-300 ${isReady ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+        className={`flex justify-center transition-all duration-400 ${
+          isReady ? 'opacity-100' : 'opacity-0'
+        }`}
         onPointerDown={(e) => e.stopPropagation()}
       >
         {GitHubCalendar && (
           <GitHubCalendar
             username="siddharthNirmale"
-            colorScheme={isLightMode ? "light" : "dark"}
-            theme={customTheme}
+            colorScheme={isLight ? 'light' : 'dark'}
+            theme={theme}
             transformData={filterLastFiveMonths}
-            blockSize={7.5}
-            blockMargin={2}
-            blockRadius={1.5}
-            fontSize={11}
+            blockSize={7}
+            blockMargin={2.5}
+            blockRadius={2}
+            fontSize={10}
             hideColorLegend
             hideTotalCount
             style={{
-              color: 'var(--color-text-tertiary)',
+              color: 'var(--color-text-disabled)',
               fontFamily: 'var(--font-primary)',
             }}
           />
         )}
       </div>
-    </motion.div>
+    </WidgetCover>
   );
 }

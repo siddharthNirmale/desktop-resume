@@ -12,7 +12,7 @@ export default function AboutSection() {
 
           {/* Title & 1-Line Description */}
           <div className="space-y-3">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-[var(--color-text)]">
+            <h1 className="text-4xl md:text-5xl font-heading font-bold tracking-tight text-[var(--color-text)]">
               Siddharth Nirmale.
             </h1>
             <p className="text-lg md:text-xl font-medium text-[var(--color-text-secondary)] tracking-tight max-w-2xl">

@@ -79,9 +79,9 @@ function Tooltip({ label, visible }) {
           transition={{ duration: 0.15, ease: "easeOut" }}
           className="
             absolute bottom-[calc(100%+14px)] left-1/2 -translate-x-1/2
-            whitespace-nowrap px-3 py-1.5 rounded-md pointer-events-none z-[99999]
-            font-primary text-[13px] tracking-wide text-white/95
-            bg-[#1e1e1e]/75 backdrop-blur-xl border border-white/15 shadow-lg
+            whitespace-nowrap px-3 py-1 rounded-md pointer-events-none z-[99999]
+            font-heading text-[12px] font-medium tracking-tight text-white/95
+            bg-[#1c1c1e]/85 backdrop-blur-2xl border border-white/15 shadow-xl
           "
         >
           {label}

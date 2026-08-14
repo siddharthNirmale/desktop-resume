@@ -39,8 +39,9 @@ export default function TopBar() {
       "
     >
       {/* Left Menu Cluster */}
-      <div className="flex items-center gap-4.5">
-        <span className="topbar-text text-[13px] font-semibold text-[var(--color-text)] tracking-normal cursor-default">
+      <div className="flex items-center gap-2.5">
+
+        <span className="topbar-text text-[13px] font-heading font-semibold text-[var(--color-text)] tracking-tight cursor-default">
           Siddharth Nirmale
         </span>
       </div>
