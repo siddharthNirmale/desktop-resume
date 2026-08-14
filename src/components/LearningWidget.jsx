@@ -22,7 +22,7 @@ export default function LearningWidget({
       onClose={onClose}
       onFocus={onFocus}
       constraintsRef={constraintsRef}
-      positionStyle={positionStyle || { top: "214px", right: "20px" }}
+      positionStyle={positionStyle || { top: "234px", right: "18px" }}
     >
       <div className="flex flex-col gap-4 w-full">
         {/* Subject Row */}

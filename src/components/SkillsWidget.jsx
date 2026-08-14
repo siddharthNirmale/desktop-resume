@@ -56,7 +56,7 @@ export default function SkillsWidget({ constraintsRef, zIndex, onFocus, onClose,
       onClose={onClose}
       onFocus={onFocus}
       constraintsRef={constraintsRef}
-      positionStyle={positionStyle || { top: "374px", right: "20px" }}
+      positionStyle={positionStyle || { top: "386px", right: "18px" }}
     >
       {/* Pagination Dots */}
       <div className="flex items-center gap-1.5 mb-3.5">

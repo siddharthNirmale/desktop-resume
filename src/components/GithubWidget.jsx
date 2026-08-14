@@ -93,7 +93,7 @@ export default function GithubWidget({ constraintsRef, zIndex, onFocus, onClose,
       onClose={onClose}
       onFocus={onFocus}
       constraintsRef={constraintsRef}
-      positionStyle={positionStyle || { top: "410px", left: "20px" }}
+      positionStyle={positionStyle || { top: "444px", left: "18px" }}
     >
       <div
         className={`flex justify-center transition-all duration-400 ${

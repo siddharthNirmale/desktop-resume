@@ -236,7 +236,7 @@ export default function ClockWidget({ constraintsRef, zIndex, onFocus, onClose, 
       onClose={onClose}
       onFocus={onFocus}
       constraintsRef={constraintsRef}
-      positionStyle={positionStyle || { top: "20px", right: "20px" }}
+      positionStyle={positionStyle || { top: "16px", right: "18px" }}
     >
       {/* Mode Tabs */}
       <div className="flex gap-4 items-center mb-4" onPointerDown={(e) => e.stopPropagation()}>

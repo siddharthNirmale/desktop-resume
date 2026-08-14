@@ -18,11 +18,12 @@ const WALLPAPERS = [
 ];
 
 const ACCENT_COLORS = [
-  { id: "blue",    value: "#0A84FF", name: "Blue"    },
-  { id: "crimson", value: "#FF453A", name: "Crimson" },
+  { id: "blue", value: "#0A84FF", name: "Blue" },
+  { id: "cyan", value: "#64D2FF", name: "Cyan" },
   { id: "emerald", value: "#30D158", name: "Emerald" },
-  { id: "amber",   value: "#FF9F0A", name: "Amber"   },
-  { id: "violet",  value: "#BF5AF2", name: "Violet"  },
+  { id: "amber", value: "#FF9F0A", name: "Amber" },
+  { id: "crimson", value: "#FF453A", name: "Crimson" },
+  { id: "violet", value: "#BF5AF2", name: "Violet" },
 ];
 
 // ============================================================
@@ -203,7 +204,7 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, onClose, 
         onClose={onClose}
         onFocus={onFocus}
         constraintsRef={constraintsRef}
-        positionStyle={positionStyle || { top: "214px", left: "20px" }}
+        positionStyle={positionStyle || { top: "250px", left: "18px" }}
       >
         <div className="flex flex-col gap-4">
           {/* Wallpapers */}

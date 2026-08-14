@@ -31,7 +31,7 @@ export default function WidgetCover({
       exit={{ opacity: 0, scale: 0.95, y: 8 }}
       transition={{ type: "spring", stiffness: 380, damping: 30 }}
       className={`
-        custom-widget absolute w-[272px]
+        custom-widget absolute w-[260px] sm:w-[270px] lg:w-[276px] 2xl:w-[288px] max-w-[calc(100vw-36px)]
         bg-[var(--color-surface)]/90 backdrop-blur-3xl
         border border-[var(--color-surface-border)] rounded-[22px]
         flex flex-col font-primary select-none

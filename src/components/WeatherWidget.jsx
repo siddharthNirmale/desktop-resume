@@ -46,7 +46,7 @@ export default function WeatherWidget({ constraintsRef, zIndex, onFocus, onClose
       onClose={onClose}
       onFocus={onFocus}
       constraintsRef={constraintsRef}
-      positionStyle={positionStyle || { top: "20px", left: "20px" }}
+      positionStyle={positionStyle || { top: "16px", left: "18px" }}
     >
       {!ready ? (
         <div className="h-[130px] flex items-center justify-center">
