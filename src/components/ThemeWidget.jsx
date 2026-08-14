@@ -204,7 +204,7 @@ export default function ThemeWidget({ constraintsRef, zIndex, onFocus, onClose, 
         onClose={onClose}
         onFocus={onFocus}
         constraintsRef={constraintsRef}
-        positionStyle={positionStyle || { top: "250px", left: "18px" }}
+        positionStyle={positionStyle || { top: "280px", left: "18px" }}
       >
         <div className="flex flex-col gap-4">
           {/* Wallpapers */}

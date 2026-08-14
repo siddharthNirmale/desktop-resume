@@ -50,17 +50,17 @@ export const WIDGET_PROPS = {
     positionStyle: { top: "16px", left: "18px" },
   },
   theme: {
-    positionStyle: { top: "234px", left: "18px" },
+    positionStyle: { top: "250px", left: "18px" },
   },
   github: {
-    positionStyle: { top: "444px", left: "18px" },
+    positionStyle: { top: "470px", left: "18px" },
   },
   clock: {
     positionStyle: { top: "16px", right: "18px" },
   },
   learning: {
     positionStyle: { top: "234px", right: "18px" },
-    progress: 55,
+    progress: 60,
     topic: "Frontend Optimization",
     subtopic: "Next.js 14",
   },
