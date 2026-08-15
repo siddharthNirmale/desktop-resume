@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { FiTrash2 } from "react-icons/fi";
+import { FiTrash2, FiCheck, FiEdit3 } from "react-icons/fi";
 
 export default function Notepad() {
   const [text, setText] = useState(() => {
     return localStorage.getItem("web-os-notepad") || "";
   });
+
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -29,71 +30,384 @@ export default function Notepad() {
     }
   };
 
-  const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
+  const wordCount = text.trim()
+    ? text.trim().split(/\s+/).length
+    : 0;
 
   return (
-    <div className="w-full h-full flex flex-col bg-[var(--color-surface)] text-[var(--color-text)] font-primary selection:bg-[var(--color-accent)] selection:text-white">
+    <div
+      className="
+        flex
+        h-full
+        w-full
+        flex-col
 
-      {/* macOS Style Document Info Sub-Header Bar */}
-      <header className="px-6 py-4 border-b border-[var(--color-surface-border)] flex items-center justify-between bg-gradient-to-b from-[var(--color-surface-border)] to-transparent shrink-0">
-        <div>
-          <h1 className="text-sm font-medium text-[var(--color-text)]">
-            untitled.txt
-          </h1>
-          <p className="text-[11px] text-[var(--color-text-tertiary)] mt-0.5">
-            Local Synchronization
-          </p>
+        bg-[var(--color-surface)]
+        text-[var(--color-text)]
+        font-primary
+
+        selection:bg-[var(--color-accent)]
+        selection:text-white
+      "
+    >
+      {/* =====================================================
+          DOCUMENT HEADER
+      ====================================================== */}
+      <header
+        className="
+          flex
+          shrink-0
+          items-center
+          justify-between
+          gap-4
+
+          border-b
+          border-[var(--color-surface-border)]
+
+          px-4
+          py-2.5
+
+          sm:px-5
+        "
+      >
+        {/* Document */}
+        <div className="flex min-w-0 items-center gap-2.5">
+          <div
+            className="
+              flex
+              h-7
+              w-7
+              shrink-0
+              items-center
+              justify-center
+
+              rounded-[7px]
+
+              bg-[var(--color-surface-inactive)]
+              text-[var(--color-text-secondary)]
+            "
+          >
+            <FiEdit3 size={13} />
+          </div>
+
+          <div className="min-w-0">
+            <div
+              className="
+                truncate
+                text-[12px]
+                font-semibold
+                tracking-[-0.01em]
+                text-[var(--color-text)]
+              "
+            >
+              untitled.txt
+            </div>
+
+            <div
+              className="
+                text-[10px]
+                text-[var(--color-text-tertiary)]
+              "
+            >
+              Local document
+            </div>
+          </div>
         </div>
 
-        {/* Dynamic Sync Indicator */}
-        <div className="flex items-center gap-1.5 text-[11px] font-medium">
-          <span className={`w-1.5 h-1.5 rounded-full transition-colors ${isSaving ? 'bg-[var(--color-accent)] shadow-[0_0_8px_var(--color-accent)] animate-pulse' : 'bg-[var(--color-surface-border)]'}`} />
-          <span className={isSaving ? 'text-[var(--color-accent)]' : 'text-[var(--color-text-tertiary)]'}>
-            {isSaving ? 'Syncing...' : 'Saved'}
-          </span>
+        {/* Save Status */}
+        <div
+          className="
+            flex
+            shrink-0
+            items-center
+            gap-1.5
+
+            text-[10px]
+            font-medium
+          "
+        >
+          {isSaving ? (
+            <>
+              <span
+                className="
+                  h-1.5
+                  w-1.5
+                  animate-pulse
+                  rounded-full
+                  bg-[var(--color-accent)]
+                "
+              />
+
+              <span className="text-[var(--color-accent)]">
+                Saving
+              </span>
+            </>
+          ) : (
+            <>
+              <FiCheck
+                size={11}
+                className="text-[var(--color-text-tertiary)]"
+              />
+
+              <span className="text-[var(--color-text-tertiary)]">
+                Saved
+              </span>
+            </>
+          )}
         </div>
       </header>
 
-      {/* Editor Body Textarea Workspace */}
-      <textarea
-        value={text}
-        onChange={handleChange}
-        placeholder="Start typing your notes here..."
-        spellCheck="false"
-        className="
-          flex-1 w-full px-6 py-5 bg-transparent resize-none outline-none
-          text-[14px] text-[var(--color-text-secondary)] leading-relaxed
-          custom-scrollbar placeholder:text-[var(--color-text-tertiary)]
-          placeholder:opacity-50 focus:text-[var(--color-text)] font-primary
-        "
-      />
+      {/* =====================================================
+          EDITOR
+      ====================================================== */}
+      <div className="relative flex-1 overflow-hidden">
+        {/* Subtle writing guide */}
+        <div
+          className="
+            pointer-events-none
+            absolute
+            left-0
+            top-0
+            bottom-0
+            w-px
 
-      {/* Clean Native Status Metadata Footer Bar */}
-      <footer className="border-t border-[var(--color-surface-border)] p-2 px-6 text-[12px] text-[var(--color-text-tertiary)] flex justify-between items-center bg-[var(--color-surface-inactive)] font-medium">
-        <div className="flex gap-4">
-          <span>
-            <span className="text-[var(--color-text-secondary)] font-semibold">{text.length}</span> characters
+            bg-[var(--color-surface-border)]
+
+            opacity-40
+
+            sm:left-8
+          "
+        />
+
+        <textarea
+          value={text}
+          onChange={handleChange}
+          placeholder="Start writing..."
+          spellCheck="false"
+          aria-label="Notepad editor"
+          className="
+            custom-scrollbar
+
+            h-full
+            w-full
+            resize-none
+            border-none
+            outline-none
+
+            bg-transparent
+
+            px-5
+            py-6
+
+            text-[14px]
+            font-primary
+            leading-[1.8]
+
+            text-[var(--color-text)]
+
+            placeholder:text-[var(--color-text-tertiary)]
+            placeholder:opacity-60
+
+            focus:ring-0
+
+            sm:px-9
+            sm:py-7
+          "
+        />
+
+        {/* Empty State */}
+        {!text && (
+          <div
+            className="
+              pointer-events-none
+              absolute
+              left-0
+              right-0
+              top-1/2
+              -translate-y-1/2
+
+              flex
+              flex-col
+              items-center
+              justify-center
+
+              px-6
+
+              text-center
+            "
+          >
+            <div
+              className="
+                mb-3
+                flex
+                h-9
+                w-9
+                items-center
+                justify-center
+
+                rounded-[10px]
+
+                bg-[var(--color-surface-inactive)]
+
+                text-[var(--color-text-tertiary)]
+              "
+            >
+              <FiEdit3 size={15} />
+            </div>
+
+            <p
+              className="
+                text-[13px]
+                font-medium
+                text-[var(--color-text-secondary)]
+              "
+            >
+              Start writing
+            </p>
+
+            <p
+              className="
+                mt-1
+                text-[11px]
+                text-[var(--color-text-tertiary)]
+              "
+            >
+              Your notes are saved automatically.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* =====================================================
+          STATUS BAR
+      ====================================================== */}
+      <footer
+        className="
+          flex
+          shrink-0
+          items-center
+          justify-between
+          gap-4
+
+          border-t
+          border-[var(--color-surface-border)]
+
+          bg-[var(--color-surface-inactive)]
+
+          px-4
+          py-2
+
+          text-[10px]
+          font-medium
+
+          sm:px-5
+        "
+      >
+        {/* Stats */}
+        <div
+          className="
+            flex
+            items-center
+            gap-3
+          "
+        >
+          <span className="text-[var(--color-text-tertiary)]">
+            <strong
+              className="
+                font-semibold
+                text-[var(--color-text-secondary)]
+              "
+            >
+              {wordCount}
+            </strong>{" "}
+            {wordCount === 1 ? "word" : "words"}
           </span>
-          <span>
-            <span className="text-[var(--color-text-secondary)] font-semibold">{wordCount}</span> words
+
+          <span
+            className="
+              h-1
+              w-1
+              rounded-full
+              bg-[var(--color-text-disabled)]
+            "
+          />
+
+          <span className="text-[var(--color-text-tertiary)]">
+            <strong
+              className="
+                font-semibold
+                text-[var(--color-text-secondary)]
+              "
+            >
+              {text.length}
+            </strong>{" "}
+            chars
           </span>
         </div>
 
-        <div className="flex items-center gap-4">
+        {/* Actions */}
+        <div className="flex items-center gap-3">
+          <span
+            className="
+              hidden
+              text-[10px]
+              tracking-wide
+              text-[var(--color-text-disabled)]
+              sm:inline
+            "
+          >
+            UTF-8
+          </span>
+
           <button
             onClick={handleClear}
-            className="flex items-center gap-1.5 text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors focus:outline-none cursor-default"
-            title="Clear Document"
-          >
-            <FiTrash2 size={12} />
-            <span>Clear</span>
-          </button>
+            disabled={!text}
+            title="Clear document"
+            className="
+              group
 
-          <span className="text-[var(--color-surface-border)] font-normal">|</span>
-          <span className="text-[var(--color-text-tertiary)] text-[11px] font-normal tracking-wide">UTF-8</span>
+              inline-flex
+              items-center
+              gap-1.5
+
+              rounded-[6px]
+
+              px-1.5
+              py-1
+
+              text-[10px]
+              font-medium
+
+              text-[var(--color-text-tertiary)]
+
+              transition-all
+              duration-150
+
+              hover:bg-[var(--color-surface)]
+              hover:text-[var(--color-accent)]
+
+              disabled:pointer-events-none
+              disabled:opacity-30
+
+              focus:outline-none
+            "
+          >
+            <FiTrash2
+              size={11}
+              className="
+                transition-transform
+                duration-150
+
+                group-hover:scale-105
+              "
+            />
+
+            <span className="hidden sm:inline">
+              Clear
+            </span>
+          </button>
         </div>
       </footer>
-
     </div>
   );
 }
