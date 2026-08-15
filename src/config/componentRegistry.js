@@ -53,7 +53,7 @@ export const WIDGET_PROPS = {
     positionStyle: { top: "250px", left: "18px" },
   },
   github: {
-    positionStyle: { top: "501px", left: "18px" },
+    positionStyle: { bottom: "16px", left: "18px" },
   },
   clock: {
     positionStyle: { top: "16px", right: "18px" },
