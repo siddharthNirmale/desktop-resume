@@ -1,250 +1,366 @@
-import { FiMail, FiPhone, FiMapPin, FiChevronRight } from "react-icons/fi";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import {
+  FiMail,
+  FiPhone,
+  FiMapPin,
+  FiCopy,
+  FiCheck,
+  FiArrowUpRight,
+  FiDownload,
+  FiExternalLink,
+  FiMessageCircle,
+} from "react-icons/fi";
+import { FaGithub, FaLinkedin, FaWhatsapp } from "react-icons/fa";
+
+const CONTACT = {
+  name: "Siddharth Nirmale",
+  role: "Frontend / Full-stack Developer",
+  email: "siddharth175nirmale1@gmail.com",
+  phone: "+91 77238 24225",
+  phoneRaw: "+917723824225",
+
+  github: "https://github.com/siddharthNirmale",
+  githubLabel: "github.com/siddharthNirmale",
+
+  linkedin: "https://linkedin.com/in/siddharth-nirmale",
+  linkedinLabel: "linkedin.com/in/siddharth-nirmale",
+
+  location: "Indore, Madhya Pradesh, India",
+
+  maps:
+    "https://www.google.com/maps/search/?api=1&query=Indore%2C%20Madhya%20Pradesh%2C%20India",
+};
+
+const WHATSAPP_MESSAGE =
+  "Hi Siddharth, I found your portfolio and wanted to connect.";
+
+const CONTACT_ITEMS = [
+  {
+    id: "email",
+    label: "Email",
+    value: CONTACT.email,
+    icon: FiMail,
+    href: `mailto:${CONTACT.email}`,
+    copyable: CONTACT.email,
+    action: "Email",
+  },
+  {
+    id: "phone",
+    label: "Phone",
+    value: CONTACT.phone,
+    icon: FiPhone,
+    href: `tel:${CONTACT.phoneRaw}`,
+    copyable: CONTACT.phoneRaw,
+    action: "Call",
+  },
+  {
+    id: "whatsapp",
+    label: "WhatsApp",
+    value: "Message me on WhatsApp",
+    icon: FaWhatsapp,
+    href: `https://wa.me/${CONTACT.phoneRaw.replace(
+      "+",
+      ""
+    )}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`,
+    external: true,
+    action: "Message",
+  },
+  {
+    id: "github",
+    label: "GitHub",
+    value: CONTACT.githubLabel,
+    icon: FaGithub,
+    href: CONTACT.github,
+    external: true,
+    action: "Open",
+  },
+  {
+    id: "linkedin",
+    label: "LinkedIn",
+    value: CONTACT.linkedinLabel,
+    icon: FaLinkedin,
+    href: CONTACT.linkedin,
+    external: true,
+    action: "Open",
+  },
+  {
+    id: "location",
+    label: "Location",
+    value: CONTACT.location,
+    icon: FiMapPin,
+    href: CONTACT.maps,
+    external: true,
+    action: "Map",
+  },
+];
 
 export default function ContactSection() {
+  const [copiedId, setCopiedId] = useState(null);
+  const [toast, setToast] = useState("");
+
+  useEffect(() => {
+    if (!toast) return;
+
+    const timer = setTimeout(() => {
+      setToast("");
+    }, 1800);
+
+    return () => clearTimeout(timer);
+  }, [toast]);
+
+  const handleCopy = async (text, id, label) => {
+    try {
+      await navigator.clipboard.writeText(text);
+
+      setCopiedId(id);
+      setToast(`${label} copied`);
+
+      setTimeout(() => {
+        setCopiedId(null);
+      }, 1600);
+    } catch (error) {
+      console.error("Copy failed:", error);
+      setToast("Copy failed");
+    }
+  };
+
+  const downloadVCard = () => {
+    const vCard = [
+      "BEGIN:VCARD",
+      "VERSION:3.0",
+      `FN:${CONTACT.name}`,
+      "Nirmale;Siddharth;;;",
+      `TITLE:${CONTACT.role}`,
+      `EMAIL:${CONTACT.email}`,
+      `TEL:${CONTACT.phoneRaw}`,
+      `URL:${CONTACT.github}`,
+      `URL:${CONTACT.linkedin}`,
+      "ADR:;;Indore;Madhya Pradesh;;India",
+      "END:VCARD",
+    ].join("\r\n");
+
+    const blob = new Blob([vCard], {
+      type: "text/vcard;charset=utf-8",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+
+    anchor.href = url;
+    anchor.download = "Siddharth-Nirmale.vcf";
+
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+
+    URL.revokeObjectURL(url);
+
+    setToast("Contact saved");
+  };
+
   return (
-    <div className="w-full min-h-full bg-[var(--color-surface)] text-[var(--color-text)] flex flex-col font-primary selection:bg-[var(--color-accent)] selection:text-white">
+    <section className="mx-auto w-full max-w-2xl px-5 py-10 sm:px-7">
+      {/* Header */}
+      <header className="mb-8">
+        <div className="mb-3 flex items-center gap-2">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--color-accent)]" />
 
-      {/* =====================================================
-          HEADER
-      ====================================================== */}
-      <header className="shrink-0 border-b border-[var(--color-surface-border)] px-5 py-4 sm:px-6">
-        <div className="flex items-center justify-between gap-4">
-          <div className="min-w-0">
-            <h1 className="text-[17px] sm:text-[18px] font-semibold tracking-[-0.025em] text-[var(--color-text)]">
-              Contact
-            </h1>
+          <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-accent)]">
+            Available for work
+          </span>
+        </div>
 
-            <p className="mt-0.5 text-[12px] leading-relaxed text-[var(--color-text-tertiary)]">
-              Let's build something together.
+        <div className="flex items-end justify-between gap-6">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[var(--color-text)] sm:text-3xl">
+              Get in touch
+            </h2>
+
+            <p className="mt-2 max-w-md text-sm leading-6 text-[var(--color-text-tertiary)]">
+              Open to frontend, full-stack, freelance, and interesting
+              collaborations.
             </p>
           </div>
 
-          <div className="flex shrink-0 items-center gap-1.5 rounded-full border border-[var(--color-surface-border)] bg-[var(--color-surface-inactive)] px-2.5 py-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)] shadow-[0_0_7px_var(--color-accent)]" />
-            <span className="text-[10px] font-medium text-[var(--color-text-secondary)]">
-              Available
-            </span>
-          </div>
+          <button
+            type="button"
+            onClick={downloadVCard}
+            title="Save contact"
+            aria-label="Save contact"
+            className="group hidden shrink-0 items-center gap-2 text-xs font-medium text-[var(--color-text-tertiary)] transition-colors hover:text-[var(--color-text)] sm:flex"
+          >
+            <FiDownload
+              size={14}
+              className="transition-transform group-hover:-translate-y-0.5"
+            />
+
+            <span>Save contact</span>
+          </button>
         </div>
       </header>
 
-      {/* =====================================================
-          MAIN CONTENT
-      ====================================================== */}
-      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col overflow-y-auto custom-scrollbar px-5 py-5 sm:px-6 sm:py-6">
+      {/* Contact actions */}
+      <div className="space-y-1">
+        {CONTACT_ITEMS.map((item) => {
+          const Icon = item.icon;
+          const isCopied = copiedId === item.id;
 
-        {/* Intro */}
-        <section className="mb-6">
-          <p className="max-w-lg text-[14px] sm:text-[15px] leading-[1.65] text-[var(--color-text-secondary)]">
-            The quickest way to reach me is through{" "}
-            <strong className="font-semibold text-[var(--color-text)]">
-              email
-            </strong>
-            . You can also find me on GitHub and LinkedIn.
-          </p>
-        </section>
+          return (
+            <div
+              key={item.id}
+              className="group flex items-center gap-3 py-3 transition-all duration-200"
+            >
+              {/* Icon */}
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center text-[var(--color-text-tertiary)] transition-all duration-200 group-hover:scale-105 group-hover:text-[var(--color-accent)]">
+                <Icon size={17} />
+              </div>
 
-        {/* =================================================
-            COMMUNICATIONS
-        ================================================== */}
-        <section className="mb-6">
-          <SectionLabel>Direct contact</SectionLabel>
+              {/* Main link */}
+              <a
+                href={item.href}
+                target={item.external ? "_blank" : undefined}
+                rel={
+                  item.external
+                    ? "noopener noreferrer"
+                    : undefined
+                }
+                className="min-w-0 flex-1"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-disabled)] transition-colors group-hover:text-[var(--color-text-tertiary)]">
+                    {item.label}
+                  </span>
 
-          <div className="overflow-hidden rounded-[14px] border border-[var(--color-surface-border)] bg-[var(--color-surface-inactive)]">
+                  {item.external && (
+                    <FiExternalLink
+                      size={10}
+                      className="text-[var(--color-text-disabled)] opacity-0 transition-opacity group-hover:opacity-100"
+                    />
+                  )}
+                </div>
 
-            <ContactCard
-              icon={<FiMail size={17} strokeWidth={1.8} />}
-              label="Email"
-              value="siddharth175nirmale1@gmail.com"
-              href="mailto:siddharth175nirmale1@gmail.com"
-            />
+                <p className="mt-0.5 truncate text-sm font-medium text-[var(--color-text-secondary)] transition-colors group-hover:text-[var(--color-text)]">
+                  {item.value}
+                </p>
+              </a>
 
-            <Divider />
+              {/* Copy */}
+              {item.copyable && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleCopy(
+                      item.copyable,
+                      item.id,
+                      item.label
+                    )
+                  }
+                  title={`Copy ${item.label}`}
+                  aria-label={`Copy ${item.label}`}
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--color-text-disabled)] opacity-0 transition-all duration-200 hover:bg-[var(--color-surface-inactive)] hover:text-[var(--color-text)] group-hover:opacity-100 focus:opacity-100 active:scale-90"
+                >
+                  {isCopied ? (
+                    <FiCheck
+                      size={14}
+                      className="text-emerald-500"
+                    />
+                  ) : (
+                    <FiCopy size={14} />
+                  )}
+                </button>
+              )}
 
-            <ContactCard
-              icon={<FiPhone size={17} strokeWidth={1.8} />}
-              label="Phone"
-              value="+91 77238 24225"
-              href="tel:+917723824225"
-            />
+              {/* Open */}
+              <a
+                href={item.href}
+                target={item.external ? "_blank" : undefined}
+                rel={
+                  item.external
+                    ? "noopener noreferrer"
+                    : undefined
+                }
+                title={item.action}
+                aria-label={`${item.action} ${item.label}`}
+                className="flex h-8 w-8 shrink-0 items-center justify-center text-[var(--color-text-disabled)] opacity-0 transition-all duration-200 hover:text-[var(--color-text)] group-hover:translate-x-0.5 group-hover:opacity-100 focus:opacity-100"
+              >
+                <FiArrowUpRight size={15} />
+              </a>
+            </div>
+          );
+        })}
+      </div>
 
-          </div>
-        </section>
+      {/* Primary actions */}
+      <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
+        <a
+          href={`mailto:${CONTACT.email}?subject=${encodeURIComponent(
+            "Hello Siddharth"
+          )}`}
+          className="group inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-text)] transition-colors hover:text-[var(--color-accent)]"
+        >
+          <FiMessageCircle size={15} />
 
-        {/* =================================================
-            NETWORKS
-        ================================================== */}
-        <section>
-          <SectionLabel>Online</SectionLabel>
+          <span>Start a conversation</span>
 
-          <div className="overflow-hidden rounded-[14px] border border-[var(--color-surface-border)] bg-[var(--color-surface-inactive)]">
+          <FiArrowUpRight
+            size={14}
+            className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          />
+        </a>
 
-            <ContactCard
-              icon={<FaGithub size={17} />}
-              label="GitHub"
-              value="github.com/siddharthNirmale"
-              href="https://github.com/siddharthNirmale"
-            />
+        <a
+          href={`https://wa.me/${CONTACT.phoneRaw.replace(
+            "+",
+            ""
+          )}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group inline-flex items-center gap-2 text-sm font-medium text-[var(--color-text-tertiary)] transition-colors hover:text-[var(--color-text)]"
+        >
+          <FaWhatsapp size={15} />
 
-            <Divider />
+          <span>WhatsApp</span>
 
-            <ContactCard
-              icon={<FaLinkedin size={17} />}
-              label="LinkedIn"
-              value="linkedin.com/in/siddharth-nirmale"
-              href="https://linkedin.com/in/siddharth-nirmale"
-            />
+          <FiArrowUpRight
+            size={13}
+            className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          />
+        </a>
 
-            <Divider />
+        <button
+          type="button"
+          onClick={downloadVCard}
+          className="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-text-tertiary)] transition-colors hover:text-[var(--color-text)] sm:hidden"
+        >
+          <FiDownload size={14} />
+          Save contact
+        </button>
+      </div>
 
-            <ContactCard
-              icon={<FiMapPin size={17} strokeWidth={1.8} />}
-              label="Location"
-              value="Indore, Madhya Pradesh, India"
-              href="#"
-            />
+      {/* Minimal footer */}
+      <div className="mt-10 flex items-center justify-between">
+        <span className="text-[10px] uppercase tracking-[0.14em] text-[var(--color-text-disabled)]">
+          Indore · India
+        </span>
 
-          </div>
-        </section>
-      </main>
+        <span className="text-[10px] text-[var(--color-text-disabled)]">
+          Usually replies within 24h
+        </span>
+      </div>
 
-      {/* =====================================================
-          FOOTER
-      ====================================================== */}
-      <footer className="shrink-0 border-t border-[var(--color-surface-border)] px-5 py-3 sm:px-6">
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-[10px] font-medium text-[var(--color-text-tertiary)]">
-            Usually responds quickly
-          </span>
-
-          <span className="text-[10px] font-medium tracking-wide text-[var(--color-text-disabled)]">
-            INDIA · IST
-          </span>
-        </div>
-      </footer>
-    </div>
-  );
-}
-
-/* ============================================================
-   SECTION LABEL
-============================================================ */
-
-function SectionLabel({ children }) {
-  return (
-    <h2 className="mb-2 px-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--color-text-tertiary)]">
-      {children}
-    </h2>
-  );
-}
-
-/* ============================================================
-   DIVIDER
-============================================================ */
-
-function Divider() {
-  return (
-    <div className="ml-[58px] border-t border-[var(--color-surface-border)]" />
-  );
-}
-
-/* ============================================================
-   CONTACT CARD
-============================================================ */
-
-function ContactCard({ icon, label, value, href }) {
-  const isLink = href !== "#";
-
-  const content = (
-    <div
-      className="
-        group flex min-h-[66px] w-full items-center
-        px-4 py-3
-        transition-colors duration-150
-        hover:bg-[var(--color-surface)]
-      "
-    >
-      {/* Icon */}
+      {/* Toast */}
       <div
-        className="
-          mr-3.5 flex h-9 w-9 shrink-0 items-center justify-center
-          rounded-[10px]
-          border border-[var(--color-surface-border)]
-          bg-[var(--color-surface)]
-          text-[var(--color-text-secondary)]
-          transition-all duration-150
-          group-hover:border-[var(--color-accent)]
-          group-hover:text-[var(--color-accent)]
-        "
+        className={`pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 transition-all duration-300 ${toast
+            ? "translate-y-0 opacity-100"
+            : "translate-y-2 opacity-0"
+          }`}
+        aria-live="polite"
       >
-        {icon}
-      </div>
-
-      {/* Text */}
-      <div className="min-w-0 flex-1">
-        <span
-          className="
-            block
-            text-[10px]
-            font-semibold
-            uppercase
-            tracking-[0.08em]
-            text-[var(--color-text-tertiary)]
-          "
-        >
-          {label}
-        </span>
-
-        <span
-          className="
-            mt-0.5
-            block
-            truncate
-            text-[13px]
-            sm:text-[14px]
-            font-medium
-            tracking-[-0.01em]
-            text-[var(--color-text)]
-            transition-colors duration-150
-            group-hover:text-[var(--color-accent)]
-          "
-        >
-          {value}
-        </span>
-      </div>
-
-      {/* Arrow */}
-      {isLink && (
-        <div
-          className="
-            ml-3 flex h-7 w-7 shrink-0 items-center justify-center
-            rounded-full
-            text-[var(--color-text-disabled)]
-            transition-all duration-150
-            group-hover:bg-[var(--color-surface-border)]
-            group-hover:text-[var(--color-text)]
-            group-hover:translate-x-0.5
-          "
-        >
-          <FiChevronRight size={15} strokeWidth={1.8} />
+        <div className="flex items-center gap-2 bg-[var(--color-text)] px-3 py-2 text-xs font-medium text-[var(--color-surface)] shadow-lg">
+          <FiCheck size={13} />
+          {toast}
         </div>
-      )}
-    </div>
-  );
-
-  return isLink ? (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="block cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-accent)]"
-    >
-      {content}
-    </a>
-  ) : (
-    <div className="block cursor-default">
-      {content}
-    </div>
+      </div>
+    </section>
   );
 }
