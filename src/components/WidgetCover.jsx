@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { XIcon as X } from "lucide-animated";;
+import { XIcon as X } from "lucide-animated";
 
 export default function WidgetCover({
   title,
@@ -17,7 +17,7 @@ export default function WidgetCover({
       dragMomentum={false}
       dragHandleClassName="widget-header-drag"
       dragConstraints={constraintsRef}
-      dragElastic={0.06}
+      dragElastic={0.035}
       onPointerDown={onFocus}
       style={{
         zIndex: zIndex ?? 1,
@@ -25,47 +25,173 @@ export default function WidgetCover({
         willChange: "transform, opacity",
         ...positionStyle,
       }}
-      whileDrag={{ cursor: "grabbing", scale: 1.012 }}
-      initial={{ opacity: 0, scale: 0.95, y: 12 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95, y: 8 }}
-      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+      whileDrag={{
+        scale: 1.006,
+        cursor: "grabbing",
+      }}
+      initial={{
+        opacity: 0,
+        scale: 0.97,
+        y: 8,
+      }}
+      animate={{
+        opacity: 1,
+        scale: 1,
+        y: 0,
+      }}
+      exit={{
+        opacity: 0,
+        scale: 0.97,
+        y: 6,
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 420,
+        damping: 32,
+        mass: 0.7,
+      }}
       className={`
-        custom-widget absolute w-[260px] sm:w-[270px] lg:w-[276px] 2xl:w-[288px] max-w-[calc(100vw-36px)]
-        bg-[var(--color-surface)]/90 backdrop-blur-3xl
-        border border-[var(--color-surface-border)] rounded-[22px]
-        flex flex-col font-primary select-none
-        pointer-events-auto widget-shadow
-        transition-colors duration-200 group
+        custom-widget
+        absolute
+
+        w-[250px]
+        sm:w-[260px]
+        lg:w-[268px]
+        2xl:w-[280px]
+
+        max-w-[calc(100vw-24px)]
+
+        flex
+        flex-col
+
+        overflow-hidden
+        select-none
+        pointer-events-auto
+        font-primary
+        group
+
+        bg-[var(--color-surface)]
+        border
+        border-[var(--color-surface-border)]
+        rounded-[16px]
+
+        shadow-[var(--widget-shadow)]
+
+        transition-[background-color,border-color,box-shadow]
+        duration-200
+
         ${className}
       `}
     >
-      {/* Widget Header — Drag Handle */}
-      <div className="widget-header-drag flex items-center justify-between px-4 pt-3.5 pb-0 cursor-grab active:cursor-grabbing">
-        <span className="text-[10px] font-heading font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[0.1em] group-hover:text-[var(--color-text-secondary)] transition-colors duration-150">
+      {/* Header */}
+      <div
+        className="
+          widget-header-drag
+          relative
+
+          h-9
+          px-3
+
+          flex
+          items-center
+          justify-center
+
+          cursor-grab
+          active:cursor-grabbing
+        "
+      >
+        {/* Centered title */}
+        <span
+          className="
+            max-w-[70%]
+            truncate
+
+            text-center
+            text-[11px]
+            leading-none
+            font-heading
+            font-medium
+            tracking-[-0.01em]
+
+            text-[var(--color-text-secondary)]
+
+            group-hover:text-[var(--color-text-primary)]
+
+            transition-colors
+            duration-150
+          "
+        >
           {title}
         </span>
 
+        {/* Close */}
         {onClose && (
           <button
-            onClick={(e) => { e.stopPropagation(); onClose(); }}
-            onPointerDown={(e) => e.stopPropagation()}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            onPointerDown={(e) => {
+              e.stopPropagation();
+            }}
             title="Close"
+            aria-label={`Close ${title}`}
             className="
-              h-[18px] w-[18px] rounded-full flex items-center justify-center
+              absolute
+              right-2
+              top-1/2
+              -translate-y-1/2
+
+              h-5
+              w-5
+
+              flex
+              items-center
+              justify-center
+
+              rounded-full
+
               text-[var(--color-text-disabled)]
-              opacity-0 group-hover:opacity-100
-              hover:bg-[var(--color-surface-inactive)] hover:text-[var(--color-text-secondary)]
-              transition-all duration-150 focus:outline-none cursor-default
+
+              opacity-0
+              group-hover:opacity-100
+
+              hover:bg-[var(--color-surface-inactive)]
+              hover:text-[var(--color-text-secondary)]
+
+              active:scale-90
+
+              transition-all
+              duration-150
+
+              focus:outline-none
+              focus-visible:ring-2
+              focus-visible:ring-[var(--color-accent)]/30
+
+              cursor-default
             "
           >
-            <X size={10} strokeWidth={2.5} />
+            <X
+              size={10}
+              strokeWidth={2.4}
+            />
           </button>
         )}
       </div>
 
-      {/* Widget Content Area */}
-      <div className="px-4 pb-4 pt-3 w-full flex-1 flex flex-col">
+      {/* Content */}
+      <div
+        className="
+          w-full
+          flex-1
+          flex
+          flex-col
+
+          px-3
+          pb-3
+        "
+      >
         {children}
       </div>
     </motion.div>
