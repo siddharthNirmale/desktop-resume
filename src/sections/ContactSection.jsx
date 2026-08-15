@@ -5,119 +5,246 @@ export default function ContactSection() {
   return (
     <div className="w-full min-h-full bg-[var(--color-surface)] text-[var(--color-text)] flex flex-col font-primary selection:bg-[var(--color-accent)] selection:text-white">
 
-      {/* Sub-Header */}
-      <header className="px-8 py-5 border-b border-[var(--color-surface-border)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-b from-[var(--color-surface-border)] to-transparent shrink-0">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight text-[var(--color-text)]">
-            Contact Channels
-          </h1>
-          <p className="text-[12px] text-[var(--color-text-tertiary)] mt-0.5">
-            Direct links to email, phone, and professional profiles.
-          </p>
-        </div>
+      {/* =====================================================
+          HEADER
+      ====================================================== */}
+      <header className="shrink-0 border-b border-[var(--color-surface-border)] px-5 py-4 sm:px-6">
+        <div className="flex items-center justify-between gap-4">
+          <div className="min-w-0">
+            <h1 className="text-[17px] sm:text-[18px] font-semibold tracking-[-0.025em] text-[var(--color-text)]">
+              Contact
+            </h1>
 
-        <div className="flex items-center gap-2 text-[12px] text-[var(--color-text-secondary)] font-medium">
-          <span className="w-2 h-2 bg-[var(--color-accent)] rounded-full shadow-[0_0_8px_var(--color-accent)] animate-pulse" />
-          Active
+            <p className="mt-0.5 text-[12px] leading-relaxed text-[var(--color-text-tertiary)]">
+              Let's build something together.
+            </p>
+          </div>
+
+          <div className="flex shrink-0 items-center gap-1.5 rounded-full border border-[var(--color-surface-border)] bg-[var(--color-surface-inactive)] px-2.5 py-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)] shadow-[0_0_7px_var(--color-accent)]" />
+            <span className="text-[10px] font-medium text-[var(--color-text-secondary)]">
+              Available
+            </span>
+          </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-8 space-y-6 max-w-2xl w-full mx-auto">
+      {/* =====================================================
+          MAIN CONTENT
+      ====================================================== */}
+      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col overflow-y-auto custom-scrollbar px-5 py-5 sm:px-6 sm:py-6">
 
-        {/* Direct Communications */}
-        <section className="space-y-2">
-          <h2 className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider px-1">
-            Communications
-          </h2>
-          <div className="bg-[var(--color-surface-inactive)] rounded-xl border border-[var(--color-surface-border)] overflow-hidden shadow-sm divide-y divide-[var(--color-surface-border)]">
+        {/* Intro */}
+        <section className="mb-6">
+          <p className="max-w-lg text-[14px] sm:text-[15px] leading-[1.65] text-[var(--color-text-secondary)]">
+            The quickest way to reach me is through{" "}
+            <strong className="font-semibold text-[var(--color-text)]">
+              email
+            </strong>
+            . You can also find me on GitHub and LinkedIn.
+          </p>
+        </section>
+
+        {/* =================================================
+            COMMUNICATIONS
+        ================================================== */}
+        <section className="mb-6">
+          <SectionLabel>Direct contact</SectionLabel>
+
+          <div className="overflow-hidden rounded-[14px] border border-[var(--color-surface-border)] bg-[var(--color-surface-inactive)]">
+
             <ContactCard
-              icon={<FiMail size={15} />}
+              icon={<FiMail size={17} strokeWidth={1.8} />}
               label="Email"
               value="siddharth175nirmale1@gmail.com"
               href="mailto:siddharth175nirmale1@gmail.com"
             />
+
+            <Divider />
+
             <ContactCard
-              icon={<FiPhone size={15} />}
+              icon={<FiPhone size={17} strokeWidth={1.8} />}
               label="Phone"
               value="+91 77238 24225"
               href="tel:+917723824225"
             />
+
           </div>
         </section>
 
-        {/* Professional Networks */}
-        <section className="space-y-2">
-          <h2 className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider px-1">
-            Networks
-          </h2>
-          <div className="bg-[var(--color-surface-inactive)] rounded-xl border border-[var(--color-surface-border)] overflow-hidden shadow-sm divide-y divide-[var(--color-surface-border)]">
+        {/* =================================================
+            NETWORKS
+        ================================================== */}
+        <section>
+          <SectionLabel>Online</SectionLabel>
+
+          <div className="overflow-hidden rounded-[14px] border border-[var(--color-surface-border)] bg-[var(--color-surface-inactive)]">
+
             <ContactCard
-              icon={<FaGithub size={15} />}
+              icon={<FaGithub size={17} />}
               label="GitHub"
               value="github.com/siddharthNirmale"
               href="https://github.com/siddharthNirmale"
             />
+
+            <Divider />
+
             <ContactCard
-              icon={<FaLinkedin size={15} />}
+              icon={<FaLinkedin size={17} />}
               label="LinkedIn"
               value="linkedin.com/in/siddharth-nirmale"
               href="https://linkedin.com/in/siddharth-nirmale"
             />
+
+            <Divider />
+
             <ContactCard
-              icon={<FiMapPin size={15} />}
+              icon={<FiMapPin size={17} strokeWidth={1.8} />}
               label="Location"
               value="Indore, Madhya Pradesh, India"
               href="#"
             />
+
           </div>
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="p-3 text-center text-[11px] font-normal text-[var(--color-text-tertiary)] opacity-80 border-t border-[var(--color-surface-border)] bg-[var(--color-surface-inactive)] shrink-0 select-none">
-        Secure Handshake Verified
-      </footer>
+      {/* =====================================================
+          FOOTER
+      ====================================================== */}
+      <footer className="shrink-0 border-t border-[var(--color-surface-border)] px-5 py-3 sm:px-6">
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-[10px] font-medium text-[var(--color-text-tertiary)]">
+            Usually responds quickly
+          </span>
 
+          <span className="text-[10px] font-medium tracking-wide text-[var(--color-text-disabled)]">
+            INDIA · IST
+          </span>
+        </div>
+      </footer>
     </div>
   );
 }
 
-/* ---------------- HELPER COMPONENTS ---------------- */
+/* ============================================================
+   SECTION LABEL
+============================================================ */
+
+function SectionLabel({ children }) {
+  return (
+    <h2 className="mb-2 px-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--color-text-tertiary)]">
+      {children}
+    </h2>
+  );
+}
+
+/* ============================================================
+   DIVIDER
+============================================================ */
+
+function Divider() {
+  return (
+    <div className="ml-[58px] border-t border-[var(--color-surface-border)]" />
+  );
+}
+
+/* ============================================================
+   CONTACT CARD
+============================================================ */
 
 function ContactCard({ icon, label, value, href }) {
   const isLink = href !== "#";
 
   const content = (
-    <div className="w-full px-5 py-4 flex items-center justify-between group bg-transparent hover:bg-[var(--color-surface-border)] transition-colors duration-150">
-      <div className="flex items-center gap-4 min-w-0">
-        <div className="text-[var(--color-text-tertiary)] group-hover:text-[var(--color-accent)] transition-colors duration-150 shrink-0">
-          {icon}
-        </div>
-
-        <div className="flex flex-col min-w-0">
-          <span className="text-[11px] font-medium text-[var(--color-text-tertiary)] uppercase tracking-wide">
-            {label}
-          </span>
-          <span className="text-[14px] font-medium text-[var(--color-text-secondary)] group-hover:text-[var(--color-text)] transition-colors duration-150 truncate mt-0.5">
-            {value}
-          </span>
-        </div>
+    <div
+      className="
+        group flex min-h-[66px] w-full items-center
+        px-4 py-3
+        transition-colors duration-150
+        hover:bg-[var(--color-surface)]
+      "
+    >
+      {/* Icon */}
+      <div
+        className="
+          mr-3.5 flex h-9 w-9 shrink-0 items-center justify-center
+          rounded-[10px]
+          border border-[var(--color-surface-border)]
+          bg-[var(--color-surface)]
+          text-[var(--color-text-secondary)]
+          transition-all duration-150
+          group-hover:border-[var(--color-accent)]
+          group-hover:text-[var(--color-accent)]
+        "
+      >
+        {icon}
       </div>
 
+      {/* Text */}
+      <div className="min-w-0 flex-1">
+        <span
+          className="
+            block
+            text-[10px]
+            font-semibold
+            uppercase
+            tracking-[0.08em]
+            text-[var(--color-text-tertiary)]
+          "
+        >
+          {label}
+        </span>
+
+        <span
+          className="
+            mt-0.5
+            block
+            truncate
+            text-[13px]
+            sm:text-[14px]
+            font-medium
+            tracking-[-0.01em]
+            text-[var(--color-text)]
+            transition-colors duration-150
+            group-hover:text-[var(--color-accent)]
+          "
+        >
+          {value}
+        </span>
+      </div>
+
+      {/* Arrow */}
       {isLink && (
-        <div className="text-[var(--color-text-tertiary)] opacity-50 group-hover:opacity-100 group-hover:text-[var(--color-text-secondary)] group-hover:translate-x-0.5 transform transition-all duration-150 pr-1 shrink-0">
-          <FiChevronRight size={16} />
+        <div
+          className="
+            ml-3 flex h-7 w-7 shrink-0 items-center justify-center
+            rounded-full
+            text-[var(--color-text-disabled)]
+            transition-all duration-150
+            group-hover:bg-[var(--color-surface-border)]
+            group-hover:text-[var(--color-text)]
+            group-hover:translate-x-0.5
+          "
+        >
+          <FiChevronRight size={15} strokeWidth={1.8} />
         </div>
       )}
     </div>
   );
 
   return isLink ? (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="block focus:outline-none cursor-default">
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-accent)]"
+    >
       {content}
     </a>
   ) : (
-    <div className="block cursor-default">{content}</div>
+    <div className="block cursor-default">
+      {content}
+    </div>
   );
 }
