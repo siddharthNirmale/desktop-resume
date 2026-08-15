@@ -2,7 +2,6 @@ import agent from "../assets/project/agent.png";
 import thumbmax from "../assets/project/Thumbmax.png";
 import portfolio from "../assets/project/Portfolio.png";
 
-
 const projects = [
   {
     id: 1,

@@ -19,6 +19,7 @@ export default function AboutSection() {
         <section className="px-5 py-7 sm:px-7 sm:py-9 md:px-10 md:py-11">
           <div className="max-w-3xl">
 
+            {/* Meta */}
             <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-medium text-[var(--color-text-tertiary)]">
               <span className="inline-flex items-center gap-1.5">
                 <FiBriefcase size={13} />
@@ -33,6 +34,7 @@ export default function AboutSection() {
               </span>
             </div>
 
+            {/* Name */}
             <h1
               className="
                 text-[clamp(2.25rem,6vw,4rem)]
@@ -49,6 +51,7 @@ export default function AboutSection() {
               </span>
             </h1>
 
+            {/* Description */}
             <p
               className="
                 mt-5
@@ -61,7 +64,10 @@ export default function AboutSection() {
               "
             >
               I build sleek, intelligent full-stack experiences with
-              React, Next.js, Node.js, and AI.
+              <strong className="font-semibold text-[var(--color-text)]">
+                {" "}React, Next.js, Node.js,
+              </strong>{" "}
+              and <strong className="font-semibold text-[var(--color-text)]">AI.</strong>
             </p>
 
             {/* Quick facts */}
@@ -82,6 +88,7 @@ export default function AboutSection() {
         ====================================================== */}
         <section className="px-5 pb-7 sm:px-7 sm:pb-9 md:px-10">
 
+          {/* Experience + Projects */}
           <div
             className="
               grid
@@ -105,14 +112,16 @@ export default function AboutSection() {
               />
             </Section>
 
-            {/* Selected work */}
+            {/* Selected Work */}
             <Section title="Selected Work">
               <div className="divide-y divide-[var(--color-surface-border)]">
+
                 <ProjectItem
                   title="Desktop Portfolio"
                   description="Interactive desktop experience"
                   tech="React · Framer Motion"
                   year="2026"
+                  href="https://siddharthn-portfolio.vercel.app/"
                 />
 
                 <ProjectItem
@@ -120,6 +129,7 @@ export default function AboutSection() {
                   description="AI-powered customer support agent"
                   tech="Next.js · Groq · Zustand"
                   year="2026"
+                  href="https://refundpilot-preview.vercel.app/"
                 />
 
                 <ProjectItem
@@ -127,12 +137,16 @@ export default function AboutSection() {
                   description="AI thumbnail generation platform"
                   tech="Node.js · Gemini · Cloudinary"
                   year="2025"
+                  href="https://thumbmax-psi.vercel.app/"
                 />
+
               </div>
             </Section>
           </div>
 
-          {/* Education / Tech */}
+          {/* =====================================================
+              EDUCATION / TECH
+          ====================================================== */}
           <div
             className="
               mt-8
@@ -146,9 +160,18 @@ export default function AboutSection() {
               md:gap-12
             "
           >
+
+            {/* Education */}
             <Section title="Education">
               <div>
-                <h3 className="text-[14px] font-semibold tracking-[-0.01em]">
+                <h3
+                  className="
+                    text-[15px]
+                    font-semibold
+                    tracking-[-0.01em]
+                    text-[var(--color-text)]
+                  "
+                >
                   B.Tech in Electronics & Telecom
                 </h3>
 
@@ -156,14 +179,27 @@ export default function AboutSection() {
                   MITS Gwalior
                 </p>
 
-                <div className="mt-3 flex items-center gap-2 text-[11px] font-medium text-[var(--color-text-tertiary)]">
+                <div
+                  className="
+                    mt-3
+                    flex
+                    items-center
+                    gap-2
+                    text-[11px]
+                    font-medium
+                    text-[var(--color-text-tertiary)]
+                  "
+                >
                   <span>2020—2024</span>
+
                   <span className="h-1 w-1 rounded-full bg-[var(--color-text-disabled)]" />
+
                   <span>8.49 CGPA</span>
                 </div>
               </div>
             </Section>
 
+            {/* Core Tech */}
             <Section title="Core Tech">
               <p
                 className="
@@ -173,13 +209,14 @@ export default function AboutSection() {
                   text-[var(--color-text-secondary)]
                 "
               >
-                JavaScript, TypeScript, C++, React.js, Next.js,
-                Node.js, Express, MongoDB, Tailwind CSS and
-                Framer Motion.
+                <strong className="font-semibold text-[var(--color-text)]">
+                  JavaScript, TypeScript, C++, React.js, Next.js,
+                </strong>{" "}
+                Node.js, Express, MongoDB, Tailwind CSS and Framer Motion.
               </p>
             </Section>
-          </div>
 
+          </div>
         </section>
 
         {/* =====================================================
@@ -193,7 +230,6 @@ export default function AboutSection() {
             py-4
             sm:px-7
             md:px-10
-
             flex
             flex-wrap
             items-center
@@ -217,12 +253,13 @@ export default function AboutSection() {
             icon={<FiMail size={15} />}
             label="Email"
             href="mailto:siddharth175nirmale1@gmail.com"
+            external
           />
 
           <SocialLink
             icon={<FiArrowUpRight size={15} />}
             label="Portfolio"
-            href="https://siddharthn-portfolio.vercel.app"
+            href="https://siddharthn-portfolio.vercel.app/"
             external
           />
         </footer>
@@ -267,16 +304,12 @@ function QuickTag({ icon, children }) {
         inline-flex
         items-center
         gap-1.5
-
         rounded-full
         border
         border-[var(--color-surface-border)]
-
         bg-[var(--color-surface-inactive)]
-
         px-2.5
         py-1.5
-
         text-[11px]
         font-medium
         text-[var(--color-text-secondary)]
@@ -304,6 +337,7 @@ function ExperienceItem({
   return (
     <div className="group">
       <div className="flex items-start justify-between gap-4">
+
         <div>
           <h3
             className="
@@ -311,10 +345,8 @@ function ExperienceItem({
               font-semibold
               tracking-[-0.015em]
               text-[var(--color-text)]
-
               transition-colors
               duration-150
-
               group-hover:text-[var(--color-accent)]
             "
           >
@@ -337,6 +369,7 @@ function ExperienceItem({
         >
           {year}
         </span>
+
       </div>
 
       <p
@@ -363,79 +396,108 @@ function ProjectItem({
   description,
   tech,
   year,
+  href,
 }) {
   return (
-    <div
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`Open ${title}`}
       className="
         group
         flex
-        cursor-default
         items-center
         justify-between
         gap-4
-
         py-3.5
-
         first:pt-0
         last:pb-0
+        rounded-lg
+        outline-none
+        transition-all
+        duration-200
+        hover:px-3
+        hover:bg-[var(--color-surface-inactive)]
+        focus-visible:px-3
+        focus-visible:bg-[var(--color-surface-inactive)]
+        focus-visible:ring-1
+        focus-visible:ring-[var(--color-accent)]
       "
     >
       <div className="min-w-0">
+
+        {/* Title */}
         <div className="flex items-center gap-2">
           <h3
             className="
               truncate
-              text-[13px]
+              text-[14px]
               font-semibold
               tracking-[-0.01em]
               text-[var(--color-text)]
-
               transition-colors
               duration-150
-
               group-hover:text-[var(--color-accent)]
+              group-focus-visible:text-[var(--color-accent)]
             "
           >
             {title}
           </h3>
 
           <FiArrowUpRight
-            size={13}
+            size={14}
             className="
               shrink-0
-              opacity-0
               -translate-x-1
+              translate-y-0.5
               text-[var(--color-accent)]
-
+              opacity-0
               transition-all
-              duration-150
-
+              duration-200
               group-hover:translate-x-0
+              group-hover:translate-y-0
               group-hover:opacity-100
+              group-focus-visible:translate-x-0
+              group-focus-visible:translate-y-0
+              group-focus-visible:opacity-100
             "
           />
         </div>
 
+        {/* Description */}
         <p className="mt-1 text-[12px] text-[var(--color-text-tertiary)]">
           {description}
         </p>
 
-        <p className="mt-1 text-[11px] text-[var(--color-text-secondary)]">
+        {/* Tech */}
+        <p
+          className="
+            mt-1
+            text-[11px]
+            font-medium
+            text-[var(--color-text-secondary)]
+          "
+        >
           {tech}
         </p>
       </div>
 
+      {/* Year */}
       <span
         className="
           shrink-0
           text-[11px]
           font-medium
           text-[var(--color-text-tertiary)]
+          transition-colors
+          duration-150
+          group-hover:text-[var(--color-text-secondary)]
         "
       >
         {year}
       </span>
-    </div>
+    </a>
   );
 }
 
@@ -447,38 +509,34 @@ function SocialLink({
   icon,
   label,
   href,
-  external,
+  external = false,
 }) {
   return (
     <a
       href={href}
-      target="_blank"
-      rel="noopener noreferrer"
+      target={href.startsWith("mailto:") ? undefined : "_blank"}
+      rel={href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
       className="
         group
-
         inline-flex
         items-center
         gap-1.5
-
         text-[12px]
         font-medium
         text-[var(--color-text-secondary)]
-
         transition-colors
         duration-150
-
         hover:text-[var(--color-text)]
+        focus-visible:outline-none
+        focus-visible:text-[var(--color-accent)]
       "
     >
       <span
         className="
           flex
           text-[var(--color-text-tertiary)]
-
           transition-colors
           duration-150
-
           group-hover:text-[var(--color-accent)]
         "
       >
@@ -494,7 +552,6 @@ function SocialLink({
             text-[var(--color-text-disabled)]
             transition-all
             duration-150
-
             group-hover:-translate-y-0.5
             group-hover:translate-x-0.5
           "

@@ -1,5 +1,14 @@
 import { useState, useRef, useEffect } from "react";
-import { FiMapPin, FiExternalLink, FiTerminal, FiChevronRight, FiCpu, FiFolder, FiBriefcase, FiCalendar } from "react-icons/fi";
+import {
+  FiMapPin,
+  FiExternalLink,
+  FiTerminal,
+  FiChevronRight,
+  FiCpu,
+  FiFolder,
+  FiBriefcase,
+  FiCalendar,
+} from "react-icons/fi";
 import projects from "../data/project";
 import skills from "../data/skills";
 
@@ -10,12 +19,32 @@ export default function Terminal() {
     {
       type: "output",
       content: (
-        <div className="mb-6 pb-4 border-b border-[var(--color-surface-border)] flex flex-col gap-1">
-          <h1 className="text-lg font-semibold text-[var(--color-text)] tracking-tight flex items-center gap-2">
-            <FiTerminal className="text-[var(--color-accent)]" /> Terminal
-          </h1>
-          <p className="text-[12px] text-[var(--color-text-tertiary)]">
-            Type <span className="text-[var(--color-accent)] font-medium">help</span> to list the available configuration nodes.
+        <div className="mb-5 border-b border-[var(--color-surface-border)] pb-4">
+          <div className="flex items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-[8px] border border-[var(--color-surface-border)] bg-[var(--color-surface-inactive)]">
+              <FiTerminal
+                size={14}
+                className="text-[var(--color-accent)]"
+              />
+            </div>
+
+            <div>
+              <h1 className="text-[14px] font-semibold tracking-[-0.02em] text-[var(--color-text)]">
+                Terminal
+              </h1>
+
+              <p className="text-[11px] text-[var(--color-text-tertiary)]">
+                Interactive portfolio shell
+              </p>
+            </div>
+          </div>
+
+          <p className="mt-3 text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+            Type{" "}
+            <span className="font-semibold text-[var(--color-accent)]">
+              help
+            </span>{" "}
+            to explore available commands.
           </p>
         </div>
       ),
@@ -25,7 +54,10 @@ export default function Terminal() {
   const endOfTerminalRef = useRef(null);
 
   useEffect(() => {
-    endOfTerminalRef.current?.scrollIntoView({ behavior: "smooth" });
+    endOfTerminalRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
   }, [history]);
 
   const handleCommand = (e) => {
@@ -37,25 +69,53 @@ export default function Terminal() {
     switch (command) {
       case "help":
         outputContent = (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 text-[13px] max-w-xl my-2 font-mono">
-            {[
-              { cmd: "help", icon: <FiTerminal size={10} /> },
-              { cmd: "clear", icon: <FiTerminal size={10} /> },
-              { cmd: "whoami", icon: <FiTerminal size={10} /> },
-              { cmd: "skills", icon: <FiCpu size={10} /> },
-              { cmd: "projects", icon: <FiFolder size={10} /> },
-              { cmd: "experience", icon: <FiBriefcase size={10} /> },
-              { cmd: "location", icon: <FiMapPin size={10} /> },
-              { cmd: "date", icon: <FiCalendar size={10} /> },
-            ].map(({ cmd, icon }) => (
-              <div key={cmd} className="flex items-center gap-2">
-                <span className="text-[var(--color-accent)] opacity-80 flex items-center">{icon}</span>
-                <span className="text-[var(--color-text-secondary)] font-medium">{cmd}</span>
-              </div>
-            ))}
-            <div className="col-span-full flex items-center gap-2 mt-2 pt-2 border-t border-[var(--color-surface-border)] text-[var(--color-text-tertiary)]">
-              <span className="text-[var(--color-accent)] opacity-80"><FiTerminal size={10} /></span>
-              <span>echo [text]</span>
+          <div className="my-2 max-w-xl">
+            <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-text-tertiary)]">
+              Available commands
+            </div>
+
+            <div className="grid grid-cols-2 gap-x-5 gap-y-1.5 sm:grid-cols-3">
+              {[
+                { cmd: "help", icon: <FiTerminal size={11} /> },
+                { cmd: "clear", icon: <FiTerminal size={11} /> },
+                { cmd: "whoami", icon: <FiTerminal size={11} /> },
+                { cmd: "skills", icon: <FiCpu size={11} /> },
+                { cmd: "projects", icon: <FiFolder size={11} /> },
+                { cmd: "experience", icon: <FiBriefcase size={11} /> },
+                { cmd: "location", icon: <FiMapPin size={11} /> },
+                { cmd: "date", icon: <FiCalendar size={11} /> },
+              ].map(({ cmd, icon }) => (
+                <div
+                  key={cmd}
+                  className="
+                    group flex items-center gap-2
+                    rounded-md px-2 py-1.5
+                    transition-colors duration-150
+                    hover:bg-[var(--color-surface-inactive)]
+                  "
+                >
+                  <span className="text-[var(--color-accent)] opacity-80">
+                    {icon}
+                  </span>
+
+                  <span className="text-[12px] font-medium text-[var(--color-text-secondary)] group-hover:text-[var(--color-text)]">
+                    {cmd}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-3 flex items-center gap-2 border-t border-[var(--color-surface-border)] pt-3 text-[11px] text-[var(--color-text-tertiary)]">
+              <span className="text-[var(--color-accent)]">
+                <FiTerminal size={11} />
+              </span>
+
+              <span>
+                echo{" "}
+                <span className="text-[var(--color-text-secondary)]">
+                  [text]
+                </span>
+              </span>
             </div>
           </div>
         );
@@ -68,11 +128,12 @@ export default function Terminal() {
 
       case "whoami":
         outputContent = (
-          <div className="my-2 space-y-0.5">
-            <div className="text-[var(--color-text)] font-semibold text-[14px]">
+          <div className="my-2">
+            <div className="text-[15px] font-semibold tracking-[-0.02em] text-[var(--color-text)]">
               Siddharth Nirmale
             </div>
-            <div className="text-[var(--color-text-tertiary)] text-[12px]">
+
+            <div className="mt-1 text-[12px] text-[var(--color-text-tertiary)]">
               Full-Stack Software Developer
             </div>
           </div>
@@ -81,17 +142,26 @@ export default function Terminal() {
 
       case "skills":
         outputContent = (
-          <div className="flex flex-col gap-4 my-3 max-w-2xl">
+          <div className="my-3 flex max-w-2xl flex-col gap-4">
             {skills.map((skillGroup) => (
               <div key={skillGroup.category}>
-                <div className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider mb-1.5">
+                <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--color-text-tertiary)]">
                   {skillGroup.category}
                 </div>
+
                 <div className="flex flex-wrap gap-1.5">
                   {skillGroup.items.map((skill) => (
                     <span
                       key={skill}
-                      className="px-2.5 py-1 rounded bg-[var(--color-surface-border)] border border-transparent text-[12px] text-[var(--color-text-secondary)] font-medium cursor-default"
+                      className="
+                        rounded-md
+                        border border-[var(--color-surface-border)]
+                        bg-[var(--color-surface-inactive)]
+                        px-2 py-1
+                        text-[11px]
+                        font-medium
+                        text-[var(--color-text-secondary)]
+                      "
                     >
                       {skill}
                     </span>
@@ -105,28 +175,68 @@ export default function Terminal() {
 
       case "projects":
         outputContent = (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-3 max-w-2xl">
+          <div className="my-3 grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-2">
             {projects.map((proj, idx) => (
               <div
                 key={idx}
-                className="border border-[var(--color-surface-border)] rounded-xl p-4 bg-[var(--color-surface-inactive)] space-y-2 shadow-sm"
+                className="
+                  group rounded-[11px]
+                  border border-[var(--color-surface-border)]
+                  bg-[var(--color-surface-inactive)]
+                  p-3.5
+                  transition-colors duration-150
+                  hover:bg-[var(--color-surface)]
+                "
               >
-                <div className="flex justify-between items-center">
-                  <h3 className="text-[var(--color-text)] font-semibold text-[14px]">
-                    {proj.title}
-                  </h3>
-                  <a href={proj.live} target="_blank" rel="noreferrer" className="text-[var(--color-text-tertiary)] text-[12px] hover:text-[var(--color-accent)] transition-colors">
-                    <FiExternalLink size={14} />
-                  </a>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h3 className="truncate text-[13px] font-semibold tracking-[-0.015em] text-[var(--color-text)]">
+                      {proj.title}
+                    </h3>
+
+                    <span className="mt-0.5 block text-[10px] text-[var(--color-text-tertiary)]">
+                      {proj.year}
+                    </span>
+                  </div>
+
+                  {proj.live && (
+                    <a
+                      href={proj.live}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={`Open ${proj.title}`}
+                      className="
+                        flex h-7 w-7 shrink-0 items-center justify-center
+                        rounded-full
+                        border border-[var(--color-surface-border)]
+                        text-[var(--color-text-tertiary)]
+                        transition-all duration-150
+                        hover:border-[var(--color-accent)]
+                        hover:bg-[var(--color-accent)]
+                        hover:text-white
+                      "
+                    >
+                      <FiExternalLink size={12} />
+                    </a>
+                  )}
                 </div>
-                <p className="text-[var(--color-text-secondary)] text-[13px] leading-relaxed">
+
+                <p className="mt-3 text-[11px] leading-[1.6] text-[var(--color-text-secondary)]">
                   {proj.bullets[0]}
                 </p>
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  {proj.tech.split(' • ').map((t) => (
+
+                <div className="mt-3 flex flex-wrap gap-1">
+                  {proj.tech.split(" • ").map((t) => (
                     <span
                       key={t}
-                      className="text-[11px] font-medium px-2 py-0.5 rounded bg-[var(--color-surface-border)] border border-transparent text-[var(--color-text-tertiary)] cursor-default"
+                      className="
+                        rounded-md
+                        bg-[var(--color-surface-border)]
+                        px-1.5 py-0.5
+                        text-[9px]
+                        font-medium
+                        text-[var(--color-text-tertiary)]
+                      "
                     >
                       {t}
                     </span>
@@ -148,17 +258,29 @@ export default function Terminal() {
         ];
 
         outputContent = (
-          <div className="flex flex-col gap-4 my-3 border-l border-[var(--color-surface-border)] ml-2 pl-4">
+          <div className="my-3 ml-1 flex max-w-xl flex-col gap-5 border-l border-[var(--color-surface-border)] pl-5">
             {jobs.map((job, idx) => (
-              <div key={idx} className="relative space-y-0.5">
-                <div className="absolute -left-[21px] top-[6px] w-2 h-2 bg-[var(--color-accent)] rounded-full border border-[var(--color-surface)] shadow-[0_0_6px_var(--color-accent)]" />
-                <div className="text-[var(--color-text)] text-[14px] font-semibold flex items-center gap-2">
-                  <FiBriefcase size={12} className="text-[var(--color-accent)] opacity-90" />
-                  {job.role}
+              <div key={idx} className="relative">
+                <div className="absolute -left-[25px] top-1.5 flex h-2 w-2 items-center justify-center rounded-full bg-[var(--color-accent)] shadow-[0_0_7px_var(--color-accent)]" />
+
+                <div className="flex items-center gap-2">
+                  <FiBriefcase
+                    size={12}
+                    className="text-[var(--color-accent)]"
+                  />
+
+                  <span className="text-[14px] font-semibold tracking-[-0.015em] text-[var(--color-text)]">
+                    {job.role}
+                  </span>
                 </div>
-                <div className="flex items-center gap-2 text-[12px] text-[var(--color-text-tertiary)]">
-                  <span>{job.company}</span>
-                  <span>•</span>
+
+                <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px] text-[var(--color-text-tertiary)]">
+                  <span className="font-medium text-[var(--color-text-secondary)]">
+                    {job.company}
+                  </span>
+
+                  <span>·</span>
+
                   <span>{job.year}</span>
                 </div>
               </div>
@@ -170,19 +292,40 @@ export default function Terminal() {
 
       case "location":
         outputContent = (
-          <div className="flex items-center gap-3 my-2 text-[13px] text-[var(--color-text-secondary)]">
-            <FiMapPin size={14} className="text-[var(--color-accent)]" />
-            <span className="font-medium text-[var(--color-text)]">Indore, Madhya Pradesh, India</span>
+          <div className="my-2 flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-[8px] border border-[var(--color-surface-border)] bg-[var(--color-surface-inactive)]">
+              <FiMapPin
+                size={14}
+                className="text-[var(--color-accent)]"
+              />
+            </div>
+
+            <div>
+              <div className="text-[13px] font-semibold text-[var(--color-text)]">
+                Indore, Madhya Pradesh, India
+              </div>
+
+              <div className="mt-0.5 text-[10px] text-[var(--color-text-tertiary)]">
+                Current location
+              </div>
+            </div>
           </div>
         );
         break;
 
       case "date": {
         const now = new Date();
+
         outputContent = (
-          <div className="text-[13px] text-[var(--color-text-secondary)] font-mono my-2 flex items-center gap-2">
-            <FiCalendar size={14} className="text-[var(--color-accent)]" />
-            {now.toString()}
+          <div className="my-2 flex items-center gap-3">
+            <FiCalendar
+              size={14}
+              className="text-[var(--color-accent)]"
+            />
+
+            <span className="text-[12px] text-[var(--color-text-secondary)]">
+              {now.toString()}
+            </span>
           </div>
         );
         break;
@@ -191,14 +334,17 @@ export default function Terminal() {
       default:
         if (command.startsWith("echo ")) {
           outputContent = (
-            <span className="text-[var(--color-text-secondary)] font-mono">
+            <span className="text-[var(--color-text-secondary)]">
               {input.substring(5)}
             </span>
           );
         } else if (command.length > 0) {
           outputContent = (
-            <span className="text-[var(--color-text-tertiary)] text-[13px]">
-              zsh: command not found: <span className="text-[var(--color-accent)] font-medium">{command}</span>
+            <span className="text-[12px] text-[var(--color-text-tertiary)]">
+              zsh: command not found:{" "}
+              <span className="font-medium text-[var(--color-accent)]">
+                {command}
+              </span>
             </span>
           );
         }
@@ -206,48 +352,104 @@ export default function Terminal() {
 
     setHistory((prev) => [
       ...prev,
-      { type: "command", content: input },
-      ...(outputContent ? [{ type: "output", content: outputContent }] : []),
+      {
+        type: "command",
+        content: input,
+      },
+      ...(outputContent
+        ? [
+          {
+            type: "output",
+            content: outputContent,
+          },
+        ]
+        : []),
     ]);
 
     setInput("");
   };
 
   return (
-    <div className="w-full h-full flex flex-col p-6 bg-[var(--color-surface-dark)] text-[var(--color-text)] font-mono text-[13px] overflow-y-auto custom-scrollbar">
-      {/* Scrollable Command Output Logs */}
-      <div className="flex-1">
-        {history.map((line, index) => (
-          <div key={index} className="mb-2 leading-relaxed">
-            {line.type === "command" ? (
-              <div className="flex items-center text-[var(--color-text)] mt-4 mb-2">
-                <FiChevronRight className="text-[var(--color-accent)] mr-1 font-bold select-none" size={16} />
-                <span className="font-medium tracking-wide">{line.content}</span>
-              </div>
-            ) : (
-              <div className="text-[var(--color-text-secondary)] font-mono">{line.content}</div>
-            )}
-          </div>
-        ))}
+    <div
+      className="
+        flex h-full w-full flex-col
+        overflow-hidden
+        bg-[var(--color-surface-dark)]
+        text-[var(--color-text)]
+        font-mono text-[12px]
+        selection:bg-[var(--color-accent)]
+        selection:text-white
+      "
+    >
+      {/* =====================================================
+          TERMINAL OUTPUT
+      ====================================================== */}
 
-        {/* Real-time Interactive Input Line */}
-        <div className="flex items-center mt-4">
-          <FiChevronRight className="text-[var(--color-accent)] mr-1 font-bold select-none" size={16} />
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleCommand}
-            className="flex-1 bg-transparent outline-none text-[var(--color-text)] font-mono tracking-wide placeholder:text-[var(--color-text-tertiary)] placeholder:opacity-50"
-            autoFocus
-            spellCheck="false"
-            autoComplete="off"
-            placeholder="Type 'help'..."
+      <div className="flex-1 overflow-y-auto custom-scrollbar px-4 py-4 sm:px-5">
+        <div className="max-w-4xl">
+          {history.map((line, index) => (
+            <div
+              key={index}
+              className="leading-relaxed"
+            >
+              {line.type === "command" ? (
+                <div className="mt-4 mb-1.5 flex items-center">
+                  <FiChevronRight
+                    size={15}
+                    className="mr-1 shrink-0 text-[var(--color-accent)]"
+                  />
+
+                  <span className="font-medium tracking-[-0.01em] text-[var(--color-text)]">
+                    {line.content}
+                  </span>
+                </div>
+              ) : (
+                <div className="text-[var(--color-text-secondary)]">
+                  {line.content}
+                </div>
+              )}
+            </div>
+          ))}
+
+          {/* =================================================
+              INPUT
+          ================================================== */}
+
+          <div className="mt-4 flex items-center">
+            <FiChevronRight
+              size={15}
+              className="mr-1 shrink-0 text-[var(--color-accent)]"
+            />
+
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleCommand}
+              className="
+                min-w-0 flex-1
+                bg-transparent
+                py-1
+                outline-none
+                text-[12px]
+                tracking-[-0.01em]
+                text-[var(--color-text)]
+                placeholder:text-[var(--color-text-tertiary)]
+                placeholder:opacity-60
+              "
+              autoFocus
+              spellCheck="false"
+              autoComplete="off"
+              placeholder="Type 'help'..."
+            />
+          </div>
+
+          <div
+            ref={endOfTerminalRef}
+            className="h-4"
           />
         </div>
       </div>
-
-      <div ref={endOfTerminalRef} className="pb-2" />
     </div>
   );
 }
