@@ -1,7 +1,7 @@
 import { motion, animate, useMotionValue } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { XIcon as X } from "lucide-animated";
-import { Minus, Square } from "lucide-react";;
+import { Minus, Square } from "lucide-react";
 
 function ResizeHandle({ direction, className, onStartResize }) {
   return (
@@ -46,6 +46,7 @@ export default function Window({
   useEffect(() => {
     const left = (window.innerWidth - defaultWidth) / 2;
     const top = (window.innerHeight - defaultHeight) / 2;
+
     x.set(left);
     y.set(top);
 
@@ -55,6 +56,7 @@ export default function Window({
     };
 
     window.addEventListener("resize", handleResize);
+
     return () => window.removeEventListener("resize", handleResize);
   }, [defaultWidth, defaultHeight, height, width, x, y]);
 
@@ -77,13 +79,14 @@ export default function Window({
       };
 
       animateTo(width, window.innerWidth * 0.94);
-      animateTo(height, window.innerHeight * 0.90);
+      animateTo(height, window.innerHeight * 0.9);
       animateTo(x, window.innerWidth * 0.03);
       animateTo(y, window.innerHeight * 0.05);
 
       setIsMaximized(true);
     } else {
       const prev = previousState.current;
+
       animateTo(width, prev.width);
       animateTo(height, prev.height);
       animateTo(x, prev.x);
@@ -98,6 +101,7 @@ export default function Window({
   // ============================================================
   const startResize = (event, direction) => {
     if (isMaximized) return;
+
     event.preventDefault();
     event.stopPropagation();
     onFocus?.();
@@ -115,6 +119,7 @@ export default function Window({
     };
 
     setIsResizing(true);
+
     window.addEventListener("pointermove", handleResizeMove);
     window.addEventListener("pointerup", stopResize);
     window.addEventListener("pointercancel", stopResize);
@@ -122,9 +127,19 @@ export default function Window({
 
   const handleResizeMove = (event) => {
     const state = resizeState.current;
+
     if (!state) return;
 
-    const { direction, startMouseX, startMouseY, startX, startY, startWidth, startHeight } = state;
+    const {
+      direction,
+      startMouseX,
+      startMouseY,
+      startX,
+      startY,
+      startWidth,
+      startHeight,
+    } = state;
+
     const deltaX = event.clientX - startMouseX;
     const deltaY = event.clientY - startMouseY;
 
@@ -138,17 +153,46 @@ export default function Window({
     let nextHeight = startHeight;
 
     if (direction.includes("e")) {
-      nextWidth = Math.max(MIN_WIDTH, Math.min(startWidth + deltaX, window.innerWidth - startX - MARGIN));
+      nextWidth = Math.max(
+        MIN_WIDTH,
+        Math.min(
+          startWidth + deltaX,
+          window.innerWidth - startX - MARGIN
+        )
+      );
     }
+
     if (direction.includes("w")) {
-      nextX = Math.max(MARGIN, Math.min(event.clientX, startX + startWidth - MIN_WIDTH));
+      nextX = Math.max(
+        MARGIN,
+        Math.min(
+          event.clientX,
+          startX + startWidth - MIN_WIDTH
+        )
+      );
+
       nextWidth = startX + startWidth - nextX;
     }
+
     if (direction.includes("s")) {
-      nextHeight = Math.max(MIN_HEIGHT, Math.min(startHeight + deltaY, window.innerHeight - startY - MARGIN));
+      nextHeight = Math.max(
+        MIN_HEIGHT,
+        Math.min(
+          startHeight + deltaY,
+          window.innerHeight - startY - MARGIN
+        )
+      );
     }
+
     if (direction.includes("n")) {
-      nextY = Math.max(MARGIN, Math.min(event.clientY, startY + startHeight - MIN_HEIGHT));
+      nextY = Math.max(
+        MARGIN,
+        Math.min(
+          event.clientY,
+          startY + startHeight - MIN_HEIGHT
+        )
+      );
+
       nextHeight = startY + startHeight - nextY;
     }
 
@@ -161,6 +205,7 @@ export default function Window({
   const stopResize = () => {
     resizeState.current = null;
     setIsResizing(false);
+
     window.removeEventListener("pointermove", handleResizeMove);
     window.removeEventListener("pointerup", stopResize);
     window.removeEventListener("pointercancel", stopResize);
@@ -177,83 +222,254 @@ export default function Window({
       dragElastic={0.02}
       dragConstraints={constraintsRef}
       onMouseDown={onFocus}
-      style={{ x, y, width, height, zIndex }}
-      initial={{ opacity: 0, scale: 0.92 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.92 }}
-      transition={{ type: "spring", stiffness: 450, damping: 32 }}
+      style={{
+        x,
+        y,
+        width,
+        height,
+        zIndex,
+      }}
+      initial={{
+        opacity: 0,
+        scale: 0.96,
+      }}
+      animate={{
+        opacity: 1,
+        scale: 1,
+      }}
+      exit={{
+        opacity: 0,
+        scale: 0.96,
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 450,
+        damping: 32,
+        mass: 0.7,
+      }}
       className="
-        absolute left-0 top-0 flex flex-col overflow-hidden
-        rounded-[12px] border border-[var(--color-window-border)]
-        bg-[var(--color-surface)] text-[var(--color-text)]
-        window-shadow select-none will-change-transform
+        absolute
+        left-0
+        top-0
+
+        flex
+        flex-col
+        overflow-hidden
+
+        rounded-[14px]
+
+        border
+        border-[var(--color-window-border)]
+
+        bg-[var(--color-surface)]
+        text-[var(--color-text)]
+
+        window-shadow
+        select-none
+        will-change-transform
+
+        transition-[background-color,border-color,box-shadow]
+        duration-200
       "
     >
       {/* ======================================================
-          HEADER (Windows layout with macOS native theme colors)
+          WINDOW HEADER
       ====================================================== */}
       <div
         onDoubleClick={toggleMaximize}
         className="
-          window-header-drag relative z-40 flex h-[38px] min-h-[38px]
-          items-center border-b border-[var(--color-surface-border)]
-          bg-[var(--color-surface-inactive)] px-3
+          window-header-drag
+
+          relative
+          z-40
+
+          flex
+          h-[36px]
+          min-h-[36px]
+          items-center
+          justify-center
+
+          border-b
+          border-[var(--color-surface-border)]
+
+          bg-[var(--color-surface)]
+
+          px-3
+
+          cursor-grab
+          active:cursor-grabbing
         "
       >
-        {/* Title Centered */}
-        <div className="pointer-events-none mx-auto flex items-center">
-          <span className="text-[12px] font-medium tracking-tight opacity-80">
+        {/* Centered title */}
+        <div
+          className="
+            pointer-events-none
+            flex
+            max-w-[60%]
+            items-center
+            justify-center
+          "
+        >
+          <span
+            className="
+              truncate
+
+              text-[11px]
+              leading-none
+              font-medium
+              tracking-[-0.01em]
+
+              text-[var(--color-text-secondary)]
+
+              transition-colors
+              duration-150
+            "
+          >
             {title}
           </span>
         </div>
 
-        {/* Right-aligned Windows-style Controls */}
-        <div className="absolute right-0 top-0 flex h-full">
+        {/* Window controls */}
+        <div
+          className="
+            absolute
+            right-1
+            top-0
+
+            flex
+            h-full
+            items-center
+
+            gap-[2px]
+          "
+        >
+          {/* Minimize */}
           <button
-            onClick={(e) => { e.stopPropagation(); onMinimize(); }}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onMinimize();
+            }}
             onPointerDown={(e) => e.stopPropagation()}
             title="Minimize"
             className="
-              flex h-full w-[44px] items-center justify-center
-              text-[var(--color-text-secondary)] transition-colors
-              hover:bg-black/10 dark:hover:bg-white/10
+              flex
+              h-[28px]
+              w-[30px]
+              items-center
+              justify-center
+
+              rounded-[7px]
+
+              text-[var(--color-text-tertiary)]
+
+              transition-all
+              duration-150
+
+              hover:bg-[var(--color-surface-inactive)]
+              hover:text-[var(--color-text-primary)]
+
+              active:scale-[0.94]
+
+              focus:outline-none
             "
           >
-            <Minus size={13} strokeWidth={1.8} />
+            <Minus
+              size={12}
+              strokeWidth={2}
+            />
           </button>
 
+          {/* Maximize */}
           <button
-            onClick={(e) => { e.stopPropagation(); toggleMaximize(); }}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleMaximize();
+            }}
             onPointerDown={(e) => e.stopPropagation()}
             title={isMaximized ? "Restore" : "Maximize"}
             className="
-              flex h-full w-[44px] items-center justify-center
-              text-[var(--color-text-secondary)] transition-colors
-              hover:bg-black/10 dark:hover:bg-white/10
+              flex
+              h-[28px]
+              w-[30px]
+              items-center
+              justify-center
+
+              rounded-[7px]
+
+              text-[var(--color-text-tertiary)]
+
+              transition-all
+              duration-150
+
+              hover:bg-[var(--color-surface-inactive)]
+              hover:text-[var(--color-text-primary)]
+
+              active:scale-[0.94]
+
+              focus:outline-none
             "
           >
-            <Square size={11} strokeWidth={1.8} />
+            <Square
+              size={11}
+              strokeWidth={1.9}
+            />
           </button>
 
+          {/* Close */}
           <button
-            onClick={(e) => { e.stopPropagation(); onClose(); }}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
             onPointerDown={(e) => e.stopPropagation()}
             title="Close"
             className="
-              flex h-full w-[44px] items-center justify-center
-              text-[var(--color-text-secondary)] transition-colors
-              hover:bg-[#e81123] hover:text-white
+              flex
+              h-[28px]
+              w-[30px]
+              items-center
+              justify-center
+
+              rounded-[7px]
+
+              text-[var(--color-text-tertiary)]
+
+              transition-all
+              duration-150
+
+              hover:bg-[var(--color-surface-inactive)]
+              hover:text-[var(--color-text-primary)]
+
+              active:scale-[0.94]
+
+              focus:outline-none
             "
           >
-            <X size={14} strokeWidth={1.8} />
+            <X
+              size={12}
+              strokeWidth={2}
+            />
           </button>
         </div>
       </div>
 
       {/* ======================================================
-          CONTENT (Padding removed so children can take full space)
+          CONTENT
       ====================================================== */}
-      <div className="relative flex-1 overflow-auto custom-scrollbar bg-[var(--color-surface)]">
+      <div
+        className="
+          relative
+          flex-1
+          overflow-auto
+
+          bg-[var(--color-surface)]
+
+          custom-scrollbar
+        "
+      >
         {children}
       </div>
 
@@ -262,14 +478,101 @@ export default function Window({
       ====================================================== */}
       {!isMaximized && (
         <>
-          <ResizeHandle direction="n" className="top-0 left-[10px] right-[10px] h-[6px] cursor-n-resize" onStartResize={startResize} />
-          <ResizeHandle direction="s" className="bottom-0 left-[10px] right-[10px] h-[6px] cursor-s-resize" onStartResize={startResize} />
-          <ResizeHandle direction="w" className="left-0 top-[10px] bottom-[10px] w-[6px] cursor-w-resize" onStartResize={startResize} />
-          <ResizeHandle direction="e" className="right-0 top-[10px] bottom-[10px] w-[6px] cursor-e-resize" onStartResize={startResize} />
-          <ResizeHandle direction="nw" className="left-0 top-0 h-[12px] w-[12px] cursor-nw-resize" onStartResize={startResize} />
-          <ResizeHandle direction="ne" className="right-0 top-0 h-[12px] w-[12px] cursor-ne-resize" onStartResize={startResize} />
-          <ResizeHandle direction="sw" className="bottom-0 left-0 h-[12px] w-[12px] cursor-sw-resize" onStartResize={startResize} />
-          <ResizeHandle direction="se" className="bottom-0 right-0 h-[12px] w-[12px] cursor-se-resize" onStartResize={startResize} />
+          <ResizeHandle
+            direction="n"
+            className="
+              top-0
+              left-[10px]
+              right-[10px]
+              h-[6px]
+              cursor-n-resize
+            "
+            onStartResize={startResize}
+          />
+
+          <ResizeHandle
+            direction="s"
+            className="
+              bottom-0
+              left-[10px]
+              right-[10px]
+              h-[6px]
+              cursor-s-resize
+            "
+            onStartResize={startResize}
+          />
+
+          <ResizeHandle
+            direction="w"
+            className="
+              left-0
+              top-[10px]
+              bottom-[10px]
+              w-[6px]
+              cursor-w-resize
+            "
+            onStartResize={startResize}
+          />
+
+          <ResizeHandle
+            direction="e"
+            className="
+              right-0
+              top-[10px]
+              bottom-[10px]
+              w-[6px]
+              cursor-e-resize
+            "
+            onStartResize={startResize}
+          />
+
+          <ResizeHandle
+            direction="nw"
+            className="
+              left-0
+              top-0
+              h-[12px]
+              w-[12px]
+              cursor-nw-resize
+            "
+            onStartResize={startResize}
+          />
+
+          <ResizeHandle
+            direction="ne"
+            className="
+              right-0
+              top-0
+              h-[12px]
+              w-[12px]
+              cursor-ne-resize
+            "
+            onStartResize={startResize}
+          />
+
+          <ResizeHandle
+            direction="sw"
+            className="
+              bottom-0
+              left-0
+              h-[12px]
+              w-[12px]
+              cursor-sw-resize
+            "
+            onStartResize={startResize}
+          />
+
+          <ResizeHandle
+            direction="se"
+            className="
+              bottom-0
+              right-0
+              h-[12px]
+              w-[12px]
+              cursor-se-resize
+            "
+            onStartResize={startResize}
+          />
         </>
       )}
     </motion.div>
