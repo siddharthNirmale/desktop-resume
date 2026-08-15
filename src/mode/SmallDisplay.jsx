@@ -10,6 +10,7 @@ import {
   FiCpu,
   FiSun,
   FiMoon,
+  FiArrowUpRight,
 } from "react-icons/fi";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
@@ -131,28 +132,55 @@ export default function TerminalPortfolio() {
   );
 
   return (
-    <div className={`h-screen w-full transition-colors duration-300 ${isDark ? "bg-black text-zinc-400 selection:bg-zinc-800 selection:text-white" : "bg-zinc-50 text-zinc-600 selection:bg-zinc-200 selection:text-black"} font-primary overflow-y-auto custom-scrollbar`}>
+    <div className={`h-screen w-full transition-colors duration-500 ${isDark ? "bg-[#08080b] text-zinc-400 selection:bg-zinc-800 selection:text-white" : "bg-zinc-50 text-zinc-600 selection:bg-zinc-200 selection:text-black"} font-primary overflow-y-auto custom-scrollbar`}>
       <style>{`
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: ${isDark ? "#27272a" : "#d4d4d8"}; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: ${isDark ? "#27272a" : "#d4d4d8"}; border-radius: 6px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: ${isDark ? "#3f3f46" : "#a1a1aa"}; }
+
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-6px); }
+        }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+
+        @keyframes shimmer {
+          0% { background-position: -200% center; }
+          100% { background-position: 200% center; }
+        }
+        .shimmer-text {
+          background: linear-gradient(90deg, ${isDark ? "#52525b, #a1a1aa, #52525b" : "#71717a, #3f3f46, #71717a"});
+          background-size: 200% auto;
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: shimmer 4s linear infinite;
+        }
+
+        .glow-ring {
+          box-shadow: 0 0 0 1px ${isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)"}, 0 0 40px ${isDark ? "rgba(74,222,128,0.05)" : "rgba(34,197,94,0.04)"};
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .animate-float, .shimmer-text { animation: none; }
+        }
       `}</style>
 
-      <div className="max-w-3xl mx-auto px-6 py-12 sm:py-20 space-y-16 sm:space-y-20">
+      <div className="max-w-3xl mx-auto px-6 py-12 sm:py-20 space-y-16 sm:space-y-24">
         {/* --- Profile Header --- */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="flex flex-col sm:flex-row gap-6 sm:gap-8 items-start"
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="flex flex-col sm:flex-row gap-6 sm:gap-10 items-start"
         >
           <div className="relative mx-auto sm:mx-0">
             <motion.div
               whileHover={{ scale: 1.05, rotate: -2 }}
-              className={`w-24 h-24 shrink-0 rounded-2xl ${isDark ? "bg-[#09090b] border-white/10 hover:border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.03)]" : "bg-white border-zinc-200 hover:border-zinc-300 shadow-xl"} border flex items-center justify-center relative cursor-pointer transition-colors`}
+              className={`w-28 h-28 shrink-0 rounded-3xl ${isDark ? "bg-[#0c0c10] border-white/10 hover:border-white/20" : "bg-white border-zinc-200 hover:border-zinc-300"} border flex items-center justify-center relative cursor-pointer transition-colors glow-ring animate-float`}
             >
-              <span className="text-4xl">👨‍💻</span>
+              <span className="text-5xl">👨‍💻</span>
             </motion.div>
 
             {/* Interactive Theme Toggle Button integrated right at the avatar corner */}
@@ -161,26 +189,25 @@ export default function TerminalPortfolio() {
               whileHover={{ scale: 1.15 }}
               whileTap={{ scale: 0.9 }}
               title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              className={`absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-full flex items-center justify-center border-2 shadow-md transition-colors cursor-pointer ${
-                isDark
-                  ? "bg-green-500 border-[#09090b] text-black hover:bg-green-400"
+              className={`absolute -bottom-1.5 -right-1.5 w-8 h-8 rounded-full flex items-center justify-center border-2 shadow-lg transition-colors cursor-pointer ${isDark
+                  ? "bg-green-500 border-[#0c0c10] text-black hover:bg-green-400"
                   : "bg-green-600 border-white text-white hover:bg-green-500"
-              }`}
+                }`}
             >
-              {isDark ? <FiSun size={12} strokeWidth={2.5} /> : <FiMoon size={12} strokeWidth={2.5} />}
+              {isDark ? <FiSun size={13} strokeWidth={2.5} /> : <FiMoon size={13} strokeWidth={2.5} />}
             </motion.button>
           </div>
 
           <div className="space-y-4 flex-1 text-center sm:text-left">
             <div>
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-1">
-                <h1 className={`text-2xl font-heading font-bold tracking-tight ${isDark ? "text-white" : "text-zinc-900"}`}>
+                <h1 className={`text-3xl font-heading font-bold tracking-tight ${isDark ? "text-white" : "text-zinc-900"}`}>
                   Siddharth Nirmale
                 </h1>
-                <span className={`flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border ${isDark ? "text-green-400 bg-green-400/10 border-green-400/20 shadow-[0_0_10px_rgba(74,222,128,0.1)]" : "text-green-700 bg-green-100 border-green-300"}`}>
+                <span className={`flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border ${isDark ? "text-green-400 bg-green-400/10 border-green-400/20 shadow-[0_0_12px_rgba(74,222,128,0.15)]" : "text-green-700 bg-green-100 border-green-300"}`}>
                   <span className="relative flex h-1.5 w-1.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500" />
                   </span>
                   Available for Opportunities
                 </span>
@@ -236,12 +263,11 @@ export default function TerminalPortfolio() {
                   <motion.div
                     key={skill}
                     variants={fadeUpVariant}
-                    whileHover={{ y: -2, scale: 1.02 }}
-                    className={`flex items-center gap-2 text-[13px] font-medium border px-3 py-1.5 rounded-md transition-colors cursor-default shadow-sm ${
-                      isDark
-                        ? "text-zinc-300 bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10"
-                        : "text-zinc-700 bg-white border-zinc-200 hover:bg-zinc-100 hover:border-zinc-300 shadow-sm"
-                    }`}
+                    whileHover={{ y: -3, scale: 1.05 }}
+                    className={`flex items-center gap-2 text-[13px] font-medium border px-3 py-1.5 rounded-lg transition-all cursor-default ${isDark
+                        ? "text-zinc-300 bg-white/[0.03] border-white/5 hover:bg-white/10 hover:border-green-400/20"
+                        : "text-zinc-700 bg-white border-zinc-200 hover:bg-zinc-50 hover:border-green-400/30 shadow-sm"
+                      }`}
                   >
                     <span className={isDark ? "text-zinc-400" : "text-zinc-500"}>
                       {iconMap[skill] || <FiCpu size={14} />}
@@ -263,10 +289,10 @@ export default function TerminalPortfolio() {
           className="space-y-5"
         >
           <SectionHeader title="Experience & Education" isDark={isDark} />
-          <div className={`border rounded-2xl p-6 space-y-8 overflow-hidden shadow-xl ${isDark ? "border-white/10 bg-[#09090b] shadow-[0_0_20px_rgba(0,0,0,0.5)]" : "border-zinc-200 bg-white shadow-sm"}`}>
-            <div className={`relative border-l ml-2.5 space-y-8 ${isDark ? "border-white/10" : "border-zinc-200"}`}>
-              <div className="relative pl-7 group">
-                <div className={`absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-blue-500 ring-4 group-hover:scale-110 transition-transform ${isDark ? "ring-[#09090b]" : "ring-white"}`} />
+          <div className={`border rounded-3xl p-6 sm:p-8 space-y-8 overflow-hidden ${isDark ? "border-white/10 bg-[#0a0a0f] shadow-[0_8px_32px_rgba(0,0,0,0.4)]" : "border-zinc-200 bg-white shadow-xl shadow-zinc-200/50"}`}>
+            <div className={`relative border-l-2 ml-2.5 space-y-8 ${isDark ? "border-white/10" : "border-zinc-200"}`}>
+              <div className="relative pl-8 group">
+                <div className={`absolute -left-[6px] top-1.5 w-3 h-3 rounded-full bg-blue-500 ring-4 group-hover:scale-125 group-hover:shadow-[0_0_12px_rgba(59,130,246,0.5)] transition-all ${isDark ? "ring-[#0a0a0f]" : "ring-white"}`} />
                 <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-1">
                   <div>
                     <h3 className={`text-[14px] font-heading font-semibold ${isDark ? "text-zinc-100" : "text-zinc-900"}`}>
@@ -282,8 +308,8 @@ export default function TerminalPortfolio() {
                 </div>
               </div>
 
-              <div className="relative pl-7 group">
-                <div className={`absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-green-500 ring-4 group-hover:scale-110 transition-transform ${isDark ? "ring-[#09090b]" : "ring-white"}`} />
+              <div className="relative pl-8 group">
+                <div className={`absolute -left-[6px] top-1.5 w-3 h-3 rounded-full bg-green-500 ring-4 group-hover:scale-125 group-hover:shadow-[0_0_12px_rgba(74,222,128,0.5)] transition-all ${isDark ? "ring-[#0a0a0f]" : "ring-white"}`} />
                 <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-1">
                   <div>
                     <h3 className={`text-[14px] font-heading font-semibold ${isDark ? "text-zinc-100" : "text-zinc-900"}`}>
@@ -331,25 +357,28 @@ export default function TerminalPortfolio() {
               <motion.div
                 key={project.id || project.title}
                 variants={fadeUpVariant}
-                className={`flex flex-col sm:flex-row border rounded-2xl overflow-hidden transition-all duration-300 group shadow-xl ${
-                  isDark
-                    ? "border-white/10 bg-[#09090b] hover:border-white/20 shadow-[0_0_20px_rgba(0,0,0,0.5)]"
-                    : "border-zinc-200 bg-white hover:border-zinc-300 shadow-sm"
-                }`}
+                whileHover={{ y: -4 }}
+                className={`group relative flex flex-col sm:flex-row border rounded-3xl overflow-hidden transition-all duration-300 ${isDark
+                    ? "border-white/10 bg-[#0a0a0f] hover:border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+                    : "border-zinc-200 bg-white hover:border-zinc-300 shadow-xl shadow-zinc-200/50"
+                  }`}
               >
-                <div className={`relative w-full sm:w-2/5 md:w-1/3 h-48 sm:h-auto overflow-hidden shrink-0 flex items-center justify-center p-3.5 border-b sm:border-b-0 ${isDark ? "bg-black/40 border-black/20 sm:border-r" : "bg-zinc-100 border-zinc-200 sm:border-r"}`}>
+                <div className={`relative w-full sm:w-2/5 md:w-1/3 h-48 sm:h-auto overflow-hidden shrink-0 border-b sm:border-b-0 ${isDark ? "bg-black/40 border-black/20 sm:border-r" : "bg-zinc-100 border-zinc-200 sm:border-r"}`}>
                   <img
                     src={project.image || "/placeholder.jpg"}
                     alt={project.title}
                     loading="lazy"
-                    className="relative w-full h-full object-cover rounded-lg border border-white/10 shadow-md z-10 transform scale-100 group-hover:scale-[1.03] transition-transform duration-500 ease-out"
+                    className="relative w-full h-full object-cover z-10 transform scale-100 group-hover:scale-[1.06] transition-transform duration-700 ease-out"
                   />
+                  {/* gradient overlay on hover */}
+                  <div className={`absolute inset-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${isDark ? "bg-gradient-to-t from-green-500/10 via-transparent to-transparent" : "bg-gradient-to-t from-green-400/10 via-transparent to-transparent"}`} />
                 </div>
 
                 <div className="p-5 sm:p-6 flex-1 flex flex-col">
                   <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-4">
                     <h3 className={`text-[16px] font-heading font-semibold tracking-tight flex items-center gap-2 ${isDark ? "text-white" : "text-zinc-900"}`}>
                       {project.title}
+                      <FiArrowUpRight className={`opacity-0 group-hover:opacity-100 transition-all duration-300 ${isDark ? "text-green-400" : "text-green-600"}`} size={16} />
                     </h3>
                     <div className="flex items-center gap-2">
                       <LinkBadge icon={<FiExternalLink size={12} />} text="Live" href={project.live} isDark={isDark} />
@@ -360,7 +389,7 @@ export default function TerminalPortfolio() {
                   <ul className={`text-[13px] leading-relaxed mb-6 flex-1 list-none space-y-2 ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
                     {project.bullets.map((bullet, i) => (
                       <li key={i} className="flex gap-2">
-                        <span className={isDark ? "text-zinc-700 mt-1" : "text-zinc-400 mt-1"}>▹</span>
+                        <span className={isDark ? "text-green-500/60 mt-1" : "text-green-600/50 mt-1"}>▹</span>
                         <span>{bullet}</span>
                       </li>
                     ))}
@@ -371,11 +400,10 @@ export default function TerminalPortfolio() {
                       {project.tech.split(" • ").map((tech) => (
                         <span
                           key={tech}
-                          className={`text-[11px] font-medium px-2.5 py-1 border rounded-md ${
-                            isDark
+                          className={`text-[11px] font-medium px-2.5 py-1 border rounded-lg ${isDark
                               ? "bg-white/5 border-white/5 text-zinc-300"
                               : "bg-zinc-100 border-zinc-200 text-zinc-700"
-                          }`}
+                            }`}
                         >
                           {tech}
                         </span>
@@ -390,9 +418,12 @@ export default function TerminalPortfolio() {
 
         {/* Footer */}
         <section className="pt-4 pb-12">
-          <div className={`flex items-center justify-between border-t pt-6 ${isDark ? "border-white/10" : "border-zinc-200"}`}>
+          <div className={`flex flex-col sm:flex-row items-center justify-between gap-3 border-t pt-6 ${isDark ? "border-white/10" : "border-zinc-200"}`}>
             <p className="text-[12px] text-zinc-500 font-medium">
               © {new Date().getFullYear()} Siddharth Nirmale
+            </p>
+            <p className="text-[12px] text-zinc-500 font-mono">
+              <span className="shimmer-text">Built with React & Tailwind</span>
             </p>
           </div>
         </section>
@@ -409,22 +440,22 @@ function SectionHeader({ title, isDark }) {
       <h2 className={`text-[14px] font-heading font-semibold tracking-wider uppercase whitespace-nowrap ${isDark ? "text-white" : "text-zinc-900"}`}>
         {title}
       </h2>
-      <div className={`h-[1px] flex-1 ${isDark ? "bg-white/10" : "bg-zinc-200"}`}></div>
+      <div className={`h-[1px] flex-1 ${isDark ? "bg-gradient-to-r from-white/10 to-transparent" : "bg-gradient-to-r from-zinc-200 to-transparent"}`} />
     </div>
   );
 }
 
 function ActionButton({ icon, text, href, onClick, isButton, primary, isDark }) {
   const baseClasses =
-    "inline-flex items-center justify-center gap-2 px-3 py-1.5 text-[12px] font-semibold rounded-md transition-all cursor-pointer border";
+    "inline-flex items-center justify-center gap-2 px-3.5 py-1.5 text-[12px] font-semibold rounded-lg transition-all cursor-pointer border";
 
   const styles = primary
     ? isDark
-      ? "bg-white text-black border-transparent hover:bg-zinc-200 shadow-sm hover:scale-105 active:scale-95"
-      : "bg-zinc-900 text-white border-transparent hover:bg-zinc-800 shadow-sm hover:scale-105 active:scale-95"
+      ? "bg-white text-black border-transparent hover:bg-zinc-200 shadow-md hover:shadow-lg hover:scale-105 active:scale-95"
+      : "bg-zinc-900 text-white border-transparent hover:bg-zinc-800 shadow-md hover:shadow-lg hover:scale-105 active:scale-95"
     : isDark
-    ? "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95"
-    : "bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-100 hover:text-zinc-900 hover:scale-105 active:scale-95 shadow-sm";
+      ? "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95"
+      : "bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-100 hover:text-zinc-900 hover:scale-105 active:scale-95 shadow-sm";
 
   if (isButton) {
     return (
@@ -451,11 +482,10 @@ function LinkBadge({ icon, text, href, isDark }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 border rounded text-[11px] font-medium transition-all hover:scale-105 active:scale-95 ${
-        isDark
-          ? "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white"
-          : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 shadow-sm"
-      }`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 border rounded-lg text-[11px] font-medium transition-all hover:scale-105 active:scale-95 ${isDark
+          ? "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white hover:border-green-400/20"
+          : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 hover:border-green-400/30 shadow-sm"
+        }`}
     >
       {icon} {text}
     </a>
