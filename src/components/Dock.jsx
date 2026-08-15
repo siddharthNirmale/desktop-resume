@@ -1,4 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import {
   FiUser,
   FiBriefcase,
@@ -8,108 +14,246 @@ import {
   FiTerminal,
   FiSun,
   FiMoon,
+  FiMinimize2,
+  FiMaximize2,
+  FiX,
+  FiLock,
+  FiUnlock,
 } from "react-icons/fi";
 import {
   motion,
+  AnimatePresence,
   useMotionValue,
   useSpring,
   useTransform,
-  AnimatePresence,
 } from "framer-motion";
 
-// ─── Monochrome Dock Physics ─────────────────────────────
-const DOCK_ICON_SIZE = 42;
-const DOCK_ICON_MAX = 64;
-const MAGNIFY_RADIUS = 110;
-const SPRING = { stiffness: 400, damping: 32, mass: 0.8 };
+/* ==========================================================================
+   CONFIG
+   ========================================================================== */
 
-// ─── Dock Configuration ─────────────────────────────────
+const ICON_SIZE = 42;
+const MAX_ICON_SIZE = 66;
+
+const MAGNIFY_RADIUS = 120;
+
+const DOCK_BOTTOM = 12;
+
+const SPRING = {
+  stiffness: 420,
+  damping: 30,
+  mass: 0.7,
+};
+
 const DOCK_ITEMS = [
-  { id: "about", icon: FiUser, label: "About Me" },
-  { id: "projects", icon: FiBriefcase, label: "Projects" },
-  { id: "resume", icon: FiFileText, label: "Resume" },
-  { id: "notepad", icon: FiEdit3, label: "Notes" },
-  { id: "contact", icon: FiMail, label: "Contact" },
-  { id: "sep1", type: "separator" },
-  { id: "terminal", icon: FiTerminal, label: "Terminal" },
+  {
+    id: "about",
+    icon: FiUser,
+    label: "About Me",
+    shortcut: "1",
+  },
+  {
+    id: "projects",
+    icon: FiBriefcase,
+    label: "Projects",
+    shortcut: "2",
+  },
+  {
+    id: "resume",
+    icon: FiFileText,
+    label: "Resume",
+    shortcut: "3",
+  },
+  {
+    id: "notepad",
+    icon: FiEdit3,
+    label: "Notes",
+    shortcut: "4",
+  },
+  {
+    id: "contact",
+    icon: FiMail,
+    label: "Contact",
+    shortcut: "5",
+  },
+  {
+    id: "separator-1",
+    type: "separator",
+  },
+  {
+    id: "terminal",
+    icon: FiTerminal,
+    label: "Terminal",
+    shortcut: "6",
+  },
 ];
 
-// ─── Custom Hooks ────────────────────────────────────────
-function useMagnify(mouseX, ref) {
-  const dist = useMotionValue(Infinity);
+/* ==========================================================================
+   MAGNIFICATION
+   ========================================================================== */
+
+function useMagnify(mouseX, ref, disabled = false) {
+  const distance = useMotionValue(Infinity);
 
   useEffect(() => {
-    return mouseX.on("change", (mx) => {
-      if (!ref.current) return;
+    if (disabled) {
+      distance.set(Infinity);
+      return;
+    }
 
-      const { left, width } = ref.current.getBoundingClientRect();
+    const unsubscribe = mouseX.on("change", (x) => {
+      if (!ref.current || !Number.isFinite(x)) {
+        distance.set(Infinity);
+        return;
+      }
 
-      dist.set(Math.abs(mx - (left + width / 2)));
+      const rect = ref.current.getBoundingClientRect();
+
+      const center = rect.left + rect.width / 2;
+
+      distance.set(Math.abs(x - center));
     });
-  }, [mouseX, ref, dist]);
+
+    return unsubscribe;
+  }, [mouseX, ref, distance, disabled]);
 
   const rawScale = useTransform(
-    dist,
+    distance,
     [0, MAGNIFY_RADIUS],
-    [DOCK_ICON_MAX / DOCK_ICON_SIZE, 1],
-    { clamp: true }
+    [MAX_ICON_SIZE / ICON_SIZE, 1],
+    {
+      clamp: true,
+    }
   );
 
   const rawY = useTransform(
-    dist,
+    distance,
     [0, MAGNIFY_RADIUS],
     [-10, 0],
-    { clamp: true }
+    {
+      clamp: true,
+    }
   );
 
   return {
+    distance,
     scale: useSpring(rawScale, SPRING),
     y: useSpring(rawY, SPRING),
   };
 }
 
-// ─── Shared UI Components ───────────────────────────────
-function IconShell({ children }) {
+/* ==========================================================================
+   ICON SHELL
+   ========================================================================== */
+
+function IconShell({
+  children,
+  active = false,
+  launched = false,
+}) {
   return (
-    <div
+    <motion.div
       className="
         relative
         flex
         shrink-0
         items-center
         justify-center
-
-        rounded-[12px]
-
+        overflow-hidden
+        rounded-[13px]
         border
         border-[var(--dock-icon-border)]
-
         bg-[var(--dock-icon-bg)]
         text-[var(--dock-icon-fg)]
-
         shadow-[0_2px_7px_var(--dock-icon-shadow)]
-
         transition-[background-color,border-color,box-shadow]
         duration-200
       "
+      animate={{
+        boxShadow: active
+          ? "0 4px 13px var(--dock-icon-shadow-active)"
+          : launched
+            ? "0 4px 14px var(--dock-icon-shadow-active)"
+            : "0 2px 7px var(--dock-icon-shadow)",
+      }}
       style={{
-        width: DOCK_ICON_SIZE,
-        height: DOCK_ICON_SIZE,
+        width: ICON_SIZE,
+        height: ICON_SIZE,
       }}
     >
-      {children}
-    </div>
+      <AnimatePresence>
+        {active && (
+          <motion.span
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 0.07,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            className="
+              pointer-events-none
+              absolute
+              inset-0
+              rounded-[13px]
+              bg-[var(--dock-active)]
+            "
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {launched && (
+          <motion.span
+            initial={{
+              opacity: 0,
+              scale: 0.4,
+            }}
+            animate={{
+              opacity: [0, 0.15, 0],
+              scale: [0.4, 1.4, 1.7],
+            }}
+            transition={{
+              duration: 0.65,
+              ease: "easeOut",
+            }}
+            className="
+              pointer-events-none
+              absolute
+              inset-0
+              rounded-full
+              border
+              border-[var(--dock-icon-fg)]
+            "
+          />
+        )}
+      </AnimatePresence>
+
+      <span className="relative z-[1]">
+        {children}
+      </span>
+    </motion.div>
   );
 }
 
-function Tooltip({ label, visible }) {
+/* ==========================================================================
+   TOOLTIP
+   ========================================================================== */
+
+function Tooltip({
+  label,
+  shortcut,
+  visible,
+}) {
   return (
     <AnimatePresence>
       {visible && (
-        <motion.span
+        <motion.div
           initial={{
             opacity: 0,
-            y: 4,
+            y: 5,
             scale: 0.96,
           }}
           animate={{
@@ -123,53 +267,69 @@ function Tooltip({ label, visible }) {
             scale: 0.97,
           }}
           transition={{
-            duration: 0.12,
+            duration: 0.13,
             ease: [0.22, 1, 0.36, 1],
           }}
           className="
             pointer-events-none
             absolute
-            bottom-[calc(100%+9px)]
+            bottom-[calc(100%+10px)]
             left-1/2
-            z-[99999]
+            z-[100000]
             -translate-x-1/2
-
             whitespace-nowrap
-
             rounded-[8px]
-
             border
-            border-[var(--dock-tooltip-border)]
-
-            bg-[var(--dock-tooltip-bg)]
-
-            px-2
-            py-1
-
+            border-[var(--tooltip-border)]
+            bg-[var(--tooltip-bg)]
+            px-2.5
+            py-1.5
             text-[11px]
             font-medium
-            leading-none
             tracking-[-0.01em]
-
-            text-[var(--dock-tooltip-fg)]
-
-            shadow-[0_5px_16px_var(--dock-tooltip-shadow)]
+            text-[var(--tooltip-fg)]
+            shadow-[0_7px_20px_var(--tooltip-shadow)]
           "
         >
-          {label}
-        </motion.span>
+          <div className="flex items-center gap-2">
+            <span>{label}</span>
+
+            {shortcut && (
+              <span
+                className="
+                  rounded-[4px]
+                  bg-[var(--tooltip-key-bg)]
+                  px-1
+                  py-[2px]
+                  text-[9px]
+                  font-medium
+                  text-[var(--tooltip-key-fg)]
+                "
+              >
+                Ctrl {shortcut}
+              </span>
+            )}
+          </div>
+        </motion.div>
       )}
     </AnimatePresence>
   );
 }
 
-function RunningDot({ isOpen, isMinimized }) {
+/* ==========================================================================
+   RUNNING DOT
+   ========================================================================== */
+
+function RunningDot({
+  isOpen,
+  isMinimized,
+}) {
   return (
-    <div className="mt-1 flex h-1.5 items-center justify-center">
-      <AnimatePresence>
+    <div className="mt-[5px] flex h-[3px] items-center justify-center">
+      <AnimatePresence mode="wait">
         {isOpen && (
-          <motion.div
-            key={isMinimized ? "min" : "open"}
+          <motion.span
+            key={isMinimized ? "minimized" : "active"}
             initial={{
               scale: 0,
               opacity: 0,
@@ -183,9 +343,10 @@ function RunningDot({ isOpen, isMinimized }) {
               opacity: 0,
             }}
             transition={{
-              duration: 0.16,
+              duration: 0.15,
             }}
             className="
+              block
               h-[3px]
               w-[3px]
               rounded-full
@@ -198,113 +359,658 @@ function RunningDot({ isOpen, isMinimized }) {
   );
 }
 
-function Sep() {
+/* ==========================================================================
+   SEPARATOR
+   ========================================================================== */
+
+function Separator() {
   return (
     <div
+      aria-hidden="true"
       className="
-        mx-1.5
-        mb-[13px]
-
-        h-[25px]
+        mx-1
+        mb-[10px]
+        h-[26px]
         w-px
         shrink-0
         self-end
-
         bg-[var(--dock-separator)]
       "
     />
   );
 }
 
-// ─── Dock Icon ───────────────────────────────────────────
+/* ==========================================================================
+   CONTEXT MENU
+   ========================================================================== */
+
+function ContextMenu({
+  item,
+  position,
+  windowItem,
+  onClose,
+  onOpen,
+  onMinimize,
+  onMaximize,
+  onCloseWindow,
+}) {
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handlePointerDown = (event) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target)
+      ) {
+        onClose();
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener(
+      "pointerdown",
+      handlePointerDown
+    );
+
+    document.addEventListener(
+      "keydown",
+      handleEscape
+    );
+
+    return () => {
+      document.removeEventListener(
+        "pointerdown",
+        handlePointerDown
+      );
+
+      document.removeEventListener(
+        "keydown",
+        handleEscape
+      );
+    };
+  }, [onClose]);
+
+  const isOpen = Boolean(windowItem?.isOpen);
+  const isMinimized = Boolean(
+    windowItem?.isMinimized
+  );
+
+  return (
+    <motion.div
+      ref={menuRef}
+      initial={{
+        opacity: 0,
+        scale: 0.94,
+        y: 5,
+      }}
+      animate={{
+        opacity: 1,
+        scale: 1,
+        y: 0,
+      }}
+      exit={{
+        opacity: 0,
+        scale: 0.96,
+        y: 3,
+      }}
+      transition={{
+        duration: 0.13,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="
+        fixed
+        z-[100001]
+        min-w-[170px]
+        overflow-hidden
+        rounded-[12px]
+        border
+        border-[var(--menu-border)]
+        bg-[var(--menu-bg)]
+        p-1
+        shadow-[0_12px_35px_var(--menu-shadow)]
+      "
+      style={{
+        left: position.x,
+        top: position.y,
+      }}
+      onContextMenu={(event) =>
+        event.preventDefault()
+      }
+    >
+      <div
+        className="
+          px-2.5
+          py-1.5
+          text-[10px]
+          font-semibold
+          uppercase
+          tracking-[0.08em]
+          text-[var(--menu-muted)]
+        "
+      >
+        {item.label}
+      </div>
+
+      <MenuItem
+        icon={<FiMaximize2 />}
+        label={isOpen && !isMinimized ? "Focus" : "Open"}
+        onClick={onOpen}
+      />
+
+      {isOpen && (
+        <MenuItem
+          icon={<FiMinimize2 />}
+          label="Minimize"
+          onClick={onMinimize}
+        />
+      )}
+
+      {isOpen && (
+        <MenuItem
+          icon={<FiMaximize2 />}
+          label="Bring to Front"
+          onClick={onMaximize}
+        />
+      )}
+
+      {isOpen && (
+        <>
+          <div className="my-1 h-px bg-[var(--menu-divider)]" />
+
+          <MenuItem
+            danger
+            icon={<FiX />}
+            label="Close"
+            onClick={onCloseWindow}
+          />
+        </>
+      )}
+    </motion.div>
+  );
+}
+
+function MenuItem({
+  icon,
+  label,
+  onClick,
+  danger = false,
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`
+        flex
+        w-full
+        items-center
+        gap-2.5
+        rounded-[8px]
+        border-0
+        bg-transparent
+        px-2.5
+        py-2
+        text-left
+        text-[11px]
+        font-medium
+        outline-none
+        transition-colors
+        duration-100
+        ${danger
+          ? "text-[var(--menu-danger)] hover:bg-[var(--menu-danger-bg)]"
+          : "text-[var(--menu-fg)] hover:bg-[var(--menu-hover)]"
+        }
+      `}
+    >
+      <span className="flex text-[13px]">
+        {icon}
+      </span>
+
+      <span>{label}</span>
+    </button>
+  );
+}
+
+/* ==========================================================================
+   DOCK ICON
+   ========================================================================== */
+
 function DockIcon({
   id,
-  icon: IconComponent,
+  icon: Icon,
   label,
+  shortcut,
   badge,
   windows,
   toggleWindow,
   bringToFront,
   mouseX,
+  velocity,
+  reducedMotion,
+  onContextMenu,
+  onRecent,
 }) {
   const ref = useRef(null);
 
-  const { scale, y } = useMagnify(mouseX, ref);
+  const {
+    scale,
+    y,
+  } = useMagnify(
+    mouseX,
+    ref,
+    reducedMotion
+  );
 
-  const [hovered, setHovered] = useState(false);
-  const [tapping, setTapping] = useState(false);
+  const [hovered, setHovered] =
+    useState(false);
 
-  const win = windows?.find((w) => w.id === id);
+  const [bouncing, setBouncing] =
+    useState(false);
 
-  const isOpen = win?.isOpen;
-  const isMinimized = win?.isMinimized;
+  const [launched, setLaunched] =
+    useState(false);
 
-  const handleClick = useCallback(() => {
-    if (!win) return;
+  const windowItem = windows?.find(
+    (item) => item.id === id
+  );
 
-    setTapping(true);
-    setTimeout(() => setTapping(false), 800);
+  const isOpen = Boolean(
+    windowItem?.isOpen
+  );
+
+  const isMinimized = Boolean(
+    windowItem?.isMinimized
+  );
+
+  const isActive =
+    isOpen && !isMinimized;
+
+  const handleOpen = useCallback(() => {
+    if (!windowItem) return;
 
     if (!isOpen) {
       toggleWindow(id, "isOpen", true);
+
       bringToFront(id);
+
+      setLaunched(true);
+
+      setTimeout(() => {
+        setLaunched(false);
+      }, 700);
+
+      onRecent?.(id);
+
       return;
     }
 
     if (isMinimized) {
-      toggleWindow(id, "isMinimized", false);
+      toggleWindow(
+        id,
+        "isMinimized",
+        false
+      );
+
       bringToFront(id);
+
+      onRecent?.(id);
+
       return;
     }
 
-    const activeWins = windows.filter(
-      (w) =>
-        w.type === "window" &&
-        w.isOpen &&
-        !w.isMinimized
-    );
+    bringToFront(id);
+
+    onRecent?.(id);
+  }, [
+    windowItem,
+    isOpen,
+    isMinimized,
+    id,
+    toggleWindow,
+    bringToFront,
+    onRecent,
+  ]);
+
+  const handleClick = useCallback(() => {
+    if (!windowItem) return;
+
+    setBouncing(true);
+
+    setTimeout(() => {
+      setBouncing(false);
+    }, 650);
+
+    if (!isOpen) {
+      toggleWindow(id, "isOpen", true);
+      bringToFront(id);
+      setLaunched(true);
+
+      setTimeout(() => {
+        setLaunched(false);
+      }, 700);
+
+      onRecent?.(id);
+
+      return;
+    }
+
+    if (isMinimized) {
+      toggleWindow(
+        id,
+        "isMinimized",
+        false
+      );
+
+      bringToFront(id);
+
+      onRecent?.(id);
+
+      return;
+    }
+
+    const activeWindows =
+      windows?.filter(
+        (item) =>
+          item.type === "window" &&
+          item.isOpen &&
+          !item.isMinimized
+      ) ?? [];
 
     const maxZ = Math.max(
-      ...activeWins.map((w) => w.zIndex ?? 0),
+      ...activeWindows.map(
+        (item) => item.zIndex ?? 0
+      ),
       0
     );
 
-    if (win.zIndex === maxZ) {
-      toggleWindow(id, "isMinimized", true);
+    if (windowItem.zIndex === maxZ) {
+      toggleWindow(
+        id,
+        "isMinimized",
+        true
+      );
     } else {
       bringToFront(id);
     }
+
+    onRecent?.(id);
   }, [
-    win,
+    windowItem,
     isOpen,
     isMinimized,
     windows,
     id,
     toggleWindow,
     bringToFront,
+    onRecent,
   ]);
 
-  if (win?.type === "widget") return null;
+  const handleMiddleClick = useCallback(
+    (event) => {
+      if (event.button !== 1) return;
 
-  const bounceVariants = {
-    idle: {
-      y: 0,
-    },
+      event.preventDefault();
 
-    tapping: {
-      y: [0, -25, 0, -12, 0],
-      transition: {
-        duration: 0.7,
-        times: [0, 0.3, 0.55, 0.8, 1],
-        ease: [
-          "easeOut",
-          "easeIn",
-          "easeOut",
-          "easeIn",
-        ],
-      },
+      if (windowItem?.isOpen) {
+        toggleWindow(
+          id,
+          "isMinimized",
+          true
+        );
+      }
     },
-  };
+    [
+      windowItem,
+      id,
+      toggleWindow,
+    ]
+  );
+
+  const handleContextMenu = useCallback(
+    (event) => {
+      event.preventDefault();
+
+      onContextMenu?.({
+        id,
+        label,
+        item: {
+          id,
+          label,
+        },
+        x: event.clientX,
+        y: event.clientY,
+      });
+    },
+    [
+      id,
+      label,
+      onContextMenu,
+    ]
+  );
+
+  const tilt = useTransform(
+    mouseX,
+    (x) => {
+      if (
+        reducedMotion ||
+        !ref.current ||
+        !Number.isFinite(x)
+      ) {
+        return 0;
+      }
+
+      const rect =
+        ref.current.getBoundingClientRect();
+
+      const center =
+        rect.left + rect.width / 2;
+
+      const diff = x - center;
+
+      return Math.max(
+        -7,
+        Math.min(7, diff / 14)
+      );
+    }
+  );
+
+  if (
+    windowItem?.type === "widget"
+  ) {
+    return null;
+  }
+
+  return (
+    <motion.div
+      ref={ref}
+      className="
+        relative
+        flex
+        w-[60px]
+        shrink-0
+        flex-col
+        items-center
+        justify-end
+      "
+      style={{
+        rotateZ: tilt,
+      }}
+      onMouseEnter={() =>
+        setHovered(true)
+      }
+      onMouseLeave={() =>
+        setHovered(false)
+      }
+    >
+      <Tooltip
+        label={label}
+        shortcut={shortcut}
+        visible={hovered}
+      />
+
+      <motion.button
+        type="button"
+        aria-label={label}
+        aria-pressed={isActive}
+        style={{
+          scale,
+          y,
+        }}
+        animate={
+          bouncing && !reducedMotion
+            ? {
+              y: [
+                0,
+                -24,
+                0,
+                -10,
+                0,
+              ],
+            }
+            : {
+              y: 0,
+            }
+        }
+        transition={
+          bouncing
+            ? {
+              duration: 0.65,
+              times: [
+                0,
+                0.3,
+                0.55,
+                0.8,
+                1,
+              ],
+              ease: "easeOut",
+            }
+            : SPRING
+        }
+        whileTap={
+          reducedMotion
+            ? undefined
+            : {
+              scale: 0.9,
+            }
+        }
+        className="
+          flex
+          cursor-pointer
+          items-center
+          justify-center
+          border-0
+          bg-transparent
+          p-0
+          outline-none
+          focus-visible:ring-2
+          focus-visible:ring-[var(--dock-focus)]
+          focus-visible:ring-offset-2
+          focus-visible:ring-offset-[var(--dock-bg)]
+        "
+        onClick={handleClick}
+        onMouseDown={handleMiddleClick}
+        onContextMenu={
+          handleContextMenu
+        }
+      >
+        <IconShell
+          active={isActive}
+          launched={launched}
+        >
+          <Icon
+            size={20}
+            strokeWidth={1.65}
+            aria-hidden="true"
+          />
+        </IconShell>
+      </motion.button>
+
+      <AnimatePresence>
+        {badge > 0 && (
+          <motion.span
+            initial={{
+              opacity: 0,
+              scale: 0.5,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+            }}
+            exit={{
+              opacity: 0,
+              scale: 0.5,
+            }}
+            transition={{
+              type: "spring",
+              stiffness: 500,
+              damping: 25,
+            }}
+            className="
+              absolute
+              right-[3px]
+              top-[-3px]
+              z-20
+              flex
+              min-h-[18px]
+              min-w-[18px]
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-[var(--badge-border)]
+              bg-[var(--badge-bg)]
+              px-1
+              text-[10px]
+              font-semibold
+              leading-none
+              text-[var(--badge-fg)]
+              shadow-[0_2px_7px_var(--badge-shadow)]
+            "
+          >
+            {badge}
+          </motion.span>
+        )}
+      </AnimatePresence>
+
+      <RunningDot
+        isOpen={isOpen}
+        isMinimized={isMinimized}
+      />
+    </motion.div>
+  );
+}
+
+/* ==========================================================================
+   THEME BUTTON
+   ========================================================================== */
+
+function ThemeButton({
+  isLight,
+  onToggle,
+  mouseX,
+  reducedMotion,
+}) {
+  const ref = useRef(null);
+
+  const {
+    scale,
+    y,
+  } = useMagnify(
+    mouseX,
+    ref,
+    reducedMotion
+  );
+
+  const [hovered, setHovered] =
+    useState(false);
+
+  const label = isLight
+    ? "Dark Mode"
+    : "Light Mode";
 
   return (
     <div
@@ -312,15 +1018,18 @@ function DockIcon({
       className="
         relative
         flex
+        w-[60px]
+        shrink-0
         flex-col
         items-center
         justify-end
       "
-      style={{
-        width: DOCK_ICON_SIZE + 18,
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={() =>
+        setHovered(true)
+      }
+      onMouseLeave={() =>
+        setHovered(false)
+      }
     >
       <Tooltip
         label={label}
@@ -329,164 +1038,33 @@ function DockIcon({
 
       <motion.button
         type="button"
-        style={{
-          scale,
-          y,
-        }}
-        className="
-          flex
-          cursor-pointer
-          flex-col
-          items-center
-
-          border-none
-          bg-transparent
-          p-0
-          outline-none
-        "
-        variants={bounceVariants}
-        animate={tapping ? "tapping" : "idle"}
-        whileTap={{
-          scale: 0.91,
-          transition: {
-            duration: 0.1,
-          },
-        }}
         aria-label={label}
-        onClick={handleClick}
-      >
-        <IconShell>
-          <IconComponent
-            size={21}
-            strokeWidth={1.65}
-            aria-hidden="true"
-          />
-        </IconShell>
-
-        <AnimatePresence>
-          {badge > 0 && (
-            <motion.div
-              initial={{
-                scale: 0.3,
-                opacity: 0,
-              }}
-              animate={{
-                scale: 1,
-                opacity: 1,
-              }}
-              exit={{
-                scale: 0.3,
-                opacity: 0,
-              }}
-              className="
-                absolute
-                -right-1
-                -top-1
-                z-10
-
-                flex
-                h-[18px]
-                min-w-[18px]
-                items-center
-                justify-center
-
-                rounded-full
-
-                border
-                border-[var(--badge-border)]
-
-                bg-[var(--badge-bg)]
-
-                px-1
-
-                text-[10px]
-                font-semibold
-                leading-none
-
-                text-[var(--badge-fg)]
-
-                shadow-[0_2px_6px_var(--badge-shadow)]
-              "
-            >
-              {badge}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.button>
-
-      <RunningDot
-        isOpen={isOpen}
-        isMinimized={isMinimized}
-      />
-    </div>
-  );
-}
-
-// ─── Theme Button ────────────────────────────────────────
-function ThemeButton({
-  isLight,
-  onToggle,
-  mouseX,
-}) {
-  const ref = useRef(null);
-
-  const { scale, y } = useMagnify(
-    mouseX,
-    ref
-  );
-
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <div
-      ref={ref}
-      className="
-        relative
-        flex
-        flex-col
-        items-center
-        justify-end
-      "
-      style={{
-        width: DOCK_ICON_SIZE + 18,
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <Tooltip
-        label={isLight ? "Dark Mode" : "Light Mode"}
-        visible={hovered}
-      />
-
-      <motion.button
-        type="button"
         style={{
           scale,
           y,
         }}
+        whileTap={
+          reducedMotion
+            ? undefined
+            : {
+              scale: 0.9,
+            }
+        }
         className="
           flex
           cursor-pointer
-          flex-col
           items-center
-
-          border-none
+          justify-center
+          border-0
           bg-transparent
           p-0
           outline-none
+          focus-visible:ring-2
+          focus-visible:ring-[var(--dock-focus)]
+          focus-visible:ring-offset-2
+          focus-visible:ring-offset-[var(--dock-bg)]
         "
-        whileTap={{
-          scale: 0.91,
-          transition: {
-            duration: 0.1,
-          },
-        }}
         onClick={onToggle}
-        aria-label={
-          isLight
-            ? "Switch to dark mode"
-            : "Switch to light mode"
-        }
       >
         <IconShell>
           <AnimatePresence
@@ -494,39 +1072,47 @@ function ThemeButton({
             initial={false}
           >
             <motion.span
-              key={isLight ? "moon" : "sun"}
-              initial={{
-                opacity: 0,
-                rotate: -30,
-                scale: 0.75,
-              }}
+              key={
+                isLight
+                  ? "moon"
+                  : "sun"
+              }
+              initial={
+                reducedMotion
+                  ? false
+                  : {
+                    opacity: 0,
+                    rotate: -45,
+                    scale: 0.7,
+                  }
+              }
               animate={{
                 opacity: 1,
                 rotate: 0,
                 scale: 1,
               }}
-              exit={{
-                opacity: 0,
-                rotate: 30,
-                scale: 0.75,
-              }}
+              exit={
+                reducedMotion
+                  ? undefined
+                  : {
+                    opacity: 0,
+                    rotate: 45,
+                    scale: 0.7,
+                  }
+              }
               transition={{
                 duration: 0.18,
-                ease: "easeOut",
               }}
-              className="
-                flex
-                text-[var(--dock-icon-fg)]
-              "
+              className="flex"
             >
               {isLight ? (
                 <FiMoon
-                  size={21}
+                  size={20}
                   strokeWidth={1.65}
                 />
               ) : (
                 <FiSun
-                  size={21}
+                  size={20}
                   strokeWidth={1.65}
                 />
               )}
@@ -535,35 +1121,101 @@ function ThemeButton({
         </IconShell>
       </motion.button>
 
-      <div className="h-[9px]" />
+      <div className="h-[8px]" />
     </div>
   );
 }
 
-// ─── Main Dock Component ────────────────────────────────
+/* ==========================================================================
+   MAIN DOCK
+   ========================================================================== */
+
 export default function Dock({
-  windows,
+  windows = [],
   toggleWindow,
   bringToFront,
 }) {
-  const [isLight, setIsLight] = useState(() => {
-    if (typeof window === "undefined") return false;
+  const [isLight, setIsLight] =
+    useState(() => {
+      if (
+        typeof window ===
+        "undefined"
+      ) {
+        return false;
+      }
 
-    const saved =
-      localStorage.getItem("os-theme");
+      const saved =
+        localStorage.getItem(
+          "os-theme"
+        );
 
-    const prefLight =
-      window.matchMedia(
+      if (saved) {
+        return saved === "light";
+      }
+
+      return window.matchMedia(
         "(prefers-color-scheme: light)"
       ).matches;
+    });
 
-    return saved
-      ? saved === "light"
-      : prefLight;
+  const [
+    contextMenu,
+    setContextMenu,
+  ] = useState(null);
+
+  const [
+    dockVisible,
+    setDockVisible,
+  ] = useState(true);
+
+  const [
+    dockLocked,
+    setDockLocked,
+  ] = useState(() => {
+    if (
+      typeof window ===
+      "undefined"
+    ) {
+      return false;
+    }
+
+    return (
+      localStorage.getItem(
+        "dock-locked"
+      ) === "true"
+    );
   });
 
-  const mouseX = useMotionValue(Infinity);
-  const dockRef = useRef(null);
+  const [
+    recentApps,
+    setRecentApps,
+  ] = useState([]);
+
+  const mouseX =
+    useMotionValue(Infinity);
+
+  const velocity =
+    useMotionValue(0);
+
+  const lastMouseX =
+    useRef(null);
+
+  const lastMouseTime =
+    useRef(null);
+
+  const hideTimer =
+    useRef(null);
+
+  const reducedMotion =
+    typeof window !==
+    "undefined" &&
+    window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+  /* ------------------------------------------------------------------------
+     THEME
+     ------------------------------------------------------------------------ */
 
   useEffect(() => {
     document.documentElement.classList.toggle(
@@ -577,246 +1229,892 @@ export default function Dock({
     );
   }, [isLight]);
 
-  const onMouseMove = useCallback(
-    (e) => mouseX.set(e.clientX),
-    [mouseX]
+  /* ------------------------------------------------------------------------
+     DOCK LOCK
+     ------------------------------------------------------------------------ */
+
+  useEffect(() => {
+    localStorage.setItem(
+      "dock-locked",
+      String(dockLocked)
+    );
+  }, [dockLocked]);
+
+  /* ------------------------------------------------------------------------
+     RECENT APPS
+     ------------------------------------------------------------------------ */
+
+  const markRecent = useCallback(
+    (id) => {
+      setRecentApps((current) => [
+        id,
+        ...current.filter(
+          (item) => item !== id
+        ),
+      ].slice(0, 4));
+    },
+    []
   );
 
-  const onMouseLeave = useCallback(
-    () => mouseX.set(Infinity),
-    [mouseX]
-  );
+  /* ------------------------------------------------------------------------
+     MOUSE PHYSICS
+     ------------------------------------------------------------------------ */
 
-  const handleThemeToggle = useCallback(
-    (e) => {
-      const nextLight = !isLight;
+  const handleMouseMove =
+    useCallback(
+      (event) => {
+        const x =
+          event.clientX;
 
-      const apply = () => {
-        document.documentElement.classList.toggle(
-          "light-theme",
-          nextLight
-        );
+        const now =
+          performance.now();
 
-        document.body.classList.toggle(
-          "light-theme",
-          nextLight
-        );
+        if (
+          lastMouseX.current !==
+          null &&
+          lastMouseTime.current !==
+          null
+        ) {
+          const dx =
+            x -
+            lastMouseX.current;
 
-        localStorage.setItem(
-          "os-theme",
-          nextLight ? "light" : "dark"
-        );
+          const dt =
+            Math.max(
+              now -
+              lastMouseTime.current,
+              1
+            );
 
-        setIsLight(nextLight);
+          const nextVelocity =
+            Math.min(
+              Math.abs(
+                dx / dt
+              ) * 10,
+              10
+            );
+
+          velocity.set(
+            nextVelocity
+          );
+        }
+
+        lastMouseX.current =
+          x;
+
+        lastMouseTime.current =
+          now;
+
+        mouseX.set(x);
+
+        setDockVisible(true);
+
+        if (hideTimer.current) {
+          clearTimeout(
+            hideTimer.current
+          );
+        }
+
+        if (!dockLocked) {
+          hideTimer.current =
+            setTimeout(() => {
+              setDockVisible(false);
+            }, 2200);
+        }
+      },
+      [
+        mouseX,
+        velocity,
+        dockLocked,
+      ]
+    );
+
+  const handleMouseLeave =
+    useCallback(() => {
+      mouseX.set(Infinity);
+      velocity.set(0);
+
+      lastMouseX.current =
+        null;
+
+      lastMouseTime.current =
+        null;
+
+      if (!dockLocked) {
+        hideTimer.current =
+          setTimeout(() => {
+            setDockVisible(false);
+          }, 900);
+      }
+    }, [
+      mouseX,
+      velocity,
+      dockLocked,
+    ]);
+
+  /* ------------------------------------------------------------------------
+     EDGE REVEAL
+     ------------------------------------------------------------------------ */
+
+  useEffect(() => {
+    const handlePointerMove =
+      (event) => {
+        const nearBottom =
+          window.innerHeight -
+          event.clientY <
+          55;
+
+        if (nearBottom) {
+          setDockVisible(true);
+
+          if (
+            hideTimer.current
+          ) {
+            clearTimeout(
+              hideTimer.current
+            );
+          }
+        }
       };
 
-      if (
-        typeof document.startViewTransition !==
-        "function"
-      ) {
-        apply();
-        return;
+    window.addEventListener(
+      "pointermove",
+      handlePointerMove,
+      {
+        passive: true,
       }
+    );
 
-      const {
-        clientX: x,
-        clientY: y,
-      } = e;
-
-      const r = Math.hypot(
-        Math.max(
-          x,
-          window.innerWidth - x
-        ),
-        Math.max(
-          y,
-          window.innerHeight - y
-        )
+    return () => {
+      window.removeEventListener(
+        "pointermove",
+        handlePointerMove
       );
+    };
+  }, []);
 
-      const transition =
-        document.startViewTransition(
-          apply
-        );
+  /* ------------------------------------------------------------------------
+     KEYBOARD SHORTCUTS
+     ------------------------------------------------------------------------ */
 
-      transition.ready
-        .then(() => {
-          document.documentElement.animate(
-            {
-              clipPath: [
-                `circle(0px at ${x}px ${y}px)`,
-                `circle(${r}px at ${x}px ${y}px)`,
-              ],
-            },
-            {
-              duration: 440,
-              easing:
-                "cubic-bezier(0.22,1,0.36,1)",
-              pseudoElement:
-                "::view-transition-new(root)",
+  useEffect(() => {
+    const handleKeyDown =
+      (event) => {
+        if (
+          event.metaKey ||
+          event.ctrlKey
+        ) {
+          const number =
+            Number(event.key);
+
+          if (
+            number >= 1 &&
+            number <= 6
+          ) {
+            event.preventDefault();
+
+            const item =
+              DOCK_ITEMS.filter(
+                (entry) =>
+                  entry.type !==
+                  "separator"
+              )[number - 1];
+
+            if (!item) return;
+
+            const win =
+              windows.find(
+                (entry) =>
+                  entry.id ===
+                  item.id
+              );
+
+            if (!win) return;
+
+            if (!win.isOpen) {
+              toggleWindow(
+                item.id,
+                "isOpen",
+                true
+              );
+
+              bringToFront(
+                item.id
+              );
+            } else if (
+              win.isMinimized
+            ) {
+              toggleWindow(
+                item.id,
+                "isMinimized",
+                false
+              );
+
+              bringToFront(
+                item.id
+              );
+            } else {
+              bringToFront(
+                item.id
+              );
             }
-          );
-        })
-        .catch(() => { });
-    },
-    [isLight]
-  );
 
-  const shared = {
+            markRecent(item.id);
+          }
+        }
+
+        if (event.key === "Escape") {
+          setContextMenu(null);
+        }
+      };
+
+    window.addEventListener(
+      "keydown",
+      handleKeyDown
+    );
+
+    return () => {
+      window.removeEventListener(
+        "keydown",
+        handleKeyDown
+      );
+    };
+  }, [
     windows,
     toggleWindow,
     bringToFront,
-    mouseX,
-  };
+    markRecent,
+  ]);
 
-  return (
-    <div
-      className="
-        pointer-events-none
-        absolute
-        bottom-3
-        left-1/2
-        z-[99999]
-        -translate-x-1/2
-      "
-    >
-      <motion.div
-        ref={dockRef}
-        onMouseMove={onMouseMove}
-        onMouseLeave={onMouseLeave}
-        initial={{
-          y: 90,
-          opacity: 0,
-        }}
-        animate={{
-          y: 0,
-          opacity: 1,
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 240,
-          damping: 25,
-          delay: 0.08,
-        }}
-        className="
-          pointer-events-auto
+  /* ------------------------------------------------------------------------
+     THEME
+     ------------------------------------------------------------------------ */
 
-          relative
-          flex
-          items-end
-          gap-1
+  const handleThemeToggle =
+    useCallback(
+      (event) => {
+        const nextLight =
+          !isLight;
 
-          rounded-[16px]
+        const applyTheme =
+          () => {
+            document.documentElement.classList.toggle(
+              "light-theme",
+              nextLight
+            );
 
-          border
-          border-[var(--dock-border)]
+            document.body.classList.toggle(
+              "light-theme",
+              nextLight
+            );
 
-          bg-[var(--dock-bg)]
+            localStorage.setItem(
+              "os-theme",
+              nextLight
+                ? "light"
+                : "dark"
+            );
 
-          px-2
-          pb-1
-          pt-1.5
+            setIsLight(
+              nextLight
+            );
+          };
 
-          shadow-[0_12px_32px_var(--dock-shadow)]
+        if (
+          reducedMotion ||
+          typeof document.startViewTransition !==
+          "function"
+        ) {
+          applyTheme();
+          return;
+        }
 
-          transition-[background-color,border-color,box-shadow]
-          duration-300
-        "
-        style={{
-          // Solid surfaces only — no gradients or transparency.
-          "--dock-bg": isLight
-            ? "#f7f7f7"
-            : "#1c1c1e",
+        const x =
+          event.clientX;
 
-          "--dock-border": isLight
-            ? "#dedede"
-            : "#353537",
+        const y =
+          event.clientY;
 
-          "--dock-shadow": isLight
-            ? "rgba(0,0,0,0.13)"
-            : "rgba(0,0,0,0.38)",
+        const radius =
+          Math.hypot(
+            Math.max(
+              x,
+              window.innerWidth -
+              x
+            ),
+            Math.max(
+              y,
+              window.innerHeight -
+              y
+            )
+          );
 
-          "--dock-icon-bg": isLight
-            ? "#eeeeee"
-            : "#29292b",
+        const transition =
+          document.startViewTransition(
+            applyTheme
+          );
 
-          "--dock-icon-fg": isLight
-            ? "#171717"
-            : "#f5f5f5",
+        transition.ready
+          .then(() => {
+            document.documentElement.animate(
+              {
+                clipPath: [
+                  `circle(0px at ${x}px ${y}px)`,
+                  `circle(${radius}px at ${x}px ${y}px)`,
+                ],
+              },
+              {
+                duration: 460,
+                easing:
+                  "cubic-bezier(0.22,1,0.36,1)",
+                pseudoElement:
+                  "::view-transition-new(root)",
+              }
+            );
+          })
+          .catch(() => { });
+      },
+      [
+        isLight,
+        reducedMotion,
+      ]
+    );
 
-          "--dock-icon-border": isLight
+  /* ------------------------------------------------------------------------
+     CONTEXT MENU
+     ------------------------------------------------------------------------ */
+
+  const openContextMenu =
+    useCallback(
+      (data) => {
+        const menuWidth = 180;
+        const menuHeight = 210;
+
+        let x = data.x;
+        let y = data.y;
+
+        if (
+          x + menuWidth >
+          window.innerWidth
+        ) {
+          x =
+            window.innerWidth -
+            menuWidth -
+            8;
+        }
+
+        if (
+          y + menuHeight >
+          window.innerHeight
+        ) {
+          y =
+            window.innerHeight -
+            menuHeight -
+            8;
+        }
+
+        setContextMenu({
+          ...data,
+          x,
+          y,
+        });
+      },
+      []
+    );
+
+  const closeContextMenu =
+    useCallback(() => {
+      setContextMenu(null);
+    }, []);
+
+  const contextWindow =
+    contextMenu
+      ? windows.find(
+        (item) =>
+          item.id ===
+          contextMenu.id
+      )
+      : null;
+
+  const openFromMenu =
+    useCallback(() => {
+      if (!contextMenu)
+        return;
+
+      const id =
+        contextMenu.id;
+
+      const win =
+        windows.find(
+          (item) =>
+            item.id === id
+        );
+
+      if (!win) return;
+
+      if (!win.isOpen) {
+        toggleWindow(
+          id,
+          "isOpen",
+          true
+        );
+      }
+
+      if (win.isMinimized) {
+        toggleWindow(
+          id,
+          "isMinimized",
+          false
+        );
+      }
+
+      bringToFront(id);
+      markRecent(id);
+      closeContextMenu();
+    }, [
+      contextMenu,
+      windows,
+      toggleWindow,
+      bringToFront,
+      markRecent,
+      closeContextMenu,
+    ]);
+
+  const minimizeFromMenu =
+    useCallback(() => {
+      if (!contextMenu)
+        return;
+
+      toggleWindow(
+        contextMenu.id,
+        "isMinimized",
+        true
+      );
+
+      closeContextMenu();
+    }, [
+      contextMenu,
+      toggleWindow,
+      closeContextMenu,
+    ]);
+
+  const maximizeFromMenu =
+    useCallback(() => {
+      if (!contextMenu)
+        return;
+
+      bringToFront(
+        contextMenu.id
+      );
+
+      if (
+        contextWindow?.isMinimized
+      ) {
+        toggleWindow(
+          contextMenu.id,
+          "isMinimized",
+          false
+        );
+      }
+
+      markRecent(
+        contextMenu.id
+      );
+
+      closeContextMenu();
+    }, [
+      contextMenu,
+      contextWindow,
+      toggleWindow,
+      bringToFront,
+      markRecent,
+      closeContextMenu,
+    ]);
+
+  const closeFromMenu =
+    useCallback(() => {
+      if (!contextMenu)
+        return;
+
+      toggleWindow(
+        contextMenu.id,
+        "isOpen",
+        false
+      );
+
+      closeContextMenu();
+    }, [
+      contextMenu,
+      toggleWindow,
+      closeContextMenu,
+    ]);
+
+  /* ------------------------------------------------------------------------
+     SHARED PROPS
+     ------------------------------------------------------------------------ */
+
+  const themeVariables =
+    useMemo(
+      () => ({
+        "--dock-bg": isLight
+          ? "#f7f7f7"
+          : "#1c1c1e",
+
+        "--dock-border": isLight
+          ? "#dddddd"
+          : "#363638",
+
+        "--dock-shadow": isLight
+          ? "rgba(0,0,0,0.14)"
+          : "rgba(0,0,0,0.44)",
+
+        "--dock-icon-bg": isLight
+          ? "#eeeeee"
+          : "#29292b",
+
+        "--dock-icon-fg": isLight
+          ? "#171717"
+          : "#f5f5f5",
+
+        "--dock-icon-border":
+          isLight
             ? "#d9d9d9"
             : "#3a3a3c",
 
-          "--dock-icon-shadow": isLight
-            ? "rgba(0,0,0,0.06)"
+        "--dock-icon-shadow":
+          isLight
+            ? "rgba(0,0,0,0.055)"
             : "rgba(0,0,0,0.22)",
 
-          "--dock-separator": isLight
+        "--dock-icon-shadow-active":
+          isLight
+            ? "rgba(0,0,0,0.12)"
+            : "rgba(0,0,0,0.36)",
+
+        "--dock-active": isLight
+          ? "#000000"
+          : "#ffffff",
+
+        "--dock-separator":
+          isLight
             ? "#d0d0d0"
             : "#414143",
 
-          "--dock-dot": isLight
-            ? "#161616"
-            : "#f2f2f2",
+        "--dock-dot": isLight
+          ? "#161616"
+          : "#f2f2f2",
 
-          "--dock-tooltip-bg": isLight
-            ? "#ffffff"
-            : "#252527",
+        "--dock-focus": isLight
+          ? "#707070"
+          : "#aaaaaa",
 
-          "--dock-tooltip-fg": isLight
-            ? "#161616"
-            : "#f5f5f5",
+        "--tooltip-bg": isLight
+          ? "#ffffff"
+          : "#252527",
 
-          "--dock-tooltip-border": isLight
+        "--tooltip-fg": isLight
+          ? "#161616"
+          : "#f5f5f5",
+
+        "--tooltip-border":
+          isLight
             ? "#dedede"
             : "#3a3a3c",
 
-          "--dock-tooltip-shadow": isLight
-            ? "rgba(0,0,0,0.12)"
-            : "rgba(0,0,0,0.3)",
+        "--tooltip-shadow":
+          isLight
+            ? "rgba(0,0,0,0.13)"
+            : "rgba(0,0,0,0.32)",
 
-          "--badge-bg": isLight
-            ? "#1d1d1f"
-            : "#f5f5f5",
+        "--tooltip-key-bg":
+          isLight
+            ? "#eeeeee"
+            : "#343436",
 
-          "--badge-fg": isLight
-            ? "#ffffff"
-            : "#171717",
+        "--tooltip-key-fg":
+          isLight
+            ? "#555555"
+            : "#bbbbbb",
 
-          "--badge-border": isLight
+        "--badge-bg": isLight
+          ? "#1d1d1f"
+          : "#f5f5f5",
+
+        "--badge-fg": isLight
+          ? "#ffffff"
+          : "#171717",
+
+        "--badge-border":
+          isLight
             ? "#ffffff"
             : "#1d1d1f",
 
-          "--badge-shadow": isLight
-            ? "rgba(0,0,0,0.12)"
+        "--badge-shadow":
+          isLight
+            ? "rgba(0,0,0,0.13)"
             : "rgba(0,0,0,0.25)",
+
+        "--menu-bg": isLight
+          ? "#ffffff"
+          : "#252527",
+
+        "--menu-border":
+          isLight
+            ? "#dedede"
+            : "#3a3a3c",
+
+        "--menu-shadow":
+          isLight
+            ? "rgba(0,0,0,0.18)"
+            : "rgba(0,0,0,0.4)",
+
+        "--menu-fg": isLight
+          ? "#202020"
+          : "#f2f2f2",
+
+        "--menu-muted":
+          isLight
+            ? "#888888"
+            : "#8e8e93",
+
+        "--menu-hover":
+          isLight
+            ? "#eeeeee"
+            : "#343436",
+
+        "--menu-divider":
+          isLight
+            ? "#e5e5e5"
+            : "#3a3a3c",
+
+        "--menu-danger":
+          isLight
+            ? "#c62828"
+            : "#ff6b6b",
+
+        "--menu-danger-bg":
+          isLight
+            ? "#fff0f0"
+            : "#3b2525",
+      }),
+      [isLight]
+    );
+
+  /* ------------------------------------------------------------------------
+     RENDER
+     ------------------------------------------------------------------------ */
+
+  return (
+    <>
+      <motion.div
+        initial={false}
+        animate={{
+          y: dockVisible
+            ? 0
+            : 75,
+          opacity: dockVisible
+            ? 1
+            : 0,
+          scale: dockVisible
+            ? 1
+            : 0.96,
         }}
+        transition={{
+          type: "spring",
+          stiffness: 340,
+          damping: 30,
+          mass: 0.75,
+        }}
+        className="
+          pointer-events-none
+          fixed
+          bottom-3
+          left-1/2
+          z-[99999]
+          -translate-x-1/2
+          sm:bottom-4
+        "
       >
-        {DOCK_ITEMS.map((item) => {
-          if (item.type === "separator") {
-            return (
-              <Sep key={item.id} />
-            );
+        <motion.div
+          onMouseMove={
+            handleMouseMove
           }
+          onMouseLeave={
+            handleMouseLeave
+          }
+          className="
+            pointer-events-auto
+            relative
+            flex
+            max-w-[calc(100vw-16px)]
+            items-end
+            overflow-visible
+            rounded-[17px]
+            border
+            border-[var(--dock-border)]
+            bg-[var(--dock-bg)]
+            px-1
+            pb-1
+            pt-1
+            shadow-[0_10px_30px_var(--dock-shadow)]
+            transition-[background-color,border-color,box-shadow]
+            duration-300
+            sm:px-1.5
+            sm:pb-1
+            sm:pt-1.5
+          "
+          style={themeVariables}
+        >
+          {DOCK_ITEMS.map(
+            (item) => {
+              if (
+                item.type ===
+                "separator"
+              ) {
+                return (
+                  <Separator
+                    key={item.id}
+                  />
+                );
+              }
 
-          return (
-            <DockIcon
-              key={item.id}
-              {...item}
-              {...shared}
-            />
-          );
-        })}
+              const index =
+                DOCK_ITEMS.findIndex(
+                  (entry) =>
+                    entry.id ===
+                    item.id
+                );
 
-        <Sep />
+              const actualShortcut =
+                item.shortcut ??
+                String(index + 1);
 
-        <ThemeButton
-          isLight={isLight}
-          onToggle={handleThemeToggle}
-          mouseX={mouseX}
-        />
+              return (
+                <DockIcon
+                  key={item.id}
+                  {...item}
+                  shortcut={
+                    actualShortcut
+                  }
+                  {...{
+                    windows,
+                    toggleWindow,
+                    bringToFront,
+                  }}
+                  mouseX={mouseX}
+                  velocity={
+                    velocity
+                  }
+                  reducedMotion={
+                    reducedMotion
+                  }
+                  onContextMenu={
+                    openContextMenu
+                  }
+                  onRecent={
+                    markRecent
+                  }
+                />
+              );
+            }
+          )}
+
+          <Separator />
+
+          <ThemeButton
+            isLight={isLight}
+            onToggle={
+              handleThemeToggle
+            }
+            mouseX={mouseX}
+            reducedMotion={
+              reducedMotion
+            }
+          />
+
+          <button
+            type="button"
+            aria-label={
+              dockLocked
+                ? "Unlock dock"
+                : "Lock dock"
+            }
+            title={
+              dockLocked
+                ? "Unlock dock"
+                : "Lock dock"
+            }
+            onClick={() =>
+              setDockLocked(
+                (value) =>
+                  !value
+              )
+            }
+            className="
+              absolute
+              -right-2
+              -top-2
+              z-30
+              flex
+              h-5
+              w-5
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-[var(--dock-border)]
+              bg-[var(--dock-bg)]
+              text-[var(--dock-icon-fg)]
+              opacity-0
+              shadow-[0_3px_8px_var(--dock-shadow)]
+              transition-opacity
+              duration-200
+              hover:opacity-100
+              focus:opacity-100
+            "
+          >
+            {dockLocked ? (
+              <FiLock size={9} />
+            ) : (
+              <FiUnlock size={9} />
+            )}
+          </button>
+        </motion.div>
       </motion.div>
-    </div>
+
+      <AnimatePresence>
+        {contextMenu && (
+          <ContextMenu
+            item={{
+              id: contextMenu.id,
+              label:
+                contextMenu.label,
+            }}
+            position={{
+              x: contextMenu.x,
+              y: contextMenu.y,
+            }}
+            windowItem={
+              contextWindow
+            }
+            onClose={
+              closeContextMenu
+            }
+            onOpen={
+              openFromMenu
+            }
+            onMinimize={
+              minimizeFromMenu
+            }
+            onMaximize={
+              maximizeFromMenu
+            }
+            onCloseWindow={
+              closeFromMenu
+            }
+          />
+        )}
+      </AnimatePresence>
+    </>
   );
 }
