@@ -14,6 +14,7 @@ import {
 } from "react-icons/fi";
 import { useEffect, useMemo, useState } from "react";
 import projects from "../data/project";
+import { variants } from "../lib/motion";
 
 export default function ProjectsSection() {
   const projectList = Array.isArray(projects) ? projects : [];
@@ -627,24 +628,15 @@ function ProjectCard({
   return (
     <motion.article
       layout
-      initial={{
-        opacity: 0,
-        y: 10,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-      }}
-      exit={{
-        opacity: 0,
-        scale: 0.98,
-      }}
+      variants={variants.fadeUp}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
       transition={{
+        ...variants.fadeUp.visible.transition,
         delay: Math.min(index * 0.04, 0.2),
-        duration: 0.3,
-        ease: [0.22, 1, 0.36, 1],
       }}
-      whileHover={{ y: -3 }}
+      whileHover="hoverSubtle"
       className={`
         group relative min-w-0 overflow-hidden
         rounded-[14px]
@@ -1007,25 +999,10 @@ function ProjectPreview({
       "
     >
       <motion.div
-        initial={{
-          opacity: 0,
-          y: 14,
-          scale: 0.97,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
-          scale: 1,
-        }}
-        exit={{
-          opacity: 0,
-          y: 8,
-          scale: 0.98,
-        }}
-        transition={{
-          duration: 0.25,
-          ease: [0.22, 1, 0.36, 1],
-        }}
+        variants={variants.fadeUp}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
         className="
           relative
           flex

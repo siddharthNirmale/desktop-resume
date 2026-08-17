@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FiGithub, FiLinkedin, FiMail } from 'react-icons/fi';
+import { motion } from 'framer-motion';
+import { variants } from '../lib/motion';
 
 // ============================================================
 // FORMATTERS (Hoisted out of the render cycle for performance)
@@ -49,31 +51,40 @@ export default function TopBar() {
       {/* Right System Tray Cluster */}
       <div className="topbar-icons flex items-center gap-4 text-[var(--color-text-secondary)]">
         {/* External Links */}
-        <a
+        <motion.a
           href="https://github.com/siddharthNirmale"
           target="_blank"
           rel="noreferrer"
-          className="hover:text-[var(--color-text)] transition-colors cursor-default"
+          className="hover:text-[var(--color-text)] transition-colors cursor-default inline-flex"
           title="GitHub Profile"
+          whileHover="hoverSubtle"
+          whileTap="tap"
+          variants={variants}
         >
           <FiGithub size={13} />
-        </a>
-        <a
+        </motion.a>
+        <motion.a
           href="https://linkedin.com/in/siddharth-nirmale"
           target="_blank"
           rel="noreferrer"
-          className="hover:text-[var(--color-text)] transition-colors cursor-default"
+          className="hover:text-[var(--color-text)] transition-colors cursor-default inline-flex"
           title="LinkedIn Profile"
+          whileHover="hoverSubtle"
+          whileTap="tap"
+          variants={variants}
         >
           <FiLinkedin size={13} />
-        </a>
-        <a
+        </motion.a>
+        <motion.a
           href="mailto:siddharth175nirmale1@gmail.com"
-          className="hover:text-[var(--color-text)] transition-colors cursor-default"
+          className="hover:text-[var(--color-text)] transition-colors cursor-default inline-flex"
           title="Send Email"
+          whileHover="hoverSubtle"
+          whileTap="tap"
+          variants={variants}
         >
           <FiMail size={13} />
-        </a>
+        </motion.a>
 
         {/* Hairline Divider */}
         <div className="topbar-divider w-[1px] h-3 bg-[var(--color-divider)]" />
