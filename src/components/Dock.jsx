@@ -381,201 +381,6 @@ function Separator() {
 }
 
 /* ==========================================================================
-   CONTEXT MENU
-   ========================================================================== */
-
-function ContextMenu({
-  item,
-  position,
-  windowItem,
-  onClose,
-  onOpen,
-  onMinimize,
-  onMaximize,
-  onCloseWindow,
-}) {
-  const menuRef = useRef(null);
-
-  useEffect(() => {
-    const handlePointerDown = (event) => {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(event.target)
-      ) {
-        onClose();
-      }
-    };
-
-    const handleEscape = (event) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-
-    document.addEventListener(
-      "pointerdown",
-      handlePointerDown
-    );
-
-    document.addEventListener(
-      "keydown",
-      handleEscape
-    );
-
-    return () => {
-      document.removeEventListener(
-        "pointerdown",
-        handlePointerDown
-      );
-
-      document.removeEventListener(
-        "keydown",
-        handleEscape
-      );
-    };
-  }, [onClose]);
-
-  const isOpen = Boolean(windowItem?.isOpen);
-  const isMinimized = Boolean(
-    windowItem?.isMinimized
-  );
-
-  return (
-    <motion.div
-      ref={menuRef}
-      initial={{
-        opacity: 0,
-        scale: 0.94,
-        y: 5,
-      }}
-      animate={{
-        opacity: 1,
-        scale: 1,
-        y: 0,
-      }}
-      exit={{
-        opacity: 0,
-        scale: 0.96,
-        y: 3,
-      }}
-      transition={{
-        duration: 0.13,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className="
-        fixed
-        z-[100001]
-        min-w-[170px]
-        overflow-hidden
-        rounded-[12px]
-        border
-        border-[var(--menu-border)]
-        bg-[var(--menu-bg)]
-        p-1
-        shadow-[0_12px_35px_var(--menu-shadow)]
-      "
-      style={{
-        left: position.x,
-        top: position.y,
-      }}
-      onContextMenu={(event) =>
-        event.preventDefault()
-      }
-    >
-      <div
-        className="
-          px-2.5
-          py-1.5
-          text-[10px]
-          font-semibold
-          uppercase
-          tracking-[0.08em]
-          text-[var(--menu-muted)]
-        "
-      >
-        {item.label}
-      </div>
-
-      <MenuItem
-        icon={<FiMaximize2 />}
-        label={isOpen && !isMinimized ? "Focus" : "Open"}
-        onClick={onOpen}
-      />
-
-      {isOpen && (
-        <MenuItem
-          icon={<FiMinimize2 />}
-          label="Minimize"
-          onClick={onMinimize}
-        />
-      )}
-
-      {isOpen && (
-        <MenuItem
-          icon={<FiMaximize2 />}
-          label="Bring to Front"
-          onClick={onMaximize}
-        />
-      )}
-
-      {isOpen && (
-        <>
-          <div className="my-1 h-px bg-[var(--menu-divider)]" />
-
-          <MenuItem
-            danger
-            icon={<FiX />}
-            label="Close"
-            onClick={onCloseWindow}
-          />
-        </>
-      )}
-    </motion.div>
-  );
-}
-
-function MenuItem({
-  icon,
-  label,
-  onClick,
-  danger = false,
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`
-        flex
-        w-full
-        items-center
-        gap-2.5
-        rounded-[8px]
-        border-0
-        bg-transparent
-        px-2.5
-        py-2
-        text-left
-        text-[11px]
-        font-medium
-        outline-none
-        transition-colors
-        duration-100
-        ${danger
-          ? "text-[var(--menu-danger)] hover:bg-[var(--menu-danger-bg)]"
-          : "text-[var(--menu-fg)] hover:bg-[var(--menu-hover)]"
-        }
-      `}
-    >
-      <span className="flex text-[13px]">
-        {icon}
-      </span>
-
-      <span>{label}</span>
-    </button>
-  );
-}
-
-/* ==========================================================================
    DOCK ICON
    ========================================================================== */
 
@@ -591,7 +396,6 @@ function DockIcon({
   mouseX,
   velocity,
   reducedMotion,
-  onContextMenu,
   onRecent,
 }) {
   const ref = useRef(null);
@@ -773,23 +577,8 @@ function DockIcon({
   const handleContextMenu = useCallback(
     (event) => {
       event.preventDefault();
-
-      onContextMenu?.({
-        id,
-        label,
-        item: {
-          id,
-          label,
-        },
-        x: event.clientX,
-        y: event.clientY,
-      });
     },
-    [
-      id,
-      label,
-      onContextMenu,
-    ]
+    []
   );
 
   const tilt = useTransform(
@@ -1159,11 +948,6 @@ export default function Dock({
     });
 
   const [
-    contextMenu,
-    setContextMenu,
-  ] = useState(null);
-
-  const [
     dockVisible,
     setDockVisible,
   ] = useState(true);
@@ -1463,9 +1247,6 @@ export default function Dock({
           }
         }
 
-        if (event.key === "Escape") {
-          setContextMenu(null);
-        }
       };
 
     window.addEventListener(
@@ -1579,175 +1360,6 @@ export default function Dock({
         reducedMotion,
       ]
     );
-
-  /* ------------------------------------------------------------------------
-     CONTEXT MENU
-     ------------------------------------------------------------------------ */
-
-  const openContextMenu =
-    useCallback(
-      (data) => {
-        const menuWidth = 180;
-        const menuHeight = 210;
-
-        let x = data.x;
-        let y = data.y;
-
-        if (
-          x + menuWidth >
-          window.innerWidth
-        ) {
-          x =
-            window.innerWidth -
-            menuWidth -
-            8;
-        }
-
-        if (
-          y + menuHeight >
-          window.innerHeight
-        ) {
-          y =
-            window.innerHeight -
-            menuHeight -
-            8;
-        }
-
-        setContextMenu({
-          ...data,
-          x,
-          y,
-        });
-      },
-      []
-    );
-
-  const closeContextMenu =
-    useCallback(() => {
-      setContextMenu(null);
-    }, []);
-
-  const contextWindow =
-    contextMenu
-      ? windows.find(
-        (item) =>
-          item.id ===
-          contextMenu.id
-      )
-      : null;
-
-  const openFromMenu =
-    useCallback(() => {
-      if (!contextMenu)
-        return;
-
-      const id =
-        contextMenu.id;
-
-      const win =
-        windows.find(
-          (item) =>
-            item.id === id
-        );
-
-      if (!win) return;
-
-      if (!win.isOpen) {
-        toggleWindow(
-          id,
-          "isOpen",
-          true
-        );
-      }
-
-      if (win.isMinimized) {
-        toggleWindow(
-          id,
-          "isMinimized",
-          false
-        );
-      }
-
-      bringToFront(id);
-      markRecent(id);
-      closeContextMenu();
-    }, [
-      contextMenu,
-      windows,
-      toggleWindow,
-      bringToFront,
-      markRecent,
-      closeContextMenu,
-    ]);
-
-  const minimizeFromMenu =
-    useCallback(() => {
-      if (!contextMenu)
-        return;
-
-      toggleWindow(
-        contextMenu.id,
-        "isMinimized",
-        true
-      );
-
-      closeContextMenu();
-    }, [
-      contextMenu,
-      toggleWindow,
-      closeContextMenu,
-    ]);
-
-  const maximizeFromMenu =
-    useCallback(() => {
-      if (!contextMenu)
-        return;
-
-      bringToFront(
-        contextMenu.id
-      );
-
-      if (
-        contextWindow?.isMinimized
-      ) {
-        toggleWindow(
-          contextMenu.id,
-          "isMinimized",
-          false
-        );
-      }
-
-      markRecent(
-        contextMenu.id
-      );
-
-      closeContextMenu();
-    }, [
-      contextMenu,
-      contextWindow,
-      toggleWindow,
-      bringToFront,
-      markRecent,
-      closeContextMenu,
-    ]);
-
-  const closeFromMenu =
-    useCallback(() => {
-      if (!contextMenu)
-        return;
-
-      toggleWindow(
-        contextMenu.id,
-        "isOpen",
-        false
-      );
-
-      closeContextMenu();
-    }, [
-      contextMenu,
-      toggleWindow,
-      closeContextMenu,
-    ]);
 
   /* ------------------------------------------------------------------------
      SHARED PROPS
@@ -2008,9 +1620,6 @@ export default function Dock({
                   reducedMotion={
                     reducedMotion
                   }
-                  onContextMenu={
-                    openContextMenu
-                  }
                   onRecent={
                     markRecent
                   }
@@ -2082,39 +1691,6 @@ export default function Dock({
         </motion.div>
       </motion.div>
 
-      <AnimatePresence>
-        {contextMenu && (
-          <ContextMenu
-            item={{
-              id: contextMenu.id,
-              label:
-                contextMenu.label,
-            }}
-            position={{
-              x: contextMenu.x,
-              y: contextMenu.y,
-            }}
-            windowItem={
-              contextWindow
-            }
-            onClose={
-              closeContextMenu
-            }
-            onOpen={
-              openFromMenu
-            }
-            onMinimize={
-              minimizeFromMenu
-            }
-            onMaximize={
-              maximizeFromMenu
-            }
-            onCloseWindow={
-              closeFromMenu
-            }
-          />
-        )}
-      </AnimatePresence>
     </>
   );
 }
