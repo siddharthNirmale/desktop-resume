@@ -10,6 +10,7 @@ import useContextMenu from "./hooks/useContextMenu";
 import Preloader from "./components/Preloader";
 import DesktopDisplay from "./mode/DesktopDisplay";
 import SmallDisplay from "./mode/SmallDisplay";
+import CommandPalette from "./components/CommandPalette";
 
 // Config (Centralized outside the render cycle)
 import { initialWindowsConfig } from "./config/windowsConfig";
@@ -66,6 +67,9 @@ export default function App() {
           )}
         </div>
       )}
+
+      {/* Global Command Palette */}
+      <CommandPalette toggleWindow={toggleWindow} bringToFront={bringToFront} />
     </main>
   );
 }

@@ -43,9 +43,22 @@ export default function TopBar() {
       {/* Left Menu Cluster */}
       <div className="flex items-center gap-2.5">
 
-        <span className="topbar-text text-[13px] font-heading font-semibold text-[var(--color-text)] tracking-tight cursor-default">
+        <span className="topbar-text text-[13px] font-heading font-semibold text-[var(--color-text)] tracking-tight cursor-default pr-2">
           Siddharth Nirmale
         </span>
+        
+        {/* Command Palette Hint */}
+        <button 
+          onClick={() => {
+            const event = new KeyboardEvent('keydown', { key: 'k', metaKey: true });
+            window.dispatchEvent(event);
+          }}
+          className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded border border-[var(--color-surface-border)] bg-[var(--color-surface)]/50 hover:bg-[var(--color-surface-hover)] transition-colors cursor-default text-[var(--color-text-secondary)] hover:text-[var(--color-text)]"
+          title="Search (Cmd + K)"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span className="text-[10px] font-medium opacity-80 tracking-widest">⌘K</span>
+        </button>
       </div>
 
       {/* Right System Tray Cluster */}
