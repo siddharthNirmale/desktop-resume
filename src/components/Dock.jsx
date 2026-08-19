@@ -4,6 +4,7 @@ import {
   useRef,
   useCallback,
   useMemo,
+  memo,
 } from "react";
 import {
   FiUser,
@@ -14,11 +15,6 @@ import {
   FiTerminal,
   FiSun,
   FiMoon,
-  FiMinimize2,
-  FiMaximize2,
-  FiX,
-  FiLock,
-  FiUnlock,
 } from "react-icons/fi";
 import {
   motion,
@@ -29,52 +25,70 @@ import {
 } from "framer-motion";
 
 /* ==========================================================================
-   CONFIG
+   CONFIG & CONSTANTS
    ========================================================================== */
 
-const ICON_SIZE = 42;
-const MAX_ICON_SIZE = 66;
+const BASE_ICON_SIZE = 46;
+const MAX_ICON_SCALE = 1.34;
+const MAGNIFY_RADIUS = 135;
 
-const MAGNIFY_RADIUS = 120;
-
-const DOCK_BOTTOM = 12;
-
-const SPRING = {
-  stiffness: 420,
-  damping: 30,
-  mass: 0.7,
+const SPRING_CONFIG = {
+  stiffness: 440,
+  damping: 28,
+  mass: 0.52,
 };
 
+/* Pastel tinted palette with explicit Light and Dark classes */
 const DOCK_ITEMS = [
   {
     id: "about",
     icon: FiUser,
     label: "About Me",
     shortcut: "1",
+    lightClass:
+      "bg-[#EEF4FF] text-[#2563EB] hover:bg-[#DBEAFE] border-blue-200/60 shadow-[0_2px_8px_rgba(37,99,235,0.08)]",
+    darkClass:
+      "bg-blue-500/15 text-blue-400 border-blue-500/25 hover:bg-blue-500/25 shadow-[0_2px_12px_rgba(59,130,246,0.12)]",
   },
   {
     id: "projects",
     icon: FiBriefcase,
     label: "Projects",
     shortcut: "2",
+    lightClass:
+      "bg-[#FFF4ED] text-[#EA580C] hover:bg-[#FFEDD5] border-orange-200/60 shadow-[0_2px_8px_rgba(234,88,12,0.08)]",
+    darkClass:
+      "bg-orange-500/15 text-orange-400 border-orange-500/25 hover:bg-orange-500/25 shadow-[0_2px_12px_rgba(249,115,22,0.12)]",
   },
   {
     id: "resume",
     icon: FiFileText,
     label: "Resume",
     shortcut: "3",
+    lightClass:
+      "bg-[#EDFAF6] text-[#0D9488] hover:bg-[#CCFBF1] border-teal-200/60 shadow-[0_2px_8px_rgba(13,148,136,0.08)]",
+    darkClass:
+      "bg-teal-500/15 text-teal-400 border-teal-500/25 hover:bg-teal-500/25 shadow-[0_2px_12px_rgba(20,184,166,0.12)]",
   },
   {
     id: "notepad",
     icon: FiEdit3,
     label: "Notes",
     shortcut: "4",
+    lightClass:
+      "bg-[#FEF2F2] text-[#E11D48] hover:bg-[#FFE4E6] border-rose-200/60 shadow-[0_2px_8px_rgba(225,29,72,0.08)]",
+    darkClass:
+      "bg-rose-500/15 text-rose-400 border-rose-500/25 hover:bg-rose-500/25 shadow-[0_2px_12px_rgba(244,63,94,0.12)]",
   },
   {
     id: "contact",
     icon: FiMail,
     label: "Contact",
     shortcut: "5",
+    lightClass:
+      "bg-[#FEFCE8] text-[#CA8A04] hover:bg-[#FEF9C3] border-amber-200/60 shadow-[0_2px_8px_rgba(202,138,4,0.08)]",
+    darkClass:
+      "bg-amber-500/15 text-amber-400 border-amber-500/25 hover:bg-amber-500/25 shadow-[0_2px_12px_rgba(245,158,11,0.12)]",
   },
   {
     id: "separator-1",
@@ -85,14 +99,18 @@ const DOCK_ITEMS = [
     icon: FiTerminal,
     label: "Terminal",
     shortcut: "6",
+    lightClass:
+      "bg-[#F0F9FF] text-[#0284C7] hover:bg-[#E0F2FE] border-sky-200/60 shadow-[0_2px_8px_rgba(2,132,199,0.08)]",
+    darkClass:
+      "bg-sky-500/15 text-sky-400 border-sky-500/25 hover:bg-sky-500/25 shadow-[0_2px_12px_rgba(14,165,233,0.12)]",
   },
 ];
 
 /* ==========================================================================
-   MAGNIFICATION
+   MAGNIFICATION HOOK
    ========================================================================== */
 
-function useMagnify(mouseX, ref, disabled = false) {
+function useMagnification(mouseX, ref, disabled = false) {
   const distance = useMotionValue(Infinity);
 
   useEffect(() => {
@@ -108,9 +126,7 @@ function useMagnify(mouseX, ref, disabled = false) {
       }
 
       const rect = ref.current.getBoundingClientRect();
-
       const center = rect.left + rect.width / 2;
-
       distance.set(Math.abs(x - center));
     });
 
@@ -120,191 +136,77 @@ function useMagnify(mouseX, ref, disabled = false) {
   const rawScale = useTransform(
     distance,
     [0, MAGNIFY_RADIUS],
-    [MAX_ICON_SIZE / ICON_SIZE, 1],
-    {
-      clamp: true,
-    }
+    [MAX_ICON_SCALE, 1],
+    { clamp: true }
   );
 
   const rawY = useTransform(
     distance,
     [0, MAGNIFY_RADIUS],
-    [-10, 0],
-    {
-      clamp: true,
-    }
+    [-8, 0],
+    { clamp: true }
   );
 
   return {
-    distance,
-    scale: useSpring(rawScale, SPRING),
-    y: useSpring(rawY, SPRING),
+    scale: useSpring(rawScale, SPRING_CONFIG),
+    y: useSpring(rawY, SPRING_CONFIG),
   };
-}
-
-/* ==========================================================================
-   ICON SHELL
-   ========================================================================== */
-
-function IconShell({
-  children,
-  active = false,
-  launched = false,
-}) {
-  return (
-    <motion.div
-      className="
-        relative
-        flex
-        shrink-0
-        items-center
-        justify-center
-        overflow-hidden
-        rounded-[13px]
-        border
-        border-[var(--dock-icon-border)]
-        bg-[var(--dock-icon-bg)]
-        text-[var(--dock-icon-fg)]
-        shadow-[0_2px_7px_var(--dock-icon-shadow)]
-        transition-[background-color,border-color,box-shadow]
-        duration-200
-      "
-      animate={{
-        boxShadow: active
-          ? "0 4px 13px var(--dock-icon-shadow-active)"
-          : launched
-            ? "0 4px 14px var(--dock-icon-shadow-active)"
-            : "0 2px 7px var(--dock-icon-shadow)",
-      }}
-      style={{
-        width: ICON_SIZE,
-        height: ICON_SIZE,
-      }}
-    >
-      <AnimatePresence>
-        {active && (
-          <motion.span
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 0.07,
-            }}
-            exit={{
-              opacity: 0,
-            }}
-            className="
-              pointer-events-none
-              absolute
-              inset-0
-              rounded-[13px]
-              bg-[var(--dock-active)]
-            "
-          />
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {launched && (
-          <motion.span
-            initial={{
-              opacity: 0,
-              scale: 0.4,
-            }}
-            animate={{
-              opacity: [0, 0.15, 0],
-              scale: [0.4, 1.4, 1.7],
-            }}
-            transition={{
-              duration: 0.65,
-              ease: "easeOut",
-            }}
-            className="
-              pointer-events-none
-              absolute
-              inset-0
-              rounded-full
-              border
-              border-[var(--dock-icon-fg)]
-            "
-          />
-        )}
-      </AnimatePresence>
-
-      <span className="relative z-[1]">
-        {children}
-      </span>
-    </motion.div>
-  );
 }
 
 /* ==========================================================================
    TOOLTIP
    ========================================================================== */
 
-function Tooltip({
+const DockTooltip = memo(function DockTooltip({
   label,
   shortcut,
   visible,
+  isLight,
 }) {
   return (
     <AnimatePresence>
       {visible && (
         <motion.div
-          initial={{
-            opacity: 0,
-            y: 5,
-            scale: 0.96,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-            scale: 1,
-          }}
-          exit={{
-            opacity: 0,
-            y: 3,
-            scale: 0.97,
-          }}
-          transition={{
-            duration: 0.13,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          className="
+          initial={{ opacity: 0, y: 5, scale: 0.94 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 3, scale: 0.96 }}
+          transition={{ duration: 0.14, ease: [0.16, 1, 0.3, 1] }}
+          className={`
             pointer-events-none
             absolute
-            bottom-[calc(100%+10px)]
+            bottom-[calc(100%+14px)]
             left-1/2
             z-[100000]
             -translate-x-1/2
             whitespace-nowrap
-            rounded-[8px]
+            rounded-[10px]
             border
-            border-[var(--tooltip-border)]
-            bg-[var(--tooltip-bg)]
             px-2.5
-            py-1.5
-            text-[11px]
-            font-medium
-            tracking-[-0.01em]
-            text-[var(--tooltip-fg)]
-            shadow-[0_7px_20px_var(--tooltip-shadow)]
-          "
+            py-1
+            backdrop-blur-md
+            transition-colors
+            duration-200
+            ${
+              isLight
+                ? "border-black/[0.08] bg-white/95 text-zinc-900 shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
+                : "border-white/[0.12] bg-[#1e1e21]/95 text-zinc-100 shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
+            }
+          `}
         >
-          <div className="flex items-center gap-2">
-            <span>{label}</span>
-
+          <div className="flex items-center gap-1.5">
+            <span className="text-[11px] font-medium tracking-tight">
+              {label}
+            </span>
             {shortcut && (
               <span
-                className="
-                  rounded-[4px]
-                  bg-[var(--tooltip-key-bg)]
-                  px-1
-                  py-[2px]
-                  text-[9px]
-                  font-medium
-                  text-[var(--tooltip-key-fg)]
-                "
+                className={`
+                  rounded-[4px] px-1 py-[1px] text-[9px] font-semibold
+                  ${
+                    isLight
+                      ? "bg-black/[0.06] text-zinc-700"
+                      : "bg-white/[0.12] text-zinc-300"
+                  }
+                `}
               >
                 Ctrl {shortcut}
               </span>
@@ -314,609 +216,333 @@ function Tooltip({
       )}
     </AnimatePresence>
   );
-}
+});
 
 /* ==========================================================================
-   RUNNING DOT
+   RUNNING DOT INDICATOR
    ========================================================================== */
 
-function RunningDot({
+const RunningIndicator = memo(function RunningIndicator({
   isOpen,
   isMinimized,
+  isTopActive,
+  isLight,
 }) {
   return (
-    <div className="mt-[5px] flex h-[3px] items-center justify-center">
+    <div className="flex h-[5px] w-full items-center justify-center pt-0.5">
       <AnimatePresence mode="wait">
         {isOpen && (
           <motion.span
-            key={isMinimized ? "minimized" : "active"}
-            initial={{
-              scale: 0,
-              opacity: 0,
-            }}
+            key={isMinimized ? "minimized" : isTopActive ? "top" : "open"}
+            initial={{ scale: 0, opacity: 0 }}
             animate={{
               scale: 1,
-              opacity: isMinimized ? 0.3 : 1,
+              opacity: isMinimized ? 0.35 : 1,
             }}
-            exit={{
-              scale: 0,
-              opacity: 0,
+            exit={{ scale: 0, opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            style={{
+              backgroundColor: isTopActive
+                ? "var(--color-accent, #0a84ff)"
+                : undefined,
+              boxShadow: isTopActive
+                ? "0 0 6px var(--color-accent, #0a84ff)"
+                : "none",
             }}
-            transition={{
-              duration: 0.15,
-            }}
-            className="
-              block
-              h-[3px]
-              w-[3px]
-              rounded-full
-              bg-[var(--dock-dot)]
-            "
+            className={`
+              block h-[3.5px] w-[3.5px] rounded-full transition-colors duration-200
+              ${
+                !isTopActive
+                  ? isLight
+                    ? "bg-zinc-800"
+                    : "bg-zinc-200"
+                  : ""
+              }
+            `}
           />
         )}
       </AnimatePresence>
     </div>
   );
-}
+});
 
 /* ==========================================================================
    SEPARATOR
    ========================================================================== */
 
-function Separator() {
+function DockSeparator({ isLight }) {
   return (
     <div
       aria-hidden="true"
-      className="
-        mx-1
-        mb-[10px]
-        h-[26px]
-        w-px
+      className={`
+        mx-0.5
+        mb-2
+        h-[24px]
+        w-[1px]
         shrink-0
-        self-end
-        bg-[var(--dock-separator)]
-      "
+        self-center
+        rounded-full
+        transition-colors
+        duration-200
+        ${isLight ? "bg-black/[0.10]" : "bg-white/[0.12]"}
+      `}
     />
   );
 }
 
 /* ==========================================================================
-   DOCK ICON
+   DOCK CIRCLE ICON ITEM
    ========================================================================== */
 
-function DockIcon({
+function DockCircleItem({
   id,
   icon: Icon,
   label,
   shortcut,
-  badge,
+  lightClass,
+  darkClass,
+  isLight,
   windows,
   toggleWindow,
   bringToFront,
   mouseX,
-  velocity,
   reducedMotion,
-  onRecent,
 }) {
   const ref = useRef(null);
+  const [hovered, setHovered] = useState(false);
+  const [bouncing, setBouncing] = useState(false);
 
-  const {
-    scale,
-    y,
-  } = useMagnify(
-    mouseX,
-    ref,
-    reducedMotion
-  );
+  const { scale, y } = useMagnification(mouseX, ref, reducedMotion);
 
-  const [hovered, setHovered] =
-    useState(false);
+  const windowItem = windows?.find((item) => item.id === id);
+  const isOpen = Boolean(windowItem?.isOpen);
+  const isMinimized = Boolean(windowItem?.isMinimized);
 
-  const [bouncing, setBouncing] =
-    useState(false);
-
-  const [launched, setLaunched] =
-    useState(false);
-
-  const windowItem = windows?.find(
-    (item) => item.id === id
-  );
-
-  const isOpen = Boolean(
-    windowItem?.isOpen
-  );
-
-  const isMinimized = Boolean(
-    windowItem?.isMinimized
-  );
-
-  const isActive =
-    isOpen && !isMinimized;
-
-  const handleOpen = useCallback(() => {
-    if (!windowItem) return;
-
-    if (!isOpen) {
-      toggleWindow(id, "isOpen", true);
-
-      bringToFront(id);
-
-      setLaunched(true);
-
-      setTimeout(() => {
-        setLaunched(false);
-      }, 700);
-
-      onRecent?.(id);
-
-      return;
-    }
-
-    if (isMinimized) {
-      toggleWindow(
-        id,
-        "isMinimized",
-        false
-      );
-
-      bringToFront(id);
-
-      onRecent?.(id);
-
-      return;
-    }
-
-    bringToFront(id);
-
-    onRecent?.(id);
-  }, [
-    windowItem,
-    isOpen,
-    isMinimized,
-    id,
-    toggleWindow,
-    bringToFront,
-    onRecent,
-  ]);
+  const isTopActive = useMemo(() => {
+    if (!isOpen || isMinimized) return false;
+    const activeWindows =
+      windows?.filter(
+        (w) => w.type === "window" && w.isOpen && !w.isMinimized
+      ) ?? [];
+    const maxZ = Math.max(...activeWindows.map((w) => w.zIndex ?? 0), 0);
+    return (windowItem?.zIndex ?? 0) === maxZ;
+  }, [windows, isOpen, isMinimized, windowItem?.zIndex]);
 
   const handleClick = useCallback(() => {
     if (!windowItem) return;
 
     setBouncing(true);
-
-    setTimeout(() => {
-      setBouncing(false);
-    }, 650);
+    setTimeout(() => setBouncing(false), 580);
 
     if (!isOpen) {
       toggleWindow(id, "isOpen", true);
       bringToFront(id);
-      setLaunched(true);
-
-      setTimeout(() => {
-        setLaunched(false);
-      }, 700);
-
-      onRecent?.(id);
-
       return;
     }
 
     if (isMinimized) {
-      toggleWindow(
-        id,
-        "isMinimized",
-        false
-      );
-
+      toggleWindow(id, "isMinimized", false);
       bringToFront(id);
-
-      onRecent?.(id);
-
       return;
     }
 
-    const activeWindows =
-      windows?.filter(
-        (item) =>
-          item.type === "window" &&
-          item.isOpen &&
-          !item.isMinimized
-      ) ?? [];
-
-    const maxZ = Math.max(
-      ...activeWindows.map(
-        (item) => item.zIndex ?? 0
-      ),
-      0
-    );
-
-    if (windowItem.zIndex === maxZ) {
-      toggleWindow(
-        id,
-        "isMinimized",
-        true
-      );
+    if (isTopActive) {
+      toggleWindow(id, "isMinimized", true);
     } else {
       bringToFront(id);
     }
-
-    onRecent?.(id);
   }, [
     windowItem,
     isOpen,
     isMinimized,
-    windows,
+    isTopActive,
     id,
     toggleWindow,
     bringToFront,
-    onRecent,
   ]);
 
   const handleMiddleClick = useCallback(
-    (event) => {
-      if (event.button !== 1) return;
-
-      event.preventDefault();
-
-      if (windowItem?.isOpen) {
-        toggleWindow(
-          id,
-          "isMinimized",
-          true
-        );
+    (e) => {
+      if (e.button === 1 && windowItem?.isOpen) {
+        e.preventDefault();
+        toggleWindow(id, "isMinimized", true);
       }
     },
-    [
-      windowItem,
-      id,
-      toggleWindow,
-    ]
+    [windowItem, id, toggleWindow]
   );
 
-  const handleContextMenu = useCallback(
-    (event) => {
-      event.preventDefault();
-    },
-    []
-  );
-
-  const tilt = useTransform(
-    mouseX,
-    (x) => {
-      if (
-        reducedMotion ||
-        !ref.current ||
-        !Number.isFinite(x)
-      ) {
-        return 0;
-      }
-
-      const rect =
-        ref.current.getBoundingClientRect();
-
-      const center =
-        rect.left + rect.width / 2;
-
-      const diff = x - center;
-
-      return Math.max(
-        -7,
-        Math.min(7, diff / 14)
-      );
-    }
-  );
-
-  if (
-    windowItem?.type === "widget"
-  ) {
+  if (windowItem?.type === "widget") {
     return null;
   }
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      className="
-        relative
-        flex
-        w-[60px]
-        shrink-0
-        flex-col
-        items-center
-        justify-end
-      "
-      style={{
-        rotateZ: tilt,
-      }}
-      onMouseEnter={() =>
-        setHovered(true)
-      }
-      onMouseLeave={() =>
-        setHovered(false)
-      }
+      className="relative flex w-[48px] shrink-0 flex-col items-center justify-end"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      <Tooltip
+      <DockTooltip
         label={label}
         shortcut={shortcut}
         visible={hovered}
+        isLight={isLight}
       />
 
       <motion.button
         type="button"
         aria-label={label}
-        aria-pressed={isActive}
-        style={{
-          scale,
-          y,
-        }}
+        onClick={handleClick}
+        onMouseDown={handleMiddleClick}
+        style={{ scale, y }}
         animate={
           bouncing && !reducedMotion
-            ? {
-              y: [
-                0,
-                -24,
-                0,
-                -10,
-                0,
-              ],
-            }
-            : {
-              y: 0,
-            }
+            ? { y: [0, -18, 0, -8, 0] }
+            : { y: 0 }
         }
         transition={
           bouncing
             ? {
-              duration: 0.65,
-              times: [
-                0,
-                0.3,
-                0.55,
-                0.8,
-                1,
-              ],
-              ease: "easeOut",
-            }
-            : SPRING
+                duration: 0.56,
+                times: [0, 0.28, 0.55, 0.78, 1],
+                ease: "easeOut",
+              }
+            : SPRING_CONFIG
         }
-        whileTap={
-          reducedMotion
-            ? undefined
-            : {
-              scale: 0.9,
-            }
-        }
-        className="
+        whileTap={reducedMotion ? undefined : { scale: 0.92 }}
+        className={`
+          group
+          relative
           flex
+          h-[46px]
+          w-[46px]
           cursor-pointer
           items-center
           justify-center
-          border-0
-          bg-transparent
-          p-0
+          rounded-full
+          border
+          ${isLight ? lightClass : darkClass}
           outline-none
+          transition-all
+          duration-200
           focus-visible:ring-2
-          focus-visible:ring-[var(--dock-focus)]
+          focus-visible:ring-[var(--color-accent,#0a84ff)]
           focus-visible:ring-offset-2
-          focus-visible:ring-offset-[var(--dock-bg)]
-        "
-        onClick={handleClick}
-        onMouseDown={handleMiddleClick}
-        onContextMenu={
-          handleContextMenu
-        }
+          ${
+            isLight
+              ? "focus-visible:ring-offset-white"
+              : "focus-visible:ring-offset-[#161618]"
+          }
+        `}
       >
-        <IconShell
-          active={isActive}
-          launched={launched}
-        >
-          <Icon
-            size={20}
-            strokeWidth={1.65}
-            aria-hidden="true"
-          />
-        </IconShell>
+        <Icon
+          size={21}
+          strokeWidth={2}
+          className="transition-transform duration-200 group-hover:scale-105"
+          aria-hidden="true"
+        />
       </motion.button>
 
-      <AnimatePresence>
-        {badge > 0 && (
-          <motion.span
-            initial={{
-              opacity: 0,
-              scale: 0.5,
-            }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-            }}
-            exit={{
-              opacity: 0,
-              scale: 0.5,
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 500,
-              damping: 25,
-            }}
-            className="
-              absolute
-              right-[3px]
-              top-[-3px]
-              z-20
-              flex
-              min-h-[18px]
-              min-w-[18px]
-              items-center
-              justify-center
-              rounded-full
-              border
-              border-[var(--badge-border)]
-              bg-[var(--badge-bg)]
-              px-1
-              text-[10px]
-              font-semibold
-              leading-none
-              text-[var(--badge-fg)]
-              shadow-[0_2px_7px_var(--badge-shadow)]
-            "
-          >
-            {badge}
-          </motion.span>
-        )}
-      </AnimatePresence>
-
-      <RunningDot
+      {/* Running App Dot */}
+      <RunningIndicator
         isOpen={isOpen}
         isMinimized={isMinimized}
+        isTopActive={isTopActive}
+        isLight={isLight}
       />
-    </motion.div>
+    </div>
   );
 }
 
 /* ==========================================================================
-   THEME BUTTON
+   THEME TOGGLE CIRCLE BUTTON
    ========================================================================== */
 
-function ThemeButton({
+function DockThemeCircleButton({
   isLight,
   onToggle,
   mouseX,
   reducedMotion,
 }) {
   const ref = useRef(null);
+  const [hovered, setHovered] = useState(false);
+  const { scale, y } = useMagnification(mouseX, ref, reducedMotion);
 
-  const {
-    scale,
-    y,
-  } = useMagnify(
-    mouseX,
-    ref,
-    reducedMotion
-  );
-
-  const [hovered, setHovered] =
-    useState(false);
-
-  const label = isLight
-    ? "Dark Mode"
-    : "Light Mode";
+  const label = isLight ? "Dark Mode" : "Light Mode";
 
   return (
     <div
       ref={ref}
-      className="
-        relative
-        flex
-        w-[60px]
-        shrink-0
-        flex-col
-        items-center
-        justify-end
-      "
-      onMouseEnter={() =>
-        setHovered(true)
-      }
-      onMouseLeave={() =>
-        setHovered(false)
-      }
+      className="relative flex w-[48px] shrink-0 flex-col items-center justify-end"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      <Tooltip
-        label={label}
-        visible={hovered}
-      />
+      <DockTooltip label={label} visible={hovered} isLight={isLight} />
 
       <motion.button
         type="button"
         aria-label={label}
-        style={{
-          scale,
-          y,
-        }}
-        whileTap={
-          reducedMotion
-            ? undefined
-            : {
-              scale: 0.9,
-            }
-        }
-        className="
+        onClick={onToggle}
+        style={{ scale, y }}
+        whileTap={reducedMotion ? undefined : { scale: 0.92 }}
+        className={`
+          group
+          relative
           flex
+          h-[46px]
+          w-[46px]
           cursor-pointer
           items-center
           justify-center
-          border-0
-          bg-transparent
-          p-0
+          rounded-full
+          border
           outline-none
+          transition-all
+          duration-200
           focus-visible:ring-2
-          focus-visible:ring-[var(--dock-focus)]
+          focus-visible:ring-[var(--color-accent,#0a84ff)]
           focus-visible:ring-offset-2
-          focus-visible:ring-offset-[var(--dock-bg)]
-        "
-        onClick={onToggle}
+          ${
+            isLight
+              ? "border-purple-200/60 bg-[#F5F3FF] text-[#7C3AED] shadow-[0_2px_8px_rgba(124,58,237,0.08)] hover:bg-[#EDE9FE] focus-visible:ring-offset-white"
+              : "border-purple-500/25 bg-purple-500/15 text-purple-400 shadow-[0_2px_12px_rgba(168,85,247,0.12)] hover:bg-purple-500/25 focus-visible:ring-offset-[#161618]"
+          }
+        `}
       >
-        <IconShell>
-          <AnimatePresence
-            mode="wait"
-            initial={false}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span
+            key={isLight ? "moon" : "sun"}
+            initial={
+              reducedMotion
+                ? false
+                : { opacity: 0, rotate: -45, scale: 0.65 }
+            }
+            animate={{ opacity: 1, rotate: 0, scale: 1 }}
+            exit={
+              reducedMotion
+                ? undefined
+                : { opacity: 0, rotate: 45, scale: 0.65 }
+            }
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="flex"
           >
-            <motion.span
-              key={
-                isLight
-                  ? "moon"
-                  : "sun"
-              }
-              initial={
-                reducedMotion
-                  ? false
-                  : {
-                    opacity: 0,
-                    rotate: -45,
-                    scale: 0.7,
-                  }
-              }
-              animate={{
-                opacity: 1,
-                rotate: 0,
-                scale: 1,
-              }}
-              exit={
-                reducedMotion
-                  ? undefined
-                  : {
-                    opacity: 0,
-                    rotate: 45,
-                    scale: 0.7,
-                  }
-              }
-              transition={{
-                duration: 0.18,
-              }}
-              className="flex"
-            >
-              {isLight ? (
-                <FiMoon
-                  size={20}
-                  strokeWidth={1.65}
-                />
-              ) : (
-                <FiSun
-                  size={20}
-                  strokeWidth={1.65}
-                />
-              )}
-            </motion.span>
-          </AnimatePresence>
-        </IconShell>
+            {isLight ? (
+              <FiMoon size={20} strokeWidth={2} />
+            ) : (
+              <FiSun size={20} strokeWidth={2} />
+            )}
+          </motion.span>
+        </AnimatePresence>
       </motion.button>
 
-      <div className="h-[8px]" />
+      {/* Spacer for bottom alignment */}
+      <div className="h-[5px] w-full pt-0.5" />
     </div>
   );
 }
 
 /* ==========================================================================
-   MAIN DOCK
+   MAIN DOCK COMPONENT
    ========================================================================== */
 
 export default function Dock({
@@ -924,773 +550,230 @@ export default function Dock({
   toggleWindow,
   bringToFront,
 }) {
-  const [isLight, setIsLight] =
-    useState(() => {
-      if (
-        typeof window ===
-        "undefined"
-      ) {
-        return false;
-      }
-
-      const saved =
-        localStorage.getItem(
-          "os-theme"
-        );
-
-      if (saved) {
-        return saved === "light";
-      }
-
-      return window.matchMedia(
-        "(prefers-color-scheme: light)"
-      ).matches;
-    });
-
-  const [
-    dockVisible,
-    setDockVisible,
-  ] = useState(true);
-
-  const [
-    dockLocked,
-    setDockLocked,
-  ] = useState(() => {
-    if (
-      typeof window ===
-      "undefined"
-    ) {
-      return false;
-    }
-
+  const [isLight, setIsLight] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const saved = localStorage.getItem("os-theme");
+    if (saved) return saved === "light";
     return (
-      localStorage.getItem(
-        "dock-locked"
-      ) === "true"
+      document.documentElement.classList.contains("light-theme") ||
+      document.body.classList.contains("light-theme")
     );
   });
 
-  const [
-    recentApps,
-    setRecentApps,
-  ] = useState([]);
-
-  const mouseX =
-    useMotionValue(Infinity);
-
-  const velocity =
-    useMotionValue(0);
-
-  const lastMouseX =
-    useRef(null);
-
-  const lastMouseTime =
-    useRef(null);
-
-  const hideTimer =
-    useRef(null);
+  const mouseX = useMotionValue(Infinity);
 
   const reducedMotion =
-    typeof window !==
-    "undefined" &&
-    window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ------------------------------------------------------------------------
-     THEME
+     THEME SYNC
      ------------------------------------------------------------------------ */
 
   useEffect(() => {
-    document.documentElement.classList.toggle(
-      "light-theme",
-      isLight
-    );
-
-    document.body.classList.toggle(
-      "light-theme",
-      isLight
-    );
+    document.documentElement.classList.toggle("light-theme", isLight);
+    document.body.classList.toggle("light-theme", isLight);
   }, [isLight]);
 
   /* ------------------------------------------------------------------------
-     DOCK LOCK
+     OBSERVE EXTERNAL THEME CHANGES (e.g. SmallDisplay, ThemeWidget)
      ------------------------------------------------------------------------ */
 
   useEffect(() => {
-    localStorage.setItem(
-      "dock-locked",
-      String(dockLocked)
-    );
-  }, [dockLocked]);
+    const observer = new MutationObserver(() => {
+      const activeIsLight =
+        document.documentElement.classList.contains("light-theme") ||
+        document.body.classList.contains("light-theme");
+      setIsLight((prev) => (prev !== activeIsLight ? activeIsLight : prev));
+    });
 
-  /* ------------------------------------------------------------------------
-     RECENT APPS
-     ------------------------------------------------------------------------ */
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
 
-  const markRecent = useCallback(
-    (id) => {
-      setRecentApps((current) => [
-        id,
-        ...current.filter(
-          (item) => item !== id
-        ),
-      ].slice(0, 4));
-    },
-    []
-  );
-
-  /* ------------------------------------------------------------------------
-     MOUSE PHYSICS
-     ------------------------------------------------------------------------ */
-
-  const handleMouseMove =
-    useCallback(
-      (event) => {
-        const x =
-          event.clientX;
-
-        const now =
-          performance.now();
-
-        if (
-          lastMouseX.current !==
-          null &&
-          lastMouseTime.current !==
-          null
-        ) {
-          const dx =
-            x -
-            lastMouseX.current;
-
-          const dt =
-            Math.max(
-              now -
-              lastMouseTime.current,
-              1
-            );
-
-          const nextVelocity =
-            Math.min(
-              Math.abs(
-                dx / dt
-              ) * 10,
-              10
-            );
-
-          velocity.set(
-            nextVelocity
-          );
-        }
-
-        lastMouseX.current =
-          x;
-
-        lastMouseTime.current =
-          now;
-
-        mouseX.set(x);
-
-        setDockVisible(true);
-
-        if (hideTimer.current) {
-          clearTimeout(
-            hideTimer.current
-          );
-        }
-
-        if (!dockLocked) {
-          hideTimer.current =
-            setTimeout(() => {
-              setDockVisible(false);
-            }, 2200);
-        }
-      },
-      [
-        mouseX,
-        velocity,
-        dockLocked,
-      ]
-    );
-
-  const handleMouseLeave =
-    useCallback(() => {
-      mouseX.set(Infinity);
-      velocity.set(0);
-
-      lastMouseX.current =
-        null;
-
-      lastMouseTime.current =
-        null;
-
-      if (!dockLocked) {
-        hideTimer.current =
-          setTimeout(() => {
-            setDockVisible(false);
-          }, 900);
-      }
-    }, [
-      mouseX,
-      velocity,
-      dockLocked,
-    ]);
-
-  /* ------------------------------------------------------------------------
-     EDGE REVEAL
-     ------------------------------------------------------------------------ */
-
-  useEffect(() => {
-    const handlePointerMove =
-      (event) => {
-        const nearBottom =
-          window.innerHeight -
-          event.clientY <
-          55;
-
-        if (nearBottom) {
-          setDockVisible(true);
-
-          if (
-            hideTimer.current
-          ) {
-            clearTimeout(
-              hideTimer.current
-            );
-          }
-        }
-      };
-
-    window.addEventListener(
-      "pointermove",
-      handlePointerMove,
-      {
-        passive: true,
-      }
-    );
-
-    return () => {
-      window.removeEventListener(
-        "pointermove",
-        handlePointerMove
-      );
-    };
+    return () => observer.disconnect();
   }, []);
 
   /* ------------------------------------------------------------------------
-     KEYBOARD SHORTCUTS
+     MOUSE TRACKING
+     ------------------------------------------------------------------------ */
+
+  const handleMouseMove = useCallback(
+    (e) => {
+      mouseX.set(e.clientX);
+    },
+    [mouseX]
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    mouseX.set(Infinity);
+  }, [mouseX]);
+
+  /* ------------------------------------------------------------------------
+     KEYBOARD SHORTCUTS (Ctrl / Cmd + 1..6)
      ------------------------------------------------------------------------ */
 
   useEffect(() => {
-    const handleKeyDown =
-      (event) => {
-        if (
-          event.metaKey ||
-          event.ctrlKey
-        ) {
-          const number =
-            Number(event.key);
+    const handleKeyDown = (event) => {
+      if (event.metaKey || event.ctrlKey) {
+        const num = Number(event.key);
+        if (num >= 1 && num <= 6) {
+          event.preventDefault();
+          const items = DOCK_ITEMS.filter(
+            (entry) => entry.type !== "separator"
+          );
+          const item = items[num - 1];
+          if (!item) return;
 
-          if (
-            number >= 1 &&
-            number <= 6
-          ) {
-            event.preventDefault();
+          const win = windows.find((entry) => entry.id === item.id);
+          if (!win) return;
 
-            const item =
-              DOCK_ITEMS.filter(
-                (entry) =>
-                  entry.type !==
-                  "separator"
-              )[number - 1];
-
-            if (!item) return;
-
-            const win =
-              windows.find(
-                (entry) =>
-                  entry.id ===
-                  item.id
-              );
-
-            if (!win) return;
-
-            if (!win.isOpen) {
-              toggleWindow(
-                item.id,
-                "isOpen",
-                true
-              );
-
-              bringToFront(
-                item.id
-              );
-            } else if (
-              win.isMinimized
-            ) {
-              toggleWindow(
-                item.id,
-                "isMinimized",
-                false
-              );
-
-              bringToFront(
-                item.id
-              );
-            } else {
-              bringToFront(
-                item.id
-              );
-            }
-
-            markRecent(item.id);
+          if (!win.isOpen) {
+            toggleWindow(item.id, "isOpen", true);
+            bringToFront(item.id);
+          } else if (win.isMinimized) {
+            toggleWindow(item.id, "isMinimized", false);
+            bringToFront(item.id);
+          } else {
+            bringToFront(item.id);
           }
         }
+      }
+    };
 
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [windows, toggleWindow, bringToFront]);
+
+  /* ------------------------------------------------------------------------
+     THEME TOGGLE HANDLER
+     ------------------------------------------------------------------------ */
+
+  const handleThemeToggle = useCallback(
+    (event) => {
+      const nextLight = !isLight;
+
+      const applyTheme = () => {
+        document.documentElement.classList.toggle("light-theme", nextLight);
+        document.body.classList.toggle("light-theme", nextLight);
+        localStorage.setItem("os-theme", nextLight ? "light" : "dark");
+        setIsLight(nextLight);
       };
 
-    window.addEventListener(
-      "keydown",
-      handleKeyDown
-    );
+      if (
+        reducedMotion ||
+        typeof document.startViewTransition !== "function"
+      ) {
+        applyTheme();
+        return;
+      }
 
-    return () => {
-      window.removeEventListener(
-        "keydown",
-        handleKeyDown
+      const x = event?.clientX ?? window.innerWidth / 2;
+      const y = event?.clientY ?? window.innerHeight - 30;
+      const radius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
       );
-    };
-  }, [
-    windows,
-    toggleWindow,
-    bringToFront,
-    markRecent,
-  ]);
 
-  /* ------------------------------------------------------------------------
-     THEME
-     ------------------------------------------------------------------------ */
+      const transition = document.startViewTransition(applyTheme);
 
-  const handleThemeToggle =
-    useCallback(
-      (event) => {
-        const nextLight =
-          !isLight;
-
-        const applyTheme =
-          () => {
-            document.documentElement.classList.toggle(
-              "light-theme",
-              nextLight
-            );
-
-            document.body.classList.toggle(
-              "light-theme",
-              nextLight
-            );
-
-            localStorage.setItem(
-              "os-theme",
-              nextLight
-                ? "light"
-                : "dark"
-            );
-
-            setIsLight(
-              nextLight
-            );
-          };
-
-        if (
-          reducedMotion ||
-          typeof document.startViewTransition !==
-          "function"
-        ) {
-          applyTheme();
-          return;
-        }
-
-        const x =
-          event.clientX;
-
-        const y =
-          event.clientY;
-
-        const radius =
-          Math.hypot(
-            Math.max(
-              x,
-              window.innerWidth -
-              x
-            ),
-            Math.max(
-              y,
-              window.innerHeight -
-              y
-            )
+      transition.ready
+        .then(() => {
+          document.documentElement.animate(
+            {
+              clipPath: [
+                `circle(0px at ${x}px ${y}px)`,
+                `circle(${radius}px at ${x}px ${y}px)`,
+              ],
+            },
+            {
+              duration: 450,
+              easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+              pseudoElement: "::view-transition-new(root)",
+            }
           );
-
-        const transition =
-          document.startViewTransition(
-            applyTheme
-          );
-
-        transition.ready
-          .then(() => {
-            document.documentElement.animate(
-              {
-                clipPath: [
-                  `circle(0px at ${x}px ${y}px)`,
-                  `circle(${radius}px at ${x}px ${y}px)`,
-                ],
-              },
-              {
-                duration: 460,
-                easing:
-                  "cubic-bezier(0.22,1,0.36,1)",
-                pseudoElement:
-                  "::view-transition-new(root)",
-              }
-            );
-          })
-          .catch(() => { });
-      },
-      [
-        isLight,
-        reducedMotion,
-      ]
-    );
-
-  /* ------------------------------------------------------------------------
-     SHARED PROPS
-     ------------------------------------------------------------------------ */
-
-  const themeVariables =
-    useMemo(
-      () => ({
-        "--dock-bg": isLight
-          ? "#f7f7f7"
-          : "#1c1c1e",
-
-        "--dock-border": isLight
-          ? "#dddddd"
-          : "#363638",
-
-        "--dock-shadow": isLight
-          ? "rgba(0,0,0,0.14)"
-          : "rgba(0,0,0,0.44)",
-
-        "--dock-icon-bg": isLight
-          ? "#eeeeee"
-          : "#29292b",
-
-        "--dock-icon-fg": isLight
-          ? "#171717"
-          : "#f5f5f5",
-
-        "--dock-icon-border":
-          isLight
-            ? "#d9d9d9"
-            : "#3a3a3c",
-
-        "--dock-icon-shadow":
-          isLight
-            ? "rgba(0,0,0,0.055)"
-            : "rgba(0,0,0,0.22)",
-
-        "--dock-icon-shadow-active":
-          isLight
-            ? "rgba(0,0,0,0.12)"
-            : "rgba(0,0,0,0.36)",
-
-        "--dock-active": isLight
-          ? "#000000"
-          : "#ffffff",
-
-        "--dock-separator":
-          isLight
-            ? "#d0d0d0"
-            : "#414143",
-
-        "--dock-dot": isLight
-          ? "#161616"
-          : "#f2f2f2",
-
-        "--dock-focus": isLight
-          ? "#707070"
-          : "#aaaaaa",
-
-        "--tooltip-bg": isLight
-          ? "#ffffff"
-          : "#252527",
-
-        "--tooltip-fg": isLight
-          ? "#161616"
-          : "#f5f5f5",
-
-        "--tooltip-border":
-          isLight
-            ? "#dedede"
-            : "#3a3a3c",
-
-        "--tooltip-shadow":
-          isLight
-            ? "rgba(0,0,0,0.13)"
-            : "rgba(0,0,0,0.32)",
-
-        "--tooltip-key-bg":
-          isLight
-            ? "#eeeeee"
-            : "#343436",
-
-        "--tooltip-key-fg":
-          isLight
-            ? "#555555"
-            : "#bbbbbb",
-
-        "--badge-bg": isLight
-          ? "#1d1d1f"
-          : "#f5f5f5",
-
-        "--badge-fg": isLight
-          ? "#ffffff"
-          : "#171717",
-
-        "--badge-border":
-          isLight
-            ? "#ffffff"
-            : "#1d1d1f",
-
-        "--badge-shadow":
-          isLight
-            ? "rgba(0,0,0,0.13)"
-            : "rgba(0,0,0,0.25)",
-
-        "--menu-bg": isLight
-          ? "#ffffff"
-          : "#252527",
-
-        "--menu-border":
-          isLight
-            ? "#dedede"
-            : "#3a3a3c",
-
-        "--menu-shadow":
-          isLight
-            ? "rgba(0,0,0,0.18)"
-            : "rgba(0,0,0,0.4)",
-
-        "--menu-fg": isLight
-          ? "#202020"
-          : "#f2f2f2",
-
-        "--menu-muted":
-          isLight
-            ? "#888888"
-            : "#8e8e93",
-
-        "--menu-hover":
-          isLight
-            ? "#eeeeee"
-            : "#343436",
-
-        "--menu-divider":
-          isLight
-            ? "#e5e5e5"
-            : "#3a3a3c",
-
-        "--menu-danger":
-          isLight
-            ? "#c62828"
-            : "#ff6b6b",
-
-        "--menu-danger-bg":
-          isLight
-            ? "#fff0f0"
-            : "#3b2525",
-      }),
-      [isLight]
-    );
+        })
+        .catch(() => {});
+    },
+    [isLight, reducedMotion]
+  );
 
   /* ------------------------------------------------------------------------
      RENDER
      ------------------------------------------------------------------------ */
 
   return (
-    <>
-      <motion.div
-        initial={false}
-        animate={{
-          y: dockVisible
-            ? 0
-            : 75,
-          opacity: dockVisible
-            ? 1
-            : 0,
-          scale: dockVisible
-            ? 1
-            : 0.96,
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 340,
-          damping: 30,
-          mass: 0.75,
-        }}
-        className="
-          pointer-events-none
-          fixed
-          bottom-3
-          left-1/2
-          z-[99999]
-          -translate-x-1/2
-          sm:bottom-4
-        "
+    <div
+      className="
+        pointer-events-none
+        fixed
+        bottom-3.5
+        left-1/2
+        z-[99999]
+        -translate-x-1/2
+        sm:bottom-4.5
+      "
+    >
+      <nav
+        aria-label="Application Dock"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className={`
+          pointer-events-auto
+          relative
+          flex
+          max-w-[calc(100vw-16px)]
+          items-end
+          gap-2.5
+          overflow-visible
+          rounded-[30px]
+          border
+          px-3.5
+          pb-2
+          pt-2.5
+          backdrop-blur-2xl
+          transition-all
+          duration-300
+          sm:gap-3
+          sm:px-4
+          sm:pb-2
+          sm:pt-2.5
+          ${
+            isLight
+              ? "border-black/[0.08] bg-white/85 shadow-[0_16px_44px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.03)]"
+              : "border-white/[0.10] bg-[#161618]/85 shadow-[0_20px_50px_rgba(0,0,0,0.55),0_1px_1px_rgba(255,255,255,0.08)_inset]"
+          }
+        `}
       >
-        <motion.div
-          onMouseMove={
-            handleMouseMove
+        {DOCK_ITEMS.map((item) => {
+          if (item.type === "separator") {
+            return <DockSeparator key={item.id} isLight={isLight} />;
           }
-          onMouseLeave={
-            handleMouseLeave
-          }
-          className="
-            pointer-events-auto
-            relative
-            flex
-            max-w-[calc(100vw-16px)]
-            items-end
-            overflow-visible
-            rounded-[17px]
-            border
-            border-[var(--dock-border)]
-            bg-[var(--dock-bg)]
-            px-1
-            pb-1
-            pt-1
-            shadow-[0_10px_30px_var(--dock-shadow)]
-            transition-[background-color,border-color,box-shadow]
-            duration-300
-            sm:px-1.5
-            sm:pb-1
-            sm:pt-1.5
-          "
-          style={themeVariables}
-        >
-          {DOCK_ITEMS.map(
-            (item) => {
-              if (
-                item.type ===
-                "separator"
-              ) {
-                return (
-                  <Separator
-                    key={item.id}
-                  />
-                );
-              }
 
-              const index =
-                DOCK_ITEMS.findIndex(
-                  (entry) =>
-                    entry.id ===
-                    item.id
-                );
+          return (
+            <DockCircleItem
+              key={item.id}
+              {...item}
+              isLight={isLight}
+              windows={windows}
+              toggleWindow={toggleWindow}
+              bringToFront={bringToFront}
+              mouseX={mouseX}
+              reducedMotion={reducedMotion}
+            />
+          );
+        })}
 
-              const actualShortcut =
-                item.shortcut ??
-                String(index + 1);
+        <DockSeparator isLight={isLight} />
 
-              return (
-                <DockIcon
-                  key={item.id}
-                  {...item}
-                  shortcut={
-                    actualShortcut
-                  }
-                  {...{
-                    windows,
-                    toggleWindow,
-                    bringToFront,
-                  }}
-                  mouseX={mouseX}
-                  velocity={
-                    velocity
-                  }
-                  reducedMotion={
-                    reducedMotion
-                  }
-                  onRecent={
-                    markRecent
-                  }
-                />
-              );
-            }
-          )}
-
-          <Separator />
-
-          <ThemeButton
-            isLight={isLight}
-            onToggle={
-              handleThemeToggle
-            }
-            mouseX={mouseX}
-            reducedMotion={
-              reducedMotion
-            }
-          />
-
-          <button
-            type="button"
-            aria-label={
-              dockLocked
-                ? "Unlock dock"
-                : "Lock dock"
-            }
-            title={
-              dockLocked
-                ? "Unlock dock"
-                : "Lock dock"
-            }
-            onClick={() =>
-              setDockLocked(
-                (value) =>
-                  !value
-              )
-            }
-            className="
-              absolute
-              -right-2
-              -top-2
-              z-30
-              flex
-              h-5
-              w-5
-              items-center
-              justify-center
-              rounded-full
-              border
-              border-[var(--dock-border)]
-              bg-[var(--dock-bg)]
-              text-[var(--dock-icon-fg)]
-              opacity-0
-              shadow-[0_3px_8px_var(--dock-shadow)]
-              transition-opacity
-              duration-200
-              hover:opacity-100
-              focus:opacity-100
-            "
-          >
-            {dockLocked ? (
-              <FiLock size={9} />
-            ) : (
-              <FiUnlock size={9} />
-            )}
-          </button>
-        </motion.div>
-      </motion.div>
-
-    </>
+        <DockThemeCircleButton
+          isLight={isLight}
+          onToggle={handleThemeToggle}
+          mouseX={mouseX}
+          reducedMotion={reducedMotion}
+        />
+      </nav>
+    </div>
   );
 }
