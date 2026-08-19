@@ -23,12 +23,13 @@ const WALLPAPERS = [
 ];
 
 const ACCENT_COLORS = [
-  { id: "blue", value: "#0A84FF", name: "Blue" },
-  { id: "cyan", value: "#64D2FF", name: "Cyan" },
-  { id: "emerald", value: "#30D158", name: "Emerald" },
-  { id: "amber", value: "#FF9F0A", name: "Amber" },
-  { id: "crimson", value: "#FF453A", name: "Crimson" },
   { id: "violet", value: "#BF5AF2", name: "Violet" },
+  { id: "indigo", value: "#5E5CE6", name: "Indigo" },
+  { id: "blue", value: "#0A84FF", name: "Blue" },
+  { id: "green", value: "#30D158", name: "Green" },
+  { id: "yellow", value: "#FFD60A", name: "Yellow" },
+  { id: "orange", value: "#FF9F0A", name: "Orange" },
+  { id: "red", value: "#FF453A", name: "Red" },
 ];
 
 // ============================================================
@@ -255,7 +256,7 @@ const AccentButton = memo(({ color, isSelected, onSelect }) => (
     title={color.name}
     style={{ backgroundColor: color.value }}
     whileHover={{
-      scale: 1.12,
+      scale: 1.14,
       y: -1,
     }}
     whileTap={{
@@ -269,8 +270,8 @@ const AccentButton = memo(({ color, isSelected, onSelect }) => (
     className={`
       relative
       flex
-      h-[25px]
-      w-[25px]
+      h-[24px]
+      w-[24px]
       shrink-0
       items-center
       justify-center
@@ -289,7 +290,7 @@ const AccentButton = memo(({ color, isSelected, onSelect }) => (
 
       ${isSelected
         ? "opacity-100 ring-2 ring-[var(--color-text)] ring-offset-2"
-        : "opacity-65 hover:opacity-100"
+        : "opacity-75 hover:opacity-100"
       }
     `}
   >
@@ -325,7 +326,7 @@ const AccentButton = memo(({ color, isSelected, onSelect }) => (
         >
           <Check
             size={11}
-            className="text-white stroke-[3.5]"
+            className="text-white stroke-[3.5] drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]"
           />
         </motion.span>
       )}
@@ -371,13 +372,16 @@ export default function ThemeWidget({
   positionStyle,
 }) {
   const [activeAccent, setActiveAccent] = useState(() => {
-    if (typeof window === "undefined") return "blue";
+    if (typeof window === "undefined") return "violet";
 
     const saved = localStorage.getItem("os-accent");
 
     return (
-      ACCENT_COLORS.find((c) => c.value === saved)?.id ??
-      "blue"
+      ACCENT_COLORS.find(
+        (c) =>
+          c.value.toLowerCase() === saved?.toLowerCase() ||
+          c.id.toLowerCase() === saved?.toLowerCase()
+      )?.id ?? "violet"
     );
   });
 
@@ -569,7 +573,7 @@ export default function ThemeWidget({
                 flex
                 min-h-[30px]
                 items-center
-                gap-3
+                justify-between
               "
               onPointerDown={(e) =>
                 e.stopPropagation()
