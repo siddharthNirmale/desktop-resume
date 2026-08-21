@@ -1,10 +1,32 @@
 import agent from "../assets/project/agent.png";
 import thumbmax from "../assets/project/Thumbmax.png";
 import portfolio from "../assets/project/Portfolio.png";
+import lekha from "../assets/project/lekha.png";
+import lekhaScratchpad from "../assets/project/lekha-scratchpad.png";
+import lekhaReceipt from "../assets/project/lekha-receipt.png";
 
 const projects = [
   {
     id: 1,
+    year: "2026",
+    title: "Lekha",
+    badge: "Original Design",
+    type: "Original Design",
+    description:
+      "An original landing page design for a premium pen brand, focused on tactile interactions, product storytelling, and an editorial-inspired visual experience.",
+    tech: "React 19 • TypeScript • Tailwind CSS v4 • Vite • Framer Motion • HTML5 Canvas • Web Audio API • Rough.js • Lenis • Lucide React",
+    bullets: [
+      "Designed and developed an editorial landing page with scroll-driven pen disassembly animations and immersive product storytelling.",
+      "Engineered an interactive ink scratchpad featuring procedural drawing effects built with HTML5 Canvas and Rough.js.",
+      "Implemented realistic tactile sound interactions with Web Audio API and ultra-smooth momentum scrolling powered by Lenis.",
+      "Crafted responsive micro-interactions and high-performance animations using Framer Motion and Tailwind CSS v4.",
+    ],
+    image: lekha,
+    images: [lekha, lekhaScratchpad, lekhaReceipt],
+    live: "https://lekha-lilac.vercel.app/",
+  },
+  {
+    id: 2,
     year: "2026",
     title: "Desktop Style Portfolio",
     tech: "React.js • Vite • Tailwind CSS • Framer Motion",
@@ -19,7 +41,7 @@ const projects = [
     live: "https://siddharthn-portfolio.vercel.app/",
   },
   {
-    id: 2,
+    id: 3,
     year: "2026",
     title: "AI Refund Agent (Preview)",
     tech: "Next.js • TypeScript • Groq AI • Tailwind CSS",
@@ -33,7 +55,7 @@ const projects = [
     live: "https://refundpilot-preview.vercel.app/",
   },
   {
-    id: 3,
+    id: 4,
     year: "2025",
     title: "Thumbmax",
     tech: "Node.js • Express.js • Gemini API • Cloudinary",
@@ -49,3 +71,4 @@ const projects = [
 ];
 
 export default projects;
+

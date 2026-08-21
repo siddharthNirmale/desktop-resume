@@ -756,9 +756,31 @@ function ProjectCard({
             {String(index + 1).padStart(2, "0")}
           </div>
 
-          {/* Featured */}
+          {/* Badge / Type on Image */}
+          {(project.badge || project.type) && (
+            <div
+              className="
+                absolute bottom-3 left-3 z-[3]
+                flex items-center gap-1.5
+                rounded-full
+                border border-white/20
+                bg-black/55
+                px-2.5 py-1
+                text-[8px]
+                font-semibold
+                uppercase
+                tracking-[0.08em]
+                text-white
+                backdrop-blur-md
+              "
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
+              {project.badge || project.type}
+            </div>
+          )}
 
-          {project.featured && (
+          {/* Featured */}
+          {project.featured && !project.badge && !project.type && (
             <div
               className="
                 absolute bottom-3 left-3 z-[3]
@@ -829,9 +851,9 @@ function ProjectCard({
                 {project.title}
               </h2>
 
-              {project.status && (
+              {(project.badge || project.type || project.status) && (
                 <StatusBadge
-                  status={project.status}
+                  status={project.badge || project.type || project.status}
                 />
               )}
             </div>
@@ -976,8 +998,25 @@ function ProjectPreview({
   onPrevious,
   onCopy,
 }) {
-  const [imageError, setImageError] =
-    useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [activeImgIndex, setActiveImgIndex] = useState(0);
+
+  const images = useMemo(() => {
+    if (Array.isArray(project.images) && project.images.length > 0) {
+      return project.images;
+    }
+    if (project.image) {
+      return [project.image];
+    }
+    return [];
+  }, [project]);
+
+  useEffect(() => {
+    setActiveImgIndex(0);
+    setImageError(false);
+  }, [project]);
+
+  const currentImage = images[activeImgIndex] || project.image;
 
   return (
     <motion.div
@@ -1138,9 +1177,10 @@ function ProjectPreview({
               sm:aspect-[16/8]
             "
           >
-            {project.image && !imageError ? (
+            {currentImage && !imageError ? (
               <img
-                src={project.image}
+                key={currentImage}
+                src={currentImage}
                 alt={
                   project.title ||
                   "Project preview"
@@ -1152,6 +1192,8 @@ function ProjectPreview({
                   h-full
                   w-full
                   object-cover
+                  transition-all
+                  duration-300
                 "
               />
             ) : (
@@ -1161,6 +1203,25 @@ function ProjectPreview({
               />
             )}
           </div>
+
+          {/* Multiple Image Gallery Navigation */}
+          {images.length > 1 && (
+            <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 rounded-full border border-white/20 bg-black/60 px-2.5 py-1.5 backdrop-blur-md">
+              {images.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setActiveImgIndex(i)}
+                  className={`h-2 rounded-full transition-all duration-200 ${
+                    activeImgIndex === i
+                      ? "w-5 bg-[var(--color-accent)]"
+                      : "w-2 bg-white/50 hover:bg-white/90"
+                  }`}
+                  aria-label={`View screenshot ${i + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* DETAILS */}
@@ -1200,9 +1261,9 @@ function ProjectPreview({
                   <StatusBadge status="Featured" />
                 )}
 
-                {project.status && (
+                {(project.badge || project.type || project.status) && (
                   <StatusBadge
-                    status={project.status}
+                    status={project.badge || project.type || project.status}
                   />
                 )}
               </div>
@@ -1238,14 +1299,21 @@ function ProjectPreview({
             )}
           </div>
 
-          {/* DESCRIPTION */}
+          {/* EDITORIAL DESCRIPTION */}
+          {project.description && (
+            <p className="mt-3.5 text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+              {project.description}
+            </p>
+          )}
+
+          {/* DESCRIPTION BULLETS */}
 
           {project.bullets?.length > 0 && (
-            <ul className="mt-5 space-y-2">
+            <ul className="mt-4 space-y-2">
               {project.bullets.map(
-                (point, index) => (
+                (point, idx) => (
                   <li
-                    key={index}
+                    key={idx}
                     className="
                       flex items-start gap-2.5
                       text-[12px]
@@ -1484,21 +1552,34 @@ function ViewButton({
 ═══════════════════════════════════════════════ */
 
 function StatusBadge({ status }) {
+  const isOriginal = String(status || "").toLowerCase().includes("original");
+
   return (
     <span
-      className="
+      className={`
         inline-flex
         items-center
-        gap-1
+        gap-1.5
         rounded-full
-        bg-[var(--color-surface-inactive)]
-        px-1.5 py-0.5
+        px-2 py-0.5
         text-[8px]
         font-semibold
         uppercase
         tracking-[0.06em]
-        text-[var(--color-text-tertiary)]
-      "
+        transition-colors
+        ${isOriginal
+          ? `
+              border
+              border-[var(--color-accent)]/30
+              bg-[var(--color-accent)]/10
+              text-[var(--color-accent)]
+            `
+          : `
+              bg-[var(--color-surface-inactive)]
+              text-[var(--color-text-tertiary)]
+            `
+        }
+      `}
     >
       <span
         className="

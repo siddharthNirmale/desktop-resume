@@ -376,13 +376,24 @@ export default function TerminalPortfolio() {
 
                 <div className="p-5 sm:p-6 flex-1 flex flex-col">
                   <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-4">
-                    <h3 className={`text-[16px] font-heading font-semibold tracking-tight flex items-center gap-2 ${isDark ? "text-white" : "text-zinc-900"}`}>
-                      {project.title}
-                      <FiArrowUpRight className={`opacity-0 group-hover:opacity-100 transition-all duration-300 ${isDark ? "text-green-400" : "text-green-600"}`} size={16} />
-                    </h3>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className={`text-[16px] font-heading font-semibold tracking-tight flex items-center gap-2 ${isDark ? "text-white" : "text-zinc-900"}`}>
+                        {project.title}
+                        <FiArrowUpRight className={`opacity-0 group-hover:opacity-100 transition-all duration-300 ${isDark ? "text-green-400" : "text-green-600"}`} size={16} />
+                      </h3>
+                      {(project.badge || project.type) && (
+                        <span className={`text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${isDark ? "bg-amber-400/10 text-amber-400 border-amber-400/20" : "bg-amber-50 text-amber-700 border-amber-200"}`}>
+                          {project.badge || project.type}
+                        </span>
+                      )}
+                    </div>
                     <div className="flex items-center gap-2">
-                      <LinkBadge icon={<FiExternalLink size={12} />} text="Live" href={project.live} isDark={isDark} />
-                      <LinkBadge icon={<FaGithub size={12} />} text="Repo" href={project.github} isDark={isDark} />
+                      {project.live && (
+                        <LinkBadge icon={<FiExternalLink size={12} />} text="Live" href={project.live} isDark={isDark} />
+                      )}
+                      {project.github && (
+                        <LinkBadge icon={<FaGithub size={12} />} text="Repo" href={project.github} isDark={isDark} />
+                      )}
                     </div>
                   </div>
 

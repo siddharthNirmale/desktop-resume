@@ -332,6 +332,12 @@ export default function Terminal() {
                           {proj.title}
                         </h3>
 
+                        {(proj.badge || proj.type) && (
+                          <span className="shrink-0 text-[9px] font-medium text-[var(--color-accent)]">
+                            [{proj.badge || proj.type}]
+                          </span>
+                        )}
+
                         <span className="shrink-0 text-[9px] text-[var(--color-text-tertiary)]">
                           {proj.year}
                         </span>

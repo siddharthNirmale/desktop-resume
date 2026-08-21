@@ -316,7 +316,7 @@ export default function ResumeSection() {
 
           <StatCard
             label="Projects"
-            value="03"
+            value={String(projects.length).padStart(2, "0")}
             emphasis
           />
 
@@ -588,17 +588,41 @@ function ProjectPanel({ project }) {
         "
       >
         <div className="min-w-0">
-          <h4
-            className="
-              text-[16px]
-              font-bold
-              leading-tight
-              tracking-[-0.02em]
-              text-[var(--color-text)]
-            "
-          >
-            {project.title}
-          </h4>
+          <div className="flex flex-wrap items-center gap-2">
+            <h4
+              className="
+                text-[16px]
+                font-bold
+                leading-tight
+                tracking-[-0.02em]
+                text-[var(--color-text)]
+              "
+            >
+              {project.title}
+            </h4>
+
+            {(project.badge || project.type) && (
+              <span
+                className="
+                  inline-flex
+                  items-center
+                  rounded-full
+                  border
+                  border-[var(--color-accent)]/30
+                  bg-[var(--color-accent)]/10
+                  px-2
+                  py-0.5
+                  text-[8px]
+                  font-bold
+                  uppercase
+                  tracking-[0.06em]
+                  text-[var(--color-accent)]
+                "
+              >
+                {project.badge || project.type}
+              </span>
+            )}
+          </div>
 
           <span
             className="
