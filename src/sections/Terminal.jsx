@@ -393,7 +393,7 @@ export default function Terminal() {
                 key={idx}
                 className="group relative pl-5"
               >
-                <div className="absolute left-0 top-1.5 h-1.5 w-1.5 rounded-full bg-[var(--color-accent)] shadow-[0_0_8px_var(--color-accent)]" />
+                <div className="absolute left-0 top-2 h-1 w-1 rounded-full bg-[var(--color-accent)]" />
 
                 <div className="text-[13px] font-semibold tracking-[-0.015em] text-[var(--color-text)]">
                   {job.role}
@@ -700,7 +700,7 @@ export default function Terminal() {
         "
       >
         <div className="flex items-center gap-2">
-          <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)] shadow-[0_0_6px_var(--color-accent)]" />
+          <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
           <span>portfolio-shell</span>
         </div>
 

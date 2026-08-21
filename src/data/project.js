@@ -14,7 +14,7 @@ const projects = [
     type: "Original Design",
     description:
       "An original landing page design for a premium pen brand, focused on tactile interactions, product storytelling, and an editorial-inspired visual experience.",
-    tech: "React 19 • TypeScript • Tailwind CSS v4 • Vite • Framer Motion • HTML5 Canvas • Web Audio API • Rough.js • Lenis • Lucide React",
+    tech: "React 19 • TypeScript • Tailwind CSS • Vite • Framer Motion • HTML5 Canvas • Web Audio API • Rough.js • Lenis • Lucide React",
     bullets: [
       "Designed and developed an editorial landing page with scroll-driven pen disassembly animations and immersive product storytelling.",
       "Engineered an interactive ink scratchpad featuring procedural drawing effects built with HTML5 Canvas and Rough.js.",

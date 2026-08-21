@@ -20,13 +20,13 @@ export default function AboutSection() {
           <div className="max-w-3xl">
 
             {/* Meta */}
-            <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] font-medium text-[var(--color-text-tertiary)]">
+            <div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-[12px] font-medium text-[var(--color-text-tertiary)]">
               <span className="inline-flex items-center gap-1.5">
                 <FiBriefcase size={13} />
                 Full-Stack Developer
               </span>
 
-              <span className="h-1 w-1 rounded-full bg-[var(--color-text-disabled)]" />
+              <span className="opacity-40">·</span>
 
               <span className="inline-flex items-center gap-1.5">
                 <FiMapPin size={13} />
@@ -192,7 +192,7 @@ export default function AboutSection() {
                 >
                   <span>2020—2024</span>
 
-                  <span className="h-1 w-1 rounded-full bg-[var(--color-text-disabled)]" />
+                  <span className="opacity-40">·</span>
 
                   <span>8.49 CGPA</span>
                 </div>

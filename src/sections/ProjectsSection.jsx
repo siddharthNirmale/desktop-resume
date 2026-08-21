@@ -722,19 +722,6 @@ function ProjectCard({
             />
           )}
 
-          {/* Bottom fade */}
-
-          <div
-            className="
-              pointer-events-none
-              absolute inset-x-0 bottom-0 z-[2]
-              h-20
-              bg-gradient-to-t
-              from-black/25
-              to-transparent
-            "
-          />
-
           {/* Number */}
 
           <div
@@ -743,14 +730,13 @@ function ProjectCard({
               flex h-6 min-w-6
               items-center justify-center
               rounded-full
-              border border-white/20
-              bg-black/35
+              border border-white/15
+              bg-black/50
               px-1.5
               text-[9px]
               font-semibold
               tabular-nums
               text-white
-              backdrop-blur-md
             "
           >
             {String(index + 1).padStart(2, "0")}
@@ -761,20 +747,15 @@ function ProjectCard({
             <div
               className="
                 absolute bottom-3 left-3 z-[3]
-                flex items-center gap-1.5
                 rounded-full
-                border border-white/20
-                bg-black/55
-                px-2.5 py-1
-                text-[8px]
-                font-semibold
-                uppercase
-                tracking-[0.08em]
+                border border-white/15
+                bg-black/60
+                px-2.5 py-0.5
+                text-[9px]
+                font-medium
                 text-white
-                backdrop-blur-md
               "
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
               {project.badge || project.type}
             </div>
           )}
@@ -785,14 +766,13 @@ function ProjectCard({
               className="
                 absolute bottom-3 left-3 z-[3]
                 rounded-full
-                bg-white/90
-                px-2 py-1
+                bg-white
+                px-2 py-0.5
                 text-[8px]
                 font-semibold
                 uppercase
                 tracking-[0.08em]
                 text-black
-                backdrop-blur-md
               "
             >
               Featured
@@ -1559,7 +1539,6 @@ function StatusBadge({ status }) {
       className={`
         inline-flex
         items-center
-        gap-1.5
         rounded-full
         px-2 py-0.5
         text-[8px]
@@ -1575,20 +1554,14 @@ function StatusBadge({ status }) {
               text-[var(--color-accent)]
             `
           : `
+              border
+              border-[var(--color-surface-border)]
               bg-[var(--color-surface-inactive)]
               text-[var(--color-text-tertiary)]
             `
         }
       `}
     >
-      <span
-        className="
-          h-1 w-1
-          rounded-full
-          bg-[var(--color-accent)]
-        "
-      />
-
       {status}
     </span>
   );
