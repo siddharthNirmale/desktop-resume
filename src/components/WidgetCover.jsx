@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { XIcon as X } from "lucide-animated";
+import Tooltip from "./Tooltip";
 
 export default function WidgetCover({
   title,
@@ -126,57 +127,55 @@ export default function WidgetCover({
 
         {/* Close */}
         {onClose && (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onClose();
-            }}
-            onPointerDown={(e) => {
-              e.stopPropagation();
-            }}
-            title="Close"
-            aria-label={`Close ${title}`}
-            className="
-              absolute
-              right-2
-              top-1/2
-              -translate-y-1/2
+          <div className="absolute right-2 top-1/2 -translate-y-1/2">
+            <Tooltip content="Close" side="top" delay={250}>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClose();
+                }}
+                onPointerDown={(e) => {
+                  e.stopPropagation();
+                }}
+                aria-label={`Close ${title}`}
+                className="
+                  h-5
+                  w-5
 
-              h-5
-              w-5
+                  flex
+                  items-center
+                  justify-center
 
-              flex
-              items-center
-              justify-center
+                  rounded-full
 
-              rounded-full
+                  text-[var(--color-text-disabled)]
 
-              text-[var(--color-text-disabled)]
+                  opacity-0
+                  group-hover:opacity-100
 
-              opacity-0
-              group-hover:opacity-100
+                  hover:bg-[var(--color-surface-hover)]
+                  hover:text-[var(--color-text-secondary)]
 
-              hover:bg-[var(--color-surface-hover)]
-              hover:text-[var(--color-text-secondary)]
+                  active:scale-[0.97]
 
-              active:scale-[0.97]
+                  transition-all
+                  duration-150
 
-              transition-all
-              duration-150
+                  focus:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-[var(--color-accent)]/30
 
-              focus:outline-none
-              focus-visible:ring-2
-              focus-visible:ring-[var(--color-accent)]/30
-
-              cursor-default
-            "
-          >
-            <X
-              size={10}
-              strokeWidth={2.4}
-            />
-          </button>
+                  cursor-default
+                "
+              >
+                <X
+                  size={10}
+                  strokeWidth={2.4}
+                />
+              </button>
+            </Tooltip>
+          </div>
         )}
       </div>
 

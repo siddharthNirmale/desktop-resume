@@ -95,7 +95,7 @@ export default function Preloader({ onLoadingComplete }) {
                 Siddharth Nirmale
               </h1>
               <p className="text-[11px] font-mono text-[var(--color-text-tertiary)]">
-                Personal Workspace · Desktop OS
+                Personal Workspace
               </p>
             </div>
 

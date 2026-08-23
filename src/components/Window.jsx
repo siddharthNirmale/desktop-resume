@@ -2,8 +2,8 @@ import { motion, animate, useMotionValue } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { MorphIcon } from "morphicons/react";
 import { Maximize2, Minimize2 } from "lucide";
-import { XIcon as X } from "lucide-animated";
-import { Minus } from "lucide-react";
+import { Minus, X } from "lucide-react";
+import Tooltip from "./Tooltip";
 
 function ResizeHandle({ direction, className, onStartResize }) {
   return (
@@ -346,117 +346,123 @@ export default function Window({
           "
         >
           {/* Minimize */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onMinimize();
-            }}
-            onPointerDown={(e) => e.stopPropagation()}
-            title="Minimize"
-            className="
-              flex
-              h-[28px]
-              w-[30px]
-              items-center
-              justify-center
+          <Tooltip content="Minimize" side="top" delay={250}>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onMinimize();
+              }}
+              onPointerDown={(e) => e.stopPropagation()}
+              aria-label="Minimize"
+              className="
+                flex
+                h-[28px]
+                w-[30px]
+                items-center
+                justify-center
 
-              rounded-[7px]
+                rounded-[7px]
 
-              text-[var(--color-text-tertiary)]
+                text-[var(--color-text-tertiary)]
 
-              transition-all
-              duration-150
+                transition-all
+                duration-150
 
-              hover:bg-[var(--color-surface-hover)]
-              hover:text-[var(--color-text-primary)]
+                hover:bg-[var(--color-surface-hover)]
+                hover:text-[var(--color-text-primary)]
 
-              active:scale-[0.97]
+                active:scale-[0.97]
 
-              focus:outline-none
-            "
-          >
-            <Minus
-              size={12}
-              strokeWidth={2}
-            />
-          </button>
+                focus:outline-none
+              "
+            >
+              <Minus
+                size={12}
+                strokeWidth={2}
+              />
+            </button>
+          </Tooltip>
 
           {/* Maximize */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleMaximize();
-            }}
-            onPointerDown={(e) => e.stopPropagation()}
-            title={isMaximized ? "Restore" : "Maximize"}
-            className="
-              flex
-              h-[28px]
-              w-[30px]
-              items-center
-              justify-center
+          <Tooltip content={isMaximized ? "Restore" : "Maximize"} side="top" delay={250}>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleMaximize();
+              }}
+              onPointerDown={(e) => e.stopPropagation()}
+              aria-label={isMaximized ? "Restore" : "Maximize"}
+              className="
+                flex
+                h-[28px]
+                w-[30px]
+                items-center
+                justify-center
 
-              rounded-[7px]
+                rounded-[7px]
 
-              text-[var(--color-text-tertiary)]
+                text-[var(--color-text-tertiary)]
 
-              transition-all
-              duration-150
+                transition-all
+                duration-150
 
-              hover:bg-[var(--color-surface-hover)]
-              hover:text-[var(--color-text-primary)]
+                hover:bg-[var(--color-surface-hover)]
+                hover:text-[var(--color-text-primary)]
 
-              active:scale-[0.97]
+                active:scale-[0.97]
 
-              focus:outline-none
-            "
-          >
-            <MorphIcon
-              icon={isMaximized ? Minimize2 : Maximize2}
-              size={11}
-              strokeWidth={1.9}
-              spring="snappy"
-            />
-          </button>
+                focus:outline-none
+              "
+            >
+              <MorphIcon
+                icon={isMaximized ? Minimize2 : Maximize2}
+                size={11}
+                strokeWidth={1.9}
+                spring="snappy"
+              />
+            </button>
+          </Tooltip>
 
           {/* Close */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onClose();
-            }}
-            onPointerDown={(e) => e.stopPropagation()}
-            title="Close"
-            className="
-              flex
-              h-[28px]
-              w-[30px]
-              items-center
-              justify-center
+          <Tooltip content="Close" side="top" delay={250}>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+              }}
+              onPointerDown={(e) => e.stopPropagation()}
+              aria-label="Close"
+              className="
+                flex
+                h-[28px]
+                w-[30px]
+                items-center
+                justify-center
 
-              rounded-[7px]
+                rounded-[7px]
 
-              text-[var(--color-text-tertiary)]
+                text-[var(--color-text-tertiary)]
 
-              transition-all
-              duration-150
+                transition-all
+                duration-150
 
-              hover:bg-red-500/15
-              hover:text-red-400
+                hover:bg-red-500/15
+                hover:text-red-400
 
-              active:scale-[0.97]
+                active:scale-[0.97]
 
-              focus:outline-none
-            "
-          >
-            <X
-              size={12}
-              strokeWidth={2}
-            />
-          </button>
+                focus:outline-none
+              "
+            >
+              <X
+                size={12}
+                strokeWidth={2}
+              />
+            </button>
+          </Tooltip>
         </div>
       </div>
 

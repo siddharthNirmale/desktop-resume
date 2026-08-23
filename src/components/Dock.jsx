@@ -23,6 +23,7 @@ import {
 } from "framer-motion";
 import { MorphIcon } from "morphicons/react";
 import { Sun, Moon } from "lucide";
+import { TooltipBubble } from "./Tooltip";
 
 /* ==========================================================================
    CONFIG & CONSTANTS
@@ -154,67 +155,21 @@ function useMagnification(mouseX, ref, disabled = false) {
 }
 
 /* ==========================================================================
-   TOOLTIP
+   TOOLTIP / HOVER-TO-VIEW NAME
    ========================================================================== */
 
 const DockTooltip = memo(function DockTooltip({
   label,
   shortcut,
   visible,
-  isLight,
 }) {
   return (
-    <AnimatePresence>
-      {visible && (
-        <motion.div
-          initial={{ opacity: 0, y: 5, scale: 0.94 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 3, scale: 0.96 }}
-          transition={{ duration: 0.14, ease: [0.16, 1, 0.3, 1] }}
-          className={`
-            pointer-events-none
-            absolute
-            bottom-[calc(100%+14px)]
-            left-1/2
-            z-[100000]
-            -translate-x-1/2
-            whitespace-nowrap
-            rounded-[10px]
-            border
-            px-2.5
-            py-1
-            backdrop-blur-md
-            transition-colors
-            duration-200
-            ${
-              isLight
-                ? "border-black/[0.08] bg-white/95 text-zinc-900 shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
-                : "border-white/[0.12] bg-[#1e1e21]/95 text-zinc-100 shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
-            }
-          `}
-        >
-          <div className="flex items-center gap-1.5">
-            <span className="text-[11px] font-medium tracking-tight">
-              {label}
-            </span>
-            {shortcut && (
-              <span
-                className={`
-                  rounded-[4px] px-1 py-[1px] text-[9px] font-semibold
-                  ${
-                    isLight
-                      ? "bg-black/[0.06] text-zinc-700"
-                      : "bg-white/[0.12] text-zinc-300"
-                  }
-                `}
-              >
-                Ctrl {shortcut}
-              </span>
-            )}
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <TooltipBubble
+      content={label}
+      shortcut={shortcut ? `⌘${shortcut}` : undefined}
+      side="bottom"
+      visible={visible}
+    />
   );
 });
 
