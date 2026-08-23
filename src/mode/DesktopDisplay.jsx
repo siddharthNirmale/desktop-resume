@@ -84,10 +84,13 @@ export default function DesktopDisplay({
       </div>
 
       {/* 2. TOP BAR LAYER (z-100) */}
-      <div className="absolute inset-x-0 top-0 z-[100] h-[var(--topbar-height,26px)] pointer-events-auto">
+      <div className="absolute inset-x-0 top-0 z-[100] h-[var(--topbar-height,28px)] pointer-events-auto">
         <TopBar
           onToggleControlCenter={handleToggleControlCenter}
           isControlCenterOpen={isControlCenterOpen}
+          toggleWindow={toggleWindow}
+          bringToFront={bringToFront}
+          toggleWidget={toggleWidget}
         />
       </div>
 
@@ -107,7 +110,7 @@ export default function DesktopDisplay({
       {/* 4. WORKSPACE LAYER (z-10) - Everything that moves/resizes lives here */}
       <main
         ref={workspaceRef}
-        className="absolute inset-x-0 bottom-0 top-[var(--topbar-height,26px)] z-10 overflow-hidden min-h-0 isolate"
+        className="absolute inset-x-0 bottom-0 top-[var(--topbar-height,28px)] z-10 overflow-hidden min-h-0 isolate"
       >
         {/* WIDGETS */}
         <section className="absolute inset-0 z-10 pointer-events-none">
