@@ -32,6 +32,12 @@ export default function AboutSection() {
                 <FiMapPin size={13} />
                 Indore, India
               </span>
+
+              <span className="opacity-40">·</span>
+
+              <span className="text-[var(--color-text-secondary)]">
+                Available to Hire
+              </span>
             </div>
 
             {/* Name */}

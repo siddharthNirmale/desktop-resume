@@ -169,8 +169,7 @@ export default function ContactSection() {
             </h2>
 
             <p className="mt-2 max-w-md text-sm leading-6 text-[var(--color-text-tertiary)]">
-              Open to frontend, full-stack, freelance, and interesting
-              collaborations.
+              Currently available to hire for full-stack, frontend, and freelance engineering opportunities.
             </p>
           </div>
 

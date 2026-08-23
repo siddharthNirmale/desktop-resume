@@ -182,6 +182,10 @@ export default function TerminalPortfolio() {
                   <FiMapPin size={12} /> Indore, India
                 </span>
                 <span className="opacity-30">·</span>
+                <span className={isDark ? "text-zinc-400" : "text-zinc-600"}>
+                  Available to Hire
+                </span>
+                <span className="opacity-30">·</span>
                 <LiveClock isDark={isDark} />
               </div>
             </div>
