@@ -46,9 +46,9 @@ const DOCK_ITEMS = [
     label: "About Me",
     shortcut: "1",
     lightClass:
-      "bg-[#EEF4FF] text-[#2563EB] hover:bg-[#DBEAFE] border-blue-200/60 shadow-[0_2px_8px_rgba(37,99,235,0.08)]",
+      "bg-[#EEF4FF] text-[#2563EB] hover:bg-[#DBEAFE] border-blue-200/60 shadow-xs",
     darkClass:
-      "bg-blue-500/15 text-blue-400 border-blue-500/25 hover:bg-blue-500/25 shadow-[0_2px_12px_rgba(59,130,246,0.12)]",
+      "bg-blue-500/15 text-blue-400 border-blue-500/25 hover:bg-blue-500/25 shadow-xs",
   },
   {
     id: "projects",
@@ -56,9 +56,9 @@ const DOCK_ITEMS = [
     label: "Projects",
     shortcut: "2",
     lightClass:
-      "bg-[#FFF4ED] text-[#EA580C] hover:bg-[#FFEDD5] border-orange-200/60 shadow-[0_2px_8px_rgba(234,88,12,0.08)]",
+      "bg-[#FFF4ED] text-[#EA580C] hover:bg-[#FFEDD5] border-orange-200/60 shadow-xs",
     darkClass:
-      "bg-orange-500/15 text-orange-400 border-orange-500/25 hover:bg-orange-500/25 shadow-[0_2px_12px_rgba(249,115,22,0.12)]",
+      "bg-orange-500/15 text-orange-400 border-orange-500/25 hover:bg-orange-500/25 shadow-xs",
   },
   {
     id: "resume",
@@ -66,9 +66,9 @@ const DOCK_ITEMS = [
     label: "Resume",
     shortcut: "3",
     lightClass:
-      "bg-[#EDFAF6] text-[#0D9488] hover:bg-[#CCFBF1] border-teal-200/60 shadow-[0_2px_8px_rgba(13,148,136,0.08)]",
+      "bg-[#EDFAF6] text-[#0D9488] hover:bg-[#CCFBF1] border-teal-200/60 shadow-xs",
     darkClass:
-      "bg-teal-500/15 text-teal-400 border-teal-500/25 hover:bg-teal-500/25 shadow-[0_2px_12px_rgba(20,184,166,0.12)]",
+      "bg-teal-500/15 text-teal-400 border-teal-500/25 hover:bg-teal-500/25 shadow-xs",
   },
   {
     id: "notepad",
@@ -76,9 +76,9 @@ const DOCK_ITEMS = [
     label: "Notes",
     shortcut: "4",
     lightClass:
-      "bg-[#FEF2F2] text-[#E11D48] hover:bg-[#FFE4E6] border-rose-200/60 shadow-[0_2px_8px_rgba(225,29,72,0.08)]",
+      "bg-[#FEF2F2] text-[#E11D48] hover:bg-[#FFE4E6] border-rose-200/60 shadow-xs",
     darkClass:
-      "bg-rose-500/15 text-rose-400 border-rose-500/25 hover:bg-rose-500/25 shadow-[0_2px_12px_rgba(244,63,94,0.12)]",
+      "bg-rose-500/15 text-rose-400 border-rose-500/25 hover:bg-rose-500/25 shadow-xs",
   },
   {
     id: "contact",
@@ -86,9 +86,9 @@ const DOCK_ITEMS = [
     label: "Contact",
     shortcut: "5",
     lightClass:
-      "bg-[#FEFCE8] text-[#CA8A04] hover:bg-[#FEF9C3] border-amber-200/60 shadow-[0_2px_8px_rgba(202,138,4,0.08)]",
+      "bg-[#FEFCE8] text-[#CA8A04] hover:bg-[#FEF9C3] border-amber-200/60 shadow-xs",
     darkClass:
-      "bg-amber-500/15 text-amber-400 border-amber-500/25 hover:bg-amber-500/25 shadow-[0_2px_12px_rgba(245,158,11,0.12)]",
+      "bg-amber-500/15 text-amber-400 border-amber-500/25 hover:bg-amber-500/25 shadow-xs",
   },
   {
     id: "separator-1",
@@ -100,9 +100,9 @@ const DOCK_ITEMS = [
     label: "Terminal",
     shortcut: "6",
     lightClass:
-      "bg-[#F0F9FF] text-[#0284C7] hover:bg-[#E0F2FE] border-sky-200/60 shadow-[0_2px_8px_rgba(2,132,199,0.08)]",
+      "bg-[#F0F9FF] text-[#0284C7] hover:bg-[#E0F2FE] border-sky-200/60 shadow-xs",
     darkClass:
-      "bg-sky-500/15 text-sky-400 border-sky-500/25 hover:bg-sky-500/25 shadow-[0_2px_12px_rgba(14,165,233,0.12)]",
+      "bg-sky-500/15 text-sky-400 border-sky-500/25 hover:bg-sky-500/25 shadow-xs",
   },
 ];
 
@@ -504,8 +504,8 @@ function DockThemeCircleButton({
           focus-visible:ring-offset-2
           ${
             isLight
-              ? "border-purple-200/60 bg-[#F5F3FF] text-[#7C3AED] shadow-[0_2px_8px_rgba(124,58,237,0.08)] hover:bg-[#EDE9FE] focus-visible:ring-offset-white"
-              : "border-purple-500/25 bg-purple-500/15 text-purple-400 shadow-[0_2px_12px_rgba(168,85,247,0.12)] hover:bg-purple-500/25 focus-visible:ring-offset-[#161618]"
+              ? "border-purple-200/60 bg-[#F5F3FF] text-[#7C3AED] shadow-xs hover:bg-[#EDE9FE] focus-visible:ring-offset-white"
+              : "border-purple-500/25 bg-purple-500/15 text-purple-400 shadow-xs hover:bg-purple-500/25 focus-visible:ring-offset-[#161618]"
           }
         `}
       >

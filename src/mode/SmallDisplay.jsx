@@ -170,25 +170,18 @@ export default function TerminalPortfolio() {
 
           <div className="space-y-4 flex-1 text-center sm:text-left">
             <div>
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-1">
-                <h1 className={`text-3xl font-heading font-bold tracking-tight ${isDark ? "text-white" : "text-zinc-900"}`}>
-                  Siddharth Nirmale
-                </h1>
-                <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full border ${isDark ? "text-zinc-300 bg-white/5 border-white/10" : "text-zinc-700 bg-zinc-100 border-zinc-200"}`}>
-                  Available for Opportunities
-                </span>
-              </div>
-              <p className="text-[14px] text-zinc-500 font-mono">
+              <h1 className={`text-3xl font-heading font-bold tracking-tight ${isDark ? "text-white" : "text-zinc-900"}`}>
+                Siddharth Nirmale
+              </h1>
+              <p className="text-[14px] text-zinc-500 font-mono mt-0.5">
                 @siddharthNirmale
               </p>
 
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-4 text-[12px] font-medium">
-                <span className={`border px-2.5 py-1 rounded-md ${isDark ? "border-white/10 bg-white/5 text-zinc-300" : "border-zinc-200 bg-zinc-100 text-zinc-700"}`}>
-                  Building Scalable Web Apps
-                </span>
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-3 text-[12px] font-medium">
                 <span className={`flex items-center gap-1 ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
                   <FiMapPin size={12} /> Indore, India
                 </span>
+                <span className="opacity-30">·</span>
                 <LiveClock isDark={isDark} />
               </div>
             </div>

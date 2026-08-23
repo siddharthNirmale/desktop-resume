@@ -162,14 +162,6 @@ export default function ContactSection() {
     <section className="mx-auto w-full max-w-2xl px-5 py-10 sm:px-7">
       {/* Header */}
       <header className="mb-8">
-        <div className="mb-3 flex items-center gap-2">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--color-accent)]" />
-
-          <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-accent)]">
-            Available for work
-          </span>
-        </div>
-
         <div className="flex items-end justify-between gap-6">
           <div>
             <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[var(--color-text)] sm:text-3xl">

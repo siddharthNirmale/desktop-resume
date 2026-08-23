@@ -642,15 +642,14 @@ function ProjectCard({
         rounded-[14px]
         border
         border-[var(--color-surface-border)]
-        bg-[var(--color-surface-inactive)]
+        bg-[var(--color-surface-hover)]/25
 
         transition-[border-color,background-color,box-shadow]
-        duration-300
+        duration-200
 
-        hover:border-[var(--color-window-border)]
-        hover:bg-[var(--color-surface-elevated)]
-        hover:shadow-[0_12px_35px_rgba(0,0,0,0.07)]
-        dark:hover:shadow-[0_16px_40px_rgba(0,0,0,0.22)]
+        hover:border-[var(--color-surface-border-strong)]
+        hover:bg-[var(--color-surface-hover)]/60
+        hover:shadow-xs
 
         ${isList ? "md:flex" : "flex flex-col"}
       `}

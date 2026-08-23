@@ -326,7 +326,7 @@ const AccentButton = memo(({ color, isSelected, onSelect }) => (
         >
           <Check
             size={11}
-            className="text-white stroke-[3.5] drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]"
+            className="text-white stroke-[3.5]"
           />
         </motion.span>
       )}
