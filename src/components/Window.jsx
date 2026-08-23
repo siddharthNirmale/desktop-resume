@@ -368,10 +368,10 @@ export default function Window({
               transition-all
               duration-150
 
-              hover:bg-[var(--color-surface-inactive)]
+              hover:bg-[var(--color-surface-hover)]
               hover:text-[var(--color-text-primary)]
 
-              active:scale-[0.94]
+              active:scale-[0.97]
 
               focus:outline-none
             "
@@ -405,10 +405,10 @@ export default function Window({
               transition-all
               duration-150
 
-              hover:bg-[var(--color-surface-inactive)]
+              hover:bg-[var(--color-surface-hover)]
               hover:text-[var(--color-text-primary)]
 
-              active:scale-[0.94]
+              active:scale-[0.97]
 
               focus:outline-none
             "
@@ -444,10 +444,10 @@ export default function Window({
               transition-all
               duration-150
 
-              hover:bg-[var(--color-surface-inactive)]
-              hover:text-[var(--color-text-primary)]
+              hover:bg-red-500/15
+              hover:text-red-400
 
-              active:scale-[0.94]
+              active:scale-[0.97]
 
               focus:outline-none
             "

@@ -73,7 +73,7 @@ export default function WidgetCover({
         bg-[var(--color-surface)]
         border
         border-[var(--color-surface-border)]
-        rounded-[16px]
+        rounded-[14px]
 
         shadow-[var(--widget-shadow)]
 
@@ -157,10 +157,10 @@ export default function WidgetCover({
               opacity-0
               group-hover:opacity-100
 
-              hover:bg-[var(--color-surface-inactive)]
+              hover:bg-[var(--color-surface-hover)]
               hover:text-[var(--color-text-secondary)]
 
-              active:scale-90
+              active:scale-[0.97]
 
               transition-all
               duration-150

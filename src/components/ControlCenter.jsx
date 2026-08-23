@@ -360,20 +360,11 @@ export default function ControlCenter({
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[11px] font-medium leading-none truncate">
-                            {item.name}
-                          </span>
-                          <span
-                            className={`h-1.5 w-1.5 rounded-full shrink-0 ${
-                              isWidgetOpen
-                                ? "bg-[var(--color-accent)]"
-                                : "bg-[var(--color-surface-border)]"
-                            }`}
-                          />
-                        </div>
+                        <span className="text-[11px] font-medium leading-none truncate block">
+                          {item.name}
+                        </span>
                         <span className="text-[9px] text-[var(--color-text-tertiary)] leading-none truncate block mt-1">
-                          {isWidgetOpen ? "Visible" : "Hidden"}
+                          {isWidgetOpen ? "Active" : "Hidden"}
                         </span>
                       </div>
                     </button>

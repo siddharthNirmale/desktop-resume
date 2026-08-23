@@ -102,7 +102,7 @@ export default function Notepad() {
           </div>
           <button
             onClick={createNewNote}
-            className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[var(--color-accent)] text-white transition hover:scale-105 active:scale-95"
+            className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[var(--color-accent)] text-white transition hover:brightness-105 active:scale-[0.98]"
           >
             <FiPlus size={15} />
           </button>
@@ -173,7 +173,7 @@ export default function Notepad() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setSidebarOpen(!sidebarOpen)}
-                  className="flex h-7 w-7 items-center justify-center rounded-[7px] text-[var(--color-text-tertiary)] hover:bg-[var(--color-surface-inactive)]"
+                  className="flex h-7 w-7 items-center justify-center rounded-[7px] text-[var(--color-text-tertiary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] transition-colors"
                 >
                   <FiMenu size={14} />
                 </button>
@@ -186,7 +186,7 @@ export default function Notepad() {
               </div>
               <button
                 onClick={() => setNoteToDelete(activeNote.id)}
-                className="flex h-7 w-7 items-center justify-center rounded-[7px] text-[var(--color-text-tertiary)] transition hover:bg-red-500/10 hover:text-red-500"
+                className="flex h-7 w-7 items-center justify-center rounded-[7px] text-[var(--color-text-tertiary)] transition hover:bg-red-500/10 hover:text-red-400"
               >
                 <FiTrash2 size={13} />
               </button>
@@ -205,7 +205,7 @@ export default function Notepad() {
             <div className="text-[13px] font-medium">No note selected</div>
             <button
               onClick={createNewNote}
-              className="mt-4 rounded-[7px] bg-[var(--color-accent)] px-3 py-2 text-[10px] text-white"
+              className="mt-4 rounded-[7px] bg-[var(--color-accent)] px-3 py-2 text-[11px] font-medium text-white hover:brightness-105 active:scale-[0.98] transition-all"
             >
               Create note
             </button>
@@ -215,29 +215,30 @@ export default function Notepad() {
 
       {/* CUSTOM DELETE MODAL */}
       {noteToDelete && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/30 px-4 backdrop-blur-sm transition-all">
-          <div className="w-full max-w-[280px] rounded-[12px] border border-[var(--color-surface-border)] bg-[var(--color-surface)] p-5 text-center shadow-xl">
-            <h3 className="mb-2 text-[14px] font-semibold text-[var(--color-text)]">
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm transition-all">
+          <div className="w-full max-w-[280px] rounded-[14px] border border-[var(--color-surface-border)] bg-[var(--color-surface-elevated)] p-5 text-center shadow-[var(--shadow-popover)]">
+            <h3 className="mb-1 text-[14px] font-semibold text-[var(--color-text)]">
               Delete Note
             </h3>
-            <p className="mb-6 text-[11px] text-[var(--color-text-tertiary)]">
+            <p className="mb-5 text-[11px] text-[var(--color-text-tertiary)]">
               Are you sure you want to delete this note? This action cannot be undone.
             </p>
             <div className="flex gap-2">
               <button
                 onClick={() => setNoteToDelete(null)}
-                className="flex-1 rounded-[8px] bg-[var(--color-surface-inactive)] py-2 text-[11px] font-medium text-[var(--color-text-secondary)] transition hover:bg-[var(--color-surface-border)] hover:text-[var(--color-text)]"
+                className="flex-1 rounded-[8px] bg-[var(--color-surface-hover)]/40 border border-[var(--color-surface-border)] py-2 text-[11px] font-medium text-[var(--color-text-secondary)] transition hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] active:scale-[0.98]"
               >
                 Cancel
               </button>
               <button
                 onClick={executeDelete}
-                className="flex-1 rounded-[8px] bg-red-500 py-2 text-[11px] font-medium text-white transition hover:bg-red-600 active:scale-95"
+                className="flex-1 rounded-[8px] bg-red-500 py-2 text-[11px] font-medium text-white transition hover:bg-red-600 active:scale-[0.98]"
               >
                 Delete
               </button>
             </div>
           </div>
+
         </div>
       )}
     </div>

@@ -84,7 +84,9 @@ export default function ResumeSection() {
               className="
                 hidden
                 rounded-full
-                bg-[var(--color-surface-inactive)]
+                border
+                border-[var(--color-surface-border)]
+                bg-[var(--color-surface-hover)]/40
                 px-2
                 py-0.5
                 text-[9px]
@@ -95,7 +97,7 @@ export default function ResumeSection() {
                 sm:inline-flex
               "
             >
-              Resume
+              PDF
             </span>
           </div>
 

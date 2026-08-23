@@ -63,11 +63,6 @@ export default function Terminal() {
                 <h1 className="text-[14px] font-semibold tracking-[-0.02em] text-[var(--color-text)]">
                   Terminal
                 </h1>
-
-                <span className="flex items-center gap-1 text-[9px] font-medium uppercase tracking-[0.1em] text-[var(--color-text-tertiary)]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
-                  online
-                </span>
               </div>
 
               <p className="mt-0.5 text-[10px] text-[var(--color-text-tertiary)]">
