@@ -26,7 +26,15 @@ export default function App() {
   const { menu, handleContextMenu, closeMenu } = useContextMenu(isMobile);
 
   // Passed centralized config to the windows manager
-  const { windows, bringToFront, toggleWindow } = useWindows(initialWindowsConfig);
+  const {
+    windows,
+    bringToFront,
+    toggleWindow,
+    toggleWidget,
+    minimizeAll,
+    restoreAll,
+    resetLayout,
+  } = useWindows(initialWindowsConfig);
 
   return (
     <main
@@ -58,6 +66,10 @@ export default function App() {
               desktopRef={desktopRef}
               windows={windows}
               toggleWindow={toggleWindow}
+              toggleWidget={toggleWidget}
+              minimizeAll={minimizeAll}
+              restoreAll={restoreAll}
+              resetLayout={resetLayout}
               bringToFront={bringToFront}
               menu={menu}
               closeMenu={closeMenu}
@@ -69,7 +81,15 @@ export default function App() {
       )}
 
       {/* Global Command Palette */}
-      <CommandPalette toggleWindow={toggleWindow} bringToFront={bringToFront} />
+      <CommandPalette
+        toggleWindow={toggleWindow}
+        toggleWidget={toggleWidget}
+        minimizeAll={minimizeAll}
+        restoreAll={restoreAll}
+        resetLayout={resetLayout}
+        bringToFront={bringToFront}
+      />
     </main>
   );
 }
+

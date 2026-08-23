@@ -1,6 +1,6 @@
-import { useRef, useMemo, Suspense, useEffect } from "react";
+import { useRef, useMemo, Suspense, useEffect, useState, useCallback } from "react";
 import { AnimatePresence } from "framer-motion";
-import { LoaderIcon as Loader2 } from "lucide-animated";;
+import { LoaderIcon as Loader2 } from "lucide-animated";
 
 // Components
 import Background from "../components/Background";
@@ -8,8 +8,9 @@ import Window from "../components/Window";
 import Dock from "../components/Dock";
 import ContextMenu from "../components/ContextMenu";
 import TopBar from "../components/TopBar";
+import ControlCenter from "../components/ControlCenter";
 
-// Centralized Configs (Assuming we moved these to a registry)
+// Centralized Configs
 import { WIDGET_MAP, WIDGET_PROPS, APP_MAP } from "../config/componentRegistry";
 
 // ============================================================
@@ -27,6 +28,10 @@ const AppLoader = () => (
 export default function DesktopDisplay({
   windows,
   toggleWindow,
+  toggleWidget,
+  minimizeAll,
+  restoreAll,
+  resetLayout,
   bringToFront,
   menu,
   closeMenu,
@@ -34,6 +39,7 @@ export default function DesktopDisplay({
   setWallpaper,
 }) {
   const workspaceRef = useRef(null);
+  const [isControlCenterOpen, setIsControlCenterOpen] = useState(false);
 
   // Split windows/widgets for rendering efficiency
   const visibleWidgets = useMemo(() =>
@@ -43,6 +49,18 @@ export default function DesktopDisplay({
   const visibleWindows = useMemo(() =>
     windows.filter((w) => w.type === "window" && w.isOpen && !w.isMinimized),
     [windows]);
+
+  const openAppWindows = useMemo(() =>
+    windows.filter((w) => w.type === "window" && w.isOpen),
+    [windows]);
+
+  const allWindowsMinimized = useMemo(() =>
+    openAppWindows.length > 0 && openAppWindows.every((w) => w.isMinimized),
+    [openAppWindows]);
+
+  const handleToggleControlCenter = useCallback(() => {
+    setIsControlCenterOpen((prev) => !prev);
+  }, []);
 
   // Sync wallpaper & accent color to CSS variables/storage
   useEffect(() => {
@@ -67,10 +85,26 @@ export default function DesktopDisplay({
 
       {/* 2. TOP BAR LAYER (z-100) */}
       <div className="absolute inset-x-0 top-0 z-[100] h-[var(--topbar-height,26px)] pointer-events-auto">
-        <TopBar />
+        <TopBar
+          onToggleControlCenter={handleToggleControlCenter}
+          isControlCenterOpen={isControlCenterOpen}
+        />
       </div>
 
-      {/* 3. WORKSPACE LAYER (z-10) - Everything that moves/resizes lives here */}
+      {/* 3. CONTROL CENTER LAYER (z-[105]) */}
+      <ControlCenter
+        isOpen={isControlCenterOpen}
+        onClose={() => setIsControlCenterOpen(false)}
+        windows={windows}
+        toggleWindow={toggleWindow}
+        toggleWidget={toggleWidget}
+        minimizeAll={minimizeAll}
+        restoreAll={restoreAll}
+        resetLayout={resetLayout}
+        bringToFront={bringToFront}
+      />
+
+      {/* 4. WORKSPACE LAYER (z-10) - Everything that moves/resizes lives here */}
       <main
         ref={workspaceRef}
         className="absolute inset-x-0 bottom-0 top-[var(--topbar-height,26px)] z-10 overflow-hidden min-h-0 isolate"
@@ -133,7 +167,7 @@ export default function DesktopDisplay({
         </section>
       </main>
 
-      {/* 4. CONTEXT MENU (z-90) */}
+      {/* 5. CONTEXT MENU (z-90) */}
       <AnimatePresence>
         {menu.show && (
           <div className="fixed inset-0 z-[90] pointer-events-none">
@@ -147,13 +181,18 @@ export default function DesktopDisplay({
                 onClose={closeMenu}
                 toggleWindow={toggleWindow}
                 bringToFront={bringToFront}
+                onOpenControlCenter={() => setIsControlCenterOpen(true)}
+                minimizeAll={minimizeAll}
+                restoreAll={restoreAll}
+                resetLayout={resetLayout}
+                allWindowsMinimized={allWindowsMinimized}
               />
             </div>
           </div>
         )}
       </AnimatePresence>
 
-      {/* 5. DOCK (z-80) */}
+      {/* 6. DOCK (z-80) */}
       <div className="absolute inset-x-0 bottom-0 z-[80] pointer-events-none">
         <div className="pointer-events-auto">
           <Dock

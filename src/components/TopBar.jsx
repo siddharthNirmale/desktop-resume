@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FiGithub, FiLinkedin, FiMail } from 'react-icons/fi';
+import { FiGithub, FiLinkedin, FiMail, FiSliders } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import { variants } from '../lib/motion';
 
@@ -21,7 +21,10 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
 // ============================================================
 // TOP BAR COMPONENT
 // ============================================================
-export default function TopBar() {
+export default function TopBar({
+  onToggleControlCenter,
+  isControlCenterOpen = false,
+}) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -42,10 +45,18 @@ export default function TopBar() {
     >
       {/* Left Menu Cluster */}
       <div className="flex items-center gap-2.5">
-
-        <span className="topbar-text text-[13px] font-heading font-semibold text-[var(--color-text)] tracking-tight cursor-default pr-2">
-          Siddharth Nirmale
-        </span>
+        <button
+          type="button"
+          onClick={onToggleControlCenter}
+          className="
+            topbar-text text-[13px] font-heading font-semibold text-[var(--color-text)]
+            tracking-tight cursor-default pr-2 hover:text-[var(--color-accent)]
+            transition-colors flex items-center gap-1.5 focus:outline-none
+          "
+          title="Toggle Control Center"
+        >
+          <span>Siddharth Nirmale</span>
+        </button>
         
         {/* Command Palette Hint */}
         <button 
@@ -62,7 +73,7 @@ export default function TopBar() {
       </div>
 
       {/* Right System Tray Cluster */}
-      <div className="topbar-icons flex items-center gap-4 text-[var(--color-text-secondary)]">
+      <div className="topbar-icons flex items-center gap-3 sm:gap-4 text-[var(--color-text-secondary)]">
         {/* External Links */}
         <motion.a
           href="https://github.com/siddharthNirmale"
@@ -99,14 +110,33 @@ export default function TopBar() {
           <FiMail size={13} />
         </motion.a>
 
+        {/* Control Center Toggle */}
+        <button
+          type="button"
+          onClick={onToggleControlCenter}
+          title="Control Center & Desktop Widgets"
+          aria-label="Control Center"
+          className={`
+            flex items-center justify-center p-1 rounded-md transition-all cursor-default focus:outline-none
+            ${
+              isControlCenterOpen
+                ? "bg-[var(--color-accent)] text-white shadow-sm"
+                : "text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]"
+            }
+          `}
+        >
+          <FiSliders size={13} strokeWidth={2} />
+        </button>
+
         {/* Hairline Divider */}
         <div className="topbar-divider w-[1px] h-3 bg-[var(--color-divider)]" />
 
         {/* Calendar Date & Live Clock */}
-        <span className="topbar-text text-[13px] font-medium text-[var(--color-text)] tracking-normal cursor-default whitespace-nowrap">
+        <span className="topbar-text text-[12px] sm:text-[13px] font-medium text-[var(--color-text)] tracking-normal cursor-default whitespace-nowrap">
           {dateFormatter.format(time)} &nbsp; {timeFormatter.format(time)}
         </span>
       </div>
     </header>
   );
 }
+

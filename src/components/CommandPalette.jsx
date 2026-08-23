@@ -3,7 +3,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, Command as CommandIcon } from "lucide-react";
 import useCommandSearch from "../hooks/useCommandSearch";
 
-export default function CommandPalette({ toggleWindow, bringToFront }) {
+export default function CommandPalette({
+  toggleWindow,
+  toggleWidget,
+  minimizeAll,
+  restoreAll,
+  resetLayout,
+  bringToFront,
+}) {
   const {
     isOpen,
     setIsOpen,
@@ -36,7 +43,14 @@ export default function CommandPalette({ toggleWindow, bringToFront }) {
   }, [selectedIndex]);
 
   const handleExecute = (command) => {
-    command.action({ toggleWindow, bringToFront });
+    command.action({
+      toggleWindow,
+      toggleWidget,
+      minimizeAll,
+      restoreAll,
+      resetLayout,
+      bringToFront,
+    });
     addRecent(command.id);
     closePalette();
   };
