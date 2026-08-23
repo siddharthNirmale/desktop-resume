@@ -139,27 +139,33 @@ export default function CalendarPopover({ isOpen, onClose }) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          ref={popoverRef}
-          initial={{ opacity: 0, y: -6, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -4, scale: 0.97 }}
-          transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="
-            absolute right-2 sm:right-4 top-[calc(100%+6px)]
-            w-[290px]
-            z-[100000]
-            select-none
-            rounded-[16px]
-            bg-[var(--color-surface-dark)]/85
-            text-[var(--color-text)]
-            border border-[var(--color-surface-border)]
-            p-3.5
-            backdrop-blur-2xl
-            shadow-[0_16px_40px_rgba(0,0,0,0.35),0_2px_8px_rgba(0,0,0,0.2)]
-            font-primary
-          "
+        <div
+          className="fixed inset-0 z-[999999] pointer-events-auto"
+          onClick={onClose}
         >
+          {/* Backdrop click capture */}
+          <div className="absolute inset-0 bg-transparent" />
+
+          {/* Calendar Popover Surface */}
+          <motion.div
+            initial={{ opacity: 0, y: -6, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -4, scale: 0.97 }}
+            transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            onClick={(e) => e.stopPropagation()}
+            className="
+              absolute top-[calc(var(--topbar-height,28px)+6px)] right-2 sm:right-4
+              w-[290px] max-w-[calc(100vw-24px)]
+              select-none
+              rounded-[16px]
+              bg-[var(--color-surface-elevated)]
+              text-[var(--color-text)]
+              border border-[var(--color-surface-border)]
+              p-3.5
+              shadow-[0_16px_40px_rgba(0,0,0,0.35),0_2px_8px_rgba(0,0,0,0.2)]
+              font-primary
+            "
+          >
           {/* ──────────────────────────────────────────
               Header: Live Date & Clock Display
           ────────────────────────────────────────── */}
@@ -290,7 +296,8 @@ export default function CalendarPopover({ isOpen, onClose }) {
               })}
             </motion.div>
           </AnimatePresence>
-        </motion.div>
+          </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );
