@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { FiGithub, FiLinkedin, FiMail, FiSliders, FiSearch } from "react-icons/fi";
 import Tooltip from "./Tooltip";
+import CalendarPopover from "./CalendarPopover";
 
 // ============================================================
 // FORMATTERS (Hoisted for performance)
@@ -33,11 +34,19 @@ export default function TopBar({
   bringToFront,
 }) {
   const [time, setTime] = useState(new Date());
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Close calendar if control center opens
+  useEffect(() => {
+    if (isControlCenterOpen) {
+      setIsCalendarOpen(false);
+    }
+  }, [isControlCenterOpen]);
 
   const handleOpenWindow = (id) => {
     if (!toggleWindow) return;
@@ -233,13 +242,17 @@ export default function TopBar({
         <Tooltip content="Calendar & Time" side="top" delay={300}>
           <button
             type="button"
-            onClick={onToggleControlCenter}
-            className="
-              topbar-text text-[12px] font-medium text-[var(--color-text)]
-              tabular-nums tracking-[-0.01em] px-1.5 py-0.5 rounded-[4px]
-              hover:bg-[var(--color-surface-hover)] transition-colors
-              cursor-default whitespace-nowrap focus:outline-none
-            "
+            onClick={() => setIsCalendarOpen((prev) => !prev)}
+            className={`
+              topbar-text text-[12px] font-medium tabular-nums tracking-[-0.01em]
+              px-1.5 py-0.5 rounded-[4px] transition-colors cursor-default
+              whitespace-nowrap focus:outline-none
+              ${
+                isCalendarOpen
+                  ? "bg-[var(--color-surface-hover)] text-[var(--color-text)] font-semibold shadow-xs"
+                  : "text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]"
+              }
+            `}
             aria-label="Calendar & Clock"
           >
             <span>{dateFormatter.format(time)}</span>
@@ -248,6 +261,14 @@ export default function TopBar({
           </button>
         </Tooltip>
       </div>
+
+      {/* ──────────────────────────────────────────
+          CALENDAR POPOVER
+      ────────────────────────────────────────── */}
+      <CalendarPopover
+        isOpen={isCalendarOpen}
+        onClose={() => setIsCalendarOpen(false)}
+      />
     </header>
   );
 }
