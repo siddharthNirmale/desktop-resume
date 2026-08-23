@@ -36,7 +36,7 @@ export default function AboutSection() {
               <span className="opacity-40">·</span>
 
               <span className="text-[var(--color-text-secondary)]">
-                Available to Hire
+                Available for Opportunities
               </span>
             </div>
 

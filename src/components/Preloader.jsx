@@ -1,34 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Personal Monogram Mark SVG
-function MonogramMark({ className = "w-6 h-6" }) {
-  return (
-    <svg
-      viewBox="0 0 32 32"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-hidden="true"
-    >
-      <rect width="32" height="32" rx="8" fill="currentColor" fillOpacity="0.12" />
-      <path
-        d="M9 11.5C9 10.12 10.12 9 11.5 9H14.5C15.88 9 17 10.12 17 11.5V12C17 13.38 15.88 14.5 14.5 14.5H11.5C10.12 14.5 9 15.62 9 17V20.5C9 21.88 10.12 23 11.5 23H14.5C15.88 23 17 21.88 17 20.5"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M20 23V9L26 23V9"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 export default function Preloader({ onLoadingComplete }) {
   const [isVisible, setIsVisible] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -113,7 +85,7 @@ export default function Preloader({ onLoadingComplete }) {
                 text-[var(--color-text)]
               "
             >
-              <MonogramMark className="w-7 h-7 text-[var(--color-text)] opacity-95" />
+              <span className="text-2xl leading-none select-none">😈</span>
             </motion.div>
 
 

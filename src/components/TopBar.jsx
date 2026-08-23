@@ -16,34 +16,6 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
 });
 
-// Personal Monogram Mark SVG (Clean geometric SN)
-function MonogramMark({ className = "w-3.5 h-3.5" }) {
-  return (
-    <svg
-      viewBox="0 0 32 32"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-hidden="true"
-    >
-      <rect width="32" height="32" rx="7" fill="currentColor" fillOpacity="0.12" />
-      <path
-        d="M9 11.5C9 10.12 10.12 9 11.5 9H14.5C15.88 9 17 10.12 17 11.5V12C17 13.38 15.88 14.5 14.5 14.5H11.5C10.12 14.5 9 15.62 9 17V20.5C9 21.88 10.12 23 11.5 23H14.5C15.88 23 17 21.88 17 20.5"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M20 23V9L26 23V9"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 // Menu Items for TopBar
 const MENU_ITEMS = [
   { id: "projects", label: "Projects" },
@@ -93,7 +65,7 @@ export default function TopBar({
           LEFT CLUSTER: System Monogram + Menus + Search
       ────────────────────────────────────────── */}
       <div className="flex items-center gap-1">
-        {/* System Monogram Icon */}
+        {/* System Menu Icon */}
         <button
           type="button"
           onClick={onToggleControlCenter}
@@ -106,7 +78,7 @@ export default function TopBar({
           title="System Menu"
           aria-label="System Menu"
         >
-          <MonogramMark className="w-3.5 h-3.5 text-[var(--color-text)]" />
+          <span className="text-[13px] leading-none select-none">😈</span>
         </button>
 
         {/* Application Name */}
@@ -165,7 +137,7 @@ export default function TopBar({
           RIGHT CLUSTER: Status & Available Indicator
       ────────────────────────────────────────── */}
       <div className="topbar-icons flex items-center gap-1 sm:gap-1.5 text-[var(--color-text-secondary)]">
-        {/* Subtle Available to Hire Indicator */}
+        {/* Subtle Available for Opportunities Indicator */}
         <button
           type="button"
           onClick={() => handleOpenWindow("contact")}
@@ -177,7 +149,7 @@ export default function TopBar({
           "
           title="Available for opportunities"
         >
-          <span>Available to Hire</span>
+          <span>Available for Opportunities</span>
         </button>
 
         {/* GitHub */}

@@ -183,7 +183,7 @@ export default function TerminalPortfolio() {
                 </span>
                 <span className="opacity-30">·</span>
                 <span className={isDark ? "text-zinc-400" : "text-zinc-600"}>
-                  Available to Hire
+                  Available for Opportunities
                 </span>
                 <span className="opacity-30">·</span>
                 <LiveClock isDark={isDark} />
