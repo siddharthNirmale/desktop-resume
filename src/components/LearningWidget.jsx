@@ -27,7 +27,7 @@ export default function LearningWidget({
       <div className="flex flex-col gap-4 w-full">
         {/* Subject Row */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center h-[38px] w-[38px] rounded-[12px] bg-[var(--color-surface-inactive)] border border-[var(--color-surface-border)] shrink-0">
+          <div className="flex items-center justify-center h-[38px] w-[38px] rounded-[12px] bg-[var(--color-surface-hover)]/40 border border-[var(--color-surface-border)] shrink-0">
             <Target size={16} strokeWidth={1.75} className="text-[var(--color-accent)]" />
           </div>
           <div className="flex flex-col gap-0.5 min-w-0">

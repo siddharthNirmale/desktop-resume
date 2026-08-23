@@ -307,7 +307,7 @@ function QuickTag({ icon, children }) {
         rounded-full
         border
         border-[var(--color-surface-border)]
-        bg-[var(--color-surface-inactive)]
+        bg-[var(--color-surface-hover)]/30
         px-2.5
         py-1.5
         text-[11px]
@@ -418,9 +418,9 @@ function ProjectItem({
         transition-all
         duration-200
         hover:px-3
-        hover:bg-[var(--color-surface-inactive)]
+        hover:bg-[var(--color-surface-hover)]/40
         focus-visible:px-3
-        focus-visible:bg-[var(--color-surface-inactive)]
+        focus-visible:bg-[var(--color-surface-hover)]/40
         focus-visible:ring-1
         focus-visible:ring-[var(--color-accent)]
       "

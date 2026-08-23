@@ -156,17 +156,17 @@ export default function ControlCenter({
 
         {/* Popover Window */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.94, y: -10 }}
+          initial={{ opacity: 0, scale: 0.95, y: -8 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.94, y: -10 }}
-          transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+          exit={{ opacity: 0, scale: 0.95, y: -8 }}
+          transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
           onClick={(e) => e.stopPropagation()}
           className="
             absolute top-[calc(var(--topbar-height,26px)+8px)] right-3 sm:right-6
-            w-[340px] sm:w-[360px] max-w-[calc(100vw-24px)]
-            bg-[var(--color-surface-elevated)]/90 backdrop-blur-2xl
+            w-[335px] sm:w-[355px] max-w-[calc(100vw-24px)]
+            bg-[var(--color-surface-elevated)]/85 backdrop-blur-2xl
             border border-[var(--color-surface-border)] rounded-2xl
-            shadow-[0_20px_50px_rgba(0,0,0,0.45)]
+            shadow-[var(--shadow-popover)]
             overflow-hidden font-primary select-none
             text-[var(--color-text)]
           "
@@ -174,10 +174,10 @@ export default function ControlCenter({
           {/* ═══════════════════════════════════════
               HEADER
           ═══════════════════════════════════════ */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--color-surface-border)] bg-[var(--color-surface-dark)]/50">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--color-surface-border)]">
             <div className="flex items-center gap-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-[var(--color-accent)]/20 text-[var(--color-accent)]">
-                <FiSliders size={13} strokeWidth={2.2} />
+              <div className="flex h-5 w-5 items-center justify-center rounded-md bg-[var(--color-accent)]/15 text-[var(--color-accent)]">
+                <FiSliders size={12} strokeWidth={2.2} />
               </div>
               <span className="text-[12px] font-heading font-semibold tracking-tight text-[var(--color-text)]">
                 Control Center
@@ -185,38 +185,38 @@ export default function ControlCenter({
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[var(--color-surface)] border border-[var(--color-surface-border)] text-[10px] font-medium text-[var(--color-text-tertiary)]">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-[var(--color-surface-border)] bg-[var(--color-surface-hover)]/30 text-[10px] font-medium text-[var(--color-text-tertiary)]">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/90" />
                 Online
               </span>
               <button
                 type="button"
                 onClick={onClose}
-                className="flex h-6 w-6 items-center justify-center rounded-full text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-inactive)] transition-colors"
+                className="flex h-5 w-5 items-center justify-center rounded-full text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors"
                 title="Close"
               >
-                <FiX size={13} strokeWidth={2} />
+                <FiX size={12} strokeWidth={2} />
               </button>
             </div>
           </div>
 
-          <div className="p-3.5 space-y-3.5 max-h-[calc(100vh-100px)] overflow-y-auto custom-scrollbar">
+          <div className="p-3 space-y-3 max-h-[calc(100vh-100px)] overflow-y-auto custom-scrollbar">
             {/* ═══════════════════════════════════════
                 TOP QUICK SYSTEM TOGGLES (Row)
             ═══════════════════════════════════════ */}
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-1.5">
               {/* 1. Theme Toggle */}
               <button
                 type="button"
                 onClick={handleThemeToggle}
                 className="
-                  flex flex-col items-center justify-center gap-1.5 p-2.5 rounded-xl
-                  border border-[var(--color-surface-border)] bg-[var(--color-surface)]
-                  hover:bg-[var(--color-surface-hover)] hover:border-[var(--color-surface-border-strong)]
+                  flex flex-col items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl
+                  border border-[var(--color-surface-border)] bg-[var(--color-surface-hover)]/30
+                  hover:bg-[var(--color-surface-hover)]/70 hover:border-[var(--color-surface-border-strong)]
                   transition-all duration-150 group cursor-default text-center
                 "
               >
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--color-surface-inactive)] text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">
+                <div className="flex h-6 w-6 items-center justify-center rounded-lg text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)] transition-colors">
                   {isLight ? <FiMoon size={14} /> : <FiSun size={14} />}
                 </div>
                 <span className="text-[10px] font-medium leading-none text-[var(--color-text-secondary)]">
@@ -229,13 +229,13 @@ export default function ControlCenter({
                 type="button"
                 onClick={allWindowsMinimized ? restoreAll : minimizeAll}
                 className="
-                  flex flex-col items-center justify-center gap-1.5 p-2.5 rounded-xl
-                  border border-[var(--color-surface-border)] bg-[var(--color-surface)]
-                  hover:bg-[var(--color-surface-hover)] hover:border-[var(--color-surface-border-strong)]
+                  flex flex-col items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl
+                  border border-[var(--color-surface-border)] bg-[var(--color-surface-hover)]/30
+                  hover:bg-[var(--color-surface-hover)]/70 hover:border-[var(--color-surface-border-strong)]
                   transition-all duration-150 group cursor-default text-center
                 "
               >
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--color-surface-inactive)] text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">
+                <div className="flex h-6 w-6 items-center justify-center rounded-lg text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)] transition-colors">
                   <FiEye size={14} />
                 </div>
                 <span className="text-[10px] font-medium leading-none text-[var(--color-text-secondary)]">
@@ -248,13 +248,13 @@ export default function ControlCenter({
                 type="button"
                 onClick={resetLayout}
                 className="
-                  flex flex-col items-center justify-center gap-1.5 p-2.5 rounded-xl
-                  border border-[var(--color-surface-border)] bg-[var(--color-surface)]
-                  hover:bg-[var(--color-surface-hover)] hover:border-[var(--color-surface-border-strong)]
+                  flex flex-col items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl
+                  border border-[var(--color-surface-border)] bg-[var(--color-surface-hover)]/30
+                  hover:bg-[var(--color-surface-hover)]/70 hover:border-[var(--color-surface-border-strong)]
                   transition-all duration-150 group cursor-default text-center
                 "
               >
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--color-surface-inactive)] text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">
+                <div className="flex h-6 w-6 items-center justify-center rounded-lg text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)] transition-colors">
                   <FiRotateCcw size={14} />
                 </div>
                 <span className="text-[10px] font-medium leading-none text-[var(--color-text-secondary)]">
@@ -266,7 +266,7 @@ export default function ControlCenter({
             {/* ═══════════════════════════════════════
                 ACCENT COLOR PICKER
             ═══════════════════════════════════════ */}
-            <div className="p-2.5 rounded-xl border border-[var(--color-surface-border)] bg-[var(--color-surface)]">
+            <div className="p-2.5 rounded-xl border border-[var(--color-surface-border)] bg-[var(--color-surface-hover)]/20">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[10px] font-heading font-semibold uppercase tracking-[0.1em] text-[var(--color-text-tertiary)]">
                   Accent Color
@@ -275,7 +275,7 @@ export default function ControlCenter({
                   {activeAccent}
                 </span>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between px-0.5">
                 {ACCENT_COLORS.map((color) => {
                   const isSelected = activeAccent === color.id;
                   return (
@@ -286,17 +286,17 @@ export default function ControlCenter({
                       style={{ backgroundColor: color.value }}
                       title={color.name}
                       className={`
-                        relative flex h-6 w-6 items-center justify-center rounded-full
+                        relative flex h-5 w-5 items-center justify-center rounded-full
                         transition-all duration-150 cursor-default outline-none
                         ${
                           isSelected
                             ? "ring-2 ring-[var(--color-text)] ring-offset-2 ring-offset-[var(--color-surface)] scale-110"
-                            : "opacity-80 hover:opacity-100 hover:scale-105"
+                            : "opacity-75 hover:opacity-100 hover:scale-105"
                         }
                       `}
                     >
                       {isSelected && (
-                        <FiCheck size={11} className="text-white stroke-[3.5]" />
+                        <FiCheck size={10} className="text-white stroke-[3.5]" />
                       )}
                     </button>
                   );
@@ -307,7 +307,7 @@ export default function ControlCenter({
             {/* ═══════════════════════════════════════
                 DESKTOP WIDGETS MANAGER
             ═══════════════════════════════════════ */}
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-1.5">
                   <FiLayers size={11} className="text-[var(--color-text-tertiary)]" />
@@ -332,26 +332,26 @@ export default function ControlCenter({
                       type="button"
                       onClick={() => toggleWidget(item.id)}
                       className={`
-                        flex items-center gap-2.5 p-2 rounded-xl text-left
+                        flex items-center gap-2 p-2 rounded-xl text-left
                         border transition-all duration-150 cursor-default group
                         ${
                           isWidgetOpen
-                            ? "bg-[var(--color-accent)]/10 border-[var(--color-accent)]/30 text-[var(--color-text)]"
-                            : "bg-[var(--color-surface)] border-[var(--color-surface-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)]"
+                            ? "bg-[var(--color-accent)]/[0.08] hover:bg-[var(--color-accent)]/[0.12] border-[var(--color-accent)]/25 text-[var(--color-text)]"
+                            : "bg-[var(--color-surface-hover)]/25 hover:bg-[var(--color-surface-hover)]/60 border-[var(--color-surface-border)] text-[var(--color-text-secondary)]"
                         }
                       `}
                     >
                       <div
                         className={`
-                          flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-colors
+                          flex h-6 w-6 shrink-0 items-center justify-center rounded-lg transition-colors
                           ${
                             isWidgetOpen
-                              ? "bg-[var(--color-accent)] text-white shadow-sm"
-                              : "bg-[var(--color-surface-inactive)] text-[var(--color-text-tertiary)] group-hover:text-[var(--color-text)]"
+                              ? "bg-[var(--color-accent)] text-white shadow-xs"
+                              : "bg-[var(--color-surface-hover)]/60 text-[var(--color-text-tertiary)] group-hover:text-[var(--color-text)]"
                           }
                         `}
                       >
-                        <Icon size={13} strokeWidth={2} />
+                        <Icon size={12} strokeWidth={2} />
                       </div>
 
                       <div className="min-w-0 flex-1">
@@ -368,7 +368,7 @@ export default function ControlCenter({
                           />
                         </div>
                         <span className="text-[9px] text-[var(--color-text-tertiary)] leading-none truncate block mt-1">
-                          {isWidgetOpen ? "Visible on desktop" : "Hidden"}
+                          {isWidgetOpen ? "Visible" : "Hidden"}
                         </span>
                       </div>
                     </button>
@@ -380,14 +380,14 @@ export default function ControlCenter({
             {/* ═══════════════════════════════════════
                 QUICK ACTIONS & RESUME
             ═══════════════════════════════════════ */}
-            <div className="pt-1 border-t border-[var(--color-surface-border)] flex items-center gap-2">
+            <div className="pt-1.5 border-t border-[var(--color-surface-border)] flex items-center gap-1.5">
               <button
                 type="button"
                 onClick={handleDownloadResume}
                 className="
-                  flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg
+                  flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg
                   bg-[var(--color-accent)] text-white text-[11px] font-semibold
-                  hover:brightness-110 active:scale-[0.98] transition-all cursor-default
+                  hover:brightness-105 active:scale-[0.98] transition-all cursor-default
                 "
               >
                 <FiDownload size={12} strokeWidth={2.2} />
@@ -399,20 +399,20 @@ export default function ControlCenter({
                 onClick={handleCopyEmail}
                 title="Copy email to clipboard"
                 className="
-                  flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg
-                  bg-[var(--color-surface)] border border-[var(--color-surface-border)]
+                  flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg
+                  border border-[var(--color-surface-border)] bg-[var(--color-surface-hover)]/30
                   hover:bg-[var(--color-surface-hover)] text-[var(--color-text)] text-[11px] font-medium
                   active:scale-[0.98] transition-all cursor-default
                 "
               >
                 {copiedEmail ? (
                   <>
-                    <FiCheck size={12} className="text-emerald-400" />
+                    <FiCheck size={11} className="text-emerald-400" />
                     <span className="text-emerald-400 font-semibold">Copied</span>
                   </>
                 ) : (
                   <>
-                    <FiMail size={12} className="text-[var(--color-text-tertiary)]" />
+                    <FiMail size={11} className="text-[var(--color-text-tertiary)]" />
                     <span>Email</span>
                   </>
                 )}
@@ -423,13 +423,13 @@ export default function ControlCenter({
                 onClick={handleOpenTerminal}
                 title="Open Terminal shell"
                 className="
-                  flex items-center justify-center p-2 rounded-lg
-                  bg-[var(--color-surface)] border border-[var(--color-surface-border)]
+                  flex items-center justify-center p-1.5 rounded-lg
+                  border border-[var(--color-surface-border)] bg-[var(--color-surface-hover)]/30
                   hover:bg-[var(--color-surface-hover)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)]
                   active:scale-[0.98] transition-all cursor-default
                 "
               >
-                <FiTerminal size={14} />
+                <FiTerminal size={13} />
               </button>
             </div>
           </div>
@@ -438,3 +438,4 @@ export default function ControlCenter({
     </AnimatePresence>
   );
 }
+

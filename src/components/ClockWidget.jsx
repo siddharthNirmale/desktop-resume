@@ -190,7 +190,7 @@ function TimerMode() {
             <button
               key={delta}
               onClick={() => adjust(delta)}
-              className="text-[11px] font-medium text-[var(--color-text-tertiary)] bg-[var(--color-surface-inactive)] border border-[var(--color-surface-border)] px-2.5 py-1 rounded-lg hover:text-[var(--color-accent)] hover:bg-[var(--color-surface-hover)] transition-all duration-150 focus:outline-none cursor-default tabular-nums"
+              className="text-[11px] font-medium text-[var(--color-text-tertiary)] bg-[var(--color-surface-hover)]/30 border border-[var(--color-surface-border)] px-2.5 py-1 rounded-lg hover:text-[var(--color-accent)] hover:bg-[var(--color-surface-hover)] transition-all duration-150 focus:outline-none cursor-default tabular-nums"
             >
               {delta > 0 ? `+${delta}m` : `${delta}m`}
             </button>
@@ -201,13 +201,13 @@ function TimerMode() {
         <div className="flex items-center gap-2">
           <button
             onClick={reset}
-            className="h-7 w-7 flex items-center justify-center rounded-full text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-border)] transition-all duration-150 focus:outline-none cursor-default"
+            className="h-7 w-7 flex items-center justify-center rounded-full text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] transition-all duration-150 focus:outline-none cursor-default"
           >
             <RotateCcw size={12} strokeWidth={2} />
           </button>
           <button
             onClick={() => remaining > 0 && setRunning(!running)}
-            className="h-8 w-8 flex items-center justify-center rounded-full bg-[var(--color-surface-inactive)] border border-[var(--color-surface-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] transition-all duration-150 focus:outline-none cursor-default"
+            className="h-8 w-8 flex items-center justify-center rounded-full bg-[var(--color-surface-hover)]/40 border border-[var(--color-surface-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] transition-all duration-150 focus:outline-none cursor-default"
           >
             {running
               ? <Pause size={13} strokeWidth={2} className="text-[var(--color-accent)]" />

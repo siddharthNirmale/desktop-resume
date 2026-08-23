@@ -92,7 +92,7 @@ export default function Notepad() {
       >
         <div className="flex shrink-0 items-center justify-between border-b border-[var(--color-surface-border)] p-3">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[var(--color-surface-inactive)]">
+            <div className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[var(--color-surface-hover)]/40 border border-[var(--color-surface-border)]">
               <FiFileText size={14} />
             </div>
             <div>
@@ -109,7 +109,7 @@ export default function Notepad() {
         </div>
 
         <div className="p-3">
-          <div className="flex items-center gap-2 rounded-[8px] bg-[var(--color-surface-inactive)] px-2.5 py-2">
+          <div className="flex items-center gap-2 rounded-[8px] bg-[var(--color-surface-hover)]/30 border border-[var(--color-surface-border)] px-2.5 py-2">
             <FiSearch size={12} className="text-[var(--color-text-tertiary)]" />
             <input
               value={search}
@@ -136,8 +136,11 @@ export default function Notepad() {
                   setActiveId(note.id);
                   if (window.innerWidth < 768) setSidebarOpen(false);
                 }}
-                className={`mb-1 flex w-full flex-col gap-1 rounded-[9px] p-2.5 text-left transition ${note.id === activeId ? "bg-[var(--color-surface-inactive)]" : "hover:bg-[var(--color-surface-inactive)]"
-                  }`}
+                className={`mb-1 flex w-full flex-col gap-1 rounded-[9px] p-2.5 text-left border transition ${
+                  note.id === activeId
+                    ? "bg-[var(--color-surface-hover)]/60 border-[var(--color-surface-border)]"
+                    : "border-transparent hover:bg-[var(--color-surface-hover)]/30"
+                }`}
               >
                 <span className="truncate text-[11px] font-medium">
                   {note.title || "Untitled Note"}

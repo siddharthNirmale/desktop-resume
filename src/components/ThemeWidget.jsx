@@ -96,9 +96,9 @@ const WallpaperButton = memo(
           border
           border-[var(--color-surface-border)]
 
-          bg-[var(--color-surface-inactive)]
+          bg-[var(--color-surface-hover)]/30
 
-          shadow-sm
+          shadow-xs
 
           cursor-default
           focus:outline-none
@@ -116,7 +116,7 @@ const WallpaperButton = memo(
           duration-200
 
           hover:border-[var(--color-text-disabled)]
-          hover:shadow-md
+          hover:shadow-sm
         "
       >
         {/* Image */}
@@ -159,7 +159,7 @@ const WallpaperButton = memo(
               justify-center
               gap-1
 
-              bg-[var(--color-surface-inactive)]
+              bg-[var(--color-surface-hover)]/30
             "
           >
             <RefreshCw
