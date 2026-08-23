@@ -1,19 +1,15 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { MorphIcon } from "morphicons/react";
+import { Sun, Moon, Eye, EyeOff, Check, Mail } from "lucide";
 import {
-  FiSun,
-  FiMoon,
-  FiEye,
   FiRotateCcw,
   FiCloud,
   FiClock,
   FiSliders,
   FiCpu,
   FiTarget,
-  FiCheck,
   FiDownload,
-  FiMail,
-  FiCopy,
   FiTerminal,
   FiX,
   FiLayers,
@@ -184,20 +180,14 @@ export default function ControlCenter({
               </span>
             </div>
 
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-[var(--color-surface-border)] bg-[var(--color-surface-hover)]/30 text-[10px] font-medium text-[var(--color-text-tertiary)]">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/90" />
-                Online
-              </span>
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex h-5 w-5 items-center justify-center rounded-full text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors"
-                title="Close"
-              >
-                <FiX size={12} strokeWidth={2} />
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex h-6 w-6 items-center justify-center rounded-md text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors"
+              title="Close"
+            >
+              <FiX size={13} strokeWidth={2} />
+            </button>
           </div>
 
           <div className="p-3 space-y-3 max-h-[calc(100vh-100px)] overflow-y-auto custom-scrollbar">
@@ -217,7 +207,12 @@ export default function ControlCenter({
                 "
               >
                 <div className="flex h-6 w-6 items-center justify-center rounded-lg text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)] transition-colors">
-                  {isLight ? <FiMoon size={14} /> : <FiSun size={14} />}
+                  <MorphIcon
+                    icon={isLight ? Moon : Sun}
+                    size={14}
+                    strokeWidth={2}
+                    spring="snappy"
+                  />
                 </div>
                 <span className="text-[10px] font-medium leading-none text-[var(--color-text-secondary)]">
                   {isLight ? "Dark Mode" : "Light Mode"}
@@ -236,7 +231,12 @@ export default function ControlCenter({
                 "
               >
                 <div className="flex h-6 w-6 items-center justify-center rounded-lg text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)] transition-colors">
-                  <FiEye size={14} />
+                  <MorphIcon
+                    icon={allWindowsMinimized ? EyeOff : Eye}
+                    size={14}
+                    strokeWidth={2}
+                    spring="snappy"
+                  />
                 </div>
                 <span className="text-[10px] font-medium leading-none text-[var(--color-text-secondary)]">
                   {allWindowsMinimized ? "Show Windows" : "Show Desktop"}
@@ -296,7 +296,12 @@ export default function ControlCenter({
                       `}
                     >
                       {isSelected && (
-                        <FiCheck size={10} className="text-white stroke-[3.5]" />
+                        <MorphIcon
+                          icon={Check}
+                          size={10}
+                          strokeWidth={3.5}
+                          className="text-white"
+                        />
                       )}
                     </button>
                   );
@@ -405,17 +410,16 @@ export default function ControlCenter({
                   active:scale-[0.98] transition-all cursor-default
                 "
               >
-                {copiedEmail ? (
-                  <>
-                    <FiCheck size={11} className="text-emerald-400" />
-                    <span className="text-emerald-400 font-semibold">Copied</span>
-                  </>
-                ) : (
-                  <>
-                    <FiMail size={11} className="text-[var(--color-text-tertiary)]" />
-                    <span>Email</span>
-                  </>
-                )}
+                <MorphIcon
+                  icon={copiedEmail ? Check : Mail}
+                  size={11}
+                  strokeWidth={2.2}
+                  spring="snappy"
+                  className={copiedEmail ? "text-emerald-400" : "text-[var(--color-text-tertiary)]"}
+                />
+                <span className={copiedEmail ? "text-emerald-400 font-semibold" : ""}>
+                  {copiedEmail ? "Copied" : "Email"}
+                </span>
               </button>
 
               <button

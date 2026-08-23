@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PlayIcon as Play, PauseIcon as Pause, RotateCcwIcon as RotateCcw } from "lucide-animated";;
+import { MorphIcon } from 'morphicons/react';
+import { Play, Pause, RotateCcw } from 'lucide';
 import WidgetCover from "./WidgetCover";
 
 // ============================================================
@@ -108,12 +109,15 @@ function StopwatchMode() {
         </button>
         <button
           onClick={() => setRunning(!running)}
-          className="h-10 w-10 flex items-center justify-center rounded-full bg-[var(--color-accent)] text-white hover:opacity-90 transition-all duration-150 focus:outline-none cursor-default"
+          className="h-10 w-10 flex items-center justify-center rounded-full bg-[var(--color-accent)] text-white hover:opacity-90 active:scale-95 transition-all duration-150 focus:outline-none cursor-default"
         >
-          {running
-            ? <Pause size={15} strokeWidth={2} />
-            : <Play size={15} strokeWidth={2} className="ml-0.5" />
-          }
+          <MorphIcon
+            icon={running ? Pause : Play}
+            size={15}
+            strokeWidth={2.2}
+            spring="snappy"
+            className={running ? "" : "ml-0.5"}
+          />
         </button>
       </div>
     </motion.div>
@@ -207,12 +211,15 @@ function TimerMode() {
           </button>
           <button
             onClick={() => remaining > 0 && setRunning(!running)}
-            className="h-8 w-8 flex items-center justify-center rounded-full bg-[var(--color-surface-hover)]/40 border border-[var(--color-surface-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] transition-all duration-150 focus:outline-none cursor-default"
+            className="h-8 w-8 flex items-center justify-center rounded-full bg-[var(--color-surface-hover)]/40 border border-[var(--color-surface-border)] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] active:scale-95 transition-all duration-150 focus:outline-none cursor-default"
           >
-            {running
-              ? <Pause size={13} strokeWidth={2} className="text-[var(--color-accent)]" />
-              : <Play size={13} strokeWidth={2} className="ml-0.5" />
-            }
+            <MorphIcon
+              icon={running ? Pause : Play}
+              size={13}
+              strokeWidth={2}
+              spring="snappy"
+              className={running ? "text-[var(--color-accent)]" : "ml-0.5"}
+            />
           </button>
         </div>
       </div>

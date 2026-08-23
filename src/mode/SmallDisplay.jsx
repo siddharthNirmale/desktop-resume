@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { GitHubCalendar } from "react-github-calendar";
 import { motion } from "framer-motion";
+import { MorphIcon } from "morphicons/react";
+import { Sun, Moon } from "lucide";
 import {
   FiExternalLink,
   FiMail,
@@ -8,8 +10,6 @@ import {
   FiDownload,
   FiClock,
   FiCpu,
-  FiSun,
-  FiMoon,
   FiArrowUpRight,
 } from "react-icons/fi";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
@@ -159,7 +159,12 @@ export default function TerminalPortfolio() {
                   : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100 shadow-sm"
                 }`}
             >
-              {isDark ? <FiSun size={13} strokeWidth={2} /> : <FiMoon size={13} strokeWidth={2} />}
+              <MorphIcon
+                icon={isDark ? Sun : Moon}
+                size={13}
+                strokeWidth={2}
+                spring="snappy"
+              />
             </button>
           </div>
 

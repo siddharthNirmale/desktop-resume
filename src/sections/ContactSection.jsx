@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
+import { MorphIcon } from "morphicons/react";
+import { Check, Copy } from "lucide";
 import {
   FiMail,
   FiPhone,
   FiMapPin,
-  FiCopy,
-  FiCheck,
   FiArrowUpRight,
   FiDownload,
   FiExternalLink,
@@ -257,16 +257,15 @@ export default function ContactSection() {
                   }
                   title={`Copy ${item.label}`}
                   aria-label={`Copy ${item.label}`}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--color-text-disabled)] opacity-0 transition-all duration-200 hover:bg-[var(--color-surface-inactive)] hover:text-[var(--color-text)] group-hover:opacity-100 focus:opacity-100 active:scale-90"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--color-text-disabled)] opacity-0 transition-all duration-200 hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] group-hover:opacity-100 focus:opacity-100 active:scale-90"
                 >
-                  {isCopied ? (
-                    <FiCheck
-                      size={14}
-                      className="text-emerald-500"
-                    />
-                  ) : (
-                    <FiCopy size={14} />
-                  )}
+                  <MorphIcon
+                    icon={isCopied ? Check : Copy}
+                    size={14}
+                    strokeWidth={2}
+                    spring="snappy"
+                    className={isCopied ? "text-emerald-500" : ""}
+                  />
                 </button>
               )}
 
@@ -357,7 +356,7 @@ export default function ContactSection() {
         aria-live="polite"
       >
         <div className="flex items-center gap-2 bg-[var(--color-text)] px-3 py-2 text-xs font-medium text-[var(--color-surface)] shadow-lg">
-          <FiCheck size={13} />
+          <MorphIcon icon={Check} size={13} strokeWidth={2.5} />
           {toast}
         </div>
       </div>

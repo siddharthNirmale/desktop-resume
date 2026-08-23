@@ -13,8 +13,6 @@ import {
   FiEdit3,
   FiMail,
   FiTerminal,
-  FiSun,
-  FiMoon,
 } from "react-icons/fi";
 import {
   motion,
@@ -23,6 +21,8 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
+import { MorphIcon } from "morphicons/react";
+import { Sun, Moon } from "lucide";
 
 /* ==========================================================================
    CONFIG & CONSTANTS
@@ -509,30 +509,13 @@ function DockThemeCircleButton({
           }
         `}
       >
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.span
-            key={isLight ? "moon" : "sun"}
-            initial={
-              reducedMotion
-                ? false
-                : { opacity: 0, rotate: -45, scale: 0.65 }
-            }
-            animate={{ opacity: 1, rotate: 0, scale: 1 }}
-            exit={
-              reducedMotion
-                ? undefined
-                : { opacity: 0, rotate: 45, scale: 0.65 }
-            }
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="flex"
-          >
-            {isLight ? (
-              <FiMoon size={20} strokeWidth={2} />
-            ) : (
-              <FiSun size={20} strokeWidth={2} />
-            )}
-          </motion.span>
-        </AnimatePresence>
+        <MorphIcon
+          icon={isLight ? Moon : Sun}
+          size={20}
+          strokeWidth={2}
+          spring="snappy"
+          className="transition-transform duration-200 group-hover:scale-105"
+        />
       </motion.button>
 
       {/* Spacer for bottom alignment */}

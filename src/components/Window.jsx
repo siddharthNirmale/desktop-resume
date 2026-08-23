@@ -1,7 +1,9 @@
 import { motion, animate, useMotionValue } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
+import { MorphIcon } from "morphicons/react";
+import { Maximize2, Minimize2 } from "lucide";
 import { XIcon as X } from "lucide-animated";
-import { Minus, Square } from "lucide-react";
+import { Minus } from "lucide-react";
 
 function ResizeHandle({ direction, className, onStartResize }) {
   return (
@@ -411,9 +413,11 @@ export default function Window({
               focus:outline-none
             "
           >
-            <Square
+            <MorphIcon
+              icon={isMaximized ? Minimize2 : Maximize2}
               size={11}
               strokeWidth={1.9}
+              spring="snappy"
             />
           </button>
 
