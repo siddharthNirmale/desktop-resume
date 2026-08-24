@@ -1,10 +1,17 @@
 import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  memo,
+} from "react";
+import {
   FiUser,
   FiBriefcase,
   FiFileText,
   FiEdit3,
   FiMail,
-  FiTerminal,
 } from "react-icons/fi";
 import {
   motion,
@@ -80,20 +87,6 @@ const DOCK_ITEMS = [
       "bg-[#FEFCE8] text-[#CA8A04] hover:bg-[#FEF9C3] border-amber-200/60 shadow-xs",
     darkClass:
       "bg-amber-500/15 text-amber-400 border-amber-500/25 hover:bg-amber-500/25 shadow-xs",
-  },
-  {
-    id: "separator-1",
-    type: "separator",
-  },
-  {
-    id: "terminal",
-    icon: FiTerminal,
-    label: "Terminal",
-    shortcut: "6",
-    lightClass:
-      "bg-[#F0F9FF] text-[#0284C7] hover:bg-[#E0F2FE] border-sky-200/60 shadow-xs",
-    darkClass:
-      "bg-sky-500/15 text-sky-400 border-sky-500/25 hover:bg-sky-500/25 shadow-xs",
   },
 ];
 
@@ -465,14 +458,14 @@ export default function Dock({
   }, [mouseX]);
 
   /* ------------------------------------------------------------------------
-     KEYBOARD SHORTCUTS (Ctrl / Cmd + 1..7)
+     KEYBOARD SHORTCUTS (Ctrl / Cmd + 1..5)
      ------------------------------------------------------------------------ */
 
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.metaKey || event.ctrlKey) {
         const num = Number(event.key);
-        if (num >= 1 && num <= 6) {
+        if (num >= 1 && num <= 5) {
           event.preventDefault();
           const items = DOCK_ITEMS.filter(
             (entry) => entry.type !== "separator"
