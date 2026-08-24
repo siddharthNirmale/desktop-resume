@@ -25,10 +25,10 @@ const ACCENT_COLORS = [
 ];
 
 const WALLPAPERS = [
-  { id: "default", url: "", name: "Dynamic" },
-  { id: "wp1", url: one, name: "Monterey" },
-  { id: "wp2", url: two, name: "Ventura" },
-  { id: "wp3", url: three, name: "Sonoma" },
+  { id: "default", url: "", name: "Default" },
+  { id: "wp1", url: one, name: "Gray" },
+  { id: "wp2", url: two, name: "Light" },
+  { id: "wp3", url: three, name: "Dark" },
 ];
 
 /* ==========================================================================
