@@ -65,8 +65,8 @@ export default function Window({
   const animateTo = (motionValue, value) => {
     animate(motionValue, value, {
       type: "spring",
-      stiffness: 450,
-      damping: 35,
+      stiffness: 420,
+      damping: 32,
       mass: 0.5,
     });
   };
@@ -245,9 +245,9 @@ export default function Window({
       }}
       transition={{
         type: "spring",
-        stiffness: 450,
-        damping: 32,
-        mass: 0.7,
+        stiffness: 420,
+        damping: 30,
+        mass: 0.6,
       }}
       className="
         absolute

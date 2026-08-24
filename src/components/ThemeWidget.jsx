@@ -67,8 +67,9 @@ const AppearanceSegment = memo(function AppearanceSegment({
             layoutId="appearance-active-pill"
             transition={{
               type: "spring",
-              stiffness: 480,
-              damping: 34,
+              stiffness: 440,
+              damping: 32,
+              mass: 0.5,
             }}
             className="
               absolute inset-0 rounded-[8px]
@@ -117,8 +118,9 @@ const AppearanceSegment = memo(function AppearanceSegment({
             layoutId="appearance-active-pill"
             transition={{
               type: "spring",
-              stiffness: 480,
-              damping: 34,
+              stiffness: 440,
+              damping: 32,
+              mass: 0.5,
             }}
             className="
               absolute inset-0 rounded-[8px]

@@ -248,7 +248,7 @@ export default function ContactSection() {
                   }
                   title={`Copy ${item.label}`}
                   aria-label={`Copy ${item.label}`}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--color-text-disabled)] opacity-0 transition-all duration-200 hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] group-hover:opacity-100 focus:opacity-100 active:scale-90"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--color-text-disabled)] opacity-0 transition-all duration-150 ease-out hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] group-hover:opacity-100 focus:opacity-100 active:scale-[0.95]"
                 >
                   <MorphIcon
                     icon={isCopied ? Check : Copy}

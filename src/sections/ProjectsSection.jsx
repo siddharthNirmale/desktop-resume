@@ -1,7 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FiGithub,
-  FiExternalLink,
   FiArrowUpRight,
   FiChevronLeft,
   FiChevronRight,
@@ -14,27 +13,29 @@ import {
 } from "react-icons/fi";
 import { useEffect, useMemo, useState } from "react";
 import projects from "../data/project";
+import { EASING } from "../lib/motion";
 
 /* ─────────────────────────────────────────────────────────────
-   MOTION PRESETS
+   MOTION TOKENS
    ───────────────────────────────────────────────────────────── */
-const springTransition = {
+const springPreset = {
   type: "spring",
-  stiffness: 380,
-  damping: 30,
+  stiffness: 420,
+  damping: 32,
+  mass: 0.5,
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 12 },
+  hidden: { opacity: 0, y: 8 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: springTransition,
+    transition: springPreset,
   },
   exit: {
     opacity: 0,
-    y: 8,
-    transition: { duration: 0.15, ease: "easeIn" },
+    scale: 0.98,
+    transition: { duration: 0.12, ease: EASING.apple },
   },
 };
 
@@ -205,7 +206,7 @@ export default function ProjectsSection() {
                     initial={{ opacity: 0, y: -4, scale: 0.98 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -4, scale: 0.98 }}
-                    transition={{ duration: 0.12 }}
+                    transition={{ duration: 0.12, ease: EASING.apple }}
                     className="absolute right-0 top-[calc(100%+4px)] z-50 min-w-[110px] overflow-hidden rounded-[8px] bg-[var(--color-surface-elevated)] p-1 shadow-[var(--shadow-popover)] border border-[var(--color-surface-border)]"
                   >
                     {[
@@ -235,26 +236,53 @@ export default function ProjectsSection() {
               </AnimatePresence>
             </div>
 
-            {/* VIEW SWITCHER */}
-            <div className="hidden sm:flex items-center rounded-[6px] bg-[var(--color-surface-hover)]/30 p-0.5">
-              <ViewButton
-                active={view === "grid"}
+            {/* VIEW SWITCHER WITH MORPHING PILL */}
+            <div className="hidden sm:flex items-center rounded-[6px] bg-[var(--color-surface-hover)]/30 p-0.5 relative">
+              <button
+                type="button"
                 onClick={() => setView("grid")}
-                icon={<FiGrid size={11} />}
-                label="Grid view"
-              />
-              <ViewButton
-                active={view === "list"}
+                aria-label="Grid view"
+                className={`relative z-10 flex h-6 w-6 items-center justify-center rounded-[5px] transition-colors duration-150 active:scale-[0.94] ${
+                  view === "grid"
+                    ? "text-[var(--color-text)] font-medium"
+                    : "text-[var(--color-text-disabled)] hover:text-[var(--color-text)]"
+                }`}
+              >
+                {view === "grid" && (
+                  <motion.div
+                    layoutId="project-active-view-pill"
+                    transition={springPreset}
+                    className="absolute inset-0 rounded-[5px] bg-[var(--color-surface)] shadow-xs -z-10"
+                  />
+                )}
+                <FiGrid size={11} />
+              </button>
+
+              <button
+                type="button"
                 onClick={() => setView("list")}
-                icon={<FiList size={11} />}
-                label="List view"
-              />
+                aria-label="List view"
+                className={`relative z-10 flex h-6 w-6 items-center justify-center rounded-[5px] transition-colors duration-150 active:scale-[0.94] ${
+                  view === "list"
+                    ? "text-[var(--color-text)] font-medium"
+                    : "text-[var(--color-text-disabled)] hover:text-[var(--color-text)]"
+                }`}
+              >
+                {view === "list" && (
+                  <motion.div
+                    layoutId="project-active-view-pill"
+                    transition={springPreset}
+                    className="absolute inset-0 rounded-[5px] bg-[var(--color-surface)] shadow-xs -z-10"
+                  />
+                )}
+                <FiList size={11} />
+              </button>
             </div>
           </div>
         </div>
 
-        {/* CATEGORY FILTER PILLS */}
-        <div className="mt-3 flex items-center gap-1.5 overflow-x-auto custom-scrollbar pb-0.5">
+        {/* CATEGORY FILTER PILLS WITH MORPHING PILL */}
+        <div className="mt-3 flex items-center gap-1 overflow-x-auto custom-scrollbar pb-0.5 relative">
           {filters.map((filter) => {
             const active = activeFilter === filter;
             return (
@@ -262,13 +290,20 @@ export default function ProjectsSection() {
                 key={filter}
                 type="button"
                 onClick={() => setActiveFilter(filter)}
-                className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-medium transition-all duration-150 active:scale-[0.96] cursor-pointer ${
+                className={`relative z-10 shrink-0 rounded-full px-2.5 py-1 text-[10px] font-medium transition-colors duration-150 active:scale-[0.96] cursor-pointer ${
                   active
-                    ? "bg-[var(--color-text)] text-[var(--color-surface)]"
-                    : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]"
+                    ? "text-[var(--color-surface)] font-semibold"
+                    : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]/50"
                 }`}
               >
-                {filter}
+                {active && (
+                  <motion.div
+                    layoutId="project-active-filter-pill"
+                    transition={springPreset}
+                    className="absolute inset-0 rounded-full bg-[var(--color-text)] -z-10"
+                  />
+                )}
+                <span>{filter}</span>
               </button>
             );
           })}
@@ -282,6 +317,7 @@ export default function ProjectsSection() {
         {filteredProjects.length > 0 ? (
           <motion.div
             layout
+            transition={springPreset}
             className={`mx-auto grid w-full max-w-5xl gap-4 sm:gap-5 ${
               view === "grid" ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"
             }`}
@@ -338,7 +374,8 @@ function ProjectCard({ project, index, view, onPreview }) {
       initial="hidden"
       animate="visible"
       exit="exit"
-      className={`group relative overflow-hidden rounded-[12px] bg-[var(--color-surface-hover)]/25 hover:bg-[var(--color-surface-hover)]/45 transition-all duration-200 ease-out hover:-translate-y-0.5 ${
+      transition={springPreset}
+      className={`group relative overflow-hidden rounded-[12px] bg-[var(--color-surface-hover)]/25 hover:bg-[var(--color-surface-hover)]/45 transition-[background-color,transform] duration-200 ease-out hover:-translate-y-0.5 ${
         isList ? "sm:flex" : "flex flex-col"
       }`}
     >
@@ -461,7 +498,7 @@ function ProjectCard({ project, index, view, onPreview }) {
 }
 
 /* ═══════════════════════════════════════════════
-   PREVIEW MODAL (REFINED & MINIMAL)
+   PREVIEW MODAL (REFINED MORPH & TRANSITIONS)
 ═══════════════════════════════════════════════ */
 function ProjectPreview({
   project,
@@ -498,16 +535,17 @@ function ProjectPreview({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      transition={{ duration: 0.16, ease: EASING.apple }}
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-3 sm:p-6 backdrop-blur-md"
     >
       <motion.div
-        initial={{ opacity: 0, scale: 0.97, y: 8 }}
+        initial={{ opacity: 0, scale: 0.97, y: 6 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.97, y: 8 }}
-        transition={springTransition}
+        exit={{ opacity: 0, scale: 0.97, y: 6 }}
+        transition={springPreset}
         className="relative flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-[14px] bg-[var(--color-surface)] shadow-2xl border border-[var(--color-surface-border)]"
       >
         {/* MODAL CONTROLS */}
@@ -541,20 +579,27 @@ function ProjectPreview({
           <FiX size={13} />
         </button>
 
-        {/* IMAGE PREVIEW */}
+        {/* IMAGE PREVIEW WITH SMOOTH MORPH */}
         <div className="relative shrink-0 overflow-hidden bg-[var(--color-surface-dark)] aspect-[16/9]">
-          {currentImage && !imageError ? (
-            <img
-              src={currentImage}
-              alt={project.title}
-              onError={() => setImageError(true)}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <FallbackImage title={project.title} tech={project.tech} />
-          )}
+          <AnimatePresence mode="wait">
+            {currentImage && !imageError ? (
+              <motion.img
+                key={currentImage}
+                src={currentImage}
+                alt={project.title}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15, ease: EASING.apple }}
+                onError={() => setImageError(true)}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <FallbackImage key="fallback" title={project.title} tech={project.tech} />
+            )}
+          </AnimatePresence>
 
-          {/* Screenshot dots */}
+          {/* Screenshot dots with morphing pill */}
           {images.length > 1 && (
             <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 rounded-full bg-black/60 px-2 py-1 backdrop-blur-md">
               {images.map((_, i) => (
@@ -562,130 +607,131 @@ function ProjectPreview({
                   key={i}
                   type="button"
                   onClick={() => setActiveImgIndex(i)}
-                  className={`h-1.5 rounded-full transition-all duration-150 ${
-                    activeImgIndex === i ? "w-4 bg-[var(--color-accent)]" : "w-1.5 bg-white/50"
-                  }`}
-                />
+                  className="relative flex items-center justify-center p-0.5 cursor-pointer"
+                  aria-label={`Screenshot ${i + 1}`}
+                >
+                  {activeImgIndex === i ? (
+                    <motion.div
+                      layoutId="preview-active-dot"
+                      transition={springPreset}
+                      className="h-1.5 w-4 rounded-full bg-[var(--color-accent)]"
+                    />
+                  ) : (
+                    <div className="h-1.5 w-1.5 rounded-full bg-white/50 hover:bg-white/80 transition-colors" />
+                  )}
+                </button>
               ))}
             </div>
           )}
         </div>
 
-        {/* DETAILS */}
-        <div className="custom-scrollbar overflow-y-auto p-5 sm:p-6 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-            <div className="flex items-center gap-2">
-              <h2 className="text-[18px] font-heading font-semibold text-[var(--color-text)]">
-                {project.title}
-              </h2>
-              {(project.badge || project.type) && (
-                <span className="px-2 py-0.5 rounded-full bg-[var(--color-accent-soft)] text-[var(--color-accent)] text-[9px] font-semibold">
-                  {project.badge || project.type}
+        {/* DETAILS WITH SEAMLESS CONTENT MORPH */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={project.id || project.title}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.14, ease: EASING.apple }}
+            className="custom-scrollbar overflow-y-auto p-5 sm:p-6 space-y-4"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+              <div className="flex items-center gap-2">
+                <h2 className="text-[18px] font-heading font-semibold text-[var(--color-text)]">
+                  {project.title}
+                </h2>
+                {(project.badge || project.type) && (
+                  <span className="px-2 py-0.5 rounded-full bg-[var(--color-accent-soft)] text-[var(--color-accent)] text-[9px] font-semibold">
+                    {project.badge || project.type}
+                  </span>
+                )}
+              </div>
+              {project.year && (
+                <span className="text-[11px] font-mono text-[var(--color-text-tertiary)]">
+                  {project.year}
                 </span>
               )}
             </div>
-            {project.year && (
-              <span className="text-[11px] font-mono text-[var(--color-text-tertiary)]">
-                {project.year}
-              </span>
+
+            {project.tech && (
+              <p className="text-[11px] font-medium text-[var(--color-accent)]">
+                {formatTech(project.tech)}
+              </p>
             )}
-          </div>
 
-          {project.tech && (
-            <p className="text-[11px] font-medium text-[var(--color-accent)]">
-              {formatTech(project.tech)}
-            </p>
-          )}
+            {project.description && (
+              <p className="text-[12.5px] leading-relaxed text-[var(--color-text-secondary)]">
+                {project.description}
+              </p>
+            )}
 
-          {project.description && (
-            <p className="text-[12.5px] leading-relaxed text-[var(--color-text-secondary)]">
-              {project.description}
-            </p>
-          )}
+            {project.bullets?.length > 0 && (
+              <ul className="space-y-1.5 pt-1">
+                {project.bullets.map((bullet, i) => (
+                  <li
+                    key={i}
+                    className="flex items-start gap-2 text-[12px] leading-relaxed text-[var(--color-text-secondary)]"
+                  >
+                    <span className="mt-[6px] h-1 w-1 shrink-0 rounded-full bg-[var(--color-accent)]" />
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
 
-          {project.bullets?.length > 0 && (
-            <ul className="space-y-1.5 pt-1">
-              {project.bullets.map((bullet, i) => (
-                <li
-                  key={i}
-                  className="flex items-start gap-2 text-[12px] leading-relaxed text-[var(--color-text-secondary)]"
-                >
-                  <span className="mt-[6px] h-1 w-1 shrink-0 rounded-full bg-[var(--color-accent)]" />
-                  <span>{bullet}</span>
-                </li>
-              ))}
-            </ul>
-          )}
+            {/* ACTIONS */}
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--color-surface-border)]">
+              <div className="flex items-center gap-2">
+                {project.live && (
+                  <a
+                    href={project.live}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] bg-[var(--color-accent)] text-white text-[11px] font-semibold transition-all hover:brightness-110 active:scale-[0.97]"
+                  >
+                    <span>Open Live Project</span>
+                    <FiArrowUpRight size={12} />
+                  </a>
+                )}
 
-          {/* ACTIONS */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--color-surface-border)]">
-            <div className="flex items-center gap-2">
-              {project.live && (
-                <a
-                  href={project.live}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] bg-[var(--color-accent)] text-white text-[11px] font-semibold transition-all hover:brightness-110 active:scale-[0.97]"
-                >
-                  <span>Open Live Project</span>
-                  <FiArrowUpRight size={12} />
-                </a>
-              )}
+                {project.github && (
+                  <a
+                    href={project.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] bg-[var(--color-surface-hover)] hover:bg-[var(--color-surface-active)] text-[11px] font-medium text-[var(--color-text)] transition-colors active:scale-[0.97]"
+                  >
+                    <FiGithub size={12} />
+                    <span>GitHub</span>
+                  </a>
+                )}
 
-              {project.github && (
-                <a
-                  href={project.github}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] bg-[var(--color-surface-hover)] hover:bg-[var(--color-surface-active)] text-[11px] font-medium text-[var(--color-text)] transition-colors active:scale-[0.97]"
-                >
-                  <FiGithub size={12} />
-                  <span>GitHub</span>
-                </a>
-              )}
+                {project.live && (
+                  <button
+                    type="button"
+                    onClick={onCopy}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[7px] text-[11px] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] transition-colors"
+                  >
+                    {copied ? <FiCheck size={12} className="text-emerald-400" /> : <FiCopy size={12} />}
+                    <span>{copied ? "Copied" : "Copy link"}</span>
+                  </button>
+                )}
+              </div>
 
-              {project.live && (
-                <button
-                  type="button"
-                  onClick={onCopy}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[7px] text-[11px] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] transition-colors"
-                >
-                  {copied ? <FiCheck size={12} className="text-emerald-400" /> : <FiCopy size={12} />}
-                  <span>{copied ? "Copied" : "Copy link"}</span>
-                </button>
-              )}
+              <div className="text-[10px] font-mono text-[var(--color-text-disabled)]">
+                {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+              </div>
             </div>
-
-            <div className="text-[10px] font-mono text-[var(--color-text-disabled)]">
-              {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-            </div>
-          </div>
-        </div>
+          </motion.div>
+        </AnimatePresence>
       </motion.div>
     </motion.div>
   );
 }
 
 /* ═══════════════════════════════════════════════
-   SUB-COMPONENTS & HELPERS
+   EMPTY STATE & HELPERS
 ═══════════════════════════════════════════════ */
-function ViewButton({ active, onClick, icon, label }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={label}
-      className={`flex h-6 w-6 items-center justify-center rounded-[5px] transition-all duration-150 active:scale-[0.94] ${
-        active
-          ? "bg-[var(--color-surface)] text-[var(--color-text)] shadow-xs"
-          : "text-[var(--color-text-disabled)] hover:text-[var(--color-text)]"
-      }`}
-    >
-      {icon}
-    </button>
-  );
-}
-
 function EmptyState({ filter, onClear }) {
   return (
     <div className="flex min-h-[220px] flex-col items-center justify-center text-center">

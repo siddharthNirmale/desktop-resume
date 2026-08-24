@@ -1,23 +1,25 @@
 /**
  * Advanced Motion System Architecture
  * 
- * Provides centralized animation constants for the entire application,
- * ensuring an Apple-inspired, cohesive, and performant user experience.
+ * Centralized, Apple-inspired motion constants ensuring smooth,
+ * tactile, and restrained micro-interactions without exaggerated bounce or overshoot.
  */
 
 export const EASING = {
-  // Smooth deceleration mimicking native OS interfaces
+  // Apple native deceleration curve for natural UI flow
   apple: [0.22, 1, 0.36, 1],
-  // Snappy but smooth easing for micro-interactions
-  micro: "easeOut",
-  // Spring physics, used sparingly
-  spring: { type: "spring", stiffness: 400, damping: 25 },
+  // Snappy, subtle ease-out for immediate feedback
+  micro: [0.16, 1, 0.3, 1],
+  // Tightly controlled spring physics with zero overshoot
+  spring: { type: "spring", stiffness: 440, damping: 30, mass: 0.5 },
+  // Soft spring for layout morphing
+  layoutSpring: { type: "spring", stiffness: 380, damping: 32, mass: 0.55 },
 };
 
 export const DURATION = {
-  micro: 0.15, // 150ms: Buttons, icons, toggles
-  ui: 0.25,    // 250ms: Cards, Menus, Dialogs, Tabs
-  layout: 0.4, // 400ms: Page transitions, large layout changes
+  micro: 0.14, // 140ms: Buttons, icons, checkmarks, toggles
+  ui: 0.22,    // 220ms: Cards, Menus, Dialogs, Tabs
+  layout: 0.32, // 320ms: Window resizing, section transitions
 };
 
 /**
@@ -28,26 +30,27 @@ export const transitions = {
   standard: { duration: DURATION.ui, ease: EASING.apple },
   layout: { duration: DURATION.layout, ease: EASING.apple },
   spring: EASING.spring,
+  layoutSpring: EASING.layoutSpring,
 };
 
 /**
  * Common Animation Variants
  */
 export const variants = {
-  // Level 1: Micro-interactions (Buttons, Links)
-  tap: { scale: 0.97, transition: transitions.micro },
-  hoverSubtle: { scale: 1.02, transition: transitions.micro },
+  // Level 1: Tactile Micro-interactions (Buttons, Links)
+  tap: { scale: 0.96, transition: transitions.micro },
+  hoverSubtle: { scale: 1.015, transition: transitions.micro },
   
   // Level 2: Component Mounting (Dialogs, Cards, Menus)
   fadeUp: {
-    hidden: { opacity: 0, y: 8, scale: 0.98 },
+    hidden: { opacity: 0, y: 6, scale: 0.99 },
     visible: { opacity: 1, y: 0, scale: 1, transition: transitions.standard },
-    exit: { opacity: 0, y: 4, scale: 0.98, transition: { duration: 0.2, ease: "easeIn" } },
+    exit: { opacity: 0, y: 4, scale: 0.99, transition: { duration: 0.15, ease: EASING.apple } },
   },
   
   // Level 3: Layout / Section Entrance
   sectionReveal: {
-    hidden: { opacity: 0, y: 12 },
+    hidden: { opacity: 0, y: 8 },
     visible: { opacity: 1, y: 0, transition: transitions.layout },
   },
 };
