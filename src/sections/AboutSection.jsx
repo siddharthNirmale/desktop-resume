@@ -63,121 +63,122 @@ export default function AboutSection() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="max-w-3xl mx-auto px-6 py-6 sm:px-10 sm:py-8 md:px-12 md:py-10 space-y-9 sm:space-y-11"
+        className="max-w-3xl mx-auto px-6 py-6 sm:px-10 sm:py-8 md:px-12 md:py-10 min-h-full flex flex-col justify-between gap-9 sm:gap-11"
       >
         {/* =====================================================
-            HERO LEAD (IMMEDIATE & UNCLUTTERED)
+            TOP / MAIN CONTENT AREA
         ====================================================== */}
-        <motion.div variants={itemVariants} className="space-y-3">
-          <h1 className="text-[clamp(2.25rem,6vw,3.5rem)] leading-[0.98] font-heading font-bold tracking-[-0.04em] text-[var(--color-text)]">
-            Siddharth Nirmale
-          </h1>
+        <div className="space-y-9 sm:space-y-11">
+          {/* Hero Lead */}
+          <motion.div variants={itemVariants} className="space-y-3">
+            <h1 className="text-[clamp(2.25rem,6vw,3.5rem)] leading-[0.98] font-heading font-bold tracking-[-0.04em] text-[var(--color-text)]">
+              Siddharth Nirmale
+            </h1>
 
-          <p className="text-[clamp(1.1rem,2.2vw,1.35rem)] leading-snug font-heading font-medium tracking-[-0.02em] text-[var(--color-text-secondary)] max-w-2xl">
-            Full-stack engineer crafting fluid web applications, reactive interfaces, and intelligent systems.
-          </p>
-
-          <p className="text-[13.5px] leading-relaxed text-[var(--color-text-tertiary)] max-w-xl">
-            Specializing in React 19 ecosystems, tactile micro-interactions, scalable Node.js architecture, and applied AI workflows.
-          </p>
-        </motion.div>
-
-        {/* =====================================================
-            AIRY 3-COLUMN DETAIL (BORDERLESS & SPATIAL)
-        ====================================================== */}
-        <motion.div
-          variants={itemVariants}
-          className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-1"
-        >
-          {/* Stack */}
-          <div className="space-y-2">
-            <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-tertiary)] font-mono">
-              Core Stack
-            </div>
-            <p className="text-[12.5px] leading-relaxed text-[var(--color-text-secondary)]">
-              React 19, Next.js, TypeScript, Node.js, Tailwind CSS, Framer Motion, MongoDB.
+            <p className="text-[clamp(1.1rem,2.2vw,1.35rem)] leading-snug font-heading font-medium tracking-[-0.02em] text-[var(--color-text-secondary)] max-w-2xl">
+              Full-stack engineer crafting fluid web applications, reactive interfaces, and intelligent systems.
             </p>
-          </div>
 
-          {/* Background */}
-          <div className="space-y-2">
-            <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-tertiary)] font-mono">
-              Background
-            </div>
-            <div className="text-[12.5px] leading-relaxed text-[var(--color-text-secondary)] space-y-1">
-              <div className="group cursor-default">
-                <span className="text-[var(--color-text)] font-medium transition-colors group-hover:text-[var(--color-accent)]">
-                  Personifwy
-                </span>
-                <span className="text-[var(--color-text-tertiary)] text-[11px]"> · ML & Dev Intern</span>
-              </div>
-              <div className="group cursor-default">
-                <span className="text-[var(--color-text)] font-medium transition-colors group-hover:text-[var(--color-accent)]">
-                  MITS Gwalior
-                </span>
-                <span className="text-[var(--color-text-tertiary)] text-[11px]"> · 8.49 CGPA</span>
-              </div>
-            </div>
-          </div>
+            <p className="text-[13.5px] leading-relaxed text-[var(--color-text-tertiary)] max-w-xl">
+              Specializing in React 19 ecosystems, tactile micro-interactions, scalable Node.js architecture, and applied AI workflows.
+            </p>
+          </motion.div>
 
-          {/* Selected Work */}
-          <div className="space-y-2">
-            <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-tertiary)] font-mono">
-              Selected Craft
+          {/* Airy 3-Column Detail Grid */}
+          <motion.div
+            variants={itemVariants}
+            className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-1"
+          >
+            {/* Stack */}
+            <div className="space-y-2">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-tertiary)] font-mono">
+                Core Stack
+              </div>
+              <p className="text-[12.5px] leading-relaxed text-[var(--color-text-secondary)]">
+                React 19, Next.js, TypeScript, Node.js, Tailwind CSS, Framer Motion, MongoDB.
+              </p>
             </div>
-            <div className="text-[12.5px] leading-relaxed space-y-1">
-              <div>
-                <a
-                  href="https://lekha-lilac.vercel.app/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group inline-flex items-center gap-1 text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors duration-150"
-                >
-                  <span className="group-hover:translate-x-0.5 transition-transform duration-150">Lekha</span>
-                  <FiArrowUpRight
-                    size={11}
-                    className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-150"
-                  />
-                </a>
+
+            {/* Background */}
+            <div className="space-y-2">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-tertiary)] font-mono">
+                Background
               </div>
-              <div>
-                <a
-                  href="https://refundpilot-preview.vercel.app/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group inline-flex items-center gap-1 text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors duration-150"
-                >
-                  <span className="group-hover:translate-x-0.5 transition-transform duration-150">AI Refund Agent</span>
-                  <FiArrowUpRight
-                    size={11}
-                    className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-150"
-                  />
-                </a>
-              </div>
-              <div>
-                <a
-                  href="https://thumbmax-psi.vercel.app/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group inline-flex items-center gap-1 text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors duration-150"
-                >
-                  <span className="group-hover:translate-x-0.5 transition-transform duration-150">Thumbmax</span>
-                  <FiArrowUpRight
-                    size={11}
-                    className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-150"
-                  />
-                </a>
+              <div className="text-[12.5px] leading-relaxed text-[var(--color-text-secondary)] space-y-1">
+                <div className="group cursor-default">
+                  <span className="text-[var(--color-text)] font-medium transition-colors group-hover:text-[var(--color-accent)]">
+                    Personifwy
+                  </span>
+                  <span className="text-[var(--color-text-tertiary)] text-[11px]"> · ML & Dev Intern</span>
+                </div>
+                <div className="group cursor-default">
+                  <span className="text-[var(--color-text)] font-medium transition-colors group-hover:text-[var(--color-accent)]">
+                    MITS Gwalior
+                  </span>
+                  <span className="text-[var(--color-text-tertiary)] text-[11px]"> · 8.49 CGPA</span>
+                </div>
               </div>
             </div>
-          </div>
-        </motion.div>
+
+            {/* Selected Work */}
+            <div className="space-y-2">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-tertiary)] font-mono">
+                Selected Craft
+              </div>
+              <div className="text-[12.5px] leading-relaxed space-y-1">
+                <div>
+                  <a
+                    href="https://lekha-lilac.vercel.app/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group inline-flex items-center gap-1 text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors duration-150"
+                  >
+                    <span className="group-hover:translate-x-0.5 transition-transform duration-150">Lekha</span>
+                    <FiArrowUpRight
+                      size={11}
+                      className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-150"
+                    />
+                  </a>
+                </div>
+                <div>
+                  <a
+                    href="https://refundpilot-preview.vercel.app/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group inline-flex items-center gap-1 text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors duration-150"
+                  >
+                    <span className="group-hover:translate-x-0.5 transition-transform duration-150">AI Refund Agent</span>
+                    <FiArrowUpRight
+                      size={11}
+                      className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-150"
+                    />
+                  </a>
+                </div>
+                <div>
+                  <a
+                    href="https://thumbmax-psi.vercel.app/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group inline-flex items-center gap-1 text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors duration-150"
+                  >
+                    <span className="group-hover:translate-x-0.5 transition-transform duration-150">Thumbmax</span>
+                    <FiArrowUpRight
+                      size={11}
+                      className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-150"
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
 
         {/* =====================================================
-            ACTIONS & CONTEXTUAL METADATA (INTEGRATED & NATURAL)
+            BOTTOM OPTIONS (ALIGNED TO END OF CONTAINER)
         ====================================================== */}
         <motion.div
           variants={itemVariants}
-          className="pt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          className="pt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-auto"
         >
           {/* Action Buttons & Links */}
           <div className="flex flex-wrap items-center gap-2.5">
