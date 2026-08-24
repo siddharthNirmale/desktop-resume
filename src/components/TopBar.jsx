@@ -69,6 +69,7 @@ export default function TopBar({
         bg-[var(--color-surface-dark)]/75 backdrop-blur-2xl
         border-b border-[var(--color-surface-border)]
         shadow-xs font-primary select-none
+        transition-[background-color,border-color] duration-150 ease-out
       "
     >
       {/* ──────────────────────────────────────────
@@ -83,12 +84,13 @@ export default function TopBar({
             className="
               flex h-[22px] px-1.5 items-center justify-center rounded-[4px]
               text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]
-              active:bg-[var(--color-surface-active)] transition-colors
+              active:bg-[var(--color-surface-active)] active:scale-[0.96]
+              transition-all duration-150 ease-out
               cursor-default focus:outline-none
             "
             aria-label="System Menu"
           >
-            <span className="text-[13px] leading-none select-none">😈</span>
+            <span className="text-[13px] leading-none select-none transition-transform duration-150 hover:scale-105">😈</span>
           </button>
         </Tooltip>
 
@@ -99,7 +101,8 @@ export default function TopBar({
           className="
             topbar-text text-[13px] font-semibold text-[var(--color-text)]
             tracking-[-0.015em] px-1.5 py-0.5 rounded-[4px]
-            hover:bg-[var(--color-surface-hover)] transition-colors
+            hover:bg-[var(--color-surface-hover)] active:scale-[0.98]
+            transition-all duration-150 ease-out
             cursor-default focus:outline-none
           "
         >
@@ -116,7 +119,8 @@ export default function TopBar({
               className="
                 text-[13px] font-normal text-[var(--color-text-secondary)]
                 hover:text-[var(--color-text)] px-2 py-0.5 rounded-[4px]
-                hover:bg-[var(--color-surface-hover)] transition-colors
+                hover:bg-[var(--color-surface-hover)] active:scale-[0.96]
+                transition-all duration-150 ease-out
                 cursor-default focus:outline-none
               "
             >
@@ -133,13 +137,14 @@ export default function TopBar({
             className="
               hidden sm:flex items-center gap-1.5 ml-2.5 h-[20px] px-2 rounded-[5px]
               border border-[var(--color-surface-border)] bg-[var(--color-surface-hover)]/30
-              hover:bg-[var(--color-surface-hover)] text-[var(--color-text-tertiary)]
-              hover:text-[var(--color-text)] transition-colors cursor-default
-              text-[11px] font-medium focus:outline-none
+              hover:bg-[var(--color-surface-hover)] hover:border-[var(--color-window-border)]
+              text-[var(--color-text-tertiary)] hover:text-[var(--color-text)]
+              active:scale-[0.97] transition-all duration-150 ease-out
+              cursor-default text-[11px] font-medium focus:outline-none
             "
             aria-label="Search commands"
           >
-            <FiSearch size={11} strokeWidth={2.2} />
+            <FiSearch size={11} strokeWidth={2.2} className="transition-transform duration-150 hover:scale-105" />
             <span className="text-[10px] font-mono opacity-80 tracking-wider">⌘K</span>
           </button>
         </Tooltip>
@@ -158,7 +163,8 @@ export default function TopBar({
               hidden lg:inline-flex items-center px-2 py-0.5 rounded-[4px]
               text-[11px] font-normal text-[var(--color-text-tertiary)]
               hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]
-              transition-colors cursor-default focus:outline-none
+              active:scale-[0.97] transition-all duration-150 ease-out
+              cursor-default focus:outline-none
             "
             aria-label="Available for Opportunities"
           >
@@ -173,13 +179,14 @@ export default function TopBar({
             target="_blank"
             rel="noreferrer"
             className="
-              flex h-[22px] w-[24px] items-center justify-center rounded-[4px]
+              group flex h-[22px] w-[24px] items-center justify-center rounded-[4px]
               hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]
-              transition-colors cursor-default
+              active:scale-[0.95] transition-all duration-150 ease-out
+              cursor-default
             "
             aria-label="GitHub Profile"
           >
-            <FiGithub size={13} strokeWidth={2} />
+            <FiGithub size={13} strokeWidth={2} className="transition-transform duration-150 group-hover:scale-105" />
           </a>
         </Tooltip>
 
@@ -190,13 +197,14 @@ export default function TopBar({
             target="_blank"
             rel="noreferrer"
             className="
-              flex h-[22px] w-[24px] items-center justify-center rounded-[4px]
+              group flex h-[22px] w-[24px] items-center justify-center rounded-[4px]
               hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]
-              transition-colors cursor-default
+              active:scale-[0.95] transition-all duration-150 ease-out
+              cursor-default
             "
             aria-label="LinkedIn Profile"
           >
-            <FiLinkedin size={13} strokeWidth={2} />
+            <FiLinkedin size={13} strokeWidth={2} className="transition-transform duration-150 group-hover:scale-105" />
           </a>
         </Tooltip>
 
@@ -205,13 +213,14 @@ export default function TopBar({
           <a
             href="mailto:siddharth175nirmale1@gmail.com"
             className="
-              flex h-[22px] w-[24px] items-center justify-center rounded-[4px]
+              group flex h-[22px] w-[24px] items-center justify-center rounded-[4px]
               hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]
-              transition-colors cursor-default
+              active:scale-[0.95] transition-all duration-150 ease-out
+              cursor-default
             "
             aria-label="Send Email"
           >
-            <FiMail size={13} strokeWidth={2} />
+            <FiMail size={13} strokeWidth={2} className="transition-transform duration-150 group-hover:scale-105" />
           </a>
         </Tooltip>
 
@@ -223,7 +232,8 @@ export default function TopBar({
             aria-label="Control Center"
             className={`
               flex h-[22px] px-1.5 items-center justify-center rounded-[4px]
-              transition-all cursor-default focus:outline-none
+              active:scale-[0.95] transition-all duration-150 ease-out
+              cursor-default focus:outline-none
               ${
                 isControlCenterOpen
                   ? "bg-[var(--color-accent)] text-white shadow-xs"
@@ -231,7 +241,7 @@ export default function TopBar({
               }
             `}
           >
-            <FiSliders size={12} strokeWidth={2.2} />
+            <FiSliders size={12} strokeWidth={2.2} className="transition-transform duration-150 hover:scale-105" />
           </button>
         </Tooltip>
 
@@ -245,7 +255,8 @@ export default function TopBar({
             onClick={() => setIsCalendarOpen((prev) => !prev)}
             className={`
               topbar-text text-[12px] font-medium tabular-nums tracking-[-0.01em]
-              px-1.5 py-0.5 rounded-[4px] transition-colors cursor-default
+              px-1.5 py-0.5 rounded-[4px] active:scale-[0.97]
+              transition-all duration-150 ease-out cursor-default
               whitespace-nowrap focus:outline-none
               ${
                 isCalendarOpen
@@ -272,7 +283,3 @@ export default function TopBar({
     </header>
   );
 }
-
-
-
-

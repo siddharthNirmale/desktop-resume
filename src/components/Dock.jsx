@@ -27,13 +27,13 @@ import { TooltipBubble } from "./Tooltip";
    ========================================================================== */
 
 const BASE_ICON_SIZE = 46;
-const MAX_ICON_SCALE = 1.34;
-const MAGNIFY_RADIUS = 135;
+const MAX_ICON_SCALE = 1.32;
+const MAGNIFY_RADIUS = 130;
 
 const SPRING_CONFIG = {
-  stiffness: 440,
+  stiffness: 450,
   damping: 28,
-  mass: 0.52,
+  mass: 0.48,
 };
 
 /* Pastel tinted palette with explicit Light and Dark classes */
@@ -127,7 +127,7 @@ function useMagnification(mouseX, ref, disabled = false) {
   const rawY = useTransform(
     distance,
     [0, MAGNIFY_RADIUS],
-    [-8, 0],
+    [-7, 0],
     { clamp: true }
   );
 
@@ -145,6 +145,7 @@ const DockTooltip = memo(function DockTooltip({
   label,
   shortcut,
   visible,
+  isLight,
 }) {
   return (
     <TooltipBubble
@@ -167,7 +168,7 @@ const RunningIndicator = memo(function RunningIndicator({
   isLight,
 }) {
   return (
-    <div className="flex h-[5px] w-full items-center justify-center pt-0.5">
+    <div className="flex h-[5px] w-full items-center justify-center pt-0.5 pointer-events-none">
       <AnimatePresence mode="wait">
         {isOpen && (
           <motion.span
@@ -178,22 +179,19 @@ const RunningIndicator = memo(function RunningIndicator({
               opacity: isMinimized ? 0.35 : 1,
             }}
             exit={{ scale: 0, opacity: 0 }}
-            transition={{ duration: 0.15 }}
+            transition={{ duration: 0.14, ease: "easeOut" }}
             style={{
               backgroundColor: isTopActive
                 ? "var(--color-accent, #0a84ff)"
                 : undefined,
-              boxShadow: isTopActive
-                ? "0 0 6px var(--color-accent, #0a84ff)"
-                : "none",
             }}
             className={`
-              block h-[3.5px] w-[3.5px] rounded-full transition-colors duration-200
+              block h-[3px] w-[3px] rounded-full transition-colors duration-150
               ${
                 !isTopActive
                   ? isLight
-                    ? "bg-zinc-800"
-                    : "bg-zinc-200"
+                    ? "bg-zinc-700"
+                    : "bg-zinc-300"
                   : ""
               }
             `}
@@ -221,8 +219,8 @@ function DockSeparator({ isLight }) {
         self-center
         rounded-full
         transition-colors
-        duration-200
-        ${isLight ? "bg-black/[0.10]" : "bg-white/[0.12]"}
+        duration-150
+        ${isLight ? "bg-black/[0.08]" : "bg-white/[0.10]"}
       `}
     />
   );
@@ -270,7 +268,7 @@ function DockCircleItem({
     if (!windowItem) return;
 
     setBouncing(true);
-    setTimeout(() => setBouncing(false), 580);
+    setTimeout(() => setBouncing(false), 500);
 
     if (windowItem.type === "widget") {
       if (!isOpen) {
@@ -341,19 +339,19 @@ function DockCircleItem({
         style={{ scale, y }}
         animate={
           bouncing && !reducedMotion
-            ? { y: [0, -18, 0, -8, 0] }
+            ? { y: [0, -14, 0, -6, 0] }
             : { y: 0 }
         }
         transition={
           bouncing
             ? {
-                duration: 0.56,
+                duration: 0.5,
                 times: [0, 0.28, 0.55, 0.78, 1],
-                ease: "easeOut",
+                ease: [0.22, 1, 0.36, 1],
               }
             : SPRING_CONFIG
         }
-        whileTap={reducedMotion ? undefined : { scale: 0.92 }}
+        whileTap={reducedMotion ? undefined : { scale: 0.94 }}
         className={`
           group
           relative
@@ -366,15 +364,19 @@ function DockCircleItem({
           rounded-full
           border
           outline-none
-          transition-all
-          duration-200
+          transition-colors
+          duration-150
           focus-visible:ring-2
           focus-visible:ring-[var(--color-accent,#0a84ff)]
           focus-visible:ring-offset-2
+          active:brightness-95
           ${isLight ? lightClass : darkClass}
         `}
       >
-        <Icon size={20} />
+        <Icon
+          size={20}
+          className="transition-transform duration-150 group-hover:scale-[1.04]"
+        />
       </motion.button>
 
       {/* Running App Dot */}
@@ -423,7 +425,7 @@ export default function Dock({
   }, [isLight]);
 
   /* ------------------------------------------------------------------------
-     OBSERVE EXTERNAL THEME CHANGES (e.g. SmallDisplay, ThemeWidget)
+     OBSERVE EXTERNAL THEME CHANGES
      ------------------------------------------------------------------------ */
 
   useEffect(() => {
@@ -533,16 +535,18 @@ export default function Dock({
           pb-2
           pt-2.5
           backdrop-blur-2xl
-          transition-all
-          duration-300
+          transition-[background-color,border-color,box-shadow]
+          duration-200
+          ease-out
           sm:gap-3
           sm:px-4
           sm:pb-2
           sm:pt-2.5
+          hover:shadow-2xl
           ${
             isLight
-              ? "border-black/[0.08] bg-white/85 shadow-[0_16px_44px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.03)]"
-              : "border-white/[0.10] bg-[#161618]/85 shadow-[0_20px_50px_rgba(0,0,0,0.55),0_1px_1px_rgba(255,255,255,0.08)_inset]"
+              ? "border-black/[0.08] bg-white/85 hover:bg-white/92 hover:border-black/[0.12] shadow-[0_16px_44px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.03)]"
+              : "border-white/[0.10] bg-[#161618]/85 hover:bg-[#161618]/92 hover:border-white/[0.15] shadow-[0_20px_50px_rgba(0,0,0,0.55),0_1px_1px_rgba(255,255,255,0.08)_inset]"
           }
         `}
       >
