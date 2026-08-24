@@ -13,6 +13,7 @@ import {
   FiEdit3,
   FiMail,
   FiTerminal,
+  FiSliders,
 } from "react-icons/fi";
 import {
   motion,
@@ -21,8 +22,6 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
-import { MorphIcon } from "morphicons/react";
-import { Sun, Moon } from "lucide";
 import { TooltipBubble } from "./Tooltip";
 
 /* ==========================================================================
@@ -104,6 +103,16 @@ const DOCK_ITEMS = [
       "bg-[#F0F9FF] text-[#0284C7] hover:bg-[#E0F2FE] border-sky-200/60 shadow-xs",
     darkClass:
       "bg-sky-500/15 text-sky-400 border-sky-500/25 hover:bg-sky-500/25 shadow-xs",
+  },
+  {
+    id: "theme",
+    icon: FiSliders,
+    label: "Appearance",
+    shortcut: "7",
+    lightClass:
+      "bg-[#FAF5FF] text-[#9333EA] hover:bg-[#F3E8FF] border-purple-200/60 shadow-xs",
+    darkClass:
+      "bg-purple-500/15 text-purple-400 border-purple-500/25 hover:bg-purple-500/25 shadow-xs",
   },
 ];
 
@@ -289,6 +298,16 @@ function DockCircleItem({
     setBouncing(true);
     setTimeout(() => setBouncing(false), 580);
 
+    if (windowItem.type === "widget") {
+      if (!isOpen) {
+        toggleWindow(id, "isOpen", true);
+        bringToFront(id);
+      } else {
+        toggleWindow(id, "isOpen", false);
+      }
+      return;
+    }
+
     if (!isOpen) {
       toggleWindow(id, "isOpen", true);
       bringToFront(id);
@@ -325,10 +344,6 @@ function DockCircleItem({
     },
     [windowItem, id, toggleWindow]
   );
-
-  if (windowItem?.type === "widget") {
-    return null;
-  }
 
   return (
     <div
@@ -376,26 +391,16 @@ function DockCircleItem({
           justify-center
           rounded-full
           border
-          ${isLight ? lightClass : darkClass}
           outline-none
           transition-all
           duration-200
           focus-visible:ring-2
           focus-visible:ring-[var(--color-accent,#0a84ff)]
           focus-visible:ring-offset-2
-          ${
-            isLight
-              ? "focus-visible:ring-offset-white"
-              : "focus-visible:ring-offset-[#161618]"
-          }
+          ${isLight ? lightClass : darkClass}
         `}
       >
-        <Icon
-          size={21}
-          strokeWidth={2}
-          className="transition-transform duration-200 group-hover:scale-105"
-          aria-hidden="true"
-        />
+        <Icon size={20} />
       </motion.button>
 
       {/* Running App Dot */}
@@ -405,76 +410,6 @@ function DockCircleItem({
         isTopActive={isTopActive}
         isLight={isLight}
       />
-    </div>
-  );
-}
-
-/* ==========================================================================
-   THEME TOGGLE CIRCLE BUTTON
-   ========================================================================== */
-
-function DockThemeCircleButton({
-  isLight,
-  onToggle,
-  mouseX,
-  reducedMotion,
-}) {
-  const ref = useRef(null);
-  const [hovered, setHovered] = useState(false);
-  const { scale, y } = useMagnification(mouseX, ref, reducedMotion);
-
-  const label = isLight ? "Dark Mode" : "Light Mode";
-
-  return (
-    <div
-      ref={ref}
-      className="relative flex w-[48px] shrink-0 flex-col items-center justify-end"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <DockTooltip label={label} visible={hovered} isLight={isLight} />
-
-      <motion.button
-        type="button"
-        aria-label={label}
-        onClick={onToggle}
-        style={{ scale, y }}
-        whileTap={reducedMotion ? undefined : { scale: 0.92 }}
-        className={`
-          group
-          relative
-          flex
-          h-[46px]
-          w-[46px]
-          cursor-pointer
-          items-center
-          justify-center
-          rounded-full
-          border
-          outline-none
-          transition-all
-          duration-200
-          focus-visible:ring-2
-          focus-visible:ring-[var(--color-accent,#0a84ff)]
-          focus-visible:ring-offset-2
-          ${
-            isLight
-              ? "border-purple-200/60 bg-[#F5F3FF] text-[#7C3AED] shadow-xs hover:bg-[#EDE9FE] focus-visible:ring-offset-white"
-              : "border-purple-500/25 bg-purple-500/15 text-purple-400 shadow-xs hover:bg-purple-500/25 focus-visible:ring-offset-[#161618]"
-          }
-        `}
-      >
-        <MorphIcon
-          icon={isLight ? Moon : Sun}
-          size={20}
-          strokeWidth={2}
-          spring="snappy"
-          className="transition-transform duration-200 group-hover:scale-105"
-        />
-      </motion.button>
-
-      {/* Spacer for bottom alignment */}
-      <div className="h-[5px] w-full pt-0.5" />
     </div>
   );
 }
@@ -549,14 +484,14 @@ export default function Dock({
   }, [mouseX]);
 
   /* ------------------------------------------------------------------------
-     KEYBOARD SHORTCUTS (Ctrl / Cmd + 1..6)
+     KEYBOARD SHORTCUTS (Ctrl / Cmd + 1..7)
      ------------------------------------------------------------------------ */
 
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.metaKey || event.ctrlKey) {
         const num = Number(event.key);
-        if (num >= 1 && num <= 6) {
+        if (num >= 1 && num <= 7) {
           event.preventDefault();
           const items = DOCK_ITEMS.filter(
             (entry) => entry.type !== "separator"
@@ -566,6 +501,12 @@ export default function Dock({
 
           const win = windows.find((entry) => entry.id === item.id);
           if (!win) return;
+
+          if (win.type === "widget") {
+            toggleWindow(item.id, "isOpen", !win.isOpen);
+            if (!win.isOpen) bringToFront(item.id);
+            return;
+          }
 
           if (!win.isOpen) {
             toggleWindow(item.id, "isOpen", true);
@@ -702,15 +643,6 @@ export default function Dock({
             />
           );
         })}
-
-        <DockSeparator isLight={isLight} />
-
-        <DockThemeCircleButton
-          isLight={isLight}
-          onToggle={handleThemeToggle}
-          mouseX={mouseX}
-          reducedMotion={reducedMotion}
-        />
       </nav>
     </div>
   );
