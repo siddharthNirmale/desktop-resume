@@ -14,7 +14,29 @@ import {
 } from "react-icons/fi";
 import { useEffect, useMemo, useState } from "react";
 import projects from "../data/project";
-import { variants } from "../lib/motion";
+
+/* ─────────────────────────────────────────────────────────────
+   MOTION PRESETS
+   ───────────────────────────────────────────────────────────── */
+const springTransition = {
+  type: "spring",
+  stiffness: 380,
+  damping: 30,
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: springTransition,
+  },
+  exit: {
+    opacity: 0,
+    y: 8,
+    transition: { duration: 0.15, ease: "easeIn" },
+  },
+};
 
 export default function ProjectsSection() {
   const projectList = Array.isArray(projects) ? projects : [];
@@ -29,35 +51,28 @@ export default function ProjectsSection() {
   /* ─────────────────────────────────────────────
      TECHNOLOGY FILTERS
   ───────────────────────────────────────────── */
-
   const filters = useMemo(() => {
     const values = new Set();
-
     projectList.forEach((project) => {
       if (!project.tech) return;
-
       const tech = Array.isArray(project.tech)
         ? project.tech
         : String(project.tech)
-          .split(/[•,|/]/)
-          .map((item) => item.trim());
+            .split(/[•,|/]/)
+            .map((item) => item.trim());
 
-      tech
-        .filter(Boolean)
-        .forEach((item) => values.add(item));
+      tech.filter(Boolean).forEach((item) => values.add(item));
     });
 
-    return ["All", ...Array.from(values).slice(0, 7)];
+    return ["All", ...Array.from(values).slice(0, 6)];
   }, [projectList]);
 
   /* ─────────────────────────────────────────────
      FILTER + SORT
   ───────────────────────────────────────────── */
-
   const filteredProjects = useMemo(() => {
     const result = projectList.filter((project) => {
       if (activeFilter === "All") return true;
-
       return String(project.tech || "")
         .toLowerCase()
         .includes(activeFilter.toLowerCase());
@@ -65,105 +80,48 @@ export default function ProjectsSection() {
 
     return [...result].sort((a, b) => {
       if (sort === "featured") {
-        return (
-          Number(Boolean(b.featured)) -
-          Number(Boolean(a.featured))
-        );
+        return Number(Boolean(b.featured)) - Number(Boolean(a.featured));
       }
-
       if (sort === "newest") {
         return Number(b.year || 0) - Number(a.year || 0);
       }
-
       if (sort === "oldest") {
         return Number(a.year || 9999) - Number(b.year || 9999);
       }
-
       if (sort === "a-z") {
-        return String(a.title || "").localeCompare(
-          String(b.title || "")
-        );
+        return String(a.title || "").localeCompare(String(b.title || ""));
       }
-
       return 0;
     });
   }, [projectList, activeFilter, sort]);
 
-  /* ─────────────────────────────────────────────
-     SELECTED PROJECT
-  ───────────────────────────────────────────── */
-
   const selectedProject =
-    selectedIndex !== null
-      ? filteredProjects[selectedIndex]
-      : null;
+    selectedIndex !== null ? filteredProjects[selectedIndex] : null;
 
   /* ─────────────────────────────────────────────
      KEYBOARD NAVIGATION
   ───────────────────────────────────────────── */
-
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (selectedIndex === null) {
-        if (event.key === "Escape") {
-          setShowSort(false);
-        }
-
+        if (event.key === "Escape") setShowSort(false);
         return;
       }
 
-      if (event.key === "Escape") {
-        closePreview();
-      }
-
-      if (
-        event.key === "ArrowRight" &&
-        selectedIndex < filteredProjects.length - 1
-      ) {
+      if (event.key === "Escape") closePreview();
+      if (event.key === "ArrowRight" && selectedIndex < filteredProjects.length - 1) {
         setSelectedIndex((index) => index + 1);
         setCopied(false);
       }
-
-      if (
-        event.key === "ArrowLeft" &&
-        selectedIndex > 0
-      ) {
+      if (event.key === "ArrowLeft" && selectedIndex > 0) {
         setSelectedIndex((index) => index - 1);
         setCopied(false);
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener(
-        "keydown",
-        handleKeyDown
-      );
-    };
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [selectedIndex, filteredProjects.length]);
-
-  /* ─────────────────────────────────────────────
-     LOCK BODY
-  ───────────────────────────────────────────── */
-
-  useEffect(() => {
-    if (selectedIndex === null) return;
-
-    const previousOverflow =
-      document.body.style.overflow;
-
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow =
-        previousOverflow;
-    };
-  }, [selectedIndex]);
-
-  /* ─────────────────────────────────────────────
-     PREVIEW ACTIONS
-  ───────────────────────────────────────────── */
 
   const openPreview = (index) => {
     setSelectedIndex(index);
@@ -176,20 +134,14 @@ export default function ProjectsSection() {
   };
 
   const nextProject = () => {
-    if (
-      selectedIndex !== null &&
-      selectedIndex < filteredProjects.length - 1
-    ) {
+    if (selectedIndex !== null && selectedIndex < filteredProjects.length - 1) {
       setSelectedIndex((index) => index + 1);
       setCopied(false);
     }
   };
 
   const previousProject = () => {
-    if (
-      selectedIndex !== null &&
-      selectedIndex > 0
-    ) {
+    if (selectedIndex !== null && selectedIndex > 0) {
       setSelectedIndex((index) => index - 1);
       setCopied(false);
     }
@@ -197,17 +149,10 @@ export default function ProjectsSection() {
 
   const copyProjectLink = async () => {
     if (!selectedProject?.live) return;
-
     try {
-      await navigator.clipboard.writeText(
-        selectedProject.live
-      );
-
+      await navigator.clipboard.writeText(selectedProject.live);
       setCopied(true);
-
-      setTimeout(() => {
-        setCopied(false);
-      }, 1600);
+      setTimeout(() => setCopied(false), 1600);
     } catch {
       setCopied(false);
     }
@@ -215,383 +160,152 @@ export default function ProjectsSection() {
 
   if (projectList.length === 0) {
     return (
-      <div
-        className="
-          flex h-full min-h-full
-          items-center justify-center
-          bg-[var(--color-surface)]
-          font-primary
-          text-[var(--color-text-tertiary)]
-        "
-      >
-        <p className="text-[13px]">
-          No projects available.
-        </p>
+      <div className="flex h-full min-h-full items-center justify-center bg-[var(--color-surface)] font-primary text-[var(--color-text-tertiary)]">
+        <p className="text-[13px]">No projects available.</p>
       </div>
     );
   }
 
   return (
-    <div
-      className="
-        flex h-full min-h-full w-full
-        flex-col overflow-hidden
-        bg-[var(--color-surface)]
-        font-primary
-        text-[var(--color-text)]
-        selection:bg-[var(--color-accent)]
-        selection:text-white
-      "
-    >
+    <div className="flex h-full min-h-full w-full flex-col overflow-hidden bg-[var(--color-surface)] font-primary text-[var(--color-text)] selection:bg-[var(--color-accent)] selection:text-white">
       {/* ═══════════════════════════════════════════
-          HEADER
+          HEADER & TOOLBAR
       ═══════════════════════════════════════════ */}
+      <header className="shrink-0 border-b border-[var(--color-surface-border)] px-4 py-3.5 sm:px-6">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-[14px] font-semibold tracking-[-0.02em] text-[var(--color-text)] font-heading">
+              Projects
+            </h1>
 
-      <header
-        className="
-          shrink-0
-          border-b border-[var(--color-surface-border)]
-          px-4 py-4
-          sm:px-5
-          lg:px-6
-        "
-      >
-        <div
-          className="
-            flex items-center
-            justify-between gap-4
-          "
-        >
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <h1
-                className="
-                  text-[15px]
-                  font-semibold
-                  tracking-[-0.025em]
-                  text-[var(--color-text)]
-                "
-              >
-                Projects
-              </h1>
-
-              <span
-                className="
-                  flex h-[18px] min-w-[18px]
-                  items-center justify-center
-                  rounded-full
-                  bg-[var(--color-surface-inactive)]
-                  px-1.5
-                  text-[9px]
-                  font-semibold
-                  tabular-nums
-                  text-[var(--color-text-tertiary)]
-                "
-              >
-                {projectList.length}
-              </span>
-            </div>
-
-            <p
-              className="
-                mt-1
-                text-[11px]
-                text-[var(--color-text-tertiary)]
-              "
-            >
-              Selected work & experiments
-            </p>
+            <span className="text-[10px] font-mono font-medium text-[var(--color-text-tertiary)]">
+              ({filteredProjects.length})
+            </span>
           </div>
 
-          <div
-            className="
-              hidden
-              items-center gap-1.5
-              text-[10px]
-              font-medium
-              text-[var(--color-text-disabled)]
-              sm:flex
-            "
-          >
-            <span
-              className="
-                h-1.5 w-1.5
-                rounded-full
-                bg-[var(--color-accent)]
-              "
-            />
+          {/* View toggle & Sort */}
+          <div className="flex items-center gap-2">
+            {/* SORT DROPDOWN */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowSort((value) => !value)}
+                className="flex h-7 items-center gap-1.5 rounded-[6px] bg-[var(--color-surface-hover)]/40 hover:bg-[var(--color-surface-hover)] px-2 text-[10px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors active:scale-[0.97]"
+              >
+                <span>{getSortLabel(sort)}</span>
+                <FiChevronDown
+                  size={10}
+                  className={`transition-transform duration-150 ${showSort ? "rotate-180" : ""}`}
+                />
+              </button>
 
-            <span>
-              {filteredProjects.length}{" "}
-              {filteredProjects.length === 1
-                ? "project"
-                : "projects"}
-            </span>
+              <AnimatePresence>
+                {showSort && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -4, scale: 0.98 }}
+                    transition={{ duration: 0.12 }}
+                    className="absolute right-0 top-[calc(100%+4px)] z-50 min-w-[110px] overflow-hidden rounded-[8px] bg-[var(--color-surface-elevated)] p-1 shadow-[var(--shadow-popover)] border border-[var(--color-surface-border)]"
+                  >
+                    {[
+                      ["featured", "Featured"],
+                      ["newest", "Newest"],
+                      ["oldest", "Oldest"],
+                      ["a-z", "A–Z"],
+                    ].map(([value, label]) => (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => {
+                          setSort(value);
+                          setShowSort(false);
+                        }}
+                        className={`flex w-full rounded-[5px] px-2 py-1.5 text-left text-[10px] transition-colors ${
+                          sort === value
+                            ? "bg-[var(--color-surface-hover)] font-semibold text-[var(--color-text)]"
+                            : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)]"
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* VIEW SWITCHER */}
+            <div className="hidden sm:flex items-center rounded-[6px] bg-[var(--color-surface-hover)]/30 p-0.5">
+              <ViewButton
+                active={view === "grid"}
+                onClick={() => setView("grid")}
+                icon={<FiGrid size={11} />}
+                label="Grid view"
+              />
+              <ViewButton
+                active={view === "list"}
+                onClick={() => setView("list")}
+                icon={<FiList size={11} />}
+                label="List view"
+              />
+            </div>
           </div>
         </div>
 
-        {/* ═══════════════════════════════════════
-            TOOLBAR
-        ═══════════════════════════════════════ */}
-
-        <div
-          className="
-            mt-4
-            flex items-center gap-2
-          "
-        >
-          {/* FILTERS */}
-
-          <div
-            className="
-              custom-scrollbar
-              flex min-w-0 flex-1
-              items-center gap-1
-              overflow-x-auto
-              pb-0.5
-            "
-          >
-            {filters.map((filter) => {
-              const active =
-                activeFilter === filter;
-
-              return (
-                <button
-                  key={filter}
-                  type="button"
-                  onClick={() =>
-                    setActiveFilter(filter)
-                  }
-                  className={`
-                    shrink-0
-                    rounded-full
-                    px-2.5 py-1.5
-                    text-[10px]
-                    font-medium
-                    transition-all
-                    duration-150
-
-                    ${active
-                      ? `
-                          bg-[var(--color-text)]
-                          text-[var(--color-surface)]
-                        `
-                      : `
-                          text-[var(--color-text-secondary)]
-                          hover:bg-[var(--color-surface-inactive)]
-                          hover:text-[var(--color-text)]
-                        `
-                    }
-                  `}
-                >
-                  {filter}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* SORT */}
-
-          <div className="relative shrink-0">
-            <button
-              type="button"
-              onClick={() =>
-                setShowSort((value) => !value)
-              }
-              className="
-                flex h-8 items-center gap-1.5
-                rounded-[7px]
-                border
-                border-[var(--color-surface-border)]
-                bg-[var(--color-surface-inactive)]
-                px-2
-                text-[10px]
-                font-medium
-                text-[var(--color-text-secondary)]
-                transition-colors
-                hover:border-[var(--color-window-border)]
-                hover:text-[var(--color-text)]
-              "
-            >
-              <span className="hidden sm:inline">
-                {getSortLabel(sort)}
-              </span>
-
-              <FiChevronDown
-                size={11}
-                className={`
-                  transition-transform
-                  duration-200
-                  ${showSort ? "rotate-180" : ""}
-                `}
-              />
-            </button>
-
-            <AnimatePresence>
-              {showSort && (
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: -4,
-                    scale: 0.98,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                  }}
-                  exit={{
-                    opacity: 0,
-                    y: -4,
-                    scale: 0.98,
-                  }}
-                  className="
-                    absolute right-0 top-[calc(100%+6px)]
-                    z-50 min-w-[125px]
-                    overflow-hidden
-                    rounded-[9px]
-                    border
-                    border-[var(--color-surface-border)]
-                    bg-[var(--color-surface-elevated)]
-                    p-1
-                    shadow-[0_12px_30px_rgba(0,0,0,0.12)]
-                    dark:shadow-[0_12px_30px_rgba(0,0,0,0.3)]
-                  "
-                >
-                  {[
-                    ["featured", "Featured"],
-                    ["newest", "Newest"],
-                    ["oldest", "Oldest"],
-                    ["a-z", "A–Z"],
-                  ].map(([value, label]) => (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => {
-                        setSort(value);
-                        setShowSort(false);
-                      }}
-                      className={`
-                        flex w-full
-                        rounded-[6px]
-                        px-2.5 py-2
-                        text-left
-                        text-[10px]
-                        transition-colors
-
-                        ${sort === value
-                          ? `
-                              bg-[var(--color-surface-inactive)]
-                              font-semibold
-                              text-[var(--color-text)]
-                            `
-                          : `
-                              text-[var(--color-text-secondary)]
-                              hover:bg-[var(--color-surface-inactive)]
-                              hover:text-[var(--color-text)]
-                            `
-                        }
-                      `}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* VIEW */}
-
-          <div
-            className="
-              hidden
-              items-center
-              rounded-[7px]
-              border
-              border-[var(--color-surface-border)]
-              bg-[var(--color-surface-inactive)]
-              p-0.5
-              sm:flex
-            "
-          >
-            <ViewButton
-              active={view === "grid"}
-              onClick={() => setView("grid")}
-              icon={<FiGrid size={11} />}
-              label="Grid"
-            />
-
-            <ViewButton
-              active={view === "list"}
-              onClick={() => setView("list")}
-              icon={<FiList size={11} />}
-              label="List"
-            />
-          </div>
+        {/* CATEGORY FILTER PILLS */}
+        <div className="mt-3 flex items-center gap-1.5 overflow-x-auto custom-scrollbar pb-0.5">
+          {filters.map((filter) => {
+            const active = activeFilter === filter;
+            return (
+              <button
+                key={filter}
+                type="button"
+                onClick={() => setActiveFilter(filter)}
+                className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-medium transition-all duration-150 active:scale-[0.96] cursor-pointer ${
+                  active
+                    ? "bg-[var(--color-text)] text-[var(--color-surface)]"
+                    : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]"
+                }`}
+              >
+                {filter}
+              </button>
+            );
+          })}
         </div>
       </header>
 
       {/* ═══════════════════════════════════════════
-          PROJECT GRID
+          PROJECT GRID / LIST
       ═══════════════════════════════════════════ */}
-
-      <main
-        className="
-          min-h-0 flex-1
-          overflow-y-auto
-          custom-scrollbar
-          px-4 py-4
-          sm:px-5 sm:py-5
-          lg:px-6 lg:py-6
-        "
-      >
+      <main className="min-h-0 flex-1 overflow-y-auto custom-scrollbar px-4 py-5 sm:px-6">
         {filteredProjects.length > 0 ? (
           <motion.div
             layout
-            className={`
-              mx-auto grid w-full max-w-6xl gap-4 lg:gap-5
-
-              ${view === "grid"
-                ? "grid-cols-1 md:grid-cols-2"
-                : "grid-cols-1"
-              }
-            `}
+            className={`mx-auto grid w-full max-w-5xl gap-4 sm:gap-5 ${
+              view === "grid" ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"
+            }`}
           >
             <AnimatePresence mode="popLayout">
-              {filteredProjects.map(
-                (project, index) => (
-                  <ProjectCard
-                    key={
-                      project.id ||
-                      project.title ||
-                      index
-                    }
-                    project={project}
-                    index={index}
-                    view={view}
-                    onPreview={() =>
-                      openPreview(index)
-                    }
-                  />
-                )
-              )}
+              {filteredProjects.map((project, index) => (
+                <ProjectCard
+                  key={project.id || project.title || index}
+                  project={project}
+                  index={index}
+                  view={view}
+                  onPreview={() => openPreview(index)}
+                />
+              ))}
             </AnimatePresence>
           </motion.div>
         ) : (
-          <EmptyState
-            filter={activeFilter}
-            onClear={() =>
-              setActiveFilter("All")
-            }
-          />
+          <EmptyState filter={activeFilter} onClear={() => setActiveFilter("All")} />
         )}
       </main>
 
       {/* ═══════════════════════════════════════════
-          PREVIEW
+          PREVIEW MODAL
       ═══════════════════════════════════════════ */}
-
       <AnimatePresence>
         {selectedProject && (
           <ProjectPreview
@@ -611,348 +325,134 @@ export default function ProjectsSection() {
 }
 
 /* ═══════════════════════════════════════════════
-   PROJECT CARD
+   PROJECT CARD (CLEAN & BORDERLESS)
 ═══════════════════════════════════════════════ */
-
-function ProjectCard({
-  project,
-  index,
-  view,
-  onPreview,
-}) {
-  const [imageError, setImageError] =
-    useState(false);
-
+function ProjectCard({ project, index, view, onPreview }) {
+  const [imageError, setImageError] = useState(false);
   const isList = view === "list";
 
   return (
     <motion.article
       layout
-      variants={variants.fadeUp}
+      variants={cardVariants}
       initial="hidden"
       animate="visible"
       exit="exit"
-      transition={{
-        ...variants.fadeUp.visible.transition,
-        delay: Math.min(index * 0.04, 0.2),
-      }}
-      whileHover="hoverSubtle"
-      className={`
-        group relative min-w-0 overflow-hidden
-        rounded-[14px]
-        bg-[var(--color-surface-hover)]/25
-
-        transition-[background-color,box-shadow]
-        duration-200
-
-        hover:bg-[var(--color-surface-hover)]/60
-        hover:shadow-xs
-
-        ${isList ? "md:flex" : "flex flex-col"}
-      `}
+      className={`group relative overflow-hidden rounded-[12px] bg-[var(--color-surface-hover)]/25 hover:bg-[var(--color-surface-hover)]/45 transition-all duration-200 ease-out hover:-translate-y-0.5 ${
+        isList ? "sm:flex" : "flex flex-col"
+      }`}
     >
-      {/* IMAGE */}
-
+      {/* IMAGE / THUMBNAIL */}
       <button
         type="button"
         onClick={onPreview}
-        className={`
-          group/image
-          relative
-          block
-          overflow-hidden
-          text-left
-
-          focus-visible:outline-none
-          focus-visible:ring-2
-          focus-visible:ring-inset
-          focus-visible:ring-[var(--color-accent)]
-
-          ${isList
-            ? "w-full shrink-0 md:w-[290px]"
-            : "w-full"
-          }
-        `}
+        className={`group/image relative block overflow-hidden text-left focus-visible:outline-none ${
+          isList ? "w-full sm:w-[260px] shrink-0" : "w-full"
+        }`}
       >
         <div
-          className={`
-            relative
-            overflow-hidden
-            bg-[var(--color-surface-dark)]
-
-            ${isList
-              ? "aspect-[16/9] md:h-full md:aspect-auto"
-              : "aspect-[16/8.5]"
-            }
-          `}
+          className={`relative overflow-hidden bg-[var(--color-surface-dark)] ${
+            isList ? "aspect-[16/9] sm:h-full sm:aspect-auto" : "aspect-[16/9]"
+          }`}
         >
-          {project.image &&
-            !imageError ? (
-            <motion.img
+          {project.image && !imageError ? (
+            <img
               src={project.image}
-              alt={
-                project.title ||
-                "Project preview"
-              }
+              alt={project.title || "Project preview"}
               loading="lazy"
-              onError={() =>
-                setImageError(true)
-              }
-              whileHover={{ scale: 1.035 }}
-              transition={{
-                duration: 0.55,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="
-                h-full w-full
-                object-cover
-                transition-[filter]
-                duration-500
-                group-hover/image:brightness-[0.96]
-              "
+              onError={() => setImageError(true)}
+              className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover/image:scale-[1.025]"
             />
           ) : (
-            <FallbackImage
-              title={project.title}
-              tech={project.tech}
-            />
+            <FallbackImage title={project.title} tech={project.tech} />
           )}
 
-          {/* Number */}
-
-          <div
-            className="
-              absolute left-3 top-3 z-[3]
-              flex h-6 min-w-6
-              items-center justify-center
-              rounded-full
-              border border-white/15
-              bg-black/50
-              px-1.5
-              text-[9px]
-              font-semibold
-              tabular-nums
-              text-white
-            "
-          >
-            {String(index + 1).padStart(2, "0")}
-          </div>
-
-          {/* Badge / Type on Image */}
+          {/* Type / Badge (Understated) */}
           {(project.badge || project.type) && (
-            <div
-              className="
-                absolute bottom-3 left-3 z-[3]
-                rounded-full
-                border border-white/15
-                bg-black/60
-                px-2.5 py-0.5
-                text-[9px]
-                font-medium
-                text-white
-              "
-            >
+            <div className="absolute top-2.5 left-2.5 z-10 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-white text-[9px] font-medium">
               {project.badge || project.type}
             </div>
           )}
 
-          {/* Featured */}
-          {project.featured && !project.badge && !project.type && (
-            <div
-              className="
-                absolute bottom-3 left-3 z-[3]
-                rounded-full
-                bg-white
-                px-2 py-0.5
-                text-[8px]
-                font-semibold
-                uppercase
-                tracking-[0.08em]
-                text-black
-              "
-            >
-              Featured
-            </div>
-          )}
-
-          {/* Preview */}
-
-          <div
-            className="
-              absolute right-3 top-3 z-[3]
-              flex h-8 w-8
-              items-center justify-center
-              rounded-full
-              border border-white/20
-              bg-black/40
-              text-white
-              opacity-0
-              scale-90
-              backdrop-blur-md
-              transition-all duration-200
-              group-hover/image:scale-100
-              group-hover/image:opacity-100
-            "
-          >
-            <FiArrowUpRight size={15} />
+          {/* Quick Preview trigger overlay */}
+          <div className="absolute top-2.5 right-2.5 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-white opacity-0 group-hover/image:opacity-100 transition-opacity duration-150 backdrop-blur-sm">
+            <FiArrowUpRight size={12} />
           </div>
         </div>
       </button>
 
-      {/* CONTENT */}
-
-      <div
-        className={`
-          flex min-w-0 flex-1
-          flex-col
-          px-4 py-4
-          sm:px-[18px] sm:py-[17px]
-
-          ${isList ? "md:py-5" : ""}
-        `}
-      >
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <h2
-                className="
-                  truncate
-                  text-[15px]
-                  font-semibold
-                  leading-5
-                  tracking-[-0.025em]
-                  text-[var(--color-text)]
-                "
-              >
-                {project.title}
-              </h2>
-
-              {(project.badge || project.type || project.status) && (
-                <StatusBadge
-                  status={project.badge || project.type || project.status}
-                />
-              )}
-            </div>
-
-            {project.tech && (
-              <p
-                className="
-                  mt-1
-                  truncate
-                  text-[9px]
-                  font-semibold
-                  uppercase
-                  tracking-[0.09em]
-                  text-[var(--color-accent)]
-                "
-              >
-                {formatTech(project.tech)}
-              </p>
+      {/* CARD CONTENT */}
+      <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-4.5 justify-between">
+        <div>
+          <div className="flex items-baseline justify-between gap-2">
+            <h2 className="truncate text-[14px] font-heading font-semibold text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">
+              {project.title}
+            </h2>
+            {project.year && (
+              <span className="shrink-0 text-[10px] font-mono text-[var(--color-text-tertiary)]">
+                {project.year}
+              </span>
             )}
           </div>
 
-          {project.year && (
-            <span
-              className="
-                shrink-0
-                text-[9px]
-                font-medium
-                tabular-nums
-                text-[var(--color-text-disabled)]
-              "
-            >
-              {project.year}
-            </span>
+          {project.tech && (
+            <p className="mt-1 truncate text-[11px] text-[var(--color-text-tertiary)]">
+              {formatTech(project.tech)}
+            </p>
+          )}
+
+          {/* Bullets / Summary */}
+          {project.bullets?.length > 0 && (
+            <ul className="mt-2.5 space-y-1">
+              {project.bullets.slice(0, isList ? 2 : 1).map((point, i) => (
+                <li
+                  key={i}
+                  className="line-clamp-2 text-[12px] leading-relaxed text-[var(--color-text-secondary)]"
+                >
+                  {point}
+                </li>
+              ))}
+            </ul>
           )}
         </div>
 
-        {/* DESCRIPTION */}
-
-        {project.bullets?.length > 0 && (
-          <div className="mt-3.5 flex-1">
-            <ul className="space-y-1.5">
-              {project.bullets
-                .slice(0, isList ? 3 : 2)
-                .map((point, i) => (
-                  <li
-                    key={i}
-                    className="
-                      flex items-start gap-2
-                      text-[11px]
-                      leading-[1.55]
-                      text-[var(--color-text-secondary)]
-                    "
-                  >
-                    <span
-                      className="
-                        mt-[6px]
-                        h-[3px] w-[3px]
-                        shrink-0
-                        rounded-full
-                        bg-[var(--color-text-disabled)]
-                        transition-colors
-                        duration-200
-                        group-hover:bg-[var(--color-accent)]
-                      "
-                    />
-
-                    <span className="line-clamp-2">
-                      {point}
-                    </span>
-                  </li>
-                ))}
-            </ul>
-          </div>
-        )}
-
-        {/* ACTIONS */}
-
-        <div
-          className="
-            mt-4
-            flex items-center justify-between
-            border-t
-            border-[var(--color-surface-border)]
-            pt-3
-          "
-        >
-          <div className="flex items-center gap-1.5">
+        {/* ACTION BUTTONS */}
+        <div className="mt-3.5 flex items-center justify-between pt-2.5 border-t border-[var(--color-surface-border)]">
+          <div className="flex items-center gap-2">
             {project.github && (
-              <ProjectAction
+              <a
                 href={project.github}
-                icon={<FiGithub size={12} />}
-                label="Source"
-              />
+                target="_blank"
+                rel="noreferrer"
+                className="group/act inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors"
+              >
+                <FiGithub size={12} />
+                <span>Code</span>
+              </a>
             )}
 
             {project.live && (
-              <ProjectAction
+              <a
                 href={project.live}
-                icon={<FiExternalLink size={12} />}
-                label="Live"
-                primary
-              />
+                target="_blank"
+                rel="noreferrer"
+                className="group/act inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--color-accent)] hover:underline transition-colors"
+              >
+                <span>Live</span>
+                <FiArrowUpRight
+                  size={11}
+                  className="transition-transform group-hover/act:translate-x-0.5 group-hover/act:-translate-y-0.5"
+                />
+              </a>
             )}
           </div>
 
           <button
             type="button"
             onClick={onPreview}
-            className="
-              flex h-7 w-7
-              items-center justify-center
-              rounded-full
-              text-[var(--color-text-disabled)]
-              transition-all duration-200
-              hover:bg-[var(--color-surface)]
-              hover:text-[var(--color-text)]
-              focus-visible:outline-none
-              focus-visible:ring-2
-              focus-visible:ring-[var(--color-accent)]
-            "
-            aria-label={`View ${project.title}`}
+            className="text-[11px] font-medium text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] transition-colors"
           >
-            <FiArrowUpRight size={13} />
+            Details
           </button>
         </div>
       </div>
@@ -961,9 +461,8 @@ function ProjectCard({
 }
 
 /* ═══════════════════════════════════════════════
-   PREVIEW
+   PREVIEW MODAL (REFINED & MINIMAL)
 ═══════════════════════════════════════════════ */
-
 function ProjectPreview({
   project,
   index,
@@ -999,201 +498,73 @@ function ProjectPreview({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget) {
-          onClose();
-        }
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
       }}
-      className="
-        fixed inset-0 z-[100]
-        flex items-center justify-center
-        bg-black/50
-        p-3
-        backdrop-blur-md
-        sm:p-6
-      "
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-3 sm:p-6 backdrop-blur-md"
     >
       <motion.div
-        variants={variants.fadeUp}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-        className="
-          relative
-          flex
-          max-h-[92vh]
-          w-full
-          max-w-4xl
-          flex-col
-          overflow-hidden
-          rounded-[16px]
-          border
-          border-[var(--color-surface-border)]
-          bg-[var(--color-surface)]
-          shadow-[0_30px_80px_rgba(0,0,0,0.25)]
-          dark:shadow-[0_30px_80px_rgba(0,0,0,0.55)]
-        "
+        initial={{ opacity: 0, scale: 0.97, y: 8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.97, y: 8 }}
+        transition={springTransition}
+        className="relative flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-[14px] bg-[var(--color-surface)] shadow-2xl border border-[var(--color-surface-border)]"
       >
-        {/* TOP CONTROLS */}
-
-        <div
-          className="
-            absolute
-            left-3 top-3 z-20
-            flex items-center gap-1.5
-          "
-        >
+        {/* MODAL CONTROLS */}
+        <div className="absolute left-3 top-3 z-20 flex items-center gap-1.5">
           <button
             type="button"
             onClick={onPrevious}
             disabled={index === 0}
-            aria-label="Previous project"
-            className="
-              flex h-8 w-8
-              items-center justify-center
-              rounded-full
-              border border-white/20
-              bg-black/45
-              text-white
-              backdrop-blur-md
-              transition-all
-              hover:bg-black/65
-              disabled:pointer-events-none
-              disabled:opacity-30
-            "
+            aria-label="Previous"
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md hover:bg-black/70 disabled:opacity-30 transition-all active:scale-[0.94]"
           >
-            <FiChevronLeft size={15} />
+            <FiChevronLeft size={13} />
           </button>
-
           <button
             type="button"
             onClick={onNext}
             disabled={index === total - 1}
-            aria-label="Next project"
-            className="
-              flex h-8 w-8
-              items-center justify-center
-              rounded-full
-              border border-white/20
-              bg-black/45
-              text-white
-              backdrop-blur-md
-              transition-all
-              hover:bg-black/65
-              disabled:pointer-events-none
-              disabled:opacity-30
-            "
+            aria-label="Next"
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md hover:bg-black/70 disabled:opacity-30 transition-all active:scale-[0.94]"
           >
-            <FiChevronRight size={15} />
+            <FiChevronRight size={13} />
           </button>
         </div>
-
-        {/* COUNTER */}
-
-        <div
-          className="
-            absolute
-            right-3 top-3 z-20
-            rounded-full
-            border border-white/20
-            bg-black/45
-            px-2.5 py-1.5
-            text-[9px]
-            font-medium
-            tabular-nums
-            text-white
-            backdrop-blur-md
-          "
-        >
-          {String(index + 1).padStart(2, "0")} /{" "}
-          {String(total).padStart(2, "0")}
-        </div>
-
-        {/* CLOSE */}
 
         <button
           type="button"
           onClick={onClose}
-          aria-label="Close preview"
-          className="
-            absolute
-            right-3
-            top-14
-            z-20
-            flex h-8 w-8
-            items-center justify-center
-            rounded-full
-            border border-white/20
-            bg-black/45
-            text-white
-            backdrop-blur-md
-            transition-colors
-            hover:bg-black/65
-            sm:top-3
-            sm:right-[90px]
-          "
+          aria-label="Close"
+          className="absolute right-3 top-3 z-20 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md hover:bg-black/70 transition-all active:scale-[0.94]"
         >
-          <FiX size={14} />
+          <FiX size={13} />
         </button>
 
-        {/* IMAGE */}
+        {/* IMAGE PREVIEW */}
+        <div className="relative shrink-0 overflow-hidden bg-[var(--color-surface-dark)] aspect-[16/9]">
+          {currentImage && !imageError ? (
+            <img
+              src={currentImage}
+              alt={project.title}
+              onError={() => setImageError(true)}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <FallbackImage title={project.title} tech={project.tech} />
+          )}
 
-        <div
-          className="
-            relative
-            shrink-0
-            overflow-hidden
-            bg-[var(--color-surface-dark)]
-          "
-        >
-          <div
-            className="
-              aspect-[16/9]
-              w-full
-              sm:aspect-[16/8]
-            "
-          >
-            {currentImage && !imageError ? (
-              <img
-                key={currentImage}
-                src={currentImage}
-                alt={
-                  project.title ||
-                  "Project preview"
-                }
-                onError={() =>
-                  setImageError(true)
-                }
-                className="
-                  h-full
-                  w-full
-                  object-cover
-                  transition-all
-                  duration-300
-                "
-              />
-            ) : (
-              <FallbackImage
-                title={project.title}
-                tech={project.tech}
-              />
-            )}
-          </div>
-
-          {/* Multiple Image Gallery Navigation */}
+          {/* Screenshot dots */}
           {images.length > 1 && (
-            <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 rounded-full border border-white/20 bg-black/60 px-2.5 py-1.5 backdrop-blur-md">
+            <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 rounded-full bg-black/60 px-2 py-1 backdrop-blur-md">
               {images.map((_, i) => (
                 <button
                   key={i}
                   type="button"
                   onClick={() => setActiveImgIndex(i)}
-                  className={`h-2 rounded-full transition-all duration-200 ${
-                    activeImgIndex === i
-                      ? "w-5 bg-[var(--color-accent)]"
-                      : "w-2 bg-white/50 hover:bg-white/90"
+                  className={`h-1.5 rounded-full transition-all duration-150 ${
+                    activeImgIndex === i ? "w-4 bg-[var(--color-accent)]" : "w-1.5 bg-white/50"
                   }`}
-                  aria-label={`View screenshot ${i + 1}`}
                 />
               ))}
             </div>
@@ -1201,218 +572,92 @@ function ProjectPreview({
         </div>
 
         {/* DETAILS */}
-
-        <div
-          className="
-            custom-scrollbar
-            overflow-y-auto
-            px-5 py-5
-            sm:px-7 sm:py-6
-          "
-        >
-          <div
-            className="
-              flex
-              flex-col
-              gap-4
-              sm:flex-row
-              sm:items-start
-              sm:justify-between
-            "
-          >
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <h2
-                  className="
-                    text-[20px]
-                    font-semibold
-                    tracking-[-0.035em]
-                    text-[var(--color-text)]
-                  "
-                >
-                  {project.title}
-                </h2>
-
-                {project.featured && (
-                  <StatusBadge status="Featured" />
-                )}
-
-                {(project.badge || project.type || project.status) && (
-                  <StatusBadge
-                    status={project.badge || project.type || project.status}
-                  />
-                )}
-              </div>
-
-              {project.tech && (
-                <p
-                  className="
-                    mt-1.5
-                    text-[9px]
-                    font-semibold
-                    uppercase
-                    tracking-[0.1em]
-                    text-[var(--color-accent)]
-                  "
-                >
-                  {formatTech(project.tech)}
-                </p>
+        <div className="custom-scrollbar overflow-y-auto p-5 sm:p-6 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+            <div className="flex items-center gap-2">
+              <h2 className="text-[18px] font-heading font-semibold text-[var(--color-text)]">
+                {project.title}
+              </h2>
+              {(project.badge || project.type) && (
+                <span className="px-2 py-0.5 rounded-full bg-[var(--color-accent-soft)] text-[var(--color-accent)] text-[9px] font-semibold">
+                  {project.badge || project.type}
+                </span>
               )}
             </div>
-
             {project.year && (
-              <span
-                className="
-                  shrink-0
-                  text-[10px]
-                  font-medium
-                  tabular-nums
-                  text-[var(--color-text-disabled)]
-                "
-              >
+              <span className="text-[11px] font-mono text-[var(--color-text-tertiary)]">
                 {project.year}
               </span>
             )}
           </div>
 
-          {/* EDITORIAL DESCRIPTION */}
+          {project.tech && (
+            <p className="text-[11px] font-medium text-[var(--color-accent)]">
+              {formatTech(project.tech)}
+            </p>
+          )}
+
           {project.description && (
-            <p className="mt-3.5 text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+            <p className="text-[12.5px] leading-relaxed text-[var(--color-text-secondary)]">
               {project.description}
             </p>
           )}
 
-          {/* DESCRIPTION BULLETS */}
-
           {project.bullets?.length > 0 && (
-            <ul className="mt-4 space-y-2">
-              {project.bullets.map(
-                (point, idx) => (
-                  <li
-                    key={idx}
-                    className="
-                      flex items-start gap-2.5
-                      text-[12px]
-                      leading-[1.6]
-                      text-[var(--color-text-secondary)]
-                    "
-                  >
-                    <span
-                      className="
-                        mt-[7px]
-                        h-1 w-1
-                        shrink-0
-                        rounded-full
-                        bg-[var(--color-accent)]
-                      "
-                    />
-
-                    <span>{point}</span>
-                  </li>
-                )
-              )}
+            <ul className="space-y-1.5 pt-1">
+              {project.bullets.map((bullet, i) => (
+                <li
+                  key={i}
+                  className="flex items-start gap-2 text-[12px] leading-relaxed text-[var(--color-text-secondary)]"
+                >
+                  <span className="mt-[6px] h-1 w-1 shrink-0 rounded-full bg-[var(--color-accent)]" />
+                  <span>{bullet}</span>
+                </li>
+              ))}
             </ul>
           )}
 
           {/* ACTIONS */}
-
-          <div
-            className="
-              mt-6
-              flex
-              flex-wrap
-              items-center
-              justify-between
-              gap-2
-              border-t
-              border-[var(--color-surface-border)]
-              pt-4
-            "
-          >
-            <div className="flex flex-wrap gap-1.5">
-              {project.github && (
-                <ProjectAction
-                  href={project.github}
-                  icon={<FiGithub size={13} />}
-                  label="View source"
-                />
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--color-surface-border)]">
+            <div className="flex items-center gap-2">
+              {project.live && (
+                <a
+                  href={project.live}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] bg-[var(--color-accent)] text-white text-[11px] font-semibold transition-all hover:brightness-110 active:scale-[0.97]"
+                >
+                  <span>Open Live Project</span>
+                  <FiArrowUpRight size={12} />
+                </a>
               )}
 
-              {project.live && (
-                <ProjectAction
-                  href={project.live}
-                  icon={<FiExternalLink size={13} />}
-                  label="Open live project"
-                  primary
-                />
+              {project.github && (
+                <a
+                  href={project.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] bg-[var(--color-surface-hover)] hover:bg-[var(--color-surface-active)] text-[11px] font-medium text-[var(--color-text)] transition-colors active:scale-[0.97]"
+                >
+                  <FiGithub size={12} />
+                  <span>GitHub</span>
+                </a>
               )}
 
               {project.live && (
                 <button
                   type="button"
                   onClick={onCopy}
-                  className="
-                    inline-flex
-                    items-center
-                    gap-1.5
-                    rounded-[7px]
-                    px-2.5 py-[7px]
-                    text-[10px]
-                    font-medium
-                    text-[var(--color-text-secondary)]
-                    transition-all
-                    hover:bg-[var(--color-surface-inactive)]
-                    hover:text-[var(--color-text)]
-                  "
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[7px] text-[11px] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] transition-colors"
                 >
-                  {copied ? (
-                    <FiCheck size={12} />
-                  ) : (
-                    <FiCopy size={12} />
-                  )}
-
-                  {copied
-                    ? "Copied"
-                    : "Copy link"}
+                  {copied ? <FiCheck size={12} className="text-emerald-400" /> : <FiCopy size={12} />}
+                  <span>{copied ? "Copied" : "Copy link"}</span>
                 </button>
               )}
             </div>
 
-            <div
-              className="
-                hidden
-                items-center gap-1
-                text-[9px]
-                text-[var(--color-text-disabled)]
-                sm:flex
-              "
-            >
-              <span>Use</span>
-              <kbd
-                className="
-                  rounded-[4px]
-                  border
-                  border-[var(--color-surface-border)]
-                  px-1
-                  py-0.5
-                  font-mono
-                "
-              >
-                ←
-              </kbd>
-              <kbd
-                className="
-                  rounded-[4px]
-                  border
-                  border-[var(--color-surface-border)]
-                  px-1
-                  py-0.5
-                  font-mono
-                "
-              >
-                →
-              </kbd>
-              <span>to navigate</span>
+            <div className="text-[10px] font-mono text-[var(--color-text-disabled)]">
+              {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
             </div>
           </div>
         </div>
@@ -1422,307 +667,59 @@ function ProjectPreview({
 }
 
 /* ═══════════════════════════════════════════════
-   ACTION
+   SUB-COMPONENTS & HELPERS
 ═══════════════════════════════════════════════ */
-
-function ProjectAction({
-  href,
-  icon,
-  label,
-  primary = false,
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`
-        group/action
-        inline-flex
-        items-center
-        gap-1.5
-        rounded-[7px]
-        px-2.5 py-[7px]
-        text-[10px]
-        font-medium
-        transition-all
-        duration-200
-
-        focus-visible:outline-none
-        focus-visible:ring-2
-        focus-visible:ring-[var(--color-accent)]
-
-        ${primary
-          ? `
-              bg-[var(--color-accent)]
-              text-white
-              hover:brightness-105
-              active:scale-[0.97]
-            `
-          : `
-              text-[var(--color-text-secondary)]
-              hover:bg-[var(--color-surface-inactive)]
-              hover:text-[var(--color-text)]
-            `
-        }
-      `}
-    >
-      {icon}
-
-      <span>{label}</span>
-
-      <FiArrowUpRight
-        size={9}
-        className="
-          opacity-45
-          transition-transform duration-200
-          group-hover/action:-translate-y-0.5
-          group-hover/action:translate-x-0.5
-        "
-      />
-    </a>
-  );
-}
-
-/* ═══════════════════════════════════════════════
-   VIEW BUTTON
-═══════════════════════════════════════════════ */
-
-function ViewButton({
-  active,
-  onClick,
-  icon,
-  label,
-}) {
+function ViewButton({ active, onClick, icon, label }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-label={label}
-      className={`
-        flex h-7 w-7
-        items-center justify-center
-        rounded-[5px]
-        transition-all duration-150
-
-        ${active
-          ? `
-              bg-[var(--color-surface)]
-              text-[var(--color-text)]
-              shadow-sm
-            `
-          : `
-              text-[var(--color-text-disabled)]
-              hover:text-[var(--color-text)]
-            `
-        }
-      `}
+      className={`flex h-6 w-6 items-center justify-center rounded-[5px] transition-all duration-150 active:scale-[0.94] ${
+        active
+          ? "bg-[var(--color-surface)] text-[var(--color-text)] shadow-xs"
+          : "text-[var(--color-text-disabled)] hover:text-[var(--color-text)]"
+      }`}
     >
       {icon}
     </button>
   );
 }
 
-/* ═══════════════════════════════════════════════
-   STATUS
-═══════════════════════════════════════════════ */
-
-function StatusBadge({ status }) {
-  const isOriginal = String(status || "").toLowerCase().includes("original");
-
+function EmptyState({ filter, onClear }) {
   return (
-    <span
-      className={`
-        inline-flex
-        items-center
-        rounded-full
-        px-2 py-0.5
-        text-[8px]
-        font-semibold
-        uppercase
-        tracking-[0.06em]
-        transition-colors
-        ${isOriginal
-          ? `
-              border
-              border-[var(--color-accent)]/30
-              bg-[var(--color-accent)]/10
-              text-[var(--color-accent)]
-            `
-          : `
-              border
-              border-[var(--color-surface-border)]
-              bg-[var(--color-surface-inactive)]
-              text-[var(--color-text-tertiary)]
-            `
-        }
-      `}
-    >
-      {status}
-    </span>
-  );
-}
-
-/* ═══════════════════════════════════════════════
-   EMPTY STATE
-═══════════════════════════════════════════════ */
-
-function EmptyState({
-  filter,
-  onClear,
-}) {
-  return (
-    <motion.div
-      initial={{
-        opacity: 0,
-        y: 5,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-      }}
-      className="
-        flex
-        min-h-[280px]
-        flex-col
-        items-center
-        justify-center
-        text-center
-      "
-    >
-      <div
-        className="
-          flex h-10 w-10
-          items-center justify-center
-          rounded-full
-          bg-[var(--color-surface-inactive)]
-          text-[var(--color-text-disabled)]
-        "
-      >
-        <FiList size={15} />
-      </div>
-
-      <h3
-        className="
-          mt-3
-          text-[13px]
-          font-semibold
-          text-[var(--color-text)]
-        "
-      >
-        No projects found
-      </h3>
-
-      <p
-        className="
-          mt-1
-          text-[11px]
-          text-[var(--color-text-tertiary)]
-        "
-      >
-        No projects match {filter}.
+    <div className="flex min-h-[220px] flex-col items-center justify-center text-center">
+      <p className="text-[13px] text-[var(--color-text-tertiary)]">
+        No projects match &ldquo;{filter}&rdquo;
       </p>
-
       <button
         type="button"
         onClick={onClear}
-        className="
-          mt-4
-          rounded-[7px]
-          bg-[var(--color-text)]
-          px-3 py-1.5
-          text-[10px]
-          font-medium
-          text-[var(--color-surface)]
-          transition-opacity
-          hover:opacity-80
-        "
+        className="mt-3 rounded-[6px] bg-[var(--color-text)] px-3 py-1.5 text-[11px] font-medium text-[var(--color-surface)] transition-opacity hover:opacity-90 active:scale-[0.97]"
       >
-        Show all projects
+        Show all
       </button>
-    </motion.div>
+    </div>
   );
 }
 
-/* ═══════════════════════════════════════════════
-   FALLBACK IMAGE
-═══════════════════════════════════════════════ */
-
-function FallbackImage({
-  title,
-  tech,
-}) {
+function FallbackImage({ title, tech }) {
   return (
-    <div
-      className="
-        flex h-full w-full
-        items-center justify-center
-        bg-[var(--color-surface-dark)]
-        px-6 text-center
-      "
-    >
+    <div className="flex h-full w-full items-center justify-center bg-[var(--color-surface-dark)] p-4 text-center">
       <div>
-        <div
-          className="
-            mx-auto
-            flex h-10 w-10
-            items-center justify-center
-            rounded-[10px]
-            border border-white/10
-            bg-white/5
-            text-[14px]
-            font-semibold
-            text-white/80
-          "
-        >
-          {String(title || "P")
-            .charAt(0)
-            .toUpperCase()}
+        <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-[8px] bg-[var(--color-surface-hover)] text-[13px] font-bold text-[var(--color-text)]">
+          {String(title || "P").charAt(0)}
         </div>
-
-        <p
-          className="
-            mt-3
-            text-[13px]
-            font-semibold
-            tracking-[-0.02em]
-            text-white
-          "
-        >
-          {title || "Project"}
-        </p>
-
-        {tech && (
-          <p
-            className="
-              mt-1
-              text-[8px]
-              uppercase
-              tracking-[0.1em]
-              text-white/45
-            "
-          >
-            {formatTech(tech)}
-          </p>
-        )}
+        <p className="mt-2 text-[12px] font-semibold text-[var(--color-text)]">{title}</p>
+        {tech && <p className="mt-0.5 text-[10px] text-[var(--color-text-tertiary)]">{formatTech(tech)}</p>}
       </div>
     </div>
   );
 }
 
-/* ═══════════════════════════════════════════════
-   HELPERS
-═══════════════════════════════════════════════ */
-
 function formatTech(tech) {
-  if (Array.isArray(tech)) {
-    return tech.join(" • ");
-  }
-
-  return String(tech || "").replace(
-    /[,|/]+/g,
-    " • "
-  );
+  if (Array.isArray(tech)) return tech.join(" · ");
+  return String(tech || "").replace(/[,|/•]+/g, " · ");
 }
 
 function getSortLabel(sort) {
@@ -1732,6 +729,5 @@ function getSortLabel(sort) {
     oldest: "Oldest",
     "a-z": "A–Z",
   };
-
   return labels[sort] || "Sort";
 }
