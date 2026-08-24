@@ -89,8 +89,8 @@ export default function SkillsWidget({ constraintsRef, zIndex, onFocus, onClose,
                 key={skill.name}
                 className="
                   group flex items-center gap-2.5 px-3 py-2 rounded-[12px] cursor-default
-                  bg-[var(--color-surface-hover)]/30 border border-[var(--color-surface-border)]
-                  hover:border-[var(--color-surface-border-strong)] hover:bg-[var(--color-surface-hover)]/70
+                  bg-[var(--color-surface-hover)]/30
+                  hover:bg-[var(--color-surface-hover)]/70
                   transition-all duration-150
                 "
               >

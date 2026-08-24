@@ -439,8 +439,6 @@ export default function ResumeSection() {
               gap-5
 
               rounded-[12px]
-              border
-              border-[var(--color-surface-border)]
               bg-[var(--color-surface-inactive)]
 
               p-4
@@ -533,18 +531,10 @@ function Panel({ children }) {
       className="
         rounded-[12px]
 
-        border
-        border-[var(--color-surface-border)]
-
         bg-[var(--color-surface-inactive)]
 
         p-4
         sm:p-5
-
-        transition-colors
-        duration-150
-
-        hover:border-[var(--color-window-border)]
       "
     >
       {children}
@@ -564,18 +554,10 @@ function ProjectPanel({ project }) {
 
         rounded-[12px]
 
-        border
-        border-[var(--color-surface-border)]
-
         bg-[var(--color-surface-inactive)]
 
         p-4
         sm:p-5
-
-        transition-colors
-        duration-150
-
-        hover:border-[var(--color-window-border)]
       "
     >
       <div
@@ -778,9 +760,6 @@ function StatCard({
     <div
       className="
         rounded-[10px]
-
-        border
-        border-[var(--color-surface-border)]
 
         bg-[var(--color-surface-inactive)]
 

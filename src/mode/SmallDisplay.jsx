@@ -145,7 +145,7 @@ export default function TerminalPortfolio() {
         <div className="flex flex-col sm:flex-row gap-6 sm:gap-10 items-start">
           <div className="relative mx-auto sm:mx-0">
             <div
-              className={`w-28 h-28 shrink-0 rounded-2xl ${isDark ? "bg-[#131318] border-white/10" : "bg-white border-zinc-200"} border flex items-center justify-center relative transition-colors`}
+              className={`w-28 h-28 shrink-0 rounded-2xl ${isDark ? "bg-[#131318]" : "bg-white"} flex items-center justify-center relative transition-colors`}
             >
               <span className="text-5xl">👨‍💻</span>
             </div>
@@ -252,7 +252,7 @@ export default function TerminalPortfolio() {
           className="space-y-5"
         >
           <SectionHeader title="Experience & Education" isDark={isDark} />
-          <div className={`border rounded-2xl p-6 sm:p-8 space-y-8 overflow-hidden ${isDark ? "border-white/10 bg-[#121217]" : "border-zinc-200 bg-white shadow-sm"}`}>
+          <div className={`rounded-2xl p-6 sm:p-8 space-y-8 overflow-hidden ${isDark ? "bg-[#121217]" : "bg-white shadow-sm"}`}>
             <div className={`relative border-l ml-2.5 space-y-8 ${isDark ? "border-white/10" : "border-zinc-200"}`}>
               <div className="relative pl-8 group">
                 <div className={`absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full ${isDark ? "bg-zinc-400" : "bg-zinc-600"}`} />
@@ -320,9 +320,9 @@ export default function TerminalPortfolio() {
               <motion.div
                 key={project.id || project.title}
                 variants={fadeUpVariant}
-                className={`group relative flex flex-col sm:flex-row border rounded-2xl overflow-hidden transition-colors duration-200 ${isDark
-                    ? "border-white/10 bg-[#121217] hover:border-white/20"
-                    : "border-zinc-200 bg-white hover:border-zinc-300 shadow-sm"
+                className={`group relative flex flex-col sm:flex-row rounded-2xl overflow-hidden transition-colors duration-200 ${isDark
+                    ? "bg-[#121217]"
+                    : "bg-white shadow-sm"
                   }`}
               >
                 <div className={`relative w-full sm:w-2/5 md:w-1/3 h-48 sm:h-auto overflow-hidden shrink-0 border-b sm:border-b-0 ${isDark ? "bg-black/40 border-white/5 sm:border-r" : "bg-zinc-100 border-zinc-200 sm:border-r"}`}>

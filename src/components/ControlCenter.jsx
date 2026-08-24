@@ -201,8 +201,8 @@ export default function ControlCenter({
                 onClick={handleThemeToggle}
                 className="
                   flex flex-col items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl
-                  border border-[var(--color-surface-border)] bg-[var(--color-surface-hover)]/30
-                  hover:bg-[var(--color-surface-hover)]/70 hover:border-[var(--color-surface-border-strong)]
+                  bg-[var(--color-surface-hover)]/30
+                  hover:bg-[var(--color-surface-hover)]/70
                   transition-all duration-150 group cursor-default text-center
                 "
               >
@@ -225,8 +225,8 @@ export default function ControlCenter({
                 onClick={allWindowsMinimized ? restoreAll : minimizeAll}
                 className="
                   flex flex-col items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl
-                  border border-[var(--color-surface-border)] bg-[var(--color-surface-hover)]/30
-                  hover:bg-[var(--color-surface-hover)]/70 hover:border-[var(--color-surface-border-strong)]
+                  bg-[var(--color-surface-hover)]/30
+                  hover:bg-[var(--color-surface-hover)]/70
                   transition-all duration-150 group cursor-default text-center
                 "
               >
@@ -249,8 +249,8 @@ export default function ControlCenter({
                 onClick={resetLayout}
                 className="
                   flex flex-col items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl
-                  border border-[var(--color-surface-border)] bg-[var(--color-surface-hover)]/30
-                  hover:bg-[var(--color-surface-hover)]/70 hover:border-[var(--color-surface-border-strong)]
+                  bg-[var(--color-surface-hover)]/30
+                  hover:bg-[var(--color-surface-hover)]/70
                   transition-all duration-150 group cursor-default text-center
                 "
               >
@@ -266,7 +266,7 @@ export default function ControlCenter({
             {/* ═══════════════════════════════════════
                 ACCENT COLOR PICKER
             ═══════════════════════════════════════ */}
-            <div className="p-2.5 rounded-xl border border-[var(--color-surface-border)] bg-[var(--color-surface-hover)]/20">
+            <div className="p-2.5 rounded-xl bg-[var(--color-surface-hover)]/20">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[10px] font-heading font-semibold uppercase tracking-[0.1em] text-[var(--color-text-tertiary)]">
                   Accent Color
@@ -338,11 +338,11 @@ export default function ControlCenter({
                       onClick={() => toggleWidget(item.id)}
                       className={`
                         flex items-center gap-2 p-2 rounded-xl text-left
-                        border transition-all duration-150 cursor-default group
+                        transition-all duration-150 cursor-default group
                         ${
                           isWidgetOpen
-                            ? "bg-[var(--color-accent)]/[0.08] hover:bg-[var(--color-accent)]/[0.12] border-[var(--color-accent)]/25 text-[var(--color-text)]"
-                            : "bg-[var(--color-surface-hover)]/25 hover:bg-[var(--color-surface-hover)]/60 border-[var(--color-surface-border)] text-[var(--color-text-secondary)]"
+                            ? "bg-[var(--color-accent)]/[0.08] hover:bg-[var(--color-accent)]/[0.12] text-[var(--color-text)]"
+                            : "bg-[var(--color-surface-hover)]/25 hover:bg-[var(--color-surface-hover)]/60 text-[var(--color-text-secondary)]"
                         }
                       `}
                     >

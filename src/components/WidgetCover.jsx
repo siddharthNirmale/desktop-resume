@@ -72,13 +72,11 @@ export default function WidgetCover({
         group
 
         bg-[var(--color-surface)]
-        border
-        border-[var(--color-surface-border)]
         rounded-[14px]
 
         shadow-[var(--widget-shadow)]
 
-        transition-[background-color,border-color,box-shadow]
+        transition-[background-color,box-shadow]
         duration-200
 
         ${className}

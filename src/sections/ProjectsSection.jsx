@@ -640,14 +640,11 @@ function ProjectCard({
       className={`
         group relative min-w-0 overflow-hidden
         rounded-[14px]
-        border
-        border-[var(--color-surface-border)]
         bg-[var(--color-surface-hover)]/25
 
-        transition-[border-color,background-color,box-shadow]
+        transition-[background-color,box-shadow]
         duration-200
 
-        hover:border-[var(--color-surface-border-strong)]
         hover:bg-[var(--color-surface-hover)]/60
         hover:shadow-xs
 

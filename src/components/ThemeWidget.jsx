@@ -93,9 +93,6 @@ const WallpaperButton = memo(
           shrink-0 overflow-hidden
           rounded-[12px]
 
-          border
-          border-[var(--color-surface-border)]
-
           bg-[var(--color-surface-hover)]/30
 
           shadow-xs
@@ -112,10 +109,9 @@ const WallpaperButton = memo(
 
           snap-start
 
-          transition-[border-color,box-shadow]
+          transition-[box-shadow]
           duration-200
 
-          hover:border-[var(--color-text-disabled)]
           hover:shadow-sm
         "
       >

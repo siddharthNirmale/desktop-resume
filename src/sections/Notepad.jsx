@@ -216,7 +216,7 @@ export default function Notepad() {
       {/* CUSTOM DELETE MODAL */}
       {noteToDelete && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm transition-all">
-          <div className="w-full max-w-[280px] rounded-[14px] border border-[var(--color-surface-border)] bg-[var(--color-surface-elevated)] p-5 text-center shadow-[var(--shadow-popover)]">
+          <div className="w-full max-w-[280px] rounded-[14px] bg-[var(--color-surface-elevated)] p-5 text-center shadow-[var(--shadow-popover)]">
             <h3 className="mb-1 text-[14px] font-semibold text-[var(--color-text)]">
               Delete Note
             </h3>
