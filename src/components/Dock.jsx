@@ -1,19 +1,10 @@
 import {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useMemo,
-  memo,
-} from "react";
-import {
   FiUser,
   FiBriefcase,
   FiFileText,
   FiEdit3,
   FiMail,
   FiTerminal,
-  FiSliders,
 } from "react-icons/fi";
 import {
   motion,
@@ -103,16 +94,6 @@ const DOCK_ITEMS = [
       "bg-[#F0F9FF] text-[#0284C7] hover:bg-[#E0F2FE] border-sky-200/60 shadow-xs",
     darkClass:
       "bg-sky-500/15 text-sky-400 border-sky-500/25 hover:bg-sky-500/25 shadow-xs",
-  },
-  {
-    id: "theme",
-    icon: FiSliders,
-    label: "Appearance",
-    shortcut: "7",
-    lightClass:
-      "bg-[#FAF5FF] text-[#9333EA] hover:bg-[#F3E8FF] border-purple-200/60 shadow-xs",
-    darkClass:
-      "bg-purple-500/15 text-purple-400 border-purple-500/25 hover:bg-purple-500/25 shadow-xs",
   },
 ];
 
@@ -491,7 +472,7 @@ export default function Dock({
     const handleKeyDown = (event) => {
       if (event.metaKey || event.ctrlKey) {
         const num = Number(event.key);
-        if (num >= 1 && num <= 7) {
+        if (num >= 1 && num <= 6) {
           event.preventDefault();
           const items = DOCK_ITEMS.filter(
             (entry) => entry.type !== "separator"
@@ -524,59 +505,6 @@ export default function Dock({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [windows, toggleWindow, bringToFront]);
-
-  /* ------------------------------------------------------------------------
-     THEME TOGGLE HANDLER
-     ------------------------------------------------------------------------ */
-
-  const handleThemeToggle = useCallback(
-    (event) => {
-      const nextLight = !isLight;
-
-      const applyTheme = () => {
-        document.documentElement.classList.toggle("light-theme", nextLight);
-        document.body.classList.toggle("light-theme", nextLight);
-        localStorage.setItem("os-theme", nextLight ? "light" : "dark");
-        setIsLight(nextLight);
-      };
-
-      if (
-        reducedMotion ||
-        typeof document.startViewTransition !== "function"
-      ) {
-        applyTheme();
-        return;
-      }
-
-      const x = event?.clientX ?? window.innerWidth / 2;
-      const y = event?.clientY ?? window.innerHeight - 30;
-      const radius = Math.hypot(
-        Math.max(x, window.innerWidth - x),
-        Math.max(y, window.innerHeight - y)
-      );
-
-      const transition = document.startViewTransition(applyTheme);
-
-      transition.ready
-        .then(() => {
-          document.documentElement.animate(
-            {
-              clipPath: [
-                `circle(0px at ${x}px ${y}px)`,
-                `circle(${radius}px at ${x}px ${y}px)`,
-              ],
-            },
-            {
-              duration: 450,
-              easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-              pseudoElement: "::view-transition-new(root)",
-            }
-          );
-        })
-        .catch(() => {});
-    },
-    [isLight, reducedMotion]
-  );
 
   /* ------------------------------------------------------------------------
      RENDER
