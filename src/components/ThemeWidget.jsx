@@ -5,9 +5,12 @@ import { Sun, Moon, Check } from "lucide";
 import { Sparkles } from "lucide-react";
 import WidgetCover from "./WidgetCover";
 import { generateThumbnail, preloadImage } from "../utils/imageUtils";
-import one from "../assets/images/one.png";
-import two from "../assets/images/two.jpg";
-import three from "../assets/images/three.jpg";
+import one from "../assets/images/one.webp";
+import oneThumb from "../assets/images/one-thumb.webp";
+import two from "../assets/images/two.webp";
+import twoThumb from "../assets/images/two-thumb.webp";
+import three from "../assets/images/three.webp";
+import threeThumb from "../assets/images/three-thumb.webp";
 
 /* ==========================================================================
    CONSTANTS
@@ -25,10 +28,10 @@ const ACCENT_COLORS = [
 ];
 
 const WALLPAPERS = [
-  { id: "default", url: "", name: "Default" },
-  { id: "wp1", url: one, name: "Gray" },
-  { id: "wp2", url: two, name: "Light" },
-  { id: "wp3", url: three, name: "Dark" },
+  { id: "default", url: "", thumb: "", name: "Default" },
+  { id: "wp1", url: one, thumb: oneThumb, name: "Gray" },
+  { id: "wp2", url: two, thumb: twoThumb, name: "Light" },
+  { id: "wp3", url: three, thumb: threeThumb, name: "Dark" },
 ];
 
 /* ==========================================================================
@@ -225,23 +228,27 @@ const CompactWallpaperCard = memo(function CompactWallpaperCard({
   onSelect,
   isApplying,
 }) {
-  const [thumbUrl, setThumbUrl] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(wallpaper.id === "default");
+  const [asyncThumb, setAsyncThumb] = useState(null);
+  const [asyncLoaded, setAsyncLoaded] = useState(false);
 
   useEffect(() => {
-    if (wallpaper.id === "default") return;
+    if (wallpaper.id === "default" || wallpaper.thumb) return;
 
     let mounted = true;
     generateThumbnail(wallpaper.url, 90).then((thumb) => {
       if (!mounted) return;
-      setThumbUrl(thumb);
-      setIsLoaded(true);
+      setAsyncThumb(thumb);
+      setAsyncLoaded(true);
     });
 
     return () => {
       mounted = false;
     };
-  }, [wallpaper.id, wallpaper.url]);
+  }, [wallpaper.id, wallpaper.url, wallpaper.thumb]);
+
+  const thumbUrl = wallpaper.thumb || asyncThumb;
+  const isLoaded =
+    wallpaper.id === "default" || Boolean(wallpaper.thumb) || asyncLoaded;
 
   return (
     <motion.button
@@ -285,6 +292,8 @@ const CompactWallpaperCard = memo(function CompactWallpaperCard({
             <img
               src={thumbUrl}
               alt={wallpaper.name ? `${wallpaper.name} desktop wallpaper theme preview` : "Desktop wallpaper theme preview"}
+              width={180}
+              height={112}
               loading="lazy"
               decoding="async"
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-108"
@@ -385,7 +394,13 @@ export default function ThemeWidget({
   // Active Wallpaper URL
   const [activeWallpaperUrl, setActiveWallpaperUrl] = useState(() => {
     if (typeof window === "undefined") return "";
-    return localStorage.getItem("os-wallpaper") || "";
+    const saved = localStorage.getItem("os-wallpaper") || "";
+    if (saved) {
+      if (saved.includes("one")) return one;
+      if (saved.includes("two")) return two;
+      if (saved.includes("three")) return three;
+    }
+    return saved;
   });
 
   const [transitioning, setTransitioning] = useState(false);

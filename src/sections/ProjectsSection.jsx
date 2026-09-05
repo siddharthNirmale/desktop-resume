@@ -363,7 +363,7 @@ export default function ProjectsSection() {
 /* ═══════════════════════════════════════════════
    PROJECT CARD (CLEAN & BORDERLESS)
 ═══════════════════════════════════════════════ */
-function ProjectCard({ project, index, view, onPreview }) {
+function ProjectCard({ project, view, onPreview }) {
   const [imageError, setImageError] = useState(false);
   const isList = view === "list";
 
@@ -392,14 +392,16 @@ function ProjectCard({ project, index, view, onPreview }) {
             isList ? "aspect-[16/9] sm:h-full sm:aspect-auto" : "aspect-[16/9]"
           }`}
         >
-          {project.image && !imageError ? (
+          {(project.thumbnail || project.image) && !imageError ? (
             <img
-              src={project.image}
+              src={project.thumbnail || project.image}
               alt={
                 project.title
                   ? `${project.title} - Full-stack project preview by Siddharth Nirmale`
                   : "Portfolio project preview by Siddharth Nirmale"
               }
+              width={720}
+              height={405}
               loading="lazy"
               decoding="async"
               onError={() => setImageError(true)}
@@ -592,6 +594,9 @@ function ProjectPreview({
                 key={currentImage}
                 src={currentImage}
                 alt={project.title}
+                width={1600}
+                height={900}
+                decoding="async"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}

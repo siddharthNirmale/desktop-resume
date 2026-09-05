@@ -327,12 +327,14 @@ export default function TerminalPortfolio() {
               >
                 <div className={`relative w-full sm:w-2/5 md:w-1/3 h-48 sm:h-auto overflow-hidden shrink-0 border-b sm:border-b-0 ${isDark ? "bg-black/40 border-white/5 sm:border-r" : "bg-zinc-100 border-zinc-200 sm:border-r"}`}>
                   <img
-                    src={project.image || "/placeholder.jpg"}
+                    src={project.thumbnail || project.image || "/placeholder.jpg"}
                     alt={
                       project.title
                         ? `${project.title} - Full-stack project preview by Siddharth Nirmale`
                         : "Portfolio project preview by Siddharth Nirmale"
                     }
+                    width={720}
+                    height={405}
                     loading="lazy"
                     decoding="async"
                     className="relative w-full h-full object-cover z-10"
