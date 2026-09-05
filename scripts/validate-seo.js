@@ -1,5 +1,7 @@
 async function testSeo() {
-  const res = await fetch("http://localhost:4173/");
+  const port = process.argv[2] || "5173";
+  console.log(`Connecting to http://localhost:${port}/...`);
+  const res = await fetch(`http://localhost:${port}/`);
   const html = await res.text();
 
   const checks = [

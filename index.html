@@ -65,6 +65,22 @@
     <meta name="twitter:image" content="https://siddharthn-portfolio.vercel.app/og-image.png" />
     <meta name="twitter:image:alt" content="Siddharth Nirmale — Full-Stack Developer &amp; Product Designer Portfolio Preview" />
 
+    <!-- Synchronous Theme & Accent Initializer (Prevents any theme/color flash) -->
+    <script>
+      (function () {
+        try {
+          var accent = localStorage.getItem("os-accent");
+          if (accent) {
+            document.documentElement.style.setProperty("--color-accent", accent);
+          }
+          var theme = localStorage.getItem("os-theme");
+          if (theme === "light") {
+            document.documentElement.classList.add("light");
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- Structured Data: JSON-LD Schema Markup (Person, WebSite, ProfilePage) -->
     <script type="application/ld+json">
       {
@@ -147,106 +163,223 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Critical CSS for Instant 0ms Paint and Zero FOUC -->
+    <style>
+      :root {
+        --color-desktop: #111111;
+        --color-text: #f5f5f7;
+        --color-text-tertiary: #71717a;
+        --color-accent: #0a84ff;
+      }
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: #111111;
+        color: #f5f5f7;
+        font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      #root {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: #111111;
+      }
+
+      /* Zero-FOUC Initial Preloader Shell: Matches Preloader.jsx layout exactly */
+      .app-preloader-shell {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        overflow: hidden;
+        background-color: #111111;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        user-select: none;
+      }
+      .app-preloader-cluster {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 0 1.5rem;
+      }
+      .app-preloader-icon {
+        display: flex;
+        width: 56px;
+        height: 56px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        margin-bottom: 20px;
+        font-size: 24px;
+        line-height: 1;
+      }
+      .app-preloader-title {
+        font-size: 17px;
+        font-weight: 600;
+        letter-spacing: -0.015em;
+        color: #f5f5f7;
+        margin: 0;
+      }
+      .app-preloader-subtitle {
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace, monospace;
+        color: #71717a;
+        margin: 4px 0 0 0;
+      }
+      .app-preloader-bar-bg {
+        width: 190px;
+        height: 3px;
+        border-radius: 9999px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+        margin-top: 24px;
+        position: relative;
+      }
+      .app-preloader-bar-fill {
+        height: 100%;
+        background-color: var(--color-accent, #0a84ff);
+        border-radius: 9999px;
+        width: 18%;
+        animation: preloader-pulse 1.2s ease-in-out infinite alternate;
+      }
+      @keyframes preloader-pulse {
+        0% { width: 12%; opacity: 0.7; }
+        100% { width: 48%; opacity: 1; }
+      }
+      .app-preloader-status {
+        margin-top: 12px;
+        font-size: 11px;
+        font-weight: 500;
+        color: #71717a;
+        letter-spacing: -0.01em;
+      }
+
+      /* Accessible Offscreen SEO Crawlable Content (Indexed by search crawlers, zero visual flash) */
+      .seo-crawlable-sr {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        padding: 0 !important;
+        margin: -1px !important;
+        overflow: hidden !important;
+        clip: rect(0, 0, 0, 0) !important;
+        white-space: nowrap !important;
+        border: 0 !important;
+      }
+    </style>
   </head>
   <body>
-    <!-- 
-      Accessible & Crawler-Friendly Content:
-      This semantic fallback ensures search engines (Google, Bing, DuckDuckGo) and crawlers
-      can instantly index Siddharth's profile, core stack, featured projects, and contact channels.
-      When React initializes, createRoot seamlessly replaces this content with the interactive desktop interface.
-    -->
     <div id="root">
-      <main style="max-width: 800px; margin: 0 auto; padding: 2rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #18181b; line-height: 1.6;">
-        <header style="margin-bottom: 2rem;">
-          <h1 style="font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.03em;">
-            Siddharth Nirmale — Full-Stack Developer &amp; Product Designer
-          </h1>
-          <p style="font-size: 1.25rem; color: #52525b; margin: 0;">
+      <!-- 
+        Zero-FOUC Initial Preloader Shell:
+        Renders instantaneously on first paint (0ms) before scripts execute.
+        Matches Preloader.jsx layout and colors for a 100% flicker-free transition into React.
+      -->
+      <div class="app-preloader-shell" aria-hidden="true">
+        <div class="app-preloader-cluster">
+          <div class="app-preloader-icon">
+            <span>😈</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <p class="app-preloader-title">Siddharth Nirmale</p>
+            <p class="app-preloader-subtitle">Personal Workspace</p>
+          </div>
+          <div class="app-preloader-bar-bg">
+            <div class="app-preloader-bar-fill"></div>
+          </div>
+          <p class="app-preloader-status">Loading workspace...</p>
+        </div>
+      </div>
+
+      <!-- 
+        Accessible & Semantic Crawler Content:
+        Preserves complete search engine indexability (Google, Bing, crawlers)
+        and screen-reader accessibility without visually flashing unstyled content.
+        When React mounts, createRoot replaces this entire tree with the interactive app.
+      -->
+      <main class="seo-crawlable-sr">
+        <header>
+          <h1>Siddharth Nirmale — Full-Stack Developer &amp; Product Designer</h1>
+          <p>
             Full-stack engineer crafting fluid web applications, reactive desktop interfaces, and intelligent systems.
           </p>
-          <p style="font-size: 0.95rem; color: #71717a; margin-top: 0.5rem;">
+          <p>
             Based in Indore, India · Available for full-stack, frontend, and engineering opportunities.
           </p>
         </header>
 
-        <section style="margin-bottom: 2rem;">
-          <h2 style="font-size: 1.5rem; font-weight: 600; border-bottom: 1px solid #e4e4e7; padding-bottom: 0.5rem; margin-bottom: 1rem;">
-            About Siddharth Nirmale
-          </h2>
+        <section>
+          <h2>About Siddharth Nirmale</h2>
           <p>
             Specializing in React 19 ecosystems, TypeScript, tactile micro-interactions, scalable Node.js architecture, and applied AI workflows. Former ML &amp; Dev Intern at Personifwy, graduate of Madhav Institute of Technology &amp; Science (MITS) Gwalior with an 8.49 CGPA.
           </p>
         </section>
 
-        <section style="margin-bottom: 2rem;">
-          <h2 style="font-size: 1.5rem; font-weight: 600; border-bottom: 1px solid #e4e4e7; padding-bottom: 0.5rem; margin-bottom: 1rem;">
-            Core Technologies &amp; Skills
-          </h2>
+        <section>
+          <h2>Core Technologies &amp; Skills</h2>
           <p>
-            <strong>Frontend:</strong> React 19, Next.js, TypeScript, JavaScript (ESNext), Tailwind CSS, Framer Motion, HTML5 Canvas, Web Audio API, Responsive Web Design.<br />
-            <strong>Backend &amp; Cloud:</strong> Node.js, Express.js, MongoDB, RESTful APIs, Cloudinary, Vercel, JWT Authentication.<br />
-            <strong>AI &amp; Workflows:</strong> Applied LLM APIs, Groq AI, Gemini API, Prompt Engineering.
+            Frontend: React 19, Next.js, TypeScript, JavaScript (ESNext), Tailwind CSS, Framer Motion, HTML5 Canvas, Web Audio API, Responsive Web Design.
+            Backend &amp; Cloud: Node.js, Express.js, MongoDB, RESTful APIs, Cloudinary, Vercel, JWT Authentication.
+            AI &amp; Workflows: Applied LLM APIs, Groq AI, Gemini API, Prompt Engineering.
           </p>
         </section>
 
-        <section style="margin-bottom: 2rem;">
-          <h2 style="font-size: 1.5rem; font-weight: 600; border-bottom: 1px solid #e4e4e7; padding-bottom: 0.5rem; margin-bottom: 1rem;">
-            Featured Projects
-          </h2>
-          <article style="margin-bottom: 1.25rem;">
-            <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 0.25rem;">
-              <a href="https://lekha-lilac.vercel.app/" style="color: #7c3aed; text-decoration: none;">Lekha — Tactile Editorial Pen Showcase</a>
-            </h3>
-            <p style="color: #52525b; margin: 0.25rem 0;">
+        <section>
+          <h2>Featured Projects</h2>
+          <article>
+            <h3><a href="https://lekha-lilac.vercel.app/">Lekha — Tactile Editorial Pen Showcase</a></h3>
+            <p>
               An original landing page design for a premium pen brand featuring scroll-driven 3D disassembly, procedural ink scratchpad using HTML5 Canvas and Rough.js, and tactile Web Audio feedback.
             </p>
-            <small style="color: #71717a;">Stack: React 19, TypeScript, Tailwind CSS, Framer Motion, Web Audio API, Lenis</small>
           </article>
 
-          <article style="margin-bottom: 1.25rem;">
-            <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 0.25rem;">
-              <a href="https://siddharthn-portfolio.vercel.app/" style="color: #7c3aed; text-decoration: none;">Interactive Desktop OS Portfolio</a>
-            </h3>
-            <p style="color: #52525b; margin: 0.25rem 0;">
+          <article>
+            <h3><a href="https://siddharthn-portfolio.vercel.app/">Interactive Desktop OS Portfolio</a></h3>
+            <p>
               A Windows-inspired interactive desktop environment with draggable, resizable application windows, custom state management, live GitHub widgets, and fluid micro-interactions.
             </p>
-            <small style="color: #71717a;">Stack: React 19, Vite, Tailwind CSS, Framer Motion, Lucide Icons</small>
           </article>
 
-          <article style="margin-bottom: 1.25rem;">
-            <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 0.25rem;">
-              <a href="https://refundpilot-preview.vercel.app/" style="color: #7c3aed; text-decoration: none;">AI Refund Agent</a>
-            </h3>
-            <p style="color: #52525b; margin: 0.25rem 0;">
+          <article>
+            <h3><a href="https://refundpilot-preview.vercel.app/">AI Refund Agent</a></h3>
+            <p>
               AI-powered customer service agent built with Next.js and Groq AI for intelligent query resolution, rule-based decision trees, and Zustand state management.
             </p>
-            <small style="color: #71717a;">Stack: Next.js, TypeScript, Groq AI, Tailwind CSS, Zustand</small>
           </article>
 
-          <article style="margin-bottom: 1.25rem;">
-            <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 0.25rem;">
-              <a href="https://thumbmax-psi.vercel.app/" style="color: #7c3aed; text-decoration: none;">Thumbmax — Full-Stack Media Generation Platform</a>
-            </h3>
-            <p style="color: #52525b; margin: 0.25rem 0;">
+          <article>
+            <h3><a href="https://thumbmax-psi.vercel.app/">Thumbmax — Full-Stack Media Generation Platform</a></h3>
+            <p>
               Full-stack media platform leveraging Node.js, Express.js, and Gemini API for thumbnail generation, Cloudinary storage, and JWT authentication.
             </p>
-            <small style="color: #71717a;">Stack: Node.js, Express.js, Gemini API, Cloudinary, MongoDB</small>
           </article>
         </section>
 
-        <footer style="border-top: 1px solid #e4e4e7; padding-top: 1.5rem; margin-top: 2rem;">
-          <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">Connect &amp; Profiles</h2>
+        <footer>
+          <h2>Connect &amp; Profiles</h2>
           <p>
-            Email: <a href="mailto:siddharth175nirmale1@gmail.com" style="color: #7c3aed;">siddharth175nirmale1@gmail.com</a><br />
-            GitHub: <a href="https://github.com/siddharthNirmale" target="_blank" rel="noreferrer" style="color: #7c3aed;">github.com/siddharthNirmale</a><br />
-            LinkedIn: <a href="https://linkedin.com/in/siddharth-nirmale" target="_blank" rel="noreferrer" style="color: #7c3aed;">linkedin.com/in/siddharth-nirmale</a>
+            Email: <a href="mailto:siddharth175nirmale1@gmail.com">siddharth175nirmale1@gmail.com</a>
+            GitHub: <a href="https://github.com/siddharthNirmale">github.com/siddharthNirmale</a>
+            LinkedIn: <a href="https://linkedin.com/in/siddharth-nirmale">linkedin.com/in/siddharth-nirmale</a>
           </p>
         </footer>
       </main>
     </div>
 
     <noscript>
-      <div style="padding: 1.5rem; background-color: #18181b; color: #fafafa; text-align: center; font-family: sans-serif;">
+      <div style="padding: 1.5rem; background-color: #111111; color: #fafafa; text-align: center; font-family: sans-serif;">
         <p>JavaScript is disabled in your browser. You can still view Siddharth Nirmale's projects and reach out via <a href="mailto:siddharth175nirmale1@gmail.com" style="color: #a78bfa;">siddharth175nirmale1@gmail.com</a>.</p>
       </div>
     </noscript>
