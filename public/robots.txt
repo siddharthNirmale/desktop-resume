@@ -1,0 +1,11 @@
+# Robots.txt for Siddharth Nirmale's Portfolio
+# Allow all search engine bots to crawl and index the site
+
+User-agent: *
+Allow: /
+
+# Canonical Host
+Host: https://siddharthn-portfolio.vercel.app
+
+# XML Sitemap
+Sitemap: https://siddharthn-portfolio.vercel.app/sitemap.xml

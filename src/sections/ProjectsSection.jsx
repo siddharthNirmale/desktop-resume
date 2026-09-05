@@ -175,9 +175,9 @@ export default function ProjectsSection() {
       <header className="shrink-0 border-b border-[var(--color-surface-border)] px-4 py-3.5 sm:px-6">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <h1 className="text-[14px] font-semibold tracking-[-0.02em] text-[var(--color-text)] font-heading">
+            <h2 className="text-[14px] font-semibold tracking-[-0.02em] text-[var(--color-text)] font-heading">
               Projects
-            </h1>
+            </h2>
 
             <span className="text-[10px] font-mono font-medium text-[var(--color-text-tertiary)]">
               ({filteredProjects.length})
@@ -395,8 +395,13 @@ function ProjectCard({ project, index, view, onPreview }) {
           {project.image && !imageError ? (
             <img
               src={project.image}
-              alt={project.title || "Project preview"}
+              alt={
+                project.title
+                  ? `${project.title} - Full-stack project preview by Siddharth Nirmale`
+                  : "Portfolio project preview by Siddharth Nirmale"
+              }
               loading="lazy"
+              decoding="async"
               onError={() => setImageError(true)}
               className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover/image:scale-[1.025]"
             />

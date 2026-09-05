@@ -91,9 +91,9 @@ export default function Preloader({ onLoadingComplete }) {
 
             {/* Title & Identity */}
             <div className="space-y-1">
-              <h1 className="text-[17px] font-heading font-semibold tracking-[-0.015em] text-[var(--color-text)]">
+              <p className="text-[17px] font-heading font-semibold tracking-[-0.015em] text-[var(--color-text)]">
                 Siddharth Nirmale
-              </h1>
+              </p>
               <p className="text-[11px] font-mono text-[var(--color-text-tertiary)]">
                 Personal Workspace
               </p>

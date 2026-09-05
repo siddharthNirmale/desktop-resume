@@ -284,8 +284,9 @@ const CompactWallpaperCard = memo(function CompactWallpaperCard({
           {thumbUrl && isLoaded ? (
             <img
               src={thumbUrl}
-              alt=""
-              aria-hidden="true"
+              alt={wallpaper.name ? `${wallpaper.name} desktop wallpaper theme preview` : "Desktop wallpaper theme preview"}
+              loading="lazy"
+              decoding="async"
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-108"
             />
           ) : (

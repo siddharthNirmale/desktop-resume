@@ -60,9 +60,9 @@ export default function Terminal() {
 
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h1 className="text-[14px] font-semibold tracking-[-0.02em] text-[var(--color-text)]">
+                <h2 className="text-[14px] font-semibold tracking-[-0.02em] text-[var(--color-text)]">
                   Terminal
-                </h1>
+                </h2>
               </div>
 
               <p className="mt-0.5 text-[10px] text-[var(--color-text-tertiary)]">

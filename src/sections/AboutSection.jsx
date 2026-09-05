@@ -91,9 +91,9 @@ export default function AboutSection() {
           >
             {/* Stack */}
             <div className="space-y-2">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-tertiary)] font-mono">
+              <h2 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-tertiary)] font-mono">
                 Core Stack
-              </div>
+              </h2>
               <p className="text-[12.5px] leading-relaxed text-[var(--color-text-secondary)]">
                 React 19, Next.js, TypeScript, Node.js, Tailwind CSS, Framer Motion, MongoDB.
               </p>
@@ -101,9 +101,9 @@ export default function AboutSection() {
 
             {/* Background */}
             <div className="space-y-2">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-tertiary)] font-mono">
+              <h2 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-tertiary)] font-mono">
                 Background
-              </div>
+              </h2>
               <div className="text-[12.5px] leading-relaxed text-[var(--color-text-secondary)] space-y-1">
                 <div className="group cursor-default">
                   <span className="text-[var(--color-text)] font-medium transition-colors group-hover:text-[var(--color-accent)]">
@@ -122,9 +122,9 @@ export default function AboutSection() {
 
             {/* Selected Work */}
             <div className="space-y-2">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-tertiary)] font-mono">
+              <h2 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-tertiary)] font-mono">
                 Selected Craft
-              </div>
+              </h2>
               <div className="text-[12.5px] leading-relaxed space-y-1">
                 <div>
                   <a

@@ -67,7 +67,7 @@ export default function ResumeSection() {
       >
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h1
+            <h2
               className="
                 truncate
                 text-[16px]
@@ -78,7 +78,7 @@ export default function ResumeSection() {
               "
             >
               Siddharth_Resume.pdf
-            </h1>
+            </h2>
 
             <span
               className="

@@ -2,9 +2,143 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Primary Page Title & Meta Description -->
+    <title>Siddharth Nirmale — Full-Stack Developer &amp; Product Designer</title>
+    <meta
+      name="description"
+      content="Portfolio of Siddharth Nirmale, a Full-Stack Developer &amp; Product Designer specializing in React 19, TypeScript, Next.js, Node.js, and interactive web experiences."
+    />
+    <meta
+      name="keywords"
+      content="Siddharth Nirmale, Full-Stack Developer, Frontend Engineer, Software Engineer, React 19, TypeScript, Next.js, Node.js, Tailwind CSS, Framer Motion, Product Designer, Portfolio, Web Developer, Indore, India"
+    />
+    <meta name="author" content="Siddharth Nirmale" />
+    <meta name="creator" content="Siddharth Nirmale" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://siddharthn-portfolio.vercel.app/" />
+
+    <!-- Favicon Suite & App Icons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Siddharth Nirmale — Full-Stack Developer & Product Designer</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Theme & Mobile Colors -->
+    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Siddharth Nirmale" />
+    <meta name="application-name" content="Siddharth Nirmale Portfolio" />
+
+    <!-- Open Graph (Facebook, LinkedIn, Discord, Slack) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://siddharthn-portfolio.vercel.app/" />
+    <meta property="og:site_name" content="Siddharth Nirmale Portfolio" />
+    <meta property="og:title" content="Siddharth Nirmale — Full-Stack Developer &amp; Product Designer" />
+    <meta
+      property="og:description"
+      content="Explore the interactive desktop portfolio of Siddharth Nirmale. Specializing in React 19, TypeScript, Next.js, Node.js, and fluid web experiences."
+    />
+    <meta property="og:image" content="https://siddharthn-portfolio.vercel.app/og-image.png" />
+    <meta property="og:image:secure_url" content="https://siddharthn-portfolio.vercel.app/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Siddharth Nirmale — Full-Stack Developer &amp; Product Designer Portfolio Preview" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter / X Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://siddharthn-portfolio.vercel.app/" />
+    <meta name="twitter:title" content="Siddharth Nirmale — Full-Stack Developer &amp; Product Designer" />
+    <meta
+      name="twitter:description"
+      content="Explore the interactive desktop portfolio of Siddharth Nirmale. Specializing in React 19, TypeScript, Next.js, Node.js, and fluid web experiences."
+    />
+    <meta name="twitter:image" content="https://siddharthn-portfolio.vercel.app/og-image.png" />
+    <meta name="twitter:image:alt" content="Siddharth Nirmale — Full-Stack Developer &amp; Product Designer Portfolio Preview" />
+
+    <!-- Structured Data: JSON-LD Schema Markup (Person, WebSite, ProfilePage) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://siddharthn-portfolio.vercel.app/#website",
+            "url": "https://siddharthn-portfolio.vercel.app/",
+            "name": "Siddharth Nirmale — Portfolio",
+            "description": "Interactive desktop-style portfolio of Siddharth Nirmale, Full-Stack Developer & Product Designer.",
+            "inLanguage": "en-US",
+            "publisher": {
+              "@id": "https://siddharthn-portfolio.vercel.app/#person"
+            }
+          },
+          {
+            "@type": "ProfilePage",
+            "@id": "https://siddharthn-portfolio.vercel.app/#profilepage",
+            "url": "https://siddharthn-portfolio.vercel.app/",
+            "name": "Siddharth Nirmale — Full-Stack Developer & Product Designer",
+            "isPartOf": {
+              "@id": "https://siddharthn-portfolio.vercel.app/#website"
+            },
+            "about": {
+              "@id": "https://siddharthn-portfolio.vercel.app/#person"
+            },
+            "mainEntity": {
+              "@id": "https://siddharthn-portfolio.vercel.app/#person"
+            }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://siddharthn-portfolio.vercel.app/#person",
+            "name": "Siddharth Nirmale",
+            "jobTitle": "Full-Stack Developer & Product Designer",
+            "description": "Full-stack engineer crafting fluid web applications, reactive interfaces, and intelligent systems with React 19, Next.js, TypeScript, and Node.js.",
+            "url": "https://siddharthn-portfolio.vercel.app/",
+            "image": "https://siddharthn-portfolio.vercel.app/og-image.png",
+            "email": "mailto:siddharth175nirmale1@gmail.com",
+            "sameAs": [
+              "https://github.com/siddharthNirmale",
+              "https://linkedin.com/in/siddharth-nirmale"
+            ],
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Indore",
+              "addressRegion": "Madhya Pradesh",
+              "addressCountry": "India"
+            },
+            "alumniOf": {
+              "@type": "EducationalOrganization",
+              "name": "Madhav Institute of Technology & Science (MITS), Gwalior"
+            },
+            "knowsAbout": [
+              "Full-Stack Web Development",
+              "Frontend Architecture",
+              "React 19",
+              "Next.js",
+              "TypeScript",
+              "JavaScript",
+              "Node.js",
+              "Express.js",
+              "Tailwind CSS",
+              "Framer Motion",
+              "MongoDB",
+              "REST APIs",
+              "Applied AI & LLM Systems",
+              "User Experience Design (UI/UX)"
+            ]
+          }
+        ]
+      }
+    </script>
 
     <!-- Google Fonts: Inter, Space Grotesk, JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,7 +149,108 @@
     />
   </head>
   <body>
-    <div id="root"></div>
+    <!-- 
+      Accessible & Crawler-Friendly Content:
+      This semantic fallback ensures search engines (Google, Bing, DuckDuckGo) and crawlers
+      can instantly index Siddharth's profile, core stack, featured projects, and contact channels.
+      When React initializes, createRoot seamlessly replaces this content with the interactive desktop interface.
+    -->
+    <div id="root">
+      <main style="max-width: 800px; margin: 0 auto; padding: 2rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #18181b; line-height: 1.6;">
+        <header style="margin-bottom: 2rem;">
+          <h1 style="font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.03em;">
+            Siddharth Nirmale — Full-Stack Developer &amp; Product Designer
+          </h1>
+          <p style="font-size: 1.25rem; color: #52525b; margin: 0;">
+            Full-stack engineer crafting fluid web applications, reactive desktop interfaces, and intelligent systems.
+          </p>
+          <p style="font-size: 0.95rem; color: #71717a; margin-top: 0.5rem;">
+            Based in Indore, India · Available for full-stack, frontend, and engineering opportunities.
+          </p>
+        </header>
+
+        <section style="margin-bottom: 2rem;">
+          <h2 style="font-size: 1.5rem; font-weight: 600; border-bottom: 1px solid #e4e4e7; padding-bottom: 0.5rem; margin-bottom: 1rem;">
+            About Siddharth Nirmale
+          </h2>
+          <p>
+            Specializing in React 19 ecosystems, TypeScript, tactile micro-interactions, scalable Node.js architecture, and applied AI workflows. Former ML &amp; Dev Intern at Personifwy, graduate of Madhav Institute of Technology &amp; Science (MITS) Gwalior with an 8.49 CGPA.
+          </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+          <h2 style="font-size: 1.5rem; font-weight: 600; border-bottom: 1px solid #e4e4e7; padding-bottom: 0.5rem; margin-bottom: 1rem;">
+            Core Technologies &amp; Skills
+          </h2>
+          <p>
+            <strong>Frontend:</strong> React 19, Next.js, TypeScript, JavaScript (ESNext), Tailwind CSS, Framer Motion, HTML5 Canvas, Web Audio API, Responsive Web Design.<br />
+            <strong>Backend &amp; Cloud:</strong> Node.js, Express.js, MongoDB, RESTful APIs, Cloudinary, Vercel, JWT Authentication.<br />
+            <strong>AI &amp; Workflows:</strong> Applied LLM APIs, Groq AI, Gemini API, Prompt Engineering.
+          </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+          <h2 style="font-size: 1.5rem; font-weight: 600; border-bottom: 1px solid #e4e4e7; padding-bottom: 0.5rem; margin-bottom: 1rem;">
+            Featured Projects
+          </h2>
+          <article style="margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 0.25rem;">
+              <a href="https://lekha-lilac.vercel.app/" style="color: #7c3aed; text-decoration: none;">Lekha — Tactile Editorial Pen Showcase</a>
+            </h3>
+            <p style="color: #52525b; margin: 0.25rem 0;">
+              An original landing page design for a premium pen brand featuring scroll-driven 3D disassembly, procedural ink scratchpad using HTML5 Canvas and Rough.js, and tactile Web Audio feedback.
+            </p>
+            <small style="color: #71717a;">Stack: React 19, TypeScript, Tailwind CSS, Framer Motion, Web Audio API, Lenis</small>
+          </article>
+
+          <article style="margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 0.25rem;">
+              <a href="https://siddharthn-portfolio.vercel.app/" style="color: #7c3aed; text-decoration: none;">Interactive Desktop OS Portfolio</a>
+            </h3>
+            <p style="color: #52525b; margin: 0.25rem 0;">
+              A Windows-inspired interactive desktop environment with draggable, resizable application windows, custom state management, live GitHub widgets, and fluid micro-interactions.
+            </p>
+            <small style="color: #71717a;">Stack: React 19, Vite, Tailwind CSS, Framer Motion, Lucide Icons</small>
+          </article>
+
+          <article style="margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 0.25rem;">
+              <a href="https://refundpilot-preview.vercel.app/" style="color: #7c3aed; text-decoration: none;">AI Refund Agent</a>
+            </h3>
+            <p style="color: #52525b; margin: 0.25rem 0;">
+              AI-powered customer service agent built with Next.js and Groq AI for intelligent query resolution, rule-based decision trees, and Zustand state management.
+            </p>
+            <small style="color: #71717a;">Stack: Next.js, TypeScript, Groq AI, Tailwind CSS, Zustand</small>
+          </article>
+
+          <article style="margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 0.25rem;">
+              <a href="https://thumbmax-psi.vercel.app/" style="color: #7c3aed; text-decoration: none;">Thumbmax — Full-Stack Media Generation Platform</a>
+            </h3>
+            <p style="color: #52525b; margin: 0.25rem 0;">
+              Full-stack media platform leveraging Node.js, Express.js, and Gemini API for thumbnail generation, Cloudinary storage, and JWT authentication.
+            </p>
+            <small style="color: #71717a;">Stack: Node.js, Express.js, Gemini API, Cloudinary, MongoDB</small>
+          </article>
+        </section>
+
+        <footer style="border-top: 1px solid #e4e4e7; padding-top: 1.5rem; margin-top: 2rem;">
+          <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">Connect &amp; Profiles</h2>
+          <p>
+            Email: <a href="mailto:siddharth175nirmale1@gmail.com" style="color: #7c3aed;">siddharth175nirmale1@gmail.com</a><br />
+            GitHub: <a href="https://github.com/siddharthNirmale" target="_blank" rel="noreferrer" style="color: #7c3aed;">github.com/siddharthNirmale</a><br />
+            LinkedIn: <a href="https://linkedin.com/in/siddharth-nirmale" target="_blank" rel="noreferrer" style="color: #7c3aed;">linkedin.com/in/siddharth-nirmale</a>
+          </p>
+        </footer>
+      </main>
+    </div>
+
+    <noscript>
+      <div style="padding: 1.5rem; background-color: #18181b; color: #fafafa; text-align: center; font-family: sans-serif;">
+        <p>JavaScript is disabled in your browser. You can still view Siddharth Nirmale's projects and reach out via <a href="mailto:siddharth175nirmale1@gmail.com" style="color: #a78bfa;">siddharth175nirmale1@gmail.com</a>.</p>
+      </div>
+    </noscript>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
