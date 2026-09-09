@@ -11,9 +11,12 @@ import {
   FiCheck,
   FiCopy,
 } from "react-icons/fi";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import projects from "../data/project";
 import { EASING } from "../lib/motion";
+import { sanitizeUrl } from "../utils/security";
+
+const PROJECT_LIST = Array.isArray(projects) ? projects : [];
 
 /* ─────────────────────────────────────────────────────────────
    MOTION TOKENS
@@ -40,7 +43,7 @@ const cardVariants = {
 };
 
 export default function ProjectsSection() {
-  const projectList = Array.isArray(projects) ? projects : [];
+  const projectList = PROJECT_LIST;
 
   const [activeFilter, setActiveFilter] = useState("All");
   const [sort, setSort] = useState("featured");
@@ -102,6 +105,30 @@ export default function ProjectsSection() {
   /* ─────────────────────────────────────────────
      KEYBOARD NAVIGATION
   ───────────────────────────────────────────── */
+  const openPreview = useCallback((index) => {
+    setSelectedIndex(index);
+    setCopied(false);
+  }, []);
+
+  const closePreview = useCallback(() => {
+    setSelectedIndex(null);
+    setCopied(false);
+  }, []);
+
+  const nextProject = useCallback(() => {
+    if (selectedIndex !== null && selectedIndex < filteredProjects.length - 1) {
+      setSelectedIndex((index) => index + 1);
+      setCopied(false);
+    }
+  }, [selectedIndex, filteredProjects.length]);
+
+  const previousProject = useCallback(() => {
+    if (selectedIndex !== null && selectedIndex > 0) {
+      setSelectedIndex((index) => index - 1);
+      setCopied(false);
+    }
+  }, [selectedIndex]);
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (selectedIndex === null) {
@@ -122,31 +149,7 @@ export default function ProjectsSection() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedIndex, filteredProjects.length]);
-
-  const openPreview = (index) => {
-    setSelectedIndex(index);
-    setCopied(false);
-  };
-
-  const closePreview = () => {
-    setSelectedIndex(null);
-    setCopied(false);
-  };
-
-  const nextProject = () => {
-    if (selectedIndex !== null && selectedIndex < filteredProjects.length - 1) {
-      setSelectedIndex((index) => index + 1);
-      setCopied(false);
-    }
-  };
-
-  const previousProject = () => {
-    if (selectedIndex !== null && selectedIndex > 0) {
-      setSelectedIndex((index) => index - 1);
-      setCopied(false);
-    }
-  };
+  }, [selectedIndex, filteredProjects.length, closePreview]);
 
   const copyProjectLink = async () => {
     if (!selectedProject?.live) return;
@@ -465,9 +468,9 @@ function ProjectCard({ project, view, onPreview }) {
           <div className="flex items-center gap-2">
             {project.github && (
               <a
-                href={project.github}
+                href={sanitizeUrl(project.github)}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="group/act inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors"
               >
                 <FiGithub size={12} />
@@ -477,9 +480,9 @@ function ProjectCard({ project, view, onPreview }) {
 
             {project.live && (
               <a
-                href={project.live}
+                href={sanitizeUrl(project.live)}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="group/act inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--color-accent)] hover:underline transition-colors"
               >
                 <span>Live</span>
@@ -530,10 +533,15 @@ function ProjectPreview({
     return [];
   }, [project]);
 
-  useEffect(() => {
+  const [activeImgIndex, setActiveImgIndex] = useState(0);
+  const [imageError, setImageError] = useState(false);
+  const [prevProject, setPrevProject] = useState(project);
+
+  if (project !== prevProject) {
+    setPrevProject(project);
     setActiveImgIndex(0);
     setImageError(false);
-  }, [project]);
+  }
 
   const currentImage = images[activeImgIndex] || project.image;
 
@@ -694,9 +702,9 @@ function ProjectPreview({
               <div className="flex items-center gap-2">
                 {project.live && (
                   <a
-                    href={project.live}
+                    href={sanitizeUrl(project.live)}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] bg-[var(--color-accent)] text-white text-[11px] font-semibold transition-all hover:brightness-110 active:scale-[0.97]"
                   >
                     <span>Open Live Project</span>
@@ -706,9 +714,9 @@ function ProjectPreview({
 
                 {project.github && (
                   <a
-                    href={project.github}
+                    href={sanitizeUrl(project.github)}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] bg-[var(--color-surface-hover)] hover:bg-[var(--color-surface-active)] text-[11px] font-medium text-[var(--color-text)] transition-colors active:scale-[0.97]"
                   >
                     <FiGithub size={12} />

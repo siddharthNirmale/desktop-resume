@@ -16,6 +16,8 @@ import {
 } from "react-icons/fi";
 import { FaGithub } from "react-icons/fa";
 import resume from "../data/resume";
+import { safeGetItem, safeSetItem } from "../utils/storage";
+import { isValidHexColor } from "../utils/security";
 
 /* ==========================================================================
    CONSTANTS & CONFIG
@@ -169,7 +171,7 @@ export default function ControlCenter({
   // Theme Sync
   const [isLight, setIsLight] = useState(() => {
     if (typeof window === "undefined") return false;
-    const saved = localStorage.getItem("os-theme");
+    const saved = safeGetItem("os-theme");
     if (saved) return saved === "light";
     return document.documentElement.classList.contains("light-theme");
   });
@@ -177,7 +179,7 @@ export default function ControlCenter({
   // Accent Sync
   const [activeAccentId, setActiveAccentId] = useState(() => {
     if (typeof window === "undefined") return "violet";
-    const saved = localStorage.getItem("os-accent");
+    const saved = safeGetItem("os-accent");
     return (
       ACCENT_COLORS.find(
         (c) =>
@@ -233,7 +235,7 @@ export default function ControlCenter({
       const applyTheme = () => {
         document.documentElement.classList.toggle("light-theme", nextLight);
         document.body.classList.toggle("light-theme", nextLight);
-        localStorage.setItem("os-theme", nextLight ? "light" : "dark");
+        safeSetItem("os-theme", nextLight ? "light" : "dark");
         setIsLight(nextLight);
       };
 
@@ -282,8 +284,10 @@ export default function ControlCenter({
   // Accent change handler
   const handleAccentChange = useCallback((colorId, colorValue) => {
     setActiveAccentId(colorId);
-    document.documentElement.style.setProperty("--color-accent", colorValue);
-    localStorage.setItem("os-accent", colorValue);
+    if (isValidHexColor(colorValue)) {
+      document.documentElement.style.setProperty("--color-accent", colorValue);
+      safeSetItem("os-accent", colorValue);
+    }
   }, []);
 
   const handleCopyEmail = useCallback(async () => {

@@ -706,11 +706,13 @@ function ProjectPanel({ project }) {
 ========================================================= */
 
 function Info({ icon, text, href }) {
+  const isExternal = href?.startsWith("http");
+
   return (
     <a
       href={href}
-      target="_blank"
-      rel="noopener noreferrer"
+      target={isExternal ? "_blank" : undefined}
+      rel={isExternal ? "noopener noreferrer" : undefined}
       className="
         group
         flex

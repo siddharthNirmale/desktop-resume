@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { FiFileText, FiMenu, FiPlus, FiSearch, FiTrash2, FiX } from "react-icons/fi";
+import { safeGetJson, safeSetJson } from "../utils/storage";
 
 const STORAGE_KEY = "web-os-notes-lite";
 
@@ -21,10 +22,12 @@ const formatDate = (timestamp) =>
 
 export default function Notepad() {
   const [notes, setNotes] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
-    } catch { }
+    const saved = safeGetJson(
+      STORAGE_KEY,
+      null,
+      (data) => Array.isArray(data) && data.length > 0
+    );
+    if (saved) return saved;
 
     return [
       createNote(
@@ -41,15 +44,10 @@ export default function Notepad() {
 
   const activeNote = notes.find((n) => n.id === activeId) || notes[0];
 
-  // Auto-save to local storage
+  // Auto-save to local storage safely
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+    safeSetJson(STORAGE_KEY, notes);
   }, [notes]);
-
-  // Keep active note in sync if deleted
-  useEffect(() => {
-    if (!activeId && notes.length > 0) setActiveId(notes[0].id);
-  }, [activeId, notes]);
 
   const createNewNote = () => {
     const note = createNote();
@@ -68,8 +66,11 @@ export default function Notepad() {
   };
 
   const executeDelete = () => {
-    setNotes((current) => current.filter((note) => note.id !== noteToDelete));
-    if (activeId === noteToDelete) setActiveId(null);
+    const remaining = notes.filter((note) => note.id !== noteToDelete);
+    setNotes(remaining);
+    if (activeId === noteToDelete) {
+      setActiveId(remaining[0]?.id || null);
+    }
     setNoteToDelete(null);
   };
 

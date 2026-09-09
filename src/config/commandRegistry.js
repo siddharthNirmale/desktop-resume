@@ -5,7 +5,6 @@ import {
   Mail, 
   FileText, 
   Sliders,
-  Moon,
   Sun,
   Code,
   CloudSun,
@@ -18,6 +17,8 @@ import {
   GitBranch
 } from "lucide-react";
 import { FiGithub } from "react-icons/fi";
+import { safeOpen } from "../utils/security";
+import { safeSetItem } from "../utils/storage";
 
 import projects from "../data/project";
 import skills from "../data/skills";
@@ -181,7 +182,7 @@ export const staticCommands = [
       const nextLight = !isLight;
       document.documentElement.classList.toggle("light-theme", nextLight);
       document.body.classList.toggle("light-theme", nextLight);
-      localStorage.setItem("os-theme", nextLight ? "light" : "dark");
+      safeSetItem("os-theme", nextLight ? "light" : "dark");
     },
   },
   {
@@ -209,7 +210,7 @@ export const staticCommands = [
     category: "External",
     keywords: ["github", "code", "repository", "open source"],
     icon: FiGithub,
-    action: () => window.open("https://github.com/siddharthNirmale", "_blank"),
+    action: () => safeOpen("https://github.com/siddharthNirmale"),
   },
 ];
 

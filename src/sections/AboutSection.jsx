@@ -130,7 +130,7 @@ export default function AboutSection() {
                   <a
                     href="https://lekha-lilac.vercel.app/"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="group inline-flex items-center gap-1 text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors duration-150"
                   >
                     <span className="group-hover:translate-x-0.5 transition-transform duration-150">Lekha</span>
@@ -144,7 +144,7 @@ export default function AboutSection() {
                   <a
                     href="https://refundpilot-preview.vercel.app/"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="group inline-flex items-center gap-1 text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors duration-150"
                   >
                     <span className="group-hover:translate-x-0.5 transition-transform duration-150">AI Refund Agent</span>
@@ -158,7 +158,7 @@ export default function AboutSection() {
                   <a
                     href="https://thumbmax-psi.vercel.app/"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="group inline-flex items-center gap-1 text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors duration-150"
                   >
                     <span className="group-hover:translate-x-0.5 transition-transform duration-150">Thumbmax</span>
@@ -234,7 +234,7 @@ export default function AboutSection() {
               <a
                 href="https://github.com/siddharthNirmale"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="hover:text-[var(--color-text)] transition-colors duration-150"
               >
                 GitHub
@@ -245,7 +245,7 @@ export default function AboutSection() {
               <a
                 href="https://linkedin.com/in/siddharth-nirmale"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="hover:text-[var(--color-text)] transition-colors duration-150"
               >
                 LinkedIn

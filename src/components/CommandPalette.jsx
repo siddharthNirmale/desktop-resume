@@ -13,7 +13,6 @@ export default function CommandPalette({
 }) {
   const {
     isOpen,
-    setIsOpen,
     query,
     setQuery,
     results,

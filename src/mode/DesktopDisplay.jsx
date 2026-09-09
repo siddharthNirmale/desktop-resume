@@ -1,6 +1,8 @@
 import { useRef, useMemo, Suspense, useEffect, useState, useCallback } from "react";
 import { AnimatePresence } from "framer-motion";
 import { LoaderIcon as Loader2 } from "lucide-animated";
+import { isValidHexColor, sanitizeCssUrl } from "../utils/security";
+import { safeGetItem, safeSetItem } from "../utils/storage";
 
 // Components
 import Background from "../components/Background";
@@ -65,18 +67,22 @@ export default function DesktopDisplay({
   // Sync wallpaper & accent color to CSS variables/storage
   useEffect(() => {
     if (typeof window === "undefined") return;
-    localStorage.setItem("os-wallpaper", wallpaper);
+    if (wallpaper) {
+      safeSetItem("os-wallpaper", wallpaper);
+    }
 
-    const savedAccent = localStorage.getItem("os-accent");
-    if (savedAccent) {
+    const savedAccent = safeGetItem("os-accent");
+    if (savedAccent && isValidHexColor(savedAccent)) {
       document.documentElement.style.setProperty("--color-accent", savedAccent);
     }
   }, [wallpaper]);
 
+  const safeWallpaper = useMemo(() => sanitizeCssUrl(wallpaper), [wallpaper]);
+
   return (
     <div
       className="fixed inset-0 w-screen h-screen overflow-hidden font-primary text-[var(--color-text)] bg-[var(--color-desktop)]"
-      style={wallpaper ? { background: `url(${wallpaper}) center/cover no-repeat` } : {}}
+      style={safeWallpaper ? { background: `url("${safeWallpaper}") center/cover no-repeat` } : {}}
     >
       {/* 1. BACKGROUND LAYER (z-0) */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">

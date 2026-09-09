@@ -44,14 +44,17 @@ export default function WeatherWidget({
       "https://api.open-meteo.com/v1/forecast?latitude=22.7196&longitude=75.8577&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=5",
       { signal: controller.signal }
     )
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error("Weather request failed");
+        return r.json();
+      })
       .then((d) => {
         setData(d);
         setLoading(false);
       })
       .catch((e) => {
         if (e.name !== "AbortError") {
-          console.error("Weather fetch failed", e);
+          setLoading(false);
         }
       });
 

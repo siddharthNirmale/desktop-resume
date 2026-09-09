@@ -21,12 +21,12 @@ import {
   useTransform,
 } from "framer-motion";
 import { TooltipBubble } from "./Tooltip";
+import { safeGetItem } from "../utils/storage";
 
 /* ==========================================================================
    CONFIG & CONSTANTS
    ========================================================================== */
 
-const BASE_ICON_SIZE = 46;
 const MAX_ICON_SCALE = 1.32;
 const MAGNIFY_RADIUS = 130;
 
@@ -145,7 +145,6 @@ const DockTooltip = memo(function DockTooltip({
   label,
   shortcut,
   visible,
-  isLight,
 }) {
   return (
     <TooltipBubble
@@ -401,7 +400,7 @@ export default function Dock({
 }) {
   const [isLight, setIsLight] = useState(() => {
     if (typeof window === "undefined") return false;
-    const saved = localStorage.getItem("os-theme");
+    const saved = safeGetItem("os-theme");
     if (saved) return saved === "light";
     return (
       document.documentElement.classList.contains("light-theme") ||

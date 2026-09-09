@@ -1,18 +1,21 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { getAllCommands } from '../config/commandRegistry';
+import { safeGetJson, safeSetJson } from '../utils/storage';
 
 export default function useCommandSearch() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [recentIds, setRecentIds] = useState(() => {
-    if (typeof window === "undefined") return [];
-    try {
-      return JSON.parse(localStorage.getItem('os-recent-commands')) || [];
-    } catch {
-      return [];
-    }
-  });
+  const [prevQuery, setPrevQuery] = useState(query);
+
+  if (query !== prevQuery) {
+    setPrevQuery(query);
+    setSelectedIndex(0);
+  }
+
+  const [recentIds, setRecentIds] = useState(() =>
+    safeGetJson('os-recent-commands', [], (arr) => Array.isArray(arr))
+  );
 
   const commands = useMemo(() => getAllCommands(), []);
 
@@ -71,15 +74,10 @@ export default function useCommandSearch() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
-  // Reset selection when query or results change
-  useEffect(() => {
-    setSelectedIndex(0);
-  }, [query]);
-
   const addRecent = useCallback((id) => {
     setRecentIds(prev => {
       const updated = [id, ...prev.filter(item => item !== id)].slice(0, 8);
-      localStorage.setItem('os-recent-commands', JSON.stringify(updated));
+      safeSetJson('os-recent-commands', updated);
       return updated;
     });
   }, []);

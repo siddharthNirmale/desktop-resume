@@ -41,12 +41,7 @@ export default function TopBar({
     return () => clearInterval(timer);
   }, []);
 
-  // Close calendar if control center opens
-  useEffect(() => {
-    if (isControlCenterOpen) {
-      setIsCalendarOpen(false);
-    }
-  }, [isControlCenterOpen]);
+  const showCalendar = isCalendarOpen && !isControlCenterOpen;
 
   const handleOpenWindow = (id) => {
     if (!toggleWindow) return;
@@ -177,7 +172,7 @@ export default function TopBar({
           <a
             href="https://github.com/siddharthNirmale"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="
               group flex h-[22px] w-[24px] items-center justify-center rounded-[4px]
               hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]
@@ -195,7 +190,7 @@ export default function TopBar({
           <a
             href="https://linkedin.com/in/siddharth-nirmale"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="
               group flex h-[22px] w-[24px] items-center justify-center rounded-[4px]
               hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]
@@ -259,7 +254,7 @@ export default function TopBar({
               transition-all duration-150 ease-out cursor-default
               whitespace-nowrap focus:outline-none
               ${
-                isCalendarOpen
+                showCalendar
                   ? "bg-[var(--color-surface-hover)] text-[var(--color-text)] font-semibold shadow-xs"
                   : "text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]"
               }
@@ -277,7 +272,7 @@ export default function TopBar({
           CALENDAR POPOVER
       ────────────────────────────────────────── */}
       <CalendarPopover
-        isOpen={isCalendarOpen}
+        isOpen={showCalendar}
         onClose={() => setIsCalendarOpen(false)}
       />
     </header>

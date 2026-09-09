@@ -10,20 +10,24 @@ export const generateThumbnail = (src, size = 64) => {
     img.src = src;
 
     img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const scale = size / Math.max(img.width, img.height);
+      try {
+        const canvas = document.createElement("canvas");
+        const scale = size / Math.max(img.width, img.height);
 
-      canvas.width = img.width * scale;
-      canvas.height = img.height * scale;
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
 
-      const ctx = canvas.getContext("2d");
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = "medium";
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const ctx = canvas.getContext("2d");
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "medium";
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-      const base64 = canvas.toDataURL("image/jpeg", 0.6);
-      thumbnailCache.set(src, base64);
-      resolve(base64);
+        const base64 = canvas.toDataURL("image/jpeg", 0.6);
+        thumbnailCache.set(src, base64);
+        resolve(base64);
+      } catch {
+        resolve(src);
+      }
     };
 
     img.onerror = () => resolve(src);

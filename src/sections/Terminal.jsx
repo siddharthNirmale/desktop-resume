@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import { safeOpen, sanitizeUrl } from "../utils/security";
 import {
   FiMapPin,
   FiExternalLink,
@@ -126,6 +127,16 @@ export default function Terminal() {
     });
   }, [history]);
 
+  const clearTerminal = useCallback(() => {
+    setHistory([]);
+    setInput("");
+    setHistoryIndex(-1);
+
+    requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
+  }, []);
+
   useEffect(() => {
     const handleGlobalKeyDown = (event) => {
       const modifier = event.ctrlKey || event.metaKey;
@@ -147,20 +158,10 @@ export default function Terminal() {
     return () => {
       window.removeEventListener("keydown", handleGlobalKeyDown);
     };
-  }, []);
+  }, [clearTerminal]);
 
   const focusTerminal = () => {
     inputRef.current?.focus();
-  };
-
-  const clearTerminal = () => {
-    setHistory([]);
-    setInput("");
-    setHistoryIndex(-1);
-
-    requestAnimationFrame(() => {
-      inputRef.current?.focus();
-    });
   };
 
   const addHistory = (command, outputContent = null) => {
@@ -356,9 +357,9 @@ export default function Terminal() {
 
                     {proj.live && (
                       <a
-                        href={proj.live}
+                        href={sanitizeUrl(proj.live)}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         aria-label={`Open ${proj.title}`}
                         className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[var(--color-text-tertiary)] transition-all duration-200 hover:bg-[var(--color-accent)] hover:text-white"
                       >
@@ -485,11 +486,7 @@ export default function Terminal() {
         );
 
       case "github":
-        window.open(
-          "https://github.com/siddharthNirmale",
-          "_blank",
-          "noopener,noreferrer"
-        );
+        safeOpen("https://github.com/siddharthNirmale");
 
         return (
           <span className="text-[11px] text-[var(--color-text-secondary)]">
@@ -498,11 +495,7 @@ export default function Terminal() {
         );
 
       case "linkedin":
-        window.open(
-          "https://www.linkedin.com/",
-          "_blank",
-          "noopener,noreferrer"
-        );
+        safeOpen("https://linkedin.com/in/siddharth-nirmale");
 
         return (
           <span className="text-[11px] text-[var(--color-text-secondary)]">

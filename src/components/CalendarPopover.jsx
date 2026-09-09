@@ -37,12 +37,13 @@ export default function CalendarPopover({ isOpen, onClose }) {
     return () => clearInterval(timer);
   }, [isOpen]);
 
-  // Reset view date to today when opened
-  useEffect(() => {
-    if (isOpen) {
-      setViewDate(new Date());
-    }
-  }, [isOpen]);
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (isOpen && !prevIsOpen) {
+    setPrevIsOpen(true);
+    setViewDate(new Date());
+  } else if (!isOpen && prevIsOpen) {
+    setPrevIsOpen(false);
+  }
 
   // Click outside & Escape key listener
   useEffect(() => {

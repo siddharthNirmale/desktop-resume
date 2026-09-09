@@ -1,5 +1,3 @@
-import { Ghost } from "lucide-react";;
-
 // Viewport-percentage calculation helpers for safe initialization
 const vw = (pct) => (typeof window !== "undefined" ? Math.round(window.innerWidth * pct) : 800);
 const vh = (pct) => (typeof window !== "undefined" ? Math.round(window.innerHeight * pct) : 600);

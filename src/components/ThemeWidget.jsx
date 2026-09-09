@@ -5,6 +5,8 @@ import { Sun, Moon, Check } from "lucide";
 import { Sparkles } from "lucide-react";
 import WidgetCover from "./WidgetCover";
 import { generateThumbnail, preloadImage } from "../utils/imageUtils";
+import { safeGetItem, safeSetItem } from "../utils/storage";
+import { isValidHexColor } from "../utils/security";
 import one from "../assets/images/one.webp";
 import oneThumb from "../assets/images/one-thumb.webp";
 import two from "../assets/images/two.webp";
@@ -373,7 +375,7 @@ export default function ThemeWidget({
   // Theme Mode (Light / Dark)
   const [isLight, setIsLight] = useState(() => {
     if (typeof window === "undefined") return false;
-    const saved = localStorage.getItem("os-theme");
+    const saved = safeGetItem("os-theme");
     if (saved) return saved === "light";
     return document.documentElement.classList.contains("light-theme");
   });
@@ -381,7 +383,7 @@ export default function ThemeWidget({
   // Accent Color
   const [activeAccentId, setActiveAccentId] = useState(() => {
     if (typeof window === "undefined") return "violet";
-    const saved = localStorage.getItem("os-accent");
+    const saved = safeGetItem("os-accent");
     return (
       ACCENT_COLORS.find(
         (c) =>
@@ -394,7 +396,7 @@ export default function ThemeWidget({
   // Active Wallpaper URL
   const [activeWallpaperUrl, setActiveWallpaperUrl] = useState(() => {
     if (typeof window === "undefined") return "";
-    const saved = localStorage.getItem("os-wallpaper") || "";
+    const saved = safeGetItem("os-wallpaper", "");
     if (saved) {
       if (saved.includes("one")) return one;
       if (saved.includes("two")) return two;
@@ -453,7 +455,7 @@ export default function ThemeWidget({
       const applyTheme = () => {
         document.documentElement.classList.toggle("light-theme", nextLight);
         document.body.classList.toggle("light-theme", nextLight);
-        localStorage.setItem("os-theme", nextLight ? "light" : "dark");
+        safeSetItem("os-theme", nextLight ? "light" : "dark");
         setIsLight(nextLight);
       };
 
@@ -502,8 +504,10 @@ export default function ThemeWidget({
   // Accent change handler
   const handleAccentChange = useCallback((colorId, colorValue) => {
     setActiveAccentId(colorId);
-    document.documentElement.style.setProperty("--color-accent", colorValue);
-    localStorage.setItem("os-accent", colorValue);
+    if (isValidHexColor(colorValue)) {
+      document.documentElement.style.setProperty("--color-accent", colorValue);
+      safeSetItem("os-accent", colorValue);
+    }
   }, []);
 
   // Wallpaper change handler with smooth crossfade
@@ -523,7 +527,7 @@ export default function ThemeWidget({
       setTimeout(() => {
         setWallpaper?.(wallpaper.url);
         setActiveWallpaperUrl(wallpaper.url);
-        localStorage.setItem("os-wallpaper", wallpaper.url);
+        safeSetItem("os-wallpaper", wallpaper.url);
         setApplyingWallpaperId(null);
       }, 240);
 

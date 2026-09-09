@@ -118,8 +118,7 @@ export default function ContactSection() {
       setTimeout(() => {
         setCopiedId(null);
       }, 1600);
-    } catch (error) {
-      console.error("Copy failed:", error);
+    } catch {
       setToast("Copy failed");
     }
   };
