@@ -11,7 +11,7 @@ import {
   FiCheck,
   FiCopy,
 } from "react-icons/fi";
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback, memo } from "react";
 import projects from "../data/project";
 import { EASING } from "../lib/motion";
 import { sanitizeUrl } from "../utils/security";
@@ -366,7 +366,7 @@ export default function ProjectsSection() {
 /* ═══════════════════════════════════════════════
    PROJECT CARD (CLEAN & BORDERLESS)
 ═══════════════════════════════════════════════ */
-function ProjectCard({ project, view, onPreview }) {
+const ProjectCard = memo(function ProjectCard({ project, view, onPreview }) {
   const [imageError, setImageError] = useState(false);
   const isList = view === "list";
 
@@ -505,7 +505,7 @@ function ProjectCard({ project, view, onPreview }) {
       </div>
     </motion.article>
   );
-}
+});
 
 /* ═══════════════════════════════════════════════
    PREVIEW MODAL (REFINED MORPH & TRANSITIONS)
@@ -533,15 +533,12 @@ function ProjectPreview({
     return [];
   }, [project]);
 
-  const [activeImgIndex, setActiveImgIndex] = useState(0);
-  const [imageError, setImageError] = useState(false);
   const [prevProject, setPrevProject] = useState(project);
-
-  if (project !== prevProject) {
+  useEffect(() => {
     setPrevProject(project);
     setActiveImgIndex(0);
     setImageError(false);
-  }
+  }, [project]);
 
   const currentImage = images[activeImgIndex] || project.image;
 

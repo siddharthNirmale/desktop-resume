@@ -389,6 +389,8 @@ function DockCircleItem({
   );
 }
 
+const MemoDockCircleItem = memo(DockCircleItem);
+
 /* ==========================================================================
    MAIN DOCK COMPONENT
    ========================================================================== */
@@ -555,7 +557,7 @@ export default function Dock({
           }
 
           return (
-            <DockCircleItem
+            <MemoDockCircleItem
               key={item.id}
               {...item}
               isLight={isLight}
