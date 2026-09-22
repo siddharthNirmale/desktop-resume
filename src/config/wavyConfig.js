@@ -3,13 +3,14 @@
  * Easily tweakable to adjust wave geometry, density, motion, and contrast.
  */
 export const DEFAULT_WAVY_CONFIG = {
-  amplitude: 5, // Subtle wave deformation height in px
-  wavelength: 220, // Large, smooth wave cycle width in px
-  lineSpacing: 18, // Consistent vertical distance between parallel lines
-  lineCount: 16, // Number of lines to cleanly span widget height
-  opacity: 0.055, // Low visual contrast (whisper-quiet, non-competing)
-  strokeWidth: 1, // Hairline technical stroke
-  duration: 30, // Extremely slow, tranquil drift cycle in seconds
+  amplitude: 1.5, // Subtle micro-wave deformation in px
+  wavelength: 56, // Compact wave frequency in px
+  lineSpacing: 7, // Small gap between parallel lines in px
+  lineCount: 110, // Generous line count to span rotated 45-degree diagonal space (~800px)
+  opacity: 0.08, // More subtle, slightly visible contrast
+  strokeWidth: 0.7, // Ultra-fine hairline technical stroke
+  duration: 24, // Tranquil, smooth drift cycle in seconds
   direction: "left", // "left" | "right" | "none"
-  verticalOffset: -12, // Top margin offset to start lines before the top edge
+  angle: -45, // 45-degree diagonal angle
+  verticalOffset: 2, // Starts cleanly inside positive viewport
 };
