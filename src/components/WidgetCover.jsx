@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { XIcon as X } from "lucide-animated";
 import Tooltip from "./Tooltip";
+import WavyBackground from "./WavyBackground";
 
 export default function WidgetCover({
   title,
@@ -11,6 +12,7 @@ export default function WidgetCover({
   children,
   className = "",
   positionStyle = {},
+  wavyConfig = {},
 }) {
   return (
     <motion.div
@@ -42,8 +44,12 @@ export default function WidgetCover({
       }}
       exit={{
         opacity: 0,
-        scale: 0.97,
+        scale: 0.96,
         y: 6,
+        transition: {
+          duration: 0.16,
+          ease: [0.16, 1, 0.3, 1],
+        },
       }}
       transition={{
         type: "spring",
@@ -84,11 +90,15 @@ export default function WidgetCover({
         ${className}
       `}
     >
+      {/* Subtle Technical Wavy Lines Background */}
+      <WavyBackground {...wavyConfig} />
+
       {/* Header */}
       <div
         className="
           widget-header-drag
           relative
+          z-10
 
           h-9
           px-3
@@ -182,6 +192,8 @@ export default function WidgetCover({
       {/* Content */}
       <div
         className="
+          relative
+          z-10
           w-full
           flex-1
           flex
