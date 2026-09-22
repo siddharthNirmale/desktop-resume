@@ -335,257 +335,261 @@ export default function ControlCenter({
   const currentAccentObj =
     ACCENT_COLORS.find((c) => c.id === activeAccentId) || ACCENT_COLORS[0];
 
-  if (!isOpen) return null;
-
   return (
     <AnimatePresence>
-      <div
-        className="fixed inset-0 z-[999999] pointer-events-auto"
-        onClick={onClose}
-      >
-        {/* Transparent backdrop capture */}
-        <div className="absolute inset-0 bg-transparent" />
-
-        {/* Popover Window */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: -6 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: -6 }}
-          transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
-          onClick={(e) => e.stopPropagation()}
-          className="
-            absolute top-[calc(var(--topbar-height,26px)+8px)] right-3 sm:right-6
-            w-[320px] sm:w-[340px] max-w-[calc(100vw-24px)]
-            bg-[var(--color-surface-elevated)]/90 backdrop-blur-2xl
-            rounded-2xl shadow-[var(--shadow-popover)]
-            overflow-hidden font-primary select-none
-            text-[var(--color-text)]
-          "
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-[999999] pointer-events-auto"
+          onClick={onClose}
         >
-          {/* ═══════════════════════════════════════
-              HEADER
-          ═══════════════════════════════════════ */}
-          <div className="flex items-center justify-between px-3.5 pt-3 pb-2">
-            <div className="flex items-center gap-2">
-              <div className="flex h-5 w-5 items-center justify-center rounded-md bg-[var(--color-accent)]/15 text-[var(--color-accent)]">
-                <FiSliders size={11} strokeWidth={2.2} />
-              </div>
-              <span className="text-[12px] font-heading font-semibold tracking-tight text-[var(--color-text)]">
-                Control Center
-              </span>
-            </div>
+          {/* Transparent backdrop capture */}
+          <div className="absolute inset-0 bg-transparent" />
 
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex h-6 w-6 items-center justify-center rounded-md text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors"
-              title="Close"
-            >
-              <FiX size={13} strokeWidth={2} />
-            </button>
-          </div>
-
-          <div className="p-3 pt-0 space-y-3 max-h-[calc(100vh-100px)] overflow-y-auto custom-scrollbar">
+          {/* Popover Window */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: -6 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: -4 }}
+            transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            onClick={(e) => e.stopPropagation()}
+            className="
+              absolute top-[calc(var(--topbar-height,28px)+6px)] right-3 sm:right-6
+              w-[320px] sm:w-[340px] max-w-[calc(100vw-24px)]
+              bg-[var(--color-surface-elevated)]/90 backdrop-blur-2xl
+              border border-[var(--color-surface-border)]
+              rounded-2xl popover-shadow
+              overflow-hidden font-primary select-none
+              text-[var(--color-text)]
+            "
+          >
             {/* ═══════════════════════════════════════
-                1. PRIMARY SYSTEM QUICK TOGGLES
+                HEADER
             ═══════════════════════════════════════ */}
-            <div className="grid grid-cols-3 gap-1.5">
-              {/* Appearance Mode */}
-              <QuickToggleCard
-                icon={
-                  <MorphIcon
-                    icon={isLight ? Moon : Sun}
-                    size={14}
-                    strokeWidth={2}
-                    spring="snappy"
-                  />
-                }
-                label={isLight ? "Dark" : "Light"}
-                sublabel="Mode"
-                onClick={handleThemeToggle}
-                isActive={false}
-              />
-
-              {/* Show Desktop / Windows */}
-              <QuickToggleCard
-                icon={
-                  <MorphIcon
-                    icon={allWindowsMinimized ? EyeOff : Eye}
-                    size={14}
-                    strokeWidth={2}
-                    spring="snappy"
-                  />
-                }
-                label={allWindowsMinimized ? "Windows" : "Desktop"}
-                sublabel="Toggle"
-                onClick={allWindowsMinimized ? restoreAll : minimizeAll}
-                isActive={allWindowsMinimized}
-              />
-
-              {/* Reset Layout */}
-              <QuickToggleCard
-                icon={<FiRotateCcw size={13} />}
-                label="Layout"
-                sublabel="Reset"
-                onClick={resetLayout}
-                isActive={false}
-              />
-            </div>
-
-            {/* ═══════════════════════════════════════
-                2. ACCENT COLOR SELECTOR
-            ═══════════════════════════════════════ */}
-            <div className="p-2.5 rounded-xl bg-[var(--color-surface-hover)]/20 space-y-2">
-              <div className="flex items-center justify-between px-0.5">
-                <span className="text-[10px] font-heading font-semibold uppercase tracking-[0.08em] text-[var(--color-text-tertiary)] leading-none">
-                  Accent Color
-                </span>
-                <span className="text-[10px] font-medium text-[var(--color-text-secondary)] leading-none capitalize">
-                  {currentAccentObj.name}
+            <div className="flex items-center justify-between px-3.5 pt-3 pb-2">
+              <div className="flex items-center gap-2">
+                <div className="flex h-5 w-5 items-center justify-center rounded-md bg-[var(--color-accent)]/15 text-[var(--color-accent)]">
+                  <FiSliders size={11} strokeWidth={2.2} />
+                </div>
+                <span className="text-[12px] font-heading font-semibold tracking-tight text-[var(--color-text)]">
+                  Control Center
                 </span>
               </div>
 
-              <div className="flex items-center justify-between px-0.5">
-                {ACCENT_COLORS.map((color) => {
-                  const isSelected = activeAccentId === color.id;
-                  return (
-                    <motion.button
-                      key={color.id}
-                      type="button"
-                      onClick={() => handleAccentChange(color.id, color.value)}
-                      style={{ backgroundColor: color.value }}
-                      title={color.name}
-                      whileHover={{ scale: 1.15, y: -1 }}
-                      whileTap={{ scale: 0.9 }}
-                      transition={{ type: "spring", stiffness: 520, damping: 26 }}
-                      className={`
-                        relative flex h-5 w-5 items-center justify-center rounded-full
-                        cursor-default outline-none select-none transition-all duration-150
-                        ${
-                          isSelected
-                            ? "ring-2 ring-[var(--color-text)] ring-offset-2 ring-offset-[var(--color-surface)] scale-105"
-                            : "opacity-80 hover:opacity-100"
-                        }
-                      `}
-                    >
-                      <span className="pointer-events-none absolute inset-x-0 top-0 h-[40%] rounded-t-full bg-white/20" />
-                      <AnimatePresence>
-                        {isSelected && (
-                          <motion.div
-                            initial={{ scale: 0, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0, opacity: 0 }}
-                            transition={{ duration: 0.12 }}
-                            className="flex items-center justify-center text-white"
-                          >
-                            <MorphIcon
-                              icon={Check}
-                              size={9}
-                              strokeWidth={3.8}
-                              spring="snappy"
-                            />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </motion.button>
-                  );
-                })}
-              </div>
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex h-6 w-6 items-center justify-center rounded-md text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]"
+                title="Close"
+              >
+                <FiX size={13} strokeWidth={2} />
+              </button>
             </div>
 
-            {/* ═══════════════════════════════════════
-                3. DESKTOP WIDGETS MANAGER
-            ═══════════════════════════════════════ */}
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between px-1">
-                <div className="flex items-center gap-1.5">
-                  <FiLayers size={11} className="text-[var(--color-text-tertiary)]" />
+            <div className="p-3 pt-0 space-y-3 max-h-[calc(100vh-100px)] overflow-y-auto custom-scrollbar">
+              {/* ═══════════════════════════════════════
+                  1. PRIMARY SYSTEM QUICK TOGGLES
+              ═══════════════════════════════════════ */}
+              <div className="grid grid-cols-3 gap-1.5">
+                {/* Appearance Mode */}
+                <QuickToggleCard
+                  icon={
+                    <MorphIcon
+                      icon={isLight ? Moon : Sun}
+                      size={14}
+                      strokeWidth={2}
+                      spring="snappy"
+                    />
+                  }
+                  label={isLight ? "Dark" : "Light"}
+                  sublabel="Mode"
+                  onClick={handleThemeToggle}
+                  isActive={false}
+                />
+
+                {/* Show Desktop / Windows */}
+                <QuickToggleCard
+                  icon={
+                    <MorphIcon
+                      icon={allWindowsMinimized ? EyeOff : Eye}
+                      size={14}
+                      strokeWidth={2}
+                      spring="snappy"
+                    />
+                  }
+                  label={allWindowsMinimized ? "Windows" : "Desktop"}
+                  sublabel="Toggle"
+                  onClick={allWindowsMinimized ? restoreAll : minimizeAll}
+                  isActive={allWindowsMinimized}
+                />
+
+                {/* Reset Layout */}
+                <QuickToggleCard
+                  icon={<FiRotateCcw size={13} />}
+                  label="Layout"
+                  sublabel="Reset"
+                  onClick={resetLayout}
+                  isActive={false}
+                />
+              </div>
+
+              {/* ═══════════════════════════════════════
+                  2. ACCENT COLOR SELECTOR
+              ═══════════════════════════════════════ */}
+              <div className="p-2.5 rounded-xl bg-[var(--color-surface-hover)]/20 space-y-2">
+                <div className="flex items-center justify-between px-0.5">
                   <span className="text-[10px] font-heading font-semibold uppercase tracking-[0.08em] text-[var(--color-text-tertiary)] leading-none">
-                    Desktop Widgets
+                    Accent Color
+                  </span>
+                  <span className="text-[10px] font-medium text-[var(--color-text-secondary)] leading-none capitalize">
+                    {currentAccentObj.name}
                   </span>
                 </div>
-                <span className="text-[9px] font-medium text-[var(--color-text-disabled)] leading-none">
-                  {activeWidgetsCount} of {WIDGET_CONFIGS.length} active
-                </span>
+
+                <div className="flex items-center justify-between px-0.5">
+                  {ACCENT_COLORS.map((color) => {
+                    const isSelected = activeAccentId === color.id;
+                    return (
+                      <motion.button
+                        key={color.id}
+                        type="button"
+                        onClick={() => handleAccentChange(color.id, color.value)}
+                        style={{ backgroundColor: color.value }}
+                        title={color.name}
+                        whileHover={{ scale: 1.15, y: -1 }}
+                        whileTap={{ scale: 0.9 }}
+                        transition={{ type: "spring", stiffness: 520, damping: 26 }}
+                        className={`
+                          relative flex h-5 w-5 items-center justify-center rounded-full
+                          cursor-default outline-none select-none transition-all duration-150
+                          ${
+                            isSelected
+                              ? "ring-2 ring-[var(--color-text)] ring-offset-2 ring-offset-[var(--color-surface)] scale-105"
+                              : "opacity-80 hover:opacity-100"
+                          }
+                        `}
+                      >
+                        <span className="pointer-events-none absolute inset-x-0 top-0 h-[40%] rounded-t-full bg-white/20" />
+                        <AnimatePresence>
+                          {isSelected && (
+                            <motion.div
+                              initial={{ scale: 0, opacity: 0 }}
+                              animate={{ scale: 1, opacity: 1 }}
+                              exit={{ scale: 0, opacity: 0 }}
+                              transition={{ duration: 0.12 }}
+                              className="flex items-center justify-center text-white"
+                            >
+                              <MorphIcon
+                                icon={Check}
+                                size={9}
+                                strokeWidth={3.8}
+                                spring="snappy"
+                              />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </motion.button>
+                    );
+                  })}
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-1.5">
-                {WIDGET_CONFIGS.map((item) => {
-                  const widgetObj = windows.find((w) => w.id === item.id);
-                  const isWidgetOpen = Boolean(widgetObj?.isOpen);
+              {/* ═══════════════════════════════════════
+                  3. DESKTOP WIDGETS MANAGER
+              ═══════════════════════════════════════ */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-1.5">
+                    <FiLayers size={11} className="text-[var(--color-text-tertiary)]" />
+                    <span className="text-[10px] font-heading font-semibold uppercase tracking-[0.08em] text-[var(--color-text-tertiary)] leading-none">
+                      Desktop Widgets
+                    </span>
+                  </div>
+                  <span className="text-[9px] font-medium text-[var(--color-text-disabled)] leading-none">
+                    {activeWidgetsCount} of {WIDGET_CONFIGS.length} active
+                  </span>
+                </div>
 
-                  return (
-                    <WidgetTile
-                      key={item.id}
-                      item={item}
-                      isOpen={isWidgetOpen}
-                      onToggle={toggleWidget}
-                    />
-                  );
-                })}
+                <div className="grid grid-cols-2 gap-1.5">
+                  {WIDGET_CONFIGS.map((item) => {
+                    const widgetObj = windows.find((w) => w.id === item.id);
+                    const isWidgetOpen = Boolean(widgetObj?.isOpen);
+
+                    return (
+                      <WidgetTile
+                        key={item.id}
+                        item={item}
+                        isOpen={isWidgetOpen}
+                        onToggle={toggleWidget}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* ═══════════════════════════════════════
+                  4. QUICK ACTIONS & RESUME
+              ═══════════════════════════════════════ */}
+              <div className="pt-2 border-t border-[var(--color-surface-border)]/40 flex items-center gap-1.5">
+                <motion.button
+                  type="button"
+                  onClick={handleDownloadResume}
+                  whileTap={{ scale: 0.97 }}
+                  className="
+                    flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg
+                    bg-[var(--color-accent)] text-white text-[11px] font-semibold
+                    hover:brightness-105 transition-all cursor-default select-none outline-none
+                    focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]
+                  "
+                >
+                  <FiDownload size={12} strokeWidth={2.2} />
+                  <span>Resume PDF</span>
+                </motion.button>
+
+                <motion.button
+                  type="button"
+                  onClick={handleCopyEmail}
+                  title="Copy email address"
+                  whileTap={{ scale: 0.97 }}
+                  className="
+                    flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg
+                    bg-[var(--color-surface-hover)]/30 hover:bg-[var(--color-surface-hover)]/70
+                    text-[var(--color-text)] text-[11px] font-medium transition-all
+                    cursor-default select-none outline-none
+                    focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]
+                  "
+                >
+                  <MorphIcon
+                    icon={copiedEmail ? Check : Mail}
+                    size={11}
+                    strokeWidth={2.2}
+                    spring="snappy"
+                    className={copiedEmail ? "text-emerald-400" : "text-[var(--color-text-tertiary)]"}
+                  />
+                  <span className={copiedEmail ? "text-emerald-400 font-semibold" : ""}>
+                    {copiedEmail ? "Copied" : "Email"}
+                  </span>
+                </motion.button>
+
+                <motion.button
+                  type="button"
+                  onClick={handleOpenTerminal}
+                  title="Open Terminal shell"
+                  whileTap={{ scale: 0.97 }}
+                  className="
+                    flex items-center justify-center p-1.5 rounded-lg
+                    bg-[var(--color-surface-hover)]/30 hover:bg-[var(--color-surface-hover)]/70
+                    text-[var(--color-text-secondary)] hover:text-[var(--color-text)]
+                    transition-all cursor-default select-none outline-none
+                    focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]
+                  "
+                >
+                  <FiTerminal size={13} />
+                </motion.button>
               </div>
             </div>
-
-            {/* ═══════════════════════════════════════
-                4. QUICK ACTIONS & RESUME
-            ═══════════════════════════════════════ */}
-            <div className="pt-2 border-t border-[var(--color-surface-border)]/40 flex items-center gap-1.5">
-              <motion.button
-                type="button"
-                onClick={handleDownloadResume}
-                whileTap={{ scale: 0.97 }}
-                className="
-                  flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg
-                  bg-[var(--color-accent)] text-white text-[11px] font-semibold
-                  hover:brightness-105 transition-all cursor-default select-none outline-none
-                "
-              >
-                <FiDownload size={12} strokeWidth={2.2} />
-                <span>Resume PDF</span>
-              </motion.button>
-
-              <motion.button
-                type="button"
-                onClick={handleCopyEmail}
-                title="Copy email address"
-                whileTap={{ scale: 0.97 }}
-                className="
-                  flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg
-                  bg-[var(--color-surface-hover)]/30 hover:bg-[var(--color-surface-hover)]/70
-                  text-[var(--color-text)] text-[11px] font-medium transition-all
-                  cursor-default select-none outline-none
-                "
-              >
-                <MorphIcon
-                  icon={copiedEmail ? Check : Mail}
-                  size={11}
-                  strokeWidth={2.2}
-                  spring="snappy"
-                  className={copiedEmail ? "text-emerald-400" : "text-[var(--color-text-tertiary)]"}
-                />
-                <span className={copiedEmail ? "text-emerald-400 font-semibold" : ""}>
-                  {copiedEmail ? "Copied" : "Email"}
-                </span>
-              </motion.button>
-
-              <motion.button
-                type="button"
-                onClick={handleOpenTerminal}
-                title="Open Terminal shell"
-                whileTap={{ scale: 0.97 }}
-                className="
-                  flex items-center justify-center p-1.5 rounded-lg
-                  bg-[var(--color-surface-hover)]/30 hover:bg-[var(--color-surface-hover)]/70
-                  text-[var(--color-text-secondary)] hover:text-[var(--color-text)]
-                  transition-all cursor-default select-none outline-none
-                "
-              >
-                <FiTerminal size={13} />
-              </motion.button>
-            </div>
-          </div>
-        </motion.div>
-      </div>
+          </motion.div>
+        </div>
+      )}
     </AnimatePresence>
   );
 }

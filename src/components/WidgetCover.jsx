@@ -72,11 +72,13 @@ export default function WidgetCover({
         group
 
         bg-[var(--color-surface)]
+        border
+        border-[var(--color-surface-border)]
         rounded-[14px]
 
-        shadow-[var(--widget-shadow)]
+        widget-shadow
 
-        transition-[background-color,box-shadow]
+        transition-[background-color,border-color,box-shadow]
         duration-200
 
         ${className}
@@ -114,7 +116,7 @@ export default function WidgetCover({
 
             text-[var(--color-text-secondary)]
 
-            group-hover:text-[var(--color-text-primary)]
+            group-hover:text-[var(--color-text)]
 
             transition-colors
             duration-150
@@ -152,10 +154,10 @@ export default function WidgetCover({
                   opacity-0
                   group-hover:opacity-100
 
-                  hover:bg-[var(--color-surface-hover)]
-                  hover:text-[var(--color-text-secondary)]
+                  hover:bg-red-500/15
+                  hover:text-red-400
 
-                  active:scale-[0.97]
+                  active:scale-[0.95]
 
                   transition-all
                   duration-150

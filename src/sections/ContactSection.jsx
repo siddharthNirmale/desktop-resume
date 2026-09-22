@@ -158,36 +158,37 @@ export default function ContactSection() {
   };
 
   return (
-    <section className="mx-auto w-full max-w-2xl px-5 py-10 sm:px-7">
-      {/* Header */}
-      <header className="mb-8">
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[var(--color-text)] sm:text-3xl">
-              Get in touch
-            </h2>
+    <section className="h-full w-full overflow-y-auto custom-scrollbar bg-[var(--color-surface)] text-[var(--color-text)]">
+      <div className="mx-auto w-full max-w-2xl px-5 py-10 sm:px-7">
+        {/* Header */}
+        <header className="mb-8">
+          <div className="flex items-end justify-between gap-6">
+            <div>
+              <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[var(--color-text)] sm:text-3xl">
+                Get in touch
+              </h2>
 
-            <p className="mt-2 max-w-md text-sm leading-6 text-[var(--color-text-tertiary)]">
-              Currently available for full-stack, frontend, and freelance opportunities.
-            </p>
+              <p className="mt-2 max-w-md text-sm leading-6 text-[var(--color-text-tertiary)]">
+                Currently available for full-stack, frontend, and freelance opportunities.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={downloadVCard}
+              title="Save contact"
+              aria-label="Save contact"
+              className="group hidden shrink-0 items-center gap-2 rounded-lg border border-[var(--color-surface-border)] bg-[var(--color-surface-hover)]/50 px-3 py-1.5 text-xs font-medium text-[var(--color-text-secondary)] transition-all hover:border-[var(--color-surface-border-strong)] hover:text-[var(--color-text)] active:scale-[0.98] sm:flex"
+            >
+              <FiDownload
+                size={13}
+                className="transition-transform group-hover:-translate-y-0.5"
+              />
+
+              <span>Save contact</span>
+            </button>
           </div>
-
-          <button
-            type="button"
-            onClick={downloadVCard}
-            title="Save contact"
-            aria-label="Save contact"
-            className="group hidden shrink-0 items-center gap-2 text-xs font-medium text-[var(--color-text-tertiary)] transition-colors hover:text-[var(--color-text)] sm:flex"
-          >
-            <FiDownload
-              size={14}
-              className="transition-transform group-hover:-translate-y-0.5"
-            />
-
-            <span>Save contact</span>
-          </button>
-        </div>
-      </header>
+        </header>
 
       {/* Contact actions */}
       <div className="space-y-1">
@@ -326,15 +327,16 @@ export default function ContactSection() {
         </button>
       </div>
 
-      {/* Minimal footer */}
-      <div className="mt-10 flex items-center justify-between">
-        <span className="text-[10px] uppercase tracking-[0.14em] text-[var(--color-text-disabled)]">
-          Indore · India
-        </span>
+        {/* Minimal footer */}
+        <div className="mt-10 flex items-center justify-between">
+          <span className="text-[10px] uppercase tracking-[0.14em] text-[var(--color-text-disabled)]">
+            Indore · India
+          </span>
 
-        <span className="text-[10px] text-[var(--color-text-disabled)]">
-          Usually replies within 24h
-        </span>
+          <span className="text-[10px] text-[var(--color-text-disabled)]">
+            Usually replies within 24h
+          </span>
+        </div>
       </div>
 
       {/* Toast */}
@@ -345,7 +347,7 @@ export default function ContactSection() {
           }`}
         aria-live="polite"
       >
-        <div className="flex items-center gap-2 bg-[var(--color-text)] px-3 py-2 text-xs font-medium text-[var(--color-surface)] shadow-lg">
+        <div className="flex items-center gap-2 rounded-lg border border-[var(--color-surface-border-strong)]/20 bg-[var(--color-text)] px-3.5 py-2 text-xs font-medium text-[var(--color-surface)] shadow-lg">
           <MorphIcon icon={Check} size={13} strokeWidth={2.5} />
           {toast}
         </div>

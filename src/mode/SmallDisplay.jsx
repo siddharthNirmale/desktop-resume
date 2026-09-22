@@ -19,6 +19,7 @@ import projects from "../data/project";
 import skills from "../data/skills";
 import resume from "../data/resume";
 import iconMap from "../utils/iconMap";
+import { safeGetItem, safeSetItem } from "../utils/storage";
 
 // Robust date filter that correctly handles crossing over into previous years
 const filterResponsiveMonths = (contributions, monthsToShow) => {
@@ -88,7 +89,39 @@ const LiveClock = ({ isDark }) => {
 
 export default function TerminalPortfolio() {
   const [visibleMonths, setVisibleMonths] = useState(12);
-  const [isDark, setIsDark] = useState(true);
+
+  const [isLight, setIsLight] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const saved = safeGetItem("os-theme");
+    if (saved) return saved === "light";
+    return document.documentElement.classList.contains("light-theme");
+  });
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const activeIsLight =
+        document.documentElement.classList.contains("light-theme") ||
+        document.body.classList.contains("light-theme");
+      setIsLight(activeIsLight);
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    const nextLight = !isLight;
+    document.documentElement.classList.toggle("light-theme", nextLight);
+    document.body.classList.toggle("light-theme", nextLight);
+    safeSetItem("os-theme", nextLight ? "light" : "dark");
+    setIsLight(nextLight);
+  }, [isLight]);
+
+  const isDark = !isLight;
 
   // Responsive Layout Effect for GitHub Calendar (Optimized with debounce)
   useEffect(() => {
@@ -132,31 +165,25 @@ export default function TerminalPortfolio() {
   );
 
   return (
-    <div className={`h-screen w-full transition-colors duration-300 ${isDark ? "bg-[#0c0c10] text-zinc-400 selection:bg-zinc-800 selection:text-white" : "bg-zinc-50 text-zinc-600 selection:bg-zinc-200 selection:text-black"} font-primary overflow-y-auto custom-scrollbar`}>
-      <style>{`
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: ${isDark ? "#27272a" : "#d4d4d8"}; border-radius: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: ${isDark ? "#3f3f46" : "#a1a1aa"}; }
-      `}</style>
-
+    <div className="h-screen w-full bg-[var(--color-desktop)] text-[var(--color-text)] font-primary overflow-y-auto custom-scrollbar selection:bg-[var(--color-accent)] selection:text-white transition-colors duration-200">
       <div className="max-w-3xl mx-auto px-6 py-12 sm:py-20 space-y-16 sm:space-y-24">
         {/* --- Profile Header --- */}
         <div className="flex flex-col sm:flex-row gap-6 sm:gap-10 items-start">
           <div className="relative mx-auto sm:mx-0">
             <div
-              className={`w-28 h-28 shrink-0 rounded-2xl ${isDark ? "bg-[#131318]" : "bg-white"} flex items-center justify-center relative transition-colors`}
+              className={`w-28 h-28 shrink-0 rounded-2xl ${isDark ? "bg-[var(--color-surface)] border border-[var(--color-surface-border)]" : "bg-white border border-zinc-200 shadow-xs"} flex items-center justify-center relative transition-colors`}
             >
               <span className="text-5xl">👨‍💻</span>
             </div>
 
             {/* Interactive Theme Toggle Button */}
             <button
-              onClick={() => setIsDark(!isDark)}
+              onClick={toggleTheme}
               title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              aria-label={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
               className={`absolute -bottom-1.5 -right-1.5 w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors cursor-pointer ${isDark
-                  ? "bg-zinc-800 border-[#0c0c10] text-zinc-200 hover:bg-zinc-700"
-                  : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100 shadow-sm"
+                  ? "bg-zinc-800 border-[var(--color-desktop)] text-zinc-200 hover:bg-zinc-700"
+                  : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100 shadow-xs"
                 }`}
             >
               <MorphIcon
@@ -252,7 +279,7 @@ export default function TerminalPortfolio() {
           className="space-y-5"
         >
           <SectionHeader title="Experience & Education" isDark={isDark} />
-          <div className={`rounded-2xl p-6 sm:p-8 space-y-8 overflow-hidden ${isDark ? "bg-[#121217]" : "bg-white shadow-sm"}`}>
+          <div className={`rounded-2xl p-6 sm:p-8 space-y-8 overflow-hidden ${isDark ? "bg-[var(--color-surface)] border border-[var(--color-surface-border)]" : "bg-white border border-zinc-200 shadow-xs"}`}>
             <div className={`relative border-l ml-2.5 space-y-8 ${isDark ? "border-white/10" : "border-zinc-200"}`}>
               <div className="relative pl-8 group">
                 <div className={`absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full ${isDark ? "bg-zinc-400" : "bg-zinc-600"}`} />
@@ -321,8 +348,8 @@ export default function TerminalPortfolio() {
                 key={project.id || project.title}
                 variants={fadeUpVariant}
                 className={`group relative flex flex-col sm:flex-row rounded-2xl overflow-hidden transition-colors duration-200 ${isDark
-                    ? "bg-[#121217]"
-                    : "bg-white shadow-sm"
+                    ? "bg-[var(--color-surface)] border border-[var(--color-surface-border)]"
+                    : "bg-white border border-zinc-200 shadow-xs"
                   }`}
               >
                 <div className={`relative w-full sm:w-2/5 md:w-1/3 h-48 sm:h-auto overflow-hidden shrink-0 border-b sm:border-b-0 ${isDark ? "bg-black/40 border-white/5 sm:border-r" : "bg-zinc-100 border-zinc-200 sm:border-r"}`}>
@@ -414,25 +441,25 @@ export default function TerminalPortfolio() {
 function SectionHeader({ title, isDark }) {
   return (
     <div className="flex items-center gap-4 mb-2">
-      <h2 className={`text-[14px] font-heading font-semibold tracking-wider uppercase whitespace-nowrap ${isDark ? "text-white" : "text-zinc-900"}`}>
+      <h2 className={`text-[13px] font-heading font-semibold tracking-wider uppercase whitespace-nowrap ${isDark ? "text-white" : "text-zinc-900"}`}>
         {title}
       </h2>
-      <div className={`h-[1px] flex-1 ${isDark ? "bg-gradient-to-r from-white/10 to-transparent" : "bg-gradient-to-r from-zinc-200 to-transparent"}`} />
+      <div className={`h-[1px] flex-1 ${isDark ? "bg-white/10" : "bg-zinc-200"}`} />
     </div>
   );
 }
 
 function ActionButton({ icon, text, href, onClick, isButton, primary, isDark }) {
   const baseClasses =
-    "inline-flex items-center justify-center gap-2 px-3.5 py-1.5 text-[12px] font-semibold rounded-lg transition-all cursor-pointer border";
+    "inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 text-[12px] font-medium rounded-lg transition-all duration-150 cursor-pointer border active:scale-[0.97]";
 
   const styles = primary
     ? isDark
-      ? "bg-white text-black border-transparent hover:bg-zinc-200 shadow-md hover:shadow-lg hover:scale-105 active:scale-95"
-      : "bg-zinc-900 text-white border-transparent hover:bg-zinc-800 shadow-md hover:shadow-lg hover:scale-105 active:scale-95"
+      ? "bg-white text-black border-transparent hover:bg-zinc-200 shadow-xs"
+      : "bg-zinc-900 text-white border-transparent hover:bg-zinc-800 shadow-xs"
     : isDark
-      ? "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10 hover:text-white hover:scale-105 active:scale-95"
-      : "bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-100 hover:text-zinc-900 hover:scale-105 active:scale-95 shadow-sm";
+      ? "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10 hover:text-white"
+      : "bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-100 hover:text-zinc-900 shadow-xs";
 
   if (isButton) {
     return (
@@ -459,9 +486,9 @@ function LinkBadge({ icon, text, href, isDark }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 border rounded-lg text-[11px] font-medium transition-all hover:scale-105 active:scale-95 ${isDark
-          ? "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white hover:border-green-400/20"
-          : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 hover:border-green-400/30 shadow-sm"
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 border rounded-lg text-[11px] font-medium transition-all duration-150 active:scale-[0.96] ${isDark
+          ? "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white"
+          : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 shadow-xs"
         }`}
     >
       {icon} {text}

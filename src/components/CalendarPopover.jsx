@@ -163,7 +163,7 @@ export default function CalendarPopover({ isOpen, onClose }) {
               text-[var(--color-text)]
               border border-[var(--color-surface-border)]
               p-3.5
-              shadow-[0_16px_40px_rgba(0,0,0,0.35),0_2px_8px_rgba(0,0,0,0.2)]
+              shadow-[var(--shadow-popover)]
               font-primary
             "
           >

@@ -60,6 +60,10 @@ export default function DesktopDisplay({
     openAppWindows.length > 0 && openAppWindows.every((w) => w.isMinimized),
     [openAppWindows]);
 
+  const maxWindowZ = useMemo(() =>
+    Math.max(...visibleWindows.map((w) => w.zIndex ?? 0), 0),
+    [visibleWindows]);
+
   const handleToggleControlCenter = useCallback(() => {
     setIsControlCenterOpen((prev) => !prev);
   }, []);
@@ -152,13 +156,14 @@ export default function DesktopDisplay({
                 <div key={win.id} className="pointer-events-auto">
                   <Window
                     {...win}
+                    isFocused={win.zIndex === maxWindowZ}
                     constraintsRef={workspaceRef}
                     onClose={() => toggleWindow(win.id, "isOpen", false)}
                     onMinimize={() => toggleWindow(win.id, "isMinimized", true)}
                     onFocus={() => bringToFront(win.id)}
                   >
                     <div
-                      className="w-full h-full min-h-0 bg-[var(--color-surface)] rounded-b-xl overflow-y-auto overflow-x-hidden custom-scrollbar transition-colors duration-250"
+                      className="w-full h-full min-h-0 flex flex-col overflow-hidden bg-[var(--color-surface)] rounded-b-[13px]"
                       onClick={(e) => {
                         e.stopPropagation();
                         bringToFront(win.id);

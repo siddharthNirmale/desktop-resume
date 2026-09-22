@@ -102,7 +102,7 @@ export default function CommandPalette({
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Search apps, projects, skills..."
-                className="flex-1 bg-transparent border-none outline-none text-[var(--color-text)] placeholder-[var(--color-text-tertiary)] text-base font-medium"
+                className="flex-1 bg-transparent border-none outline-none text-[var(--color-text)] placeholder:text-[var(--color-text-tertiary)] text-base font-medium"
               />
               <div className="hidden sm:flex items-center gap-1 text-[10px] text-[var(--color-text-tertiary)] font-semibold border border-[var(--color-surface-border)] px-1.5 py-0.5 rounded-md">
                 ESC

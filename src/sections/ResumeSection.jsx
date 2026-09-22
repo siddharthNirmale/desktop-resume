@@ -27,9 +27,11 @@ export default function ResumeSection() {
     <div
       className="
         flex
-        min-h-full
+        h-full
         w-full
         flex-col
+        overflow-y-auto
+        custom-scrollbar
         bg-[var(--color-surface)]
         text-[var(--color-text)]
         font-primary
@@ -45,7 +47,7 @@ export default function ResumeSection() {
         className="
           sticky
           top-0
-          z-30
+          z-20
           shrink-0
 
           flex
@@ -56,7 +58,8 @@ export default function ResumeSection() {
           border-b
           border-[var(--color-surface-border)]
 
-          bg-[var(--color-surface)]
+          bg-[var(--color-surface)]/90
+          backdrop-blur-md
 
           px-5
           py-3.5
@@ -162,16 +165,9 @@ export default function ResumeSection() {
           mx-auto
           w-full
           max-w-4xl
-
-          flex-1
           space-y-8
-
-          overflow-y-auto
-          custom-scrollbar
-
           px-5
           py-7
-
           sm:px-7
           md:px-8
           md:py-9
@@ -439,6 +435,8 @@ export default function ResumeSection() {
               gap-5
 
               rounded-[12px]
+              border
+              border-[var(--color-surface-border)]
               bg-[var(--color-surface-inactive)]
 
               p-4
@@ -530,9 +528,9 @@ function Panel({ children }) {
     <div
       className="
         rounded-[12px]
-
+        border
+        border-[var(--color-surface-border)]
         bg-[var(--color-surface-inactive)]
-
         p-4
         sm:p-5
       "
@@ -551,12 +549,14 @@ function ProjectPanel({ project }) {
     <article
       className="
         group
-
         rounded-[12px]
-
+        border
+        border-[var(--color-surface-border)]
         bg-[var(--color-surface-inactive)]
-
         p-4
+        transition-colors
+        duration-150
+        hover:border-[var(--color-surface-border-strong)]
         sm:p-5
       "
     >
@@ -762,12 +762,11 @@ function StatCard({
     <div
       className="
         rounded-[10px]
-
+        border
+        border-[var(--color-surface-border)]
         bg-[var(--color-surface-inactive)]
-
         px-3
         py-3.5
-
         text-center
       "
     >

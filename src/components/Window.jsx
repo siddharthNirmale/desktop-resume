@@ -25,6 +25,7 @@ export default function Window({
   children,
   defaultWidth = 750,
   defaultHeight = 550,
+  isFocused = false,
 }) {
   const windowRef = useRef(null);
   const resizeState = useRef(null);
@@ -249,7 +250,7 @@ export default function Window({
         damping: 30,
         mass: 0.6,
       }}
-      className="
+      className={`
         absolute
         left-0
         top-0
@@ -261,18 +262,17 @@ export default function Window({
         rounded-[14px]
 
         border
-        border-[var(--color-window-border)]
+        ${isFocused ? "border-[var(--color-surface-border-strong)] window-shadow-focused" : "border-[var(--color-window-border)] window-shadow"}
 
         bg-[var(--color-surface)]
         text-[var(--color-text)]
 
-        window-shadow
         select-none
         will-change-transform
 
         transition-[background-color,border-color,box-shadow]
         duration-200
-      "
+      `}
     >
       {/* ======================================================
           WINDOW HEADER
@@ -313,19 +313,16 @@ export default function Window({
           "
         >
           <span
-            className="
+            className={`
               truncate
-
               text-[11px]
               leading-none
               font-medium
               tracking-[-0.01em]
-
-              text-[var(--color-text-secondary)]
-
               transition-colors
               duration-150
-            "
+              ${isFocused ? "text-[var(--color-text)] font-semibold" : "text-[var(--color-text-tertiary)]"}
+            `}
           >
             {title}
           </span>
@@ -473,11 +470,11 @@ export default function Window({
         className="
           relative
           flex-1
-          overflow-auto
-
+          min-h-0
+          w-full
+          overflow-hidden
           bg-[var(--color-surface)]
-
-          custom-scrollbar
+          rounded-b-[13px]
         "
       >
         {children}

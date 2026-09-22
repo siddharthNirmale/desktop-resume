@@ -137,13 +137,13 @@ export default function Notepad() {
                   setActiveId(note.id);
                   if (window.innerWidth < 768) setSidebarOpen(false);
                 }}
-                className={`mb-1 flex w-full flex-col gap-1 rounded-[9px] p-2.5 text-left border transition ${
+                className={`mb-1 flex w-full flex-col gap-1 rounded-[9px] p-2.5 text-left border transition focus-visible:ring-1 focus-visible:ring-[var(--color-accent)] outline-none ${
                   note.id === activeId
-                    ? "bg-[var(--color-surface-hover)]/60 border-[var(--color-surface-border)]"
+                    ? "bg-[var(--color-surface-hover)]/70 border-[var(--color-surface-border-strong)]"
                     : "border-transparent hover:bg-[var(--color-surface-hover)]/30"
                 }`}
               >
-                <span className="truncate text-[11px] font-medium">
+                <span className="truncate text-[11px] font-medium text-[var(--color-text)]">
                   {note.title || "Untitled Note"}
                 </span>
                 <span className="line-clamp-2 text-[9px] leading-[1.5] text-[var(--color-text-tertiary)]">
@@ -162,7 +162,7 @@ export default function Notepad() {
       {sidebarOpen && (
         <button
           onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 z-20 bg-black/10 md:hidden"
+          className="fixed inset-0 z-20 bg-black/20 backdrop-blur-[1px] md:hidden"
         />
       )}
 
@@ -182,7 +182,7 @@ export default function Notepad() {
                   value={activeNote.title}
                   onChange={(e) => updateActiveNote({ title: e.target.value })}
                   placeholder="Note Title"
-                  className="max-w-[240px] bg-transparent text-[12px] font-semibold outline-none"
+                  className="max-w-[240px] bg-transparent text-[12px] font-semibold text-[var(--color-text)] placeholder:text-[var(--color-text-tertiary)] outline-none"
                 />
               </div>
               <button
@@ -197,13 +197,13 @@ export default function Notepad() {
               value={activeNote.content}
               onChange={(e) => updateActiveNote({ content: e.target.value })}
               placeholder="Start writing..."
-              className="custom-scrollbar h-full w-full resize-none border-none bg-transparent px-5 py-6 text-[14px] leading-[1.8] outline-none placeholder:text-[var(--color-text-tertiary)] sm:px-9 sm:py-7"
+              className="custom-scrollbar h-full w-full resize-none border-none bg-transparent px-5 py-6 text-[14px] leading-[1.8] text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-tertiary)] sm:px-9 sm:py-7"
             />
           </>
         ) : (
           <div className="flex h-full flex-col items-center justify-center text-center">
             <FiFileText size={25} className="mb-3 text-[var(--color-text-tertiary)]" />
-            <div className="text-[13px] font-medium">No note selected</div>
+            <div className="text-[13px] font-medium text-[var(--color-text)]">No note selected</div>
             <button
               onClick={createNewNote}
               className="mt-4 rounded-[7px] bg-[var(--color-accent)] px-3 py-2 text-[11px] font-medium text-white hover:brightness-105 active:scale-[0.98] transition-all"
@@ -217,7 +217,7 @@ export default function Notepad() {
       {/* CUSTOM DELETE MODAL */}
       {noteToDelete && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm transition-all">
-          <div className="w-full max-w-[280px] rounded-[14px] bg-[var(--color-surface-elevated)] p-5 text-center shadow-[var(--shadow-popover)]">
+          <div className="w-full max-w-[280px] rounded-[14px] border border-[var(--color-surface-border)] bg-[var(--color-surface-elevated)] p-5 text-center shadow-[var(--shadow-popover)]">
             <h3 className="mb-1 text-[14px] font-semibold text-[var(--color-text)]">
               Delete Note
             </h3>
@@ -239,7 +239,6 @@ export default function Notepad() {
               </button>
             </div>
           </div>
-
         </div>
       )}
     </div>

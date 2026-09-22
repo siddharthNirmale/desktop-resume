@@ -18,6 +18,9 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
 });
 
+const isMac = typeof navigator !== "undefined" && /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
+const cmdKeySymbol = isMac ? "⌘" : "Ctrl+";
+
 // Menu Items for TopBar
 const MENU_ITEMS = [
   { id: "projects", label: "Projects" },
@@ -40,6 +43,11 @@ export default function TopBar({
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const handleToggleCC = () => {
+    setIsCalendarOpen(false);
+    onToggleControlCenter?.();
+  };
 
   const showCalendar = isCalendarOpen && !isControlCenterOpen;
 
@@ -75,13 +83,13 @@ export default function TopBar({
         <Tooltip content="System Menu" side="top" delay={300}>
           <button
             type="button"
-            onClick={onToggleControlCenter}
+            onClick={handleToggleCC}
             className="
               flex h-[22px] px-1.5 items-center justify-center rounded-[4px]
               text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]
               active:bg-[var(--color-surface-active)] active:scale-[0.96]
               transition-all duration-150 ease-out
-              cursor-default focus:outline-none
+              cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]
             "
             aria-label="System Menu"
           >
@@ -125,7 +133,7 @@ export default function TopBar({
         </div>
 
         {/* Command Palette / Spotlight Search Trigger */}
-        <Tooltip content="Search commands" shortcut="⌘K" side="top" delay={300}>
+        <Tooltip content="Search commands" shortcut={`${cmdKeySymbol}K`} side="top" delay={300}>
           <button
             type="button"
             onClick={handleTriggerSpotlight}
@@ -135,12 +143,12 @@ export default function TopBar({
               hover:bg-[var(--color-surface-hover)] hover:border-[var(--color-window-border)]
               text-[var(--color-text-tertiary)] hover:text-[var(--color-text)]
               active:scale-[0.97] transition-all duration-150 ease-out
-              cursor-default text-[11px] font-medium focus:outline-none
+              cursor-default text-[11px] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]
             "
             aria-label="Search commands"
           >
             <FiSearch size={11} strokeWidth={2.2} className="transition-transform duration-150 hover:scale-105" />
-            <span className="text-[10px] font-mono opacity-80 tracking-wider">⌘K</span>
+            <span className="text-[10px] font-mono opacity-80 tracking-wider">{cmdKeySymbol}K</span>
           </button>
         </Tooltip>
       </div>
@@ -223,12 +231,12 @@ export default function TopBar({
         <Tooltip content="Control Center" side="top" delay={200}>
           <button
             type="button"
-            onClick={onToggleControlCenter}
+            onClick={handleToggleCC}
             aria-label="Control Center"
             className={`
               flex h-[22px] px-1.5 items-center justify-center rounded-[4px]
               active:scale-[0.95] transition-all duration-150 ease-out
-              cursor-default focus:outline-none
+              cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]
               ${
                 isControlCenterOpen
                   ? "bg-[var(--color-accent)] text-white shadow-xs"

@@ -58,15 +58,21 @@ export default function SkillsWidget({ constraintsRef, zIndex, onFocus, onClose,
       constraintsRef={constraintsRef}
       positionStyle={positionStyle || { top: "386px", right: "18px" }}
     >
-      {/* Pagination Dots */}
-      <div className="flex items-center gap-1.5 mb-3.5">
-        {SKILL_SETS.map((_, i) => (
-          <div
+      {/* Interactive Pagination Dots */}
+      <div className="flex items-center gap-1.5 mb-3.5" role="tablist" aria-label="Skill categories">
+        {SKILL_SETS.map((set, i) => (
+          <button
             key={i}
-            className={`rounded-full transition-all duration-300 ${
+            type="button"
+            role="tab"
+            aria-selected={i === index}
+            aria-label={`Show ${set.name} skills`}
+            onClick={() => setIndex(i)}
+            onPointerDown={(e) => e.stopPropagation()}
+            className={`rounded-full transition-all duration-300 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] ${
               i === index
-                ? 'w-[14px] h-[4px] bg-[var(--color-accent)]'
-                : 'w-[4px] h-[4px] bg-[var(--color-surface-border)]'
+                ? 'w-[16px] h-[4px] bg-[var(--color-accent)]'
+                : 'w-[4px] h-[4px] bg-[var(--color-surface-border-strong)] hover:bg-[var(--color-text-secondary)]'
             }`}
           />
         ))}

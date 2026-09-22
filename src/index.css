@@ -58,6 +58,7 @@
      ========================================================= */
 
   --color-text: #f5f5f7;
+  --color-text-primary: #f5f5f7;
   --color-text-secondary: rgba(245, 245, 247, 0.68);
   --color-text-tertiary: rgba(245, 245, 247, 0.42);
   --color-text-disabled: rgba(245, 245, 247, 0.25);
@@ -114,6 +115,16 @@
 
   --shadow-subtle:
     0 2px 8px rgba(0, 0, 0, 0.12);
+
+  --shadow-widget:
+    0 8px 24px rgba(0, 0, 0, 0.24),
+    0 2px 6px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+
+  --widget-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.24),
+    0 2px 6px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
 
 
   /* =========================================================
@@ -240,6 +251,7 @@
   /* Text */
 
   --color-text: #1d1d1f;
+  --color-text-primary: #1d1d1f;
   --color-text-secondary: rgba(29, 29, 31, 0.68);
   --color-text-tertiary: rgba(29, 29, 31, 0.44);
   --color-text-disabled: rgba(29, 29, 31, 0.25);
@@ -264,6 +276,16 @@
 
   --shadow-subtle:
     0 2px 8px rgba(0, 0, 0, 0.06);
+
+  --shadow-widget:
+    0 6px 20px rgba(0, 0, 0, 0.07),
+    0 2px 6px rgba(0, 0, 0, 0.04),
+    0 0 0 1px rgba(0, 0, 0, 0.06);
+
+  --widget-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.07),
+    0 2px 6px rgba(0, 0, 0, 0.04),
+    0 0 0 1px rgba(0, 0, 0, 0.06);
 }
 
 
@@ -306,8 +328,8 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar {
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {

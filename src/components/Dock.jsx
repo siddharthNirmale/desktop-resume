@@ -141,6 +141,9 @@ function useMagnification(mouseX, ref, disabled = false) {
    TOOLTIP / HOVER-TO-VIEW NAME
    ========================================================================== */
 
+const isMac = typeof navigator !== "undefined" && /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
+const cmdKeySymbol = isMac ? "⌘" : "Ctrl+";
+
 const DockTooltip = memo(function DockTooltip({
   label,
   shortcut,
@@ -149,7 +152,7 @@ const DockTooltip = memo(function DockTooltip({
   return (
     <TooltipBubble
       content={label}
-      shortcut={shortcut ? `⌘${shortcut}` : undefined}
+      shortcut={shortcut ? `${cmdKeySymbol}${shortcut}` : undefined}
       side="bottom"
       visible={visible}
     />

@@ -348,6 +348,7 @@ export default function ProjectsSection() {
       <AnimatePresence>
         {selectedProject && (
           <ProjectPreview
+            key={selectedProject.id || selectedProject.title || selectedIndex}
             project={selectedProject}
             index={selectedIndex}
             total={filteredProjects.length}
@@ -531,13 +532,6 @@ function ProjectPreview({
       return [project.image];
     }
     return [];
-  }, [project]);
-
-  const [prevProject, setPrevProject] = useState(project);
-  useEffect(() => {
-    setPrevProject(project);
-    setActiveImgIndex(0);
-    setImageError(false);
   }, [project]);
 
   const currentImage = images[activeImgIndex] || project.image;
