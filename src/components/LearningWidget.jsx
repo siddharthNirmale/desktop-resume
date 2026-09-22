@@ -27,7 +27,7 @@ export default function LearningWidget({
       <div className="flex flex-col gap-4 w-full">
         {/* Subject Row */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center h-[38px] w-[38px] rounded-[12px] bg-[var(--color-surface-hover)]/40 border border-[var(--color-surface-border)] shrink-0">
+          <div className="flex items-center justify-center h-[38px] w-[38px] rounded-[12px] bg-[var(--color-surface-elevated)]/90 backdrop-blur-xs border border-[var(--color-surface-border)] shadow-xs shrink-0">
             <Target size={16} strokeWidth={1.75} className="text-[var(--color-accent)]" />
           </div>
           <div className="flex flex-col gap-0.5 min-w-0">
@@ -41,7 +41,7 @@ export default function LearningWidget({
         </div>
 
         {/* Progress Section */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 rounded-[10px] bg-[var(--color-surface-elevated)]/60 backdrop-blur-xs p-2 border border-[var(--color-surface-border)]/50">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-heading font-semibold uppercase tracking-[0.08em] text-[var(--color-text-disabled)]">
               Progress

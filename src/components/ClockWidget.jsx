@@ -87,7 +87,7 @@ export default function ClockWidget({
         <motion.div
           whileHover={{ scale: 1.025 }}
           transition={{ type: "spring", stiffness: 420, damping: 30 }}
-          className="relative flex h-[104px] w-[104px] items-center justify-center rounded-full bg-[var(--color-surface-hover)]/20 shadow-inner"
+          className="relative flex h-[104px] w-[104px] items-center justify-center rounded-full bg-[var(--color-surface-elevated)]/85 backdrop-blur-sm border border-[var(--color-surface-border)] shadow-xs"
         >
           {/* Subtle Ticks */}
           <ClockTicks />
@@ -109,7 +109,7 @@ export default function ClockWidget({
           </div>
 
           {/* Center Pin */}
-          <div className="relative z-10 flex h-2 w-2 items-center justify-center rounded-full bg-[var(--color-surface)] shadow-xs">
+          <div className="relative z-10 flex h-2 w-2 items-center justify-center rounded-full bg-[var(--color-surface-elevated)] shadow-xs">
             <div className="h-1 w-1 rounded-full bg-[var(--color-text)]" />
           </div>
         </motion.div>

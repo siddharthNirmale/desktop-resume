@@ -90,120 +90,125 @@ export default function WidgetCover({
         ${className}
       `}
     >
-      {/* Subtle Technical Wavy Lines Background */}
-      <WavyBackground {...wavyConfig} />
-
-      {/* Header */}
+      {/* 1. Background Decorative Layer (strictly positioned behind all UI) */}
       <div
-        className="
-          widget-header-drag
-          relative
-          z-10
-
-          h-9
-          px-3
-
-          flex
-          items-center
-          justify-center
-
-          cursor-grab
-          active:cursor-grabbing
-        "
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 overflow-hidden select-none rounded-[14px]"
       >
-        {/* Centered title */}
-        <span
-          className="
-            max-w-[70%]
-            truncate
-
-            text-center
-            text-[11px]
-            leading-none
-            font-heading
-            font-medium
-            tracking-[-0.01em]
-
-            text-[var(--color-text-secondary)]
-
-            group-hover:text-[var(--color-text)]
-
-            transition-colors
-            duration-150
-          "
-        >
-          {title}
-        </span>
-
-        {/* Close */}
-        {onClose && (
-          <div className="absolute right-2 top-1/2 -translate-y-1/2">
-            <Tooltip content="Close" side="top" delay={250}>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClose();
-                }}
-                onPointerDown={(e) => {
-                  e.stopPropagation();
-                }}
-                aria-label={`Close ${title}`}
-                className="
-                  h-5
-                  w-5
-
-                  flex
-                  items-center
-                  justify-center
-
-                  rounded-full
-
-                  text-[var(--color-text-disabled)]
-
-                  opacity-0
-                  group-hover:opacity-100
-
-                  hover:bg-red-500/15
-                  hover:text-red-400
-
-                  active:scale-[0.95]
-
-                  transition-all
-                  duration-150
-
-                  focus:outline-none
-                  focus-visible:ring-2
-                  focus-visible:ring-[var(--color-accent)]/30
-
-                  cursor-default
-                "
-              >
-                <X
-                  size={10}
-                  strokeWidth={2.4}
-                />
-              </button>
-            </Tooltip>
-          </div>
-        )}
+        <WavyBackground {...wavyConfig} />
       </div>
 
-      {/* Content */}
-      <div
-        className="
-          relative
-          z-10
-          w-full
-          flex-1
-          flex
-          flex-col
+      {/* 2. Foreground UI Layer (all text, icons, controls, drag handle & interactive content) */}
+      <div className="relative z-10 flex flex-col w-full h-full pointer-events-auto [transform:translateZ(0)]">
+        {/* Header */}
+        <div
+          className="
+            widget-header-drag
+            relative
+            h-9
+            px-3
 
-          px-3
-          pb-3
-        "
-      >
-        {children}
+            flex
+            items-center
+            justify-center
+
+            cursor-grab
+            active:cursor-grabbing
+          "
+        >
+          {/* Centered title */}
+          <span
+            className="
+              max-w-[70%]
+              truncate
+
+              text-center
+              text-[11px]
+              leading-none
+              font-heading
+              font-medium
+              tracking-[-0.01em]
+
+              text-[var(--color-text-secondary)]
+
+              group-hover:text-[var(--color-text)]
+
+              transition-colors
+              duration-150
+            "
+          >
+            {title}
+          </span>
+
+          {/* Close */}
+          {onClose && (
+            <div className="absolute right-2 top-1/2 -translate-y-1/2">
+              <Tooltip content="Close" side="top" delay={250}>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                  }}
+                  onPointerDown={(e) => {
+                    e.stopPropagation();
+                  }}
+                  aria-label={`Close ${title}`}
+                  className="
+                    h-5
+                    w-5
+
+                    flex
+                    items-center
+                    justify-center
+
+                    rounded-full
+
+                    text-[var(--color-text-disabled)]
+
+                    opacity-0
+                    group-hover:opacity-100
+
+                    hover:bg-red-500/15
+                    hover:text-red-400
+
+                    active:scale-[0.95]
+
+                    transition-all
+                    duration-150
+
+                    focus:outline-none
+                    focus-visible:ring-2
+                    focus-visible:ring-[var(--color-accent)]/30
+
+                    cursor-default
+                  "
+                >
+                  <X
+                    size={10}
+                    strokeWidth={2.4}
+                  />
+                </button>
+              </Tooltip>
+            </div>
+          )}
+        </div>
+
+        {/* Content */}
+        <div
+          className="
+            relative
+            w-full
+            flex-1
+            flex
+            flex-col
+
+            px-3
+            pb-3
+          "
+        >
+          {children}
+        </div>
       </div>
     </motion.div>
   );
