@@ -44,9 +44,9 @@ const DOCK_ITEMS = [
     label: "About Me",
     shortcut: "1",
     lightClass:
-      "bg-[#EEF4FF] text-[#2563EB] hover:bg-[#DBEAFE] border-blue-200/60 shadow-xs",
+      "bg-[#EEF4FF] text-[#2563EB] hover:bg-[#DBEAFE] shadow-xs",
     darkClass:
-      "bg-blue-500/15 text-blue-400 border-blue-500/25 hover:bg-blue-500/25 shadow-xs",
+      "bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 shadow-xs",
   },
   {
     id: "projects",
@@ -54,9 +54,9 @@ const DOCK_ITEMS = [
     label: "Projects",
     shortcut: "2",
     lightClass:
-      "bg-[#FFF4ED] text-[#EA580C] hover:bg-[#FFEDD5] border-orange-200/60 shadow-xs",
+      "bg-[#FFF4ED] text-[#EA580C] hover:bg-[#FFEDD5] shadow-xs",
     darkClass:
-      "bg-orange-500/15 text-orange-400 border-orange-500/25 hover:bg-orange-500/25 shadow-xs",
+      "bg-orange-500/15 text-orange-400 hover:bg-orange-500/25 shadow-xs",
   },
   {
     id: "resume",
@@ -64,9 +64,9 @@ const DOCK_ITEMS = [
     label: "Resume",
     shortcut: "3",
     lightClass:
-      "bg-[#EDFAF6] text-[#0D9488] hover:bg-[#CCFBF1] border-teal-200/60 shadow-xs",
+      "bg-[#EDFAF6] text-[#0D9488] hover:bg-[#CCFBF1] shadow-xs",
     darkClass:
-      "bg-teal-500/15 text-teal-400 border-teal-500/25 hover:bg-teal-500/25 shadow-xs",
+      "bg-teal-500/15 text-teal-400 hover:bg-teal-500/25 shadow-xs",
   },
   {
     id: "notepad",
@@ -74,9 +74,9 @@ const DOCK_ITEMS = [
     label: "Notes",
     shortcut: "4",
     lightClass:
-      "bg-[#FEF2F2] text-[#E11D48] hover:bg-[#FFE4E6] border-rose-200/60 shadow-xs",
+      "bg-[#FEF2F2] text-[#E11D48] hover:bg-[#FFE4E6] shadow-xs",
     darkClass:
-      "bg-rose-500/15 text-rose-400 border-rose-500/25 hover:bg-rose-500/25 shadow-xs",
+      "bg-rose-500/15 text-rose-400 hover:bg-rose-500/25 shadow-xs",
   },
   {
     id: "contact",
@@ -84,9 +84,9 @@ const DOCK_ITEMS = [
     label: "Contact",
     shortcut: "5",
     lightClass:
-      "bg-[#FEFCE8] text-[#CA8A04] hover:bg-[#FEF9C3] border-amber-200/60 shadow-xs",
+      "bg-[#FEFCE8] text-[#CA8A04] hover:bg-[#FEF9C3] shadow-xs",
     darkClass:
-      "bg-amber-500/15 text-amber-400 border-amber-500/25 hover:bg-amber-500/25 shadow-xs",
+      "bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 shadow-xs",
   },
 ];
 
@@ -364,7 +364,6 @@ function DockCircleItem({
           items-center
           justify-center
           rounded-full
-          border
           outline-none
           transition-colors
           duration-150

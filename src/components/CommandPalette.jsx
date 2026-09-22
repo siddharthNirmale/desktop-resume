@@ -104,7 +104,7 @@ export default function CommandPalette({
                 placeholder="Search apps, projects, skills..."
                 className="flex-1 bg-transparent border-none outline-none text-[var(--color-text)] placeholder:text-[var(--color-text-tertiary)] text-base font-medium"
               />
-              <div className="hidden sm:flex items-center gap-1 text-[10px] text-[var(--color-text-tertiary)] font-semibold border border-[var(--color-surface-border)] px-1.5 py-0.5 rounded-md">
+              <div className="hidden sm:flex items-center gap-1 text-[10px] text-[var(--color-text-tertiary)] font-semibold bg-[var(--color-surface-hover)]/70 px-1.5 py-0.5 rounded-[5px]">
                 ESC
               </div>
             </div>
@@ -171,12 +171,12 @@ export default function CommandPalette({
             <div className="px-4 py-2 bg-[var(--color-surface-dark)] border-t border-[var(--color-surface-border)] flex items-center justify-between text-xs text-[var(--color-text-tertiary)]">
               <div className="flex items-center gap-4">
                 <span className="flex items-center gap-1">
-                  <span className="bg-[var(--color-surface)] border border-[var(--color-surface-border)] px-1 rounded">↑</span>
-                  <span className="bg-[var(--color-surface)] border border-[var(--color-surface-border)] px-1 rounded">↓</span>
+                  <span className="bg-[var(--color-surface-hover)]/70 px-1.5 py-0.5 rounded-[4px] text-[10px] font-mono leading-none">↑</span>
+                  <span className="bg-[var(--color-surface-hover)]/70 px-1.5 py-0.5 rounded-[4px] text-[10px] font-mono leading-none">↓</span>
                   to navigate
                 </span>
                 <span className="flex items-center gap-1">
-                  <span className="bg-[var(--color-surface)] border border-[var(--color-surface-border)] px-1 rounded">↵</span>
+                  <span className="bg-[var(--color-surface-hover)]/70 px-1.5 py-0.5 rounded-[4px] text-[10px] font-mono leading-none">↵</span>
                   to select
                 </span>
               </div>

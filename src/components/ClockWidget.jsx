@@ -87,7 +87,7 @@ export default function ClockWidget({
         <motion.div
           whileHover={{ scale: 1.025 }}
           transition={{ type: "spring", stiffness: 420, damping: 30 }}
-          className="relative flex h-[104px] w-[104px] items-center justify-center rounded-full bg-[var(--color-surface-elevated)]/85 backdrop-blur-sm border border-[var(--color-surface-border)] shadow-xs"
+          className="relative flex h-[104px] w-[104px] items-center justify-center rounded-full bg-[var(--color-surface-elevated)]/80 backdrop-blur-sm shadow-xs"
         >
           {/* Subtle Ticks */}
           <ClockTicks />

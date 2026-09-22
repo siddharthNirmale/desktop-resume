@@ -166,7 +166,7 @@ export default function WeatherWidget({
              FORECAST
           ================================================== */}
 
-          <div className="grid grid-cols-4 rounded-[10px] bg-[var(--color-surface-elevated)]/70 backdrop-blur-xs p-2 border border-[var(--color-surface-border)]/50">
+          <div className="grid grid-cols-4 rounded-[10px] bg-[var(--color-surface-elevated)]/50 p-2">
             {daily.time.slice(1, 5).map((dateStr, i) => {
               const idx = i + 1;
 

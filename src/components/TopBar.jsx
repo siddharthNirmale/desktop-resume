@@ -139,8 +139,7 @@ export default function TopBar({
             onClick={handleTriggerSpotlight}
             className="
               hidden sm:flex items-center gap-1.5 ml-2.5 h-[20px] px-2 rounded-[5px]
-              border border-[var(--color-surface-border)] bg-[var(--color-surface-hover)]/30
-              hover:bg-[var(--color-surface-hover)] hover:border-[var(--color-window-border)]
+              bg-[var(--color-surface-hover)]/40 hover:bg-[var(--color-surface-hover)]/80
               text-[var(--color-text-tertiary)] hover:text-[var(--color-text)]
               active:scale-[0.97] transition-all duration-150 ease-out
               cursor-default text-[11px] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]

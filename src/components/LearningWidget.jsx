@@ -27,7 +27,7 @@ export default function LearningWidget({
       <div className="flex flex-col gap-4 w-full">
         {/* Subject Row */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center h-[38px] w-[38px] rounded-[12px] bg-[var(--color-surface-elevated)]/90 backdrop-blur-xs border border-[var(--color-surface-border)] shadow-xs shrink-0">
+          <div className="flex items-center justify-center h-[38px] w-[38px] rounded-[10px] bg-[var(--color-surface-elevated)]/80 shrink-0">
             <Target size={16} strokeWidth={1.75} className="text-[var(--color-accent)]" />
           </div>
           <div className="flex flex-col gap-0.5 min-w-0">
@@ -41,9 +41,9 @@ export default function LearningWidget({
         </div>
 
         {/* Progress Section */}
-        <div className="flex flex-col gap-2 rounded-[10px] bg-[var(--color-surface-elevated)]/60 backdrop-blur-xs p-2 border border-[var(--color-surface-border)]/50">
+        <div className="flex flex-col gap-2 pt-1">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-heading font-semibold uppercase tracking-[0.08em] text-[var(--color-text-disabled)]">
+            <span className="text-[10px] font-heading font-semibold uppercase tracking-[0.08em] text-[var(--color-text-tertiary)]">
               Progress
             </span>
             <span className="text-[11px] font-mono font-semibold text-[var(--color-accent)] tabular-nums">
@@ -52,14 +52,15 @@ export default function LearningWidget({
           </div>
 
           {/* Segmented Track */}
-          <div className="flex gap-1 h-[3px] w-full">
+          <div className="flex gap-1 h-[4px] w-full">
             {Array.from({ length: segments }, (_, i) => (
               <div
                 key={i}
-                className={`flex-1 rounded-full transition-colors duration-400 ${i < filledCount
+                className={`flex-1 rounded-full transition-colors duration-300 ${
+                  i < filledCount
                     ? 'bg-[var(--color-accent)]'
-                    : 'bg-[var(--color-surface-border)]'
-                  }`}
+                    : 'bg-[var(--color-surface-elevated)]'
+                }`}
               />
             ))}
           </div>

@@ -146,12 +146,9 @@ export default function GithubWidget({
           justify-center
           overflow-hidden
           p-2.5
-          rounded-[12px]
-          bg-[var(--color-surface-elevated)]/70
+          rounded-[10px]
+          bg-[var(--color-surface-elevated)]/60
           backdrop-blur-xs
-          border
-          border-[var(--color-surface-border)]/50
-          shadow-xs
           transition-opacity
           duration-300
           ${isReady ? "opacity-100" : "opacity-0"}

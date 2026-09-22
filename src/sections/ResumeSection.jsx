@@ -87,16 +87,14 @@ export default function ResumeSection() {
               className="
                 hidden
                 rounded-full
-                border
-                border-[var(--color-surface-border)]
-                bg-[var(--color-surface-hover)]/40
+                bg-[var(--color-surface-hover)]/60
                 px-2
                 py-0.5
                 text-[9px]
                 font-medium
                 uppercase
                 tracking-wide
-                text-[var(--color-text-tertiary)]
+                text-[var(--color-text-secondary)]
                 sm:inline-flex
               "
             >
@@ -435,8 +433,6 @@ export default function ResumeSection() {
               gap-5
 
               rounded-[12px]
-              border
-              border-[var(--color-surface-border)]
               bg-[var(--color-surface-inactive)]
 
               p-4
@@ -528,8 +524,6 @@ function Panel({ children }) {
     <div
       className="
         rounded-[12px]
-        border
-        border-[var(--color-surface-border)]
         bg-[var(--color-surface-inactive)]
         p-4
         sm:p-5
@@ -550,13 +544,11 @@ function ProjectPanel({ project }) {
       className="
         group
         rounded-[12px]
-        border
-        border-[var(--color-surface-border)]
         bg-[var(--color-surface-inactive)]
         p-4
         transition-colors
         duration-150
-        hover:border-[var(--color-surface-border-strong)]
+        hover:bg-[var(--color-surface-hover)]/60
         sm:p-5
       "
     >
@@ -591,9 +583,7 @@ function ProjectPanel({ project }) {
                   inline-flex
                   items-center
                   rounded-full
-                  border
-                  border-[var(--color-accent)]/30
-                  bg-[var(--color-accent)]/10
+                  bg-[var(--color-accent)]/12
                   px-2
                   py-0.5
                   text-[8px]
@@ -673,10 +663,7 @@ function ProjectPanel({ project }) {
 
             rounded-[7px]
 
-            border
-            border-[var(--color-surface-border)]
-
-            bg-[var(--color-surface)]
+            bg-[var(--color-surface-hover)]/60
 
             px-2.5
             py-1.5
@@ -689,8 +676,8 @@ function ProjectPanel({ project }) {
             transition-all
             duration-150
 
-            hover:border-[var(--color-accent)]
-            hover:text-[var(--color-accent)]
+            hover:bg-[var(--color-accent)]
+            hover:text-white
           "
         >
           <FiExternalLink size={11} />
@@ -762,8 +749,6 @@ function StatCard({
     <div
       className="
         rounded-[10px]
-        border
-        border-[var(--color-surface-border)]
         bg-[var(--color-surface-inactive)]
         px-3
         py-3.5
@@ -816,10 +801,7 @@ function TechBadge({ label, icon }) {
 
         rounded-[6px]
 
-        border
-        border-[var(--color-surface-border)]
-
-        bg-[var(--color-surface)]
+        bg-[var(--color-surface-hover)]/40
 
         px-2
         py-1
@@ -833,7 +815,7 @@ function TechBadge({ label, icon }) {
         duration-150
 
         hover:text-[var(--color-text)]
-        hover:border-[var(--color-window-border)]
+        hover:bg-[var(--color-surface-hover)]/80
       "
     >
       {icon && (

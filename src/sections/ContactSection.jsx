@@ -178,7 +178,7 @@ export default function ContactSection() {
               onClick={downloadVCard}
               title="Save contact"
               aria-label="Save contact"
-              className="group hidden shrink-0 items-center gap-2 rounded-lg border border-[var(--color-surface-border)] bg-[var(--color-surface-hover)]/50 px-3 py-1.5 text-xs font-medium text-[var(--color-text-secondary)] transition-all hover:border-[var(--color-surface-border-strong)] hover:text-[var(--color-text)] active:scale-[0.98] sm:flex"
+              className="group hidden shrink-0 items-center gap-2 rounded-lg bg-[var(--color-surface-hover)]/70 px-3 py-1.5 text-xs font-medium text-[var(--color-text-secondary)] transition-all hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] active:scale-[0.98] sm:flex"
             >
               <FiDownload
                 size={13}

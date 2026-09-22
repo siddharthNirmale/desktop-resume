@@ -93,7 +93,7 @@ export default function Notepad() {
       >
         <div className="flex shrink-0 items-center justify-between border-b border-[var(--color-surface-border)] p-3">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[var(--color-surface-hover)]/40 border border-[var(--color-surface-border)]">
+            <div className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[var(--color-surface-hover)]/60 text-[var(--color-text)]">
               <FiFileText size={14} />
             </div>
             <div>
@@ -110,7 +110,7 @@ export default function Notepad() {
         </div>
 
         <div className="p-3">
-          <div className="flex items-center gap-2 rounded-[8px] bg-[var(--color-surface-hover)]/30 border border-[var(--color-surface-border)] px-2.5 py-2">
+          <div className="flex items-center gap-2 rounded-[8px] bg-[var(--color-surface-hover)]/50 px-2.5 py-2 transition-colors focus-within:bg-[var(--color-surface-hover)]/80">
             <FiSearch size={12} className="text-[var(--color-text-tertiary)]" />
             <input
               value={search}
@@ -137,10 +137,10 @@ export default function Notepad() {
                   setActiveId(note.id);
                   if (window.innerWidth < 768) setSidebarOpen(false);
                 }}
-                className={`mb-1 flex w-full flex-col gap-1 rounded-[9px] p-2.5 text-left border transition focus-visible:ring-1 focus-visible:ring-[var(--color-accent)] outline-none ${
+                className={`mb-1 flex w-full flex-col gap-1 rounded-[8px] p-2.5 text-left transition-all focus-visible:ring-1 focus-visible:ring-[var(--color-accent)] outline-none ${
                   note.id === activeId
-                    ? "bg-[var(--color-surface-hover)]/70 border-[var(--color-surface-border-strong)]"
-                    : "border-transparent hover:bg-[var(--color-surface-hover)]/30"
+                    ? "bg-[var(--color-surface-hover)] text-[var(--color-text)] shadow-xs"
+                    : "hover:bg-[var(--color-surface-hover)]/40 text-[var(--color-text-secondary)]"
                 }`}
               >
                 <span className="truncate text-[11px] font-medium text-[var(--color-text)]">
@@ -227,7 +227,7 @@ export default function Notepad() {
             <div className="flex gap-2">
               <button
                 onClick={() => setNoteToDelete(null)}
-                className="flex-1 rounded-[8px] bg-[var(--color-surface-hover)]/40 border border-[var(--color-surface-border)] py-2 text-[11px] font-medium text-[var(--color-text-secondary)] transition hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] active:scale-[0.98]"
+                className="flex-1 rounded-[8px] bg-[var(--color-surface-hover)]/60 py-2 text-[11px] font-medium text-[var(--color-text-secondary)] transition hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] active:scale-[0.98]"
               >
                 Cancel
               </button>
