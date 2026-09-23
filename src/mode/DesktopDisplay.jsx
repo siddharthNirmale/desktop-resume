@@ -2,7 +2,7 @@ import { useRef, useMemo, Suspense, useEffect, useState, useCallback } from "rea
 import { AnimatePresence } from "framer-motion";
 import { LoaderIcon as Loader2 } from "lucide-animated";
 import { isValidHexColor, sanitizeCssUrl } from "../utils/security";
-import { safeGetItem, safeSetItem } from "../utils/storage";
+import { safeGetItem, safeRemoveItem } from "../utils/storage";
 
 // Components
 import Background from "../components/Background";
@@ -68,18 +68,18 @@ export default function DesktopDisplay({
     setIsControlCenterOpen((prev) => !prev);
   }, []);
 
-  // Sync wallpaper & accent color to CSS variables/storage
+  // Sync accent color to CSS variables & ensure session wallpaper doesn't linger across reloads
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (wallpaper) {
-      safeSetItem("os-wallpaper", wallpaper);
-    }
+
+    // Do NOT persist wallpaper across sessions; clear any legacy saved wallpaper on mount
+    safeRemoveItem("os-wallpaper");
 
     const savedAccent = safeGetItem("os-accent");
     if (savedAccent && isValidHexColor(savedAccent)) {
       document.documentElement.style.setProperty("--color-accent", savedAccent);
     }
-  }, [wallpaper]);
+  }, []);
 
   const safeWallpaper = useMemo(() => sanitizeCssUrl(wallpaper), [wallpaper]);
 
@@ -137,7 +137,7 @@ export default function DesktopDisplay({
                     onFocus={() => bringToFront(widget.id)}
                     onClose={() => toggleWindow(widget.id, "isOpen", false)}
                     {...(WIDGET_PROPS[widget.id] || {})}
-                    {...(widget.id === "theme" ? { setWallpaper } : {})}
+                    {...(widget.id === "theme" ? { wallpaper, setWallpaper } : {})}
                   />
                 </Suspense>
               </div>

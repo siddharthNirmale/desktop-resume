@@ -2,10 +2,10 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MorphIcon } from "morphicons/react";
 import { Sun, Moon, Check } from "lucide";
-import { Sparkles } from "lucide-react";
+import Tooltip from "./Tooltip";
 import WidgetCover from "./WidgetCover";
 import { generateThumbnail, preloadImage } from "../utils/imageUtils";
-import { safeGetItem, safeSetItem } from "../utils/storage";
+import { safeGetItem, safeSetItem, safeRemoveItem } from "../utils/storage";
 import { isValidHexColor } from "../utils/security";
 import one from "../assets/images/one.webp";
 import oneThumb from "../assets/images/one-thumb.webp";
@@ -48,18 +48,20 @@ const AppearanceSegment = memo(function AppearanceSegment({
     <div
       className="
         relative flex w-full items-center p-1 rounded-[10px]
-        bg-[var(--color-surface-hover)]/40 select-none
+        bg-[var(--color-surface-hover)]/50 border border-[var(--color-surface-border)]/40
+        select-none shadow-inner
       "
       role="radiogroup"
       aria-label="Appearance Mode"
       onPointerDown={(e) => e.stopPropagation()}
     >
       {/* Dark Button */}
-      <button
+      <motion.button
         type="button"
         role="radio"
         aria-checked={!isLight}
         onClick={(e) => isLight && onToggle(false, e)}
+        whileTap={{ scale: 0.98 }}
         className="
           group relative flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3
           rounded-[8px] text-[11px] font-medium transition-colors duration-150
@@ -72,13 +74,14 @@ const AppearanceSegment = memo(function AppearanceSegment({
             layoutId="appearance-active-pill"
             transition={{
               type: "spring",
-              stiffness: 440,
+              stiffness: 450,
               damping: 32,
               mass: 0.5,
             }}
             className="
               absolute inset-0 rounded-[8px]
               bg-[var(--color-surface)] shadow-xs
+              border border-[var(--color-surface-border)]/60
             "
           />
         )}
@@ -103,14 +106,15 @@ const AppearanceSegment = memo(function AppearanceSegment({
         >
           Dark
         </span>
-      </button>
+      </motion.button>
 
       {/* Light Button */}
-      <button
+      <motion.button
         type="button"
         role="radio"
         aria-checked={isLight}
         onClick={(e) => !isLight && onToggle(true, e)}
+        whileTap={{ scale: 0.98 }}
         className="
           group relative flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3
           rounded-[8px] text-[11px] font-medium transition-colors duration-150
@@ -123,13 +127,14 @@ const AppearanceSegment = memo(function AppearanceSegment({
             layoutId="appearance-active-pill"
             transition={{
               type: "spring",
-              stiffness: 440,
+              stiffness: 450,
               damping: 32,
               mass: 0.5,
             }}
             className="
               absolute inset-0 rounded-[8px]
               bg-[var(--color-surface)] shadow-xs
+              border border-[var(--color-surface-border)]/60
             "
           />
         )}
@@ -154,7 +159,7 @@ const AppearanceSegment = memo(function AppearanceSegment({
         >
           Light
         </span>
-      </button>
+      </motion.button>
     </div>
   );
 });
@@ -169,54 +174,66 @@ const AccentSwatch = memo(function AccentSwatch({
   onSelect,
 }) {
   return (
-    <motion.button
-      type="button"
-      onClick={() => onSelect(color.id, color.value)}
-      aria-label={`Select ${color.name} accent`}
-      aria-pressed={isSelected}
-      title={color.name}
-      style={{ backgroundColor: color.value }}
-      whileHover={{ scale: 1.15, y: -1 }}
-      whileTap={{ scale: 0.88 }}
-      transition={{
-        type: "spring",
-        stiffness: 520,
-        damping: 26,
-      }}
-      className={`
-        relative flex h-[20px] w-[20px] shrink-0 items-center justify-center
-        rounded-full cursor-default outline-none select-none
-        transition-[box-shadow,opacity] duration-150
-        focus-visible:ring-2 focus-visible:ring-[var(--color-text)]
-        focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-surface)]
-        ${
-          isSelected
-            ? "ring-2 ring-[var(--color-text)] ring-offset-2 ring-offset-[var(--color-surface)] opacity-100 scale-105"
-            : "opacity-80 hover:opacity-100"
-        }
-      `}
-    >
-      <span className="pointer-events-none absolute inset-x-0 top-0 h-[40%] rounded-t-full bg-white/20" />
+    <Tooltip content={color.name} side="top" delay={120}>
+      <motion.button
+        type="button"
+        onClick={() => onSelect(color.id, color.value)}
+        aria-label={`Select ${color.name} accent`}
+        aria-pressed={isSelected}
+        style={{
+          backgroundColor: color.value,
+          boxShadow: isSelected
+            ? `0 2px 10px ${color.value}66`
+            : "0 1px 2px rgba(0,0,0,0.15)",
+        }}
+        whileHover={{ scale: 1.18, y: -1 }}
+        whileTap={{ scale: 0.86 }}
+        transition={{
+          type: "spring",
+          stiffness: 520,
+          damping: 26,
+        }}
+        className={`
+          relative flex h-[21px] w-[21px] shrink-0 items-center justify-center
+          rounded-full cursor-default outline-none select-none
+          transition-[box-shadow,opacity] duration-150
+          focus-visible:ring-2 focus-visible:ring-[var(--color-text)]
+          focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-surface)]
+          ${
+            isSelected
+              ? "ring-2 ring-[var(--color-text)] ring-offset-2 ring-offset-[var(--color-surface)] opacity-100"
+              : "opacity-80 hover:opacity-100"
+          }
+        `}
+      >
+        {/* Specular gloss highlight */}
+        <span className="pointer-events-none absolute inset-x-0 top-0 h-[45%] rounded-t-full bg-white/25" />
 
-      <AnimatePresence>
-        {isSelected && (
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            transition={{ duration: 0.12, ease: "easeOut" }}
-            className="flex items-center justify-center text-white"
-          >
-            <MorphIcon
-              icon={Check}
-              size={9}
-              strokeWidth={3.8}
-              spring="snappy"
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.button>
+        {/* Selected checkmark with morph spring */}
+        <AnimatePresence>
+          {isSelected && (
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              transition={{
+                type: "spring",
+                stiffness: 500,
+                damping: 25,
+              }}
+              className="flex items-center justify-center text-white"
+            >
+              <MorphIcon
+                icon={Check}
+                size={9.5}
+                strokeWidth={3.8}
+                spring="snappy"
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.button>
+    </Tooltip>
   );
 });
 
@@ -259,7 +276,7 @@ const CompactWallpaperCard = memo(function CompactWallpaperCard({
       disabled={isApplying}
       aria-label={`Apply ${wallpaper.name} wallpaper`}
       aria-pressed={isActive}
-      whileHover={{ scale: 1.04, y: -1 }}
+      whileHover={{ scale: 1.04, y: -2 }}
       whileTap={{ scale: 0.95 }}
       transition={{
         type: "spring",
@@ -268,25 +285,43 @@ const CompactWallpaperCard = memo(function CompactWallpaperCard({
       }}
       className={`
         group relative flex flex-col items-center justify-between
-        h-[48px] w-full min-w-0 overflow-hidden
-        rounded-[8px] select-none cursor-default outline-none
+        h-[54px] w-full min-w-0 overflow-hidden
+        rounded-[9px] select-none cursor-default outline-none
+        border border-[var(--color-surface-border)]/60
         bg-[var(--color-surface-hover)]/30
         focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]
         focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-surface)]
         ${
           isActive
-            ? "ring-2 ring-[var(--color-accent)] ring-offset-1.5 ring-offset-[var(--color-surface)]"
-            : ""
+            ? "ring-2 ring-[var(--color-accent)] ring-offset-2 ring-offset-[var(--color-surface)] shadow-md"
+            : "hover:border-[var(--color-surface-border)]"
         }
       `}
     >
       {/* Thumbnail background */}
       {wallpaper.id === "default" ? (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-zinc-800/90 via-zinc-900 to-black/95">
-          <Sparkles
-            size={11}
-            className="text-[var(--color-accent)] transition-transform duration-200 group-hover:scale-110"
-          />
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-[#121318] via-[#171922] to-[#0d0e12] overflow-hidden">
+          {/* Dynamic flowing sine curve preview */}
+          <svg
+            className="w-full h-5 px-1 relative z-10 transition-transform duration-300 group-hover:scale-110 pointer-events-none"
+            viewBox="0 0 60 16"
+            fill="none"
+          >
+            <path
+              d="M0 8 Q 15 1, 30 8 T 60 8"
+              stroke="var(--color-accent)"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              className="opacity-95 drop-shadow-[0_0_5px_var(--color-accent)]"
+            />
+            <path
+              d="M0 11 Q 15 4, 30 11 T 60 11"
+              stroke="var(--color-accent)"
+              strokeWidth="1"
+              strokeLinecap="round"
+              className="opacity-45"
+            />
+          </svg>
         </div>
       ) : (
         <>
@@ -298,12 +333,12 @@ const CompactWallpaperCard = memo(function CompactWallpaperCard({
               height={112}
               loading="lazy"
               decoding="async"
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-108"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-108"
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center bg-black/20" />
           )}
-          <div className="absolute inset-0 bg-black/15 group-hover:bg-black/0 transition-colors" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
         </>
       )}
 
@@ -314,9 +349,13 @@ const CompactWallpaperCard = memo(function CompactWallpaperCard({
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            transition={{ duration: 0.12 }}
+            transition={{
+              type: "spring",
+              stiffness: 500,
+              damping: 25,
+            }}
             className="
-              absolute top-1 right-1 z-10 flex h-3.5 w-3.5
+              absolute top-1 right-1 z-20 flex h-3.5 w-3.5
               items-center justify-center rounded-full
               bg-[var(--color-accent)] text-white shadow-xs
             "
@@ -332,8 +371,8 @@ const CompactWallpaperCard = memo(function CompactWallpaperCard({
       </AnimatePresence>
 
       {/* Label bar */}
-      <div className="absolute inset-x-0 bottom-0 z-10 px-0.5 py-0.5 bg-black/55 backdrop-blur-[2px] text-center">
-        <span className="block truncate text-[8px] font-medium text-white leading-tight">
+      <div className="absolute inset-x-0 bottom-0 z-10 py-0.5 px-0.5 bg-black/65 backdrop-blur-xs text-center border-t border-white/10">
+        <span className="block truncate text-[8.5px] font-medium text-white/95 leading-tight tracking-tight">
           {wallpaper.name}
         </span>
       </div>
@@ -369,6 +408,7 @@ export default function ThemeWidget({
   zIndex,
   onFocus,
   onClose,
+  wallpaper = "",
   setWallpaper,
   positionStyle,
 }) {
@@ -393,21 +433,16 @@ export default function ThemeWidget({
     );
   });
 
-  // Active Wallpaper URL
-  const [activeWallpaperUrl, setActiveWallpaperUrl] = useState(() => {
-    if (typeof window === "undefined") return "";
-    const saved = safeGetItem("os-wallpaper", "");
-    if (saved) {
-      if (saved.includes("one")) return one;
-      if (saved.includes("two")) return two;
-      if (saved.includes("three")) return three;
-    }
-    return saved;
-  });
-
+  // Active Wallpaper URL - derived directly from wallpaper prop (strictly in-memory, defaults to "")
+  const activeWallpaperUrl = wallpaper || "";
   const [transitioning, setTransitioning] = useState(false);
   const [transitionWallpaper, setTransitionWallpaper] = useState(null);
   const [applyingWallpaperId, setApplyingWallpaperId] = useState(null);
+
+  // Ensure any legacy persisted wallpaper is cleaned up so Default is always default
+  useEffect(() => {
+    safeRemoveItem("os-wallpaper");
+  }, []);
 
   // Sync external theme changes
   useEffect(() => {
@@ -511,23 +546,22 @@ export default function ThemeWidget({
   }, []);
 
   // Wallpaper change handler with smooth crossfade
+  // Deliberately does NOT persist to localStorage so Default remains the default on every fresh load/session
   const handleWallpaperSelect = useCallback(
-    async (wallpaper) => {
-      if (activeWallpaperUrl === wallpaper.url || transitioning) return;
+    async (targetWallpaper) => {
+      if (activeWallpaperUrl === targetWallpaper.url || transitioning) return;
 
-      setApplyingWallpaperId(wallpaper.id);
+      setApplyingWallpaperId(targetWallpaper.id);
 
-      if (wallpaper.url) {
-        await preloadImage(wallpaper.url);
+      if (targetWallpaper.url) {
+        await preloadImage(targetWallpaper.url);
       }
 
-      setTransitionWallpaper(wallpaper.url);
+      setTransitionWallpaper(targetWallpaper.url);
       setTransitioning(true);
 
       setTimeout(() => {
-        setWallpaper?.(wallpaper.url);
-        setActiveWallpaperUrl(wallpaper.url);
-        safeSetItem("os-wallpaper", wallpaper.url);
+        setWallpaper?.(targetWallpaper.url);
         setApplyingWallpaperId(null);
       }, 240);
 
@@ -599,7 +633,7 @@ export default function ThemeWidget({
           />
 
           {/* Hairline Divider */}
-          <div className="h-px w-full bg-[var(--color-surface-border)]/40" />
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-[var(--color-surface-border)]/50 to-transparent" />
 
           {/* 2. Accent Color Section */}
           <div
@@ -624,9 +658,9 @@ export default function ThemeWidget({
           </div>
 
           {/* Hairline Divider */}
-          <div className="h-px w-full bg-[var(--color-surface-border)]/40" />
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-[var(--color-surface-border)]/50 to-transparent" />
 
-          {/* 3. Wallpaper Collection Section (Direct Grid, NO Scroll) */}
+          {/* 3. Wallpaper Collection Section */}
           <div
             className="flex flex-col gap-1.5 w-full"
             onPointerDown={(e) => e.stopPropagation()}
