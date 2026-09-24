@@ -80,7 +80,7 @@ export default function Preloader({ onLoadingComplete }) {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               className="
-                flex h-14 w-14 items-center justify-center rounded-[18px]
+                flex h-14 w-14  items-center justify-center rounded-full
                 bg-white/[0.08] shadow-sm mb-5
                 text-[var(--color-text)]
               "
