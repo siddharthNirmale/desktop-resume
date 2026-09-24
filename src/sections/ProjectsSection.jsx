@@ -5,8 +5,6 @@ import {
   FiChevronLeft,
   FiChevronRight,
   FiX,
-  FiGrid,
-  FiList,
   FiChevronDown,
   FiCheck,
   FiCopy,
@@ -64,7 +62,6 @@ export default function ProjectsSection() {
 
   const [activeFilter, setActiveFilter] = useState("All");
   const [sort, setSort] = useState("featured");
-  const [view, setView] = useState("grid");
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [showSort, setShowSort] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -238,49 +235,6 @@ export default function ProjectsSection() {
                 )}
               </AnimatePresence>
             </div>
-
-            {/* VIEW SWITCHER WITH MORPHING PILL */}
-            <div className="hidden sm:flex items-center rounded-[6px] bg-[var(--color-surface-hover)]/30 p-0.5 relative">
-              <button
-                type="button"
-                onClick={() => setView("grid")}
-                aria-label="Grid view"
-                className={`relative z-10 flex h-6 w-6 items-center justify-center rounded-[5px] transition-colors duration-150 active:scale-[0.94] ${
-                  view === "grid"
-                    ? "text-[var(--color-text)] font-medium"
-                    : "text-[var(--color-text-disabled)] hover:text-[var(--color-text)]"
-                }`}
-              >
-                {view === "grid" && (
-                  <motion.div
-                    layoutId="project-active-view-pill"
-                    transition={springPreset}
-                    className="absolute inset-0 rounded-[5px] bg-[var(--color-surface)] shadow-xs -z-10"
-                  />
-                )}
-                <FiGrid size={11} />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setView("list")}
-                aria-label="List view"
-                className={`relative z-10 flex h-6 w-6 items-center justify-center rounded-[5px] transition-colors duration-150 active:scale-[0.94] ${
-                  view === "list"
-                    ? "text-[var(--color-text)] font-medium"
-                    : "text-[var(--color-text-disabled)] hover:text-[var(--color-text)]"
-                }`}
-              >
-                {view === "list" && (
-                  <motion.div
-                    layoutId="project-active-view-pill"
-                    transition={springPreset}
-                    className="absolute inset-0 rounded-[5px] bg-[var(--color-surface)] shadow-xs -z-10"
-                  />
-                )}
-                <FiList size={11} />
-              </button>
-            </div>
           </div>
         </div>
 
@@ -314,16 +268,14 @@ export default function ProjectsSection() {
       </header>
 
       {/* ═══════════════════════════════════════════
-          PROJECT GRID / LIST
+          PROJECT LIST (SINGLE-COLUMN LAYOUT)
       ═══════════════════════════════════════════ */}
       <main className="min-h-0 flex-1 overflow-y-auto custom-scrollbar px-4 py-5 sm:px-6">
         {filteredProjects.length > 0 ? (
           <motion.div
             layout
             transition={springPreset}
-            className={`mx-auto grid w-full max-w-5xl gap-4 sm:gap-5 ${
-              view === "grid" ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"
-            }`}
+            className="mx-auto flex w-full max-w-3xl flex-col gap-4 sm:gap-5"
           >
             <AnimatePresence mode="popLayout">
               {filteredProjects.map((project, index) => (
@@ -331,7 +283,6 @@ export default function ProjectsSection() {
                   key={project.id || project.title || index}
                   project={project}
                   index={index}
-                  view={view}
                   onPreview={() => openPreview(index)}
                 />
               ))}
