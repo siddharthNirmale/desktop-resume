@@ -6,7 +6,7 @@ const OfflineLottie = memo(function OfflineLottie({
   width = 208,
   height = 176,
   className = "",
-  loop = true,
+  loop = false,
   autoplay = true,
 }) {
   const lottieRef = useRef(null);

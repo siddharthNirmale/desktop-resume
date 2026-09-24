@@ -17,7 +17,7 @@ export default function OfflinePage({
             scale: 1.015,
             filter: "blur(6px)",
             transition: {
-              duration: 0.4,
+              duration: 3,
               ease: [0.16, 1, 0.3, 1],
             },
           }}
@@ -41,7 +41,7 @@ export default function OfflinePage({
           >
             {/* Actual Lottie Graphic */}
             <div className="w-52 h-44 flex items-center justify-center mb-2">
-              <OfflineLottie width={208} height={176} />
+              <OfflineLottie width={208} height={176} loop={false} />
             </div>
 
             {/* Title & Status */}
