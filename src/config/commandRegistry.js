@@ -216,25 +216,24 @@ export const staticCommands = [
 
 
 /**
- * Generate dynamic commands from portfolio data
+ * Precomputed dynamic commands from portfolio data
  */
-export const generateDynamicCommands = () => {
-  const projectCommands = projects.map((p) => ({
+export const dynamicCommands = [
+  ...projects.map((p) => ({
     id: `project-${p.id}`,
     name: p.title,
     description: `Project: ${p.tech}`,
     category: "Projects",
-    keywords: [p.title.toLowerCase(), ...p.tech.split("•").map(t => t.trim().toLowerCase())],
+    keywords: [p.title.toLowerCase(), ...p.tech.split("•").map((t) => t.trim().toLowerCase())],
     icon: FolderDot,
     action: (helpers) => {
       helpers.toggleWindow("projects", "isOpen", true);
       helpers.bringToFront("projects");
     },
-  }));
-
-  const skillCommands = skills.flatMap((category) => 
+  })),
+  ...skills.flatMap((category) =>
     category.items.map((skill) => ({
-      id: `skill-${skill.toLowerCase().replace(/\s+/g, '-')}`,
+      id: `skill-${skill.toLowerCase().replace(/\s+/g, "-")}`,
       name: skill,
       description: `Skill: ${category.category}`,
       category: "Skills",
@@ -245,14 +244,14 @@ export const generateDynamicCommands = () => {
         helpers.bringToFront("about");
       },
     }))
-  );
+  ),
+];
 
-  return [...projectCommands, ...skillCommands];
-};
+export const generateDynamicCommands = () => dynamicCommands;
+
+export const ALL_COMMANDS = [...staticCommands, ...dynamicCommands];
 
 /**
  * Get all available commands.
  */
-export const getAllCommands = () => {
-  return [...staticCommands, ...generateDynamicCommands()];
-};
+export const getAllCommands = () => ALL_COMMANDS;

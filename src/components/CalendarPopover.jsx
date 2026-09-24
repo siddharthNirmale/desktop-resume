@@ -38,11 +38,11 @@ export default function CalendarPopover({ isOpen, onClose }) {
   }, [isOpen]);
 
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
-  if (isOpen && !prevIsOpen) {
-    setPrevIsOpen(true);
-    setViewDate(new Date());
-  } else if (!isOpen && prevIsOpen) {
-    setPrevIsOpen(false);
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
+    if (isOpen) {
+      setViewDate(new Date());
+    }
   }
 
   // Click outside & Escape key listener
@@ -128,14 +128,10 @@ export default function CalendarPopover({ isOpen, onClose }) {
     return days;
   }, [viewDate]);
 
-  const isToday = (date) => {
-    const today = new Date();
-    return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
-  };
+  const isToday = (date) =>
+    date.getDate() === currentDate.getDate() &&
+    date.getMonth() === currentDate.getMonth() &&
+    date.getFullYear() === currentDate.getFullYear();
 
   return (
     <AnimatePresence>

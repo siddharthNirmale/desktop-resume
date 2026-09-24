@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, memo } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MorphIcon } from "morphicons/react";
 import { Sun, Moon, Eye, EyeOff, Check, Mail } from "lucide";
@@ -318,21 +318,23 @@ export default function ControlCenter({
     onClose?.();
   }, [toggleWindow, bringToFront, onClose]);
 
-  // Compute active states for windows & widgets
-  const openWindows = useMemo(
-    () => windows.filter((w) => w.type === "window" && w.isOpen),
-    [windows]
-  );
+  // Compute active states for windows & widgets in a single pass
+  let activeWidgetsCount = 0;
+  let hasOpenWindow = false;
+  let areAllWindowsMinimized = true;
 
-  const allWindowsMinimized = useMemo(
-    () => openWindows.length > 0 && openWindows.every((w) => w.isMinimized),
-    [openWindows]
-  );
+  for (const w of windows) {
+    if (w.isOpen) {
+      if (w.type === "widget") {
+        activeWidgetsCount++;
+      } else if (w.type === "window") {
+        hasOpenWindow = true;
+        if (!w.isMinimized) areAllWindowsMinimized = false;
+      }
+    }
+  }
 
-  const activeWidgetsCount = useMemo(
-    () => windows.filter((w) => w.type === "widget" && w.isOpen).length,
-    [windows]
-  );
+  const allWindowsMinimized = hasOpenWindow && areAllWindowsMinimized;
 
   const currentAccentObj =
     ACCENT_COLORS.find((c) => c.id === activeAccentId) || ACCENT_COLORS[0];

@@ -1,13 +1,14 @@
 import { useState, useCallback } from "react";
 
+const mapInitialWindows = (config) =>
+  config.map((w, index) => ({
+    ...w,
+    zIndex: w.type === "window" ? 1000 + index : index + 1,
+    isMinimized: false,
+  }));
+
 export default function useWindows(initialWindows) {
-  const [windows, setWindows] = useState(() =>
-    initialWindows.map((w, index) => ({
-      ...w,
-      zIndex: w.type === "window" ? 1000 + index : index + 1,
-      isMinimized: false,
-    }))
-  );
+  const [windows, setWindows] = useState(() => mapInitialWindows(initialWindows));
 
   const bringToFront = useCallback((id) => {
     setWindows((prev) => {
@@ -18,20 +19,13 @@ export default function useWindows(initialWindows) {
       const nextZ = highestZ + 1;
 
       return prev.map((w) =>
-        w.id === id
-          ? {
-              ...w,
-              zIndex: nextZ,
-              isMinimized: false,
-            }
-          : w
+        w.id === id ? { ...w, zIndex: nextZ, isMinimized: false } : w
       );
     });
   }, []);
 
   const toggleWindow = useCallback((id, key, value) => {
     setWindows((prevWindows) => {
-      // Opening or unminimizing focus states
       if ((key === "isOpen" && value === true) || (key === "isMinimized" && value === false)) {
         const highestZ = Math.max(...prevWindows.map((w) => w.zIndex || 0), 1000);
         const nextZ = highestZ + 1;
@@ -43,7 +37,6 @@ export default function useWindows(initialWindows) {
         );
       }
 
-      // Closing window layers safely
       if (key === "isOpen" && value === false) {
         return prevWindows.map((w) =>
           w.id === id
@@ -52,7 +45,6 @@ export default function useWindows(initialWindows) {
         );
       }
 
-      // Default toggle for typical closed / minimized window states
       return prevWindows.map((w) =>
         w.id === id ? { ...w, [key]: value } : w
       );
@@ -86,13 +78,7 @@ export default function useWindows(initialWindows) {
   }, []);
 
   const resetLayout = useCallback(() => {
-    setWindows(
-      initialWindows.map((w, index) => ({
-        ...w,
-        zIndex: w.type === "window" ? 1000 + index : index + 1,
-        isMinimized: false,
-      }))
-    );
+    setWindows(mapInitialWindows(initialWindows));
   }, [initialWindows]);
 
   return { windows, bringToFront, toggleWindow, toggleWidget, minimizeAll, restoreAll, resetLayout };

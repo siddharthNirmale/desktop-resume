@@ -3,7 +3,6 @@ import {
   useEffect,
   useRef,
   useCallback,
-  useMemo,
   memo,
 } from "react";
 import {
@@ -245,6 +244,7 @@ function DockCircleItem({
   bringToFront,
   mouseX,
   reducedMotion,
+  maxWindowZ,
 }) {
   const ref = useRef(null);
   const [hovered, setHovered] = useState(false);
@@ -255,16 +255,11 @@ function DockCircleItem({
   const windowItem = windows?.find((item) => item.id === id);
   const isOpen = Boolean(windowItem?.isOpen);
   const isMinimized = Boolean(windowItem?.isMinimized);
-
-  const isTopActive = useMemo(() => {
-    if (!isOpen || isMinimized) return false;
-    const activeWindows =
-      windows?.filter(
-        (w) => w.type === "window" && w.isOpen && !w.isMinimized
-      ) ?? [];
-    const maxZ = Math.max(...activeWindows.map((w) => w.zIndex ?? 0), 0);
-    return (windowItem?.zIndex ?? 0) === maxZ;
-  }, [windows, isOpen, isMinimized, windowItem?.zIndex]);
+  const isTopActive =
+    isOpen &&
+    !isMinimized &&
+    (windowItem?.zIndex ?? 0) === maxWindowZ &&
+    maxWindowZ > 0;
 
   const handleClick = useCallback(() => {
     if (!windowItem) return;
@@ -418,14 +413,7 @@ export default function Dock({
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ------------------------------------------------------------------------
-     THEME SYNC
-     ------------------------------------------------------------------------ */
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("light-theme", isLight);
-    document.body.classList.toggle("light-theme", isLight);
-  }, [isLight]);
 
   /* ------------------------------------------------------------------------
      OBSERVE EXTERNAL THEME CHANGES
@@ -508,6 +496,13 @@ export default function Dock({
      RENDER
      ------------------------------------------------------------------------ */
 
+  let maxWindowZ = 0;
+  for (const w of windows) {
+    if (w.type === "window" && w.isOpen && !w.isMinimized && (w.zIndex || 0) > maxWindowZ) {
+      maxWindowZ = w.zIndex || 0;
+    }
+  }
+
   return (
     <div
       className="
@@ -568,6 +563,7 @@ export default function Dock({
               bringToFront={bringToFront}
               mouseX={mouseX}
               reducedMotion={reducedMotion}
+              maxWindowZ={maxWindowZ}
             />
           );
         })}

@@ -76,10 +76,10 @@ export default function Notepad() {
 
   const filteredNotes = useMemo(() => {
     const query = search.trim().toLowerCase();
-    if (!query) return notes.sort((a, b) => b.updatedAt - a.updatedAt);
+    if (!query) return [...notes].sort((a, b) => b.updatedAt - a.updatedAt);
 
     return notes
-      .filter(n => n.title.toLowerCase().includes(query) || n.content.toLowerCase().includes(query))
+      .filter((n) => n.title.toLowerCase().includes(query) || n.content.toLowerCase().includes(query))
       .sort((a, b) => b.updatedAt - a.updatedAt);
   }, [notes, search]);
 

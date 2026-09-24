@@ -42,6 +42,22 @@ const cardVariants = {
   },
 };
 
+const PROJECT_FILTERS = (() => {
+  const values = new Set();
+  PROJECT_LIST.forEach((project) => {
+    if (!project.tech) return;
+    const tech = Array.isArray(project.tech)
+      ? project.tech
+      : String(project.tech)
+          .split(/[•,|/]/)
+          .map((item) => item.trim());
+
+    tech.filter(Boolean).forEach((item) => values.add(item));
+  });
+
+  return ["All", ...Array.from(values).slice(0, 6)];
+})();
+
 export default function ProjectsSection() {
   const projectList = PROJECT_LIST;
 
@@ -52,24 +68,7 @@ export default function ProjectsSection() {
   const [showSort, setShowSort] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  /* ─────────────────────────────────────────────
-     TECHNOLOGY FILTERS
-  ───────────────────────────────────────────── */
-  const filters = useMemo(() => {
-    const values = new Set();
-    projectList.forEach((project) => {
-      if (!project.tech) return;
-      const tech = Array.isArray(project.tech)
-        ? project.tech
-        : String(project.tech)
-            .split(/[•,|/]/)
-            .map((item) => item.trim());
-
-      tech.filter(Boolean).forEach((item) => values.add(item));
-    });
-
-    return ["All", ...Array.from(values).slice(0, 6)];
-  }, [projectList]);
+  const filters = PROJECT_FILTERS;
 
   /* ─────────────────────────────────────────────
      FILTER + SORT

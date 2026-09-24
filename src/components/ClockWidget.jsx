@@ -1,22 +1,20 @@
-import { useEffect, useState, useMemo, memo } from "react";
+import { useEffect, useState, memo } from "react";
 import { motion } from "framer-motion";
 import WidgetCover from "./WidgetCover";
 
 /* ─────────────────────────────────────────────────────────────
    DIAL TICKS
    ───────────────────────────────────────────────────────────── */
-const ClockTicks = memo(function ClockTicks() {
-  const ticks = useMemo(() => {
-    return Array.from({ length: 12 }, (_, i) => ({
-      angle: i * 30,
-      isQuarter: i % 3 === 0,
-      index: i,
-    }));
-  }, []);
+const CLOCK_TICKS = Array.from({ length: 12 }, (_, i) => ({
+  angle: i * 30,
+  isQuarter: i % 3 === 0,
+  index: i,
+}));
 
+const ClockTicks = memo(function ClockTicks() {
   return (
     <div className="absolute inset-0 pointer-events-none">
-      {ticks.map(({ angle, isQuarter, index }) => (
+      {CLOCK_TICKS.map(({ angle, isQuarter, index }) => (
         <div
           key={index}
           className="absolute inset-0 flex justify-center"

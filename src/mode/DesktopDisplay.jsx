@@ -43,26 +43,29 @@ export default function DesktopDisplay({
   const workspaceRef = useRef(null);
   const [isControlCenterOpen, setIsControlCenterOpen] = useState(false);
 
-  // Split windows/widgets for rendering efficiency
-  const visibleWidgets = useMemo(() =>
-    windows.filter((w) => w.type === "widget" && w.isOpen && !w.isMinimized),
-    [windows]);
+  // Partition windows and compute states in a single direct pass
+  let maxWindowZ = 0;
+  let hasOpenWindow = false;
+  let areAllWindowsMinimized = true;
+  const visibleWidgets = [];
+  const visibleWindows = [];
 
-  const visibleWindows = useMemo(() =>
-    windows.filter((w) => w.type === "window" && w.isOpen && !w.isMinimized),
-    [windows]);
+  for (const w of windows) {
+    if (w.isOpen) {
+      if (w.type === "widget" && !w.isMinimized) {
+        visibleWidgets.push(w);
+      } else if (w.type === "window") {
+        hasOpenWindow = true;
+        if (!w.isMinimized) {
+          areAllWindowsMinimized = false;
+          visibleWindows.push(w);
+          if ((w.zIndex || 0) > maxWindowZ) maxWindowZ = w.zIndex || 0;
+        }
+      }
+    }
+  }
 
-  const openAppWindows = useMemo(() =>
-    windows.filter((w) => w.type === "window" && w.isOpen),
-    [windows]);
-
-  const allWindowsMinimized = useMemo(() =>
-    openAppWindows.length > 0 && openAppWindows.every((w) => w.isMinimized),
-    [openAppWindows]);
-
-  const maxWindowZ = useMemo(() =>
-    Math.max(...visibleWindows.map((w) => w.zIndex ?? 0), 0),
-    [visibleWindows]);
+  const allWindowsMinimized = hasOpenWindow && areAllWindowsMinimized;
 
   const handleToggleControlCenter = useCallback(() => {
     setIsControlCenterOpen((prev) => !prev);

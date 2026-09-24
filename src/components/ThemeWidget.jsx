@@ -4,7 +4,7 @@ import { MorphIcon } from "morphicons/react";
 import { Sun, Moon, Check } from "lucide";
 import Tooltip from "./Tooltip";
 import WidgetCover from "./WidgetCover";
-import { generateThumbnail, preloadImage } from "../utils/imageUtils";
+import { preloadImage } from "../utils/imageUtils";
 import { safeGetItem, safeSetItem, safeRemoveItem } from "../utils/storage";
 import { isValidHexColor } from "../utils/security";
 import one from "../assets/images/one.webp";
@@ -247,27 +247,7 @@ const CompactWallpaperCard = memo(function CompactWallpaperCard({
   onSelect,
   isApplying,
 }) {
-  const [asyncThumb, setAsyncThumb] = useState(null);
-  const [asyncLoaded, setAsyncLoaded] = useState(false);
-
-  useEffect(() => {
-    if (wallpaper.id === "default" || wallpaper.thumb) return;
-
-    let mounted = true;
-    generateThumbnail(wallpaper.url, 90).then((thumb) => {
-      if (!mounted) return;
-      setAsyncThumb(thumb);
-      setAsyncLoaded(true);
-    });
-
-    return () => {
-      mounted = false;
-    };
-  }, [wallpaper.id, wallpaper.url, wallpaper.thumb]);
-
-  const thumbUrl = wallpaper.thumb || asyncThumb;
-  const isLoaded =
-    wallpaper.id === "default" || Boolean(wallpaper.thumb) || asyncLoaded;
+  const thumbUrl = wallpaper.thumb;
 
   return (
     <motion.button
@@ -325,7 +305,7 @@ const CompactWallpaperCard = memo(function CompactWallpaperCard({
         </div>
       ) : (
         <>
-          {thumbUrl && isLoaded ? (
+          {thumbUrl ? (
             <img
               src={thumbUrl}
               alt={wallpaper.name ? `${wallpaper.name} desktop wallpaper theme preview` : "Desktop wallpaper theme preview"}
