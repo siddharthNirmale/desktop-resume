@@ -368,7 +368,12 @@ export default function ProjectsSection() {
 ═══════════════════════════════════════════════ */
 const ProjectCard = memo(function ProjectCard({ project, view, onPreview }) {
   const [imageError, setImageError] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const isList = view === "list";
+
+  const toggleExpanded = () => {
+    setIsExpanded((prev) => !prev);
+  };
 
   return (
     <motion.article
@@ -378,23 +383,17 @@ const ProjectCard = memo(function ProjectCard({ project, view, onPreview }) {
       animate="visible"
       exit="exit"
       transition={springPreset}
-      className={`group relative overflow-hidden rounded-[12px] bg-[var(--color-surface-hover)]/25 hover:bg-[var(--color-surface-hover)]/45 border border-[var(--color-surface-border)]/40 hover:border-[var(--color-surface-border-strong)] transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-xs ${
-        isList ? "sm:flex" : "flex flex-col"
-      }`}
+      className="group relative overflow-hidden rounded-[12px] bg-[var(--color-surface-hover)]/25 hover:bg-[var(--color-surface-hover)]/45 border border-[var(--color-surface-border)]/40 hover:border-[var(--color-surface-border-strong)] transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-xs flex flex-col"
     >
-      {/* IMAGE / THUMBNAIL */}
+      {/* THUMBNAIL / VISUAL (CLEAN & MINIMAL INITIAL STATE) */}
       <button
         type="button"
-        onClick={onPreview}
-        className={`group/image relative block overflow-hidden text-left focus-visible:outline-none ${
-          isList ? "w-full sm:w-[260px] shrink-0" : "w-full"
-        }`}
+        onClick={toggleExpanded}
+        aria-expanded={isExpanded}
+        aria-label={isExpanded ? `Hide details for ${project.title}` : `Show details for ${project.title}`}
+        className="group/image relative block w-full overflow-hidden text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] cursor-pointer"
       >
-        <div
-          className={`relative overflow-hidden bg-[var(--color-surface-dark)] ${
-            isList ? "aspect-[16/9] sm:h-full sm:aspect-auto" : "aspect-[16/9]"
-          }`}
-        >
+        <div className="relative aspect-[16/9] w-full overflow-hidden bg-[var(--color-surface-dark)]">
           {(project.thumbnail || project.image) && !imageError ? (
             <img
               src={project.thumbnail || project.image}
@@ -414,95 +413,123 @@ const ProjectCard = memo(function ProjectCard({ project, view, onPreview }) {
             <FallbackImage title={project.title} tech={project.tech} />
           )}
 
-          {/* Type / Badge (Understated) */}
-          {(project.badge || project.type) && (
-            <div className="absolute top-2.5 left-2.5 z-10 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-white text-[9px] font-medium">
-              {project.badge || project.type}
-            </div>
-          )}
-
-          {/* Quick Preview trigger overlay */}
-          <div className="absolute top-2.5 right-2.5 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-white opacity-0 group-hover/image:opacity-100 transition-opacity duration-150 backdrop-blur-sm">
-            <FiArrowUpRight size={12} />
+          {/* Interactive micro-indicator (Transitions.dev style) */}
+          <div className="absolute bottom-2.5 right-2.5 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-sm text-white text-[11px] font-medium transition-all duration-200 group-hover/image:bg-black/80 group-hover/image:scale-105">
+            <span>{isExpanded ? "Close" : "Details"}</span>
+            <FiChevronDown
+              size={12}
+              className={`transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+            />
           </div>
         </div>
       </button>
 
-      {/* CARD CONTENT */}
-      <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-4.5 justify-between">
-        <div>
-          <div className="flex items-baseline justify-between gap-2">
-            <h2 className="truncate text-[14px] font-heading font-semibold text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">
-              {project.title}
-            </h2>
-            {project.year && (
-              <span className="shrink-0 text-[10px] font-mono text-[var(--color-text-tertiary)]">
-                {project.year}
-              </span>
-            )}
-          </div>
-
-          {project.tech && (
-            <p className="mt-1 truncate text-[11px] text-[var(--color-text-tertiary)]">
-              {formatTech(project.tech)}
-            </p>
-          )}
-
-          {/* Bullets / Summary */}
-          {project.bullets?.length > 0 && (
-            <ul className="mt-2.5 space-y-1">
-              {project.bullets.slice(0, isList ? 2 : 1).map((point, i) => (
-                <li
-                  key={i}
-                  className="line-clamp-2 text-[12px] leading-relaxed text-[var(--color-text-secondary)]"
-                >
-                  {point}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        {/* ACTION BUTTONS */}
-        <div className="mt-3.5 flex items-center justify-between pt-2.5 border-t border-[var(--color-surface-border)]">
-          <div className="flex items-center gap-2">
-            {project.github && (
-              <a
-                href={sanitizeUrl(project.github)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group/act inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text)] active:scale-[0.96] transition-all duration-150"
-              >
-                <FiGithub size={12} />
-                <span>Code</span>
-              </a>
-            )}
-
-            {project.live && (
-              <a
-                href={sanitizeUrl(project.live)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group/act inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--color-accent)] hover:underline active:scale-[0.96] transition-all duration-150"
-              >
-                <span>Live</span>
-                <FiArrowUpRight
-                  size={11}
-                  className="transition-transform group-hover/act:translate-x-0.5 group-hover/act:-translate-y-0.5"
-                />
-              </a>
-            )}
-          </div>
-
-          <button
-            type="button"
-            onClick={onPreview}
-            className="text-[11px] font-medium text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] active:scale-[0.96] transition-all duration-150 cursor-pointer"
+      {/* FULL PROJECT DETAILS (REVEALED ON INTERACTION) */}
+      <AnimatePresence initial={false}>
+        {isExpanded && (
+          <motion.div
+            key="details"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{
+              height: "auto",
+              opacity: 1,
+              transition: {
+                height: { duration: 0.32, ease: [0.16, 1, 0.3, 1] },
+                opacity: { duration: 0.22, delay: 0.06, ease: [0.16, 1, 0.3, 1] },
+              },
+            }}
+            exit={{
+              height: 0,
+              opacity: 0,
+              transition: {
+                height: { duration: 0.24, ease: [0.16, 1, 0.3, 1] },
+                opacity: { duration: 0.14, ease: "easeOut" },
+              },
+            }}
+            className="overflow-hidden"
           >
-            Details
-          </button>
-        </div>
-      </div>
+            <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-4.5 justify-between border-t border-[var(--color-surface-border)]/40">
+              <div>
+                <div className="flex items-baseline justify-between gap-2">
+                  <h2 className="truncate text-[14px] font-heading font-semibold text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">
+                    {project.title}
+                  </h2>
+                  {project.year && (
+                    <span className="shrink-0 text-[10px] font-mono text-[var(--color-text-tertiary)]">
+                      {project.year}
+                    </span>
+                  )}
+                </div>
+
+                {project.tech && (
+                  <p className="mt-1 truncate text-[11px] text-[var(--color-text-tertiary)]">
+                    {formatTech(project.tech)}
+                  </p>
+                )}
+
+                {/* Bullets / Summary */}
+                {project.bullets?.length > 0 && (
+                  <ul className="mt-2.5 space-y-1">
+                    {project.bullets.slice(0, isList ? 2 : 1).map((point, i) => (
+                      <li
+                        key={i}
+                        className="line-clamp-2 text-[12px] leading-relaxed text-[var(--color-text-secondary)]"
+                      >
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              {/* ACTION BUTTONS */}
+              <div className="mt-3.5 flex items-center justify-between pt-2.5 border-t border-[var(--color-surface-border)]">
+                <div className="flex items-center gap-2">
+                  {project.github && (
+                    <a
+                      href={sanitizeUrl(project.github)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="group/act inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text)] active:scale-[0.96] transition-all duration-150"
+                    >
+                      <FiGithub size={12} />
+                      <span>Code</span>
+                    </a>
+                  )}
+
+                  {project.live && (
+                    <a
+                      href={sanitizeUrl(project.live)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="group/act inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--color-accent)] hover:underline active:scale-[0.96] transition-all duration-150"
+                    >
+                      <span>Live</span>
+                      <FiArrowUpRight
+                        size={11}
+                        className="transition-transform group-hover/act:translate-x-0.5 group-hover/act:-translate-y-0.5"
+                      />
+                    </a>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onPreview();
+                  }}
+                  className="text-[11px] font-medium text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] active:scale-[0.96] transition-all duration-150 cursor-pointer"
+                >
+                  Modal View
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.article>
   );
 });

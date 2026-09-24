@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, memo } from "react";
 import { GitHubCalendar } from "react-github-calendar";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { MorphIcon } from "morphicons/react";
 import { Sun, Moon } from "lucide";
 import {
@@ -12,6 +12,7 @@ import {
   FiCpu,
   FiArrowUpRight,
   FiX,
+  FiChevronDown,
 } from "react-icons/fi";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
@@ -367,78 +368,11 @@ export default function TerminalPortfolio() {
             className="space-y-5"
           >
             {projects.map((project) => (
-              <motion.div
+              <SmallProjectCard
                 key={project.id || project.title}
-                variants={fadeUpVariant}
-                className={`group relative flex flex-col sm:flex-row rounded-2xl overflow-hidden transition-colors duration-200 ${isDark
-                    ? "bg-[var(--color-surface)] border border-[var(--color-surface-border)]"
-                    : "bg-white border border-zinc-200 shadow-xs"
-                  }`}
-              >
-                <div className={`relative w-full sm:w-2/5 md:w-1/3 h-48 sm:h-auto overflow-hidden shrink-0 border-b sm:border-b-0 ${isDark ? "bg-black/40 border-white/5 sm:border-r" : "bg-zinc-100 border-zinc-200 sm:border-r"}`}>
-                  <img
-                    src={project.thumbnail || project.image || "/placeholder.jpg"}
-                    alt={
-                      project.title
-                        ? `${project.title} - Full-stack project preview by Siddharth Nirmale`
-                        : "Portfolio project preview by Siddharth Nirmale"
-                    }
-                    width={720}
-                    height={405}
-                    loading="lazy"
-                    decoding="async"
-                    className="relative w-full h-full object-cover z-10"
-                  />
-                </div>
-
-                <div className="p-5 sm:p-6 flex-1 flex flex-col">
-                  <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-4">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className={`text-[16px] font-heading font-semibold tracking-tight flex items-center gap-2 ${isDark ? "text-white" : "text-zinc-900"}`}>
-                        {project.title}
-                        <FiArrowUpRight className="opacity-60 text-zinc-400" size={16} />
-                      </h3>
-                      {(project.badge || project.type) && (
-                        <span className={`text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${isDark ? "bg-white/5 text-zinc-300 border-white/10" : "bg-zinc-100 text-zinc-700 border-zinc-200"}`}>
-                          {project.badge || project.type}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {project.live && (
-                        <LinkBadge icon={<FiExternalLink size={12} />} text="Live" href={project.live} isDark={isDark} />
-                      )}
-                      {project.github && (
-                        <LinkBadge icon={<FaGithub size={12} />} text="Repo" href={project.github} isDark={isDark} />
-                      )}
-                    </div>
-                  </div>
-
-                  <ul className={`text-[13px] leading-relaxed mb-6 flex-1 list-disc pl-4 space-y-1.5 ${isDark ? "text-zinc-400 marker:text-zinc-600" : "text-zinc-600 marker:text-zinc-400"}`}>
-                    {project.bullets.map((bullet, i) => (
-                      <li key={i}>
-                        <span>{bullet}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="mt-auto">
-                    <div className="flex flex-wrap gap-1.5">
-                      {project.tech.split(" • ").map((tech) => (
-                        <span
-                          key={tech}
-                          className={`text-[11px] font-medium px-2 py-0.5 border rounded-md ${isDark
-                              ? "bg-white/5 border-white/5 text-zinc-400"
-                              : "bg-zinc-100 border-zinc-200 text-zinc-600"
-                            }`}
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+                project={project}
+                isDark={isDark}
+              />
             ))}
           </motion.div>
         </section>
@@ -509,6 +443,7 @@ function LinkBadge({ icon, text, href, isDark }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={(e) => e.stopPropagation()}
       className={`inline-flex items-center gap-1.5 px-2.5 py-1 border rounded-lg text-[11px] font-medium transition-all duration-150 active:scale-[0.95] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] ${isDark
           ? "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white active:bg-white/15"
           : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 shadow-xs active:bg-zinc-200"
@@ -518,3 +453,132 @@ function LinkBadge({ icon, text, href, isDark }) {
     </a>
   );
 }
+
+const SmallProjectCard = memo(function SmallProjectCard({ project, isDark }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <motion.div
+      layout
+      variants={fadeUpVariant}
+      className={`group relative flex flex-col rounded-2xl overflow-hidden transition-colors duration-200 ${
+        isDark
+          ? "bg-[var(--color-surface)] border border-[var(--color-surface-border)]"
+          : "bg-white border border-zinc-200 shadow-xs"
+      }`}
+    >
+      {/* THUMBNAIL / VISUAL (CLEAN & MINIMAL INITIAL STATE) */}
+      <button
+        type="button"
+        onClick={() => setIsExpanded((prev) => !prev)}
+        aria-expanded={isExpanded}
+        aria-label={isExpanded ? `Hide details for ${project.title}` : `Show details for ${project.title}`}
+        className="group/image relative block w-full overflow-hidden text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] cursor-pointer"
+      >
+        <div
+          className={`relative w-full aspect-[16/9] overflow-hidden shrink-0 ${
+            isDark ? "bg-black/40" : "bg-zinc-100"
+          }`}
+        >
+          <img
+            src={project.thumbnail || project.image || "/placeholder.jpg"}
+            alt={
+              project.title
+                ? `${project.title} - Full-stack project preview by Siddharth Nirmale`
+                : "Portfolio project preview by Siddharth Nirmale"
+            }
+            width={720}
+            height={405}
+            loading="lazy"
+            decoding="async"
+            className="relative w-full h-full object-cover z-10 transition-transform duration-300 ease-out group-hover/image:scale-[1.025]"
+          />
+
+          {/* Interactive affordance (Transitions.dev style) */}
+          <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/65 backdrop-blur-sm text-white text-[11px] font-medium transition-all duration-200 group-hover/image:bg-black/85 group-hover/image:scale-105">
+            <span>{isExpanded ? "Close" : "Details"}</span>
+            <FiChevronDown
+              size={12}
+              className={`transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+            />
+          </div>
+        </div>
+      </button>
+
+      {/* FULL PROJECT DETAILS (REVEALED ON INTERACTION) */}
+      <AnimatePresence initial={false}>
+        {isExpanded && (
+          <motion.div
+            key="details"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{
+              height: "auto",
+              opacity: 1,
+              transition: {
+                height: { duration: 0.35, ease: [0.16, 1, 0.3, 1] },
+                opacity: { duration: 0.22, delay: 0.06, ease: [0.16, 1, 0.3, 1] },
+              },
+            }}
+            exit={{
+              height: 0,
+              opacity: 0,
+              transition: {
+                height: { duration: 0.24, ease: [0.16, 1, 0.3, 1] },
+                opacity: { duration: 0.14, ease: "easeOut" },
+              },
+            }}
+            className="overflow-hidden"
+          >
+            <div className={`p-5 sm:p-6 flex-1 flex flex-col border-t ${isDark ? "border-white/5" : "border-zinc-200"}`}>
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-4">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className={`text-[16px] font-heading font-semibold tracking-tight flex items-center gap-2 ${isDark ? "text-white" : "text-zinc-900"}`}>
+                    {project.title}
+                    <FiArrowUpRight className="opacity-60 text-zinc-400" size={16} />
+                  </h3>
+                  {(project.badge || project.type) && (
+                    <span className={`text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${isDark ? "bg-white/5 text-zinc-300 border-white/10" : "bg-zinc-100 text-zinc-700 border-zinc-200"}`}>
+                      {project.badge || project.type}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  {project.live && (
+                    <LinkBadge icon={<FiExternalLink size={12} />} text="Live" href={project.live} isDark={isDark} />
+                  )}
+                  {project.github && (
+                    <LinkBadge icon={<FaGithub size={12} />} text="Repo" href={project.github} isDark={isDark} />
+                  )}
+                </div>
+              </div>
+
+              <ul className={`text-[13px] leading-relaxed mb-6 flex-1 list-disc pl-4 space-y-1.5 ${isDark ? "text-zinc-400 marker:text-zinc-600" : "text-zinc-600 marker:text-zinc-400"}`}>
+                {project.bullets.map((bullet, i) => (
+                  <li key={i}>
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-auto">
+                <div className="flex flex-wrap gap-1.5">
+                  {project.tech.split(" • ").map((tech) => (
+                    <span
+                      key={tech}
+                      className={`text-[11px] font-medium px-2 py-0.5 border rounded-md ${isDark
+                          ? "bg-white/5 border-white/5 text-zinc-400"
+                          : "bg-zinc-100 border-zinc-200 text-zinc-600"
+                        }`}
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+});
