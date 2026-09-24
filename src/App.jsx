@@ -26,18 +26,7 @@ export default function App() {
   // Abstracted logic into custom hooks for clean architecture
   const isMobile = useIsMobile(768);
   const { menu, handleContextMenu, closeMenu } = useContextMenu(isMobile);
-  const {
-    isOnline,
-    isSimulatedOffline,
-    isChecking,
-    lastChecked,
-    isDismissed,
-    reconnectedToast,
-    checkConnection,
-    toggleSimulation,
-    dismissOverlay,
-    reopenOverlay,
-  } = useNetworkStatus();
+  const { isOnline, isChecking, retry } = useNetworkStatus();
 
   // Passed centralized config to the windows manager
   const {
@@ -107,15 +96,8 @@ export default function App() {
       {/* Offline Page with Lottie Animation */}
       <OfflinePage
         isOnline={isOnline}
-        isSimulatedOffline={isSimulatedOffline}
         isChecking={isChecking}
-        lastChecked={lastChecked}
-        isDismissed={isDismissed}
-        reconnectedToast={reconnectedToast}
-        onCheckConnection={checkConnection}
-        onToggleSimulation={toggleSimulation}
-        onDismiss={dismissOverlay}
-        onReopen={reopenOverlay}
+        onRetry={retry}
       />
     </main>
   );
