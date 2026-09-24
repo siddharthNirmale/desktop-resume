@@ -11,6 +11,7 @@ import {
   FiClock,
   FiCpu,
   FiArrowUpRight,
+  FiX,
 } from "react-icons/fi";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
@@ -88,6 +89,7 @@ const LiveClock = ({ isDark }) => {
 };
 
 export default function TerminalPortfolio() {
+  const [showNotice, setShowNotice] = useState(true);
   const [visibleMonths, setVisibleMonths] = useState(12);
 
   const [isLight, setIsLight] = useState(() => {
@@ -166,6 +168,27 @@ export default function TerminalPortfolio() {
 
   return (
     <div className="h-screen w-full bg-[var(--color-desktop)] text-[var(--color-text)] font-primary overflow-y-auto custom-scrollbar selection:bg-[var(--color-accent)] selection:text-white transition-colors duration-200">
+      {/* Notice bar for smaller display sizes */}
+      {showNotice && (
+        <aside
+          role="status"
+          aria-label="Display recommendation notice"
+          className="sticky top-0 z-50 w-full bg-[#30D158] text-black px-4 py-2 sm:py-2.5 flex items-center justify-between gap-3 text-xs sm:text-sm font-medium border-b border-black/15 rounded-none select-text"
+        >
+          <p className="flex-1 text-center sm:text-left leading-snug">
+            For the best experience, please use a larger display. This site is designed for bigger screens.
+          </p>
+          <button
+            type="button"
+            onClick={() => setShowNotice(false)}
+            aria-label="Close notification"
+            className="p-1 -mr-1 hover:bg-black/10 active:bg-black/20 text-black transition-colors rounded-none cursor-pointer flex items-center justify-center shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black"
+          >
+            <FiX size={16} aria-hidden="true" />
+          </button>
+        </aside>
+      )}
+
       <div className="max-w-3xl mx-auto px-6 py-12 sm:py-20 space-y-16 sm:space-y-24">
         {/* --- Profile Header --- */}
         <div className="flex flex-col sm:flex-row gap-6 sm:gap-10 items-start">
