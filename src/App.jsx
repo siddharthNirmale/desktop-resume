@@ -5,12 +5,14 @@ import { AnimatePresence } from "framer-motion";
 import useWindows from "./hooks/useWindows";
 import useIsMobile from "./hooks/useIsMobile";
 import useContextMenu from "./hooks/useContextMenu";
+import useNetworkStatus from "./hooks/useNetworkStatus";
 
 // Components
 import Preloader from "./components/Preloader";
 import DesktopDisplay from "./mode/DesktopDisplay";
 import SmallDisplay from "./mode/SmallDisplay";
 import CommandPalette from "./components/CommandPalette";
+import OfflinePage from "./components/OfflinePage";
 
 // Config (Centralized outside the render cycle)
 import { initialWindowsConfig } from "./config/windowsConfig";
@@ -24,6 +26,18 @@ export default function App() {
   // Abstracted logic into custom hooks for clean architecture
   const isMobile = useIsMobile(768);
   const { menu, handleContextMenu, closeMenu } = useContextMenu(isMobile);
+  const {
+    isOnline,
+    isSimulatedOffline,
+    isChecking,
+    lastChecked,
+    isDismissed,
+    reconnectedToast,
+    checkConnection,
+    toggleSimulation,
+    dismissOverlay,
+    reopenOverlay,
+  } = useNetworkStatus();
 
   // Passed centralized config to the windows manager
   const {
@@ -88,6 +102,20 @@ export default function App() {
         restoreAll={restoreAll}
         resetLayout={resetLayout}
         bringToFront={bringToFront}
+      />
+
+      {/* Offline Page with Lottie Animation */}
+      <OfflinePage
+        isOnline={isOnline}
+        isSimulatedOffline={isSimulatedOffline}
+        isChecking={isChecking}
+        lastChecked={lastChecked}
+        isDismissed={isDismissed}
+        reconnectedToast={reconnectedToast}
+        onCheckConnection={checkConnection}
+        onToggleSimulation={toggleSimulation}
+        onDismiss={dismissOverlay}
+        onReopen={reopenOverlay}
       />
     </main>
   );
