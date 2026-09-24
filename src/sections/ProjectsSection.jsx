@@ -10,6 +10,7 @@ import {
   FiChevronDown,
   FiCheck,
   FiCopy,
+  FiMaximize2,
 } from "react-icons/fi";
 import { useEffect, useMemo, useState, useCallback, memo } from "react";
 import projects from "../data/project";
@@ -413,6 +414,28 @@ const ProjectCard = memo(function ProjectCard({ project, view, onPreview }) {
             <FallbackImage title={project.title} tech={project.tech} />
           )}
 
+          {/* Quick Preview trigger overlay for Desktop */}
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={(e) => {
+              e.stopPropagation();
+              onPreview();
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.stopPropagation();
+                e.preventDefault();
+                onPreview();
+              }
+            }}
+            aria-label={`Open full preview for ${project.title}`}
+            title="Full preview"
+            className="absolute top-2.5 right-2.5 z-10 hidden sm:flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-md opacity-0 group-hover/image:opacity-100 hover:bg-black/85 hover:scale-105 active:scale-95 transition-all duration-150 cursor-pointer"
+          >
+            <FiMaximize2 size={12} />
+          </div>
+
           {/* Interactive micro-indicator (Transitions.dev style) */}
           <div className="absolute bottom-2.5 right-2.5 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-sm text-white text-[11px] font-medium transition-all duration-200 group-hover/image:bg-black/80 group-hover/image:scale-105">
             <span>{isExpanded ? "Close" : "Details"}</span>
@@ -550,6 +573,14 @@ function ProjectPreview({
   const [imageError, setImageError] = useState(false);
   const [activeImgIndex, setActiveImgIndex] = useState(0);
 
+  // Sync active image index when switching projects
+  const [prevProjectId, setPrevProjectId] = useState(project.id || project.title);
+  if ((project.id || project.title) !== prevProjectId) {
+    setPrevProjectId(project.id || project.title);
+    setActiveImgIndex(0);
+    setImageError(false);
+  }
+
   const images = useMemo(() => {
     if (Array.isArray(project.images) && project.images.length > 0) {
       return project.images;
@@ -567,18 +598,23 @@ function ProjectPreview({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.16, ease: EASING.apple }}
+      transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-3 sm:p-6 backdrop-blur-md"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/65 p-3 sm:p-6 backdrop-blur-md"
     >
       <motion.div
-        initial={{ opacity: 0, scale: 0.97, y: 6 }}
+        initial={{ opacity: 0, scale: 0.96, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97, y: 6 }}
-        transition={springPreset}
-        className="relative flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-[14px] bg-[var(--color-surface)] shadow-2xl border border-[var(--color-surface-border)]"
+        transition={{
+          type: "spring",
+          stiffness: 420,
+          damping: 32,
+          mass: 0.55,
+        }}
+        className="relative flex max-h-[92vh] w-full max-w-3xl lg:max-w-4xl flex-col overflow-hidden rounded-[14px] bg-[var(--color-surface)] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.55)] border border-[var(--color-surface-border)]"
       >
         {/* MODAL CONTROLS */}
         <div className="absolute left-3 top-3 z-20 flex items-center gap-1.5">
@@ -586,46 +622,52 @@ function ProjectPreview({
             type="button"
             onClick={onPrevious}
             disabled={index === 0}
-            aria-label="Previous"
-            className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md hover:bg-black/70 disabled:opacity-30 transition-all active:scale-[0.94]"
+            aria-label="Previous project"
+            title="Previous project (←)"
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-md hover:bg-black/80 disabled:opacity-25 transition-all active:scale-[0.94] cursor-pointer"
           >
-            <FiChevronLeft size={13} />
+            <FiChevronLeft size={14} />
           </button>
           <button
             type="button"
             onClick={onNext}
             disabled={index === total - 1}
-            aria-label="Next"
-            className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md hover:bg-black/70 disabled:opacity-30 transition-all active:scale-[0.94]"
+            aria-label="Next project"
+            title="Next project (→)"
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-md hover:bg-black/80 disabled:opacity-25 transition-all active:scale-[0.94] cursor-pointer"
           >
-            <FiChevronRight size={13} />
+            <FiChevronRight size={14} />
           </button>
+          <span className="ml-1 text-[10px] font-mono font-medium text-white/80 bg-black/45 backdrop-blur-md px-2 py-0.5 rounded-full select-none">
+            {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+          </span>
         </div>
 
         <button
           type="button"
           onClick={onClose}
-          aria-label="Close"
-          className="absolute right-3 top-3 z-20 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md hover:bg-black/70 transition-all active:scale-[0.94]"
+          aria-label="Close preview"
+          title="Close (Esc)"
+          className="absolute right-3 top-3 z-20 flex h-7 w-7 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-md hover:bg-black/80 hover:scale-105 active:scale-[0.94] transition-all cursor-pointer"
         >
-          <FiX size={13} />
+          <FiX size={14} />
         </button>
 
-        {/* IMAGE PREVIEW WITH SMOOTH MORPH */}
-        <div className="relative shrink-0 overflow-hidden bg-[var(--color-surface-dark)] aspect-[16/9]">
-          <AnimatePresence mode="wait">
+        {/* IMAGE PREVIEW WITH SMOOTH TRANSITIONS */}
+        <div className="group/carousel relative shrink-0 overflow-hidden bg-[var(--color-surface-dark)] aspect-[16/9] max-h-[50vh] flex items-center justify-center">
+          <AnimatePresence mode="popLayout" initial={false}>
             {currentImage && !imageError ? (
               <motion.img
-                key={currentImage}
+                key={`${project.id || project.title}-${activeImgIndex}`}
                 src={currentImage}
                 alt={project.title}
                 width={1600}
                 height={900}
                 decoding="async"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15, ease: EASING.apple }}
+                initial={{ opacity: 0, scale: 1.015 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.985 }}
+                transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
                 onError={() => setImageError(true)}
                 className="h-full w-full object-cover"
               />
@@ -634,9 +676,35 @@ function ProjectPreview({
             )}
           </AnimatePresence>
 
+          {/* Desktop Screenshot Hover Chevrons */}
+          {images.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={() =>
+                  setActiveImgIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1))
+                }
+                aria-label="Previous screenshot"
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/45 text-white backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 hover:bg-black/75 hover:scale-105 active:scale-95 transition-all duration-150 cursor-pointer"
+              >
+                <FiChevronLeft size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setActiveImgIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0))
+                }
+                aria-label="Next screenshot"
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/45 text-white backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 hover:bg-black/75 hover:scale-105 active:scale-95 transition-all duration-150 cursor-pointer"
+              >
+                <FiChevronRight size={16} />
+              </button>
+            </>
+          )}
+
           {/* Screenshot dots with morphing pill */}
           {images.length > 1 && (
-            <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 rounded-full bg-black/60 px-2 py-1 backdrop-blur-md">
+            <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1 backdrop-blur-md">
               {images.map((_, i) => (
                 <button
                   key={i}
@@ -648,7 +716,7 @@ function ProjectPreview({
                   {activeImgIndex === i ? (
                     <motion.div
                       layoutId="preview-active-dot"
-                      transition={springPreset}
+                      transition={{ type: "spring", stiffness: 450, damping: 30 }}
                       className="h-1.5 w-4 rounded-full bg-[var(--color-accent)]"
                     />
                   ) : (
@@ -661,13 +729,13 @@ function ProjectPreview({
         </div>
 
         {/* DETAILS WITH SEAMLESS CONTENT MORPH */}
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={project.id || project.title}
-            initial={{ opacity: 0, y: 4 }}
+            initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.14, ease: EASING.apple }}
+            transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
             className="custom-scrollbar overflow-y-auto p-5 sm:p-6 space-y-4"
           >
             <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
@@ -745,7 +813,7 @@ function ProjectPreview({
                   <button
                     type="button"
                     onClick={onCopy}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[7px] text-[11px] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] transition-colors"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[7px] text-[11px] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] transition-colors cursor-pointer"
                   >
                     {copied ? <FiCheck size={12} className="text-emerald-400" /> : <FiCopy size={12} />}
                     <span>{copied ? "Copied" : "Copy link"}</span>
