@@ -365,13 +365,17 @@ export default function Window({
 
                 transition-all
                 duration-150
+                ease-out
 
                 hover:bg-[var(--color-surface-hover)]
                 hover:text-[var(--color-text-primary)]
 
-                active:scale-[0.97]
+                active:scale-[0.92]
+                active:bg-[var(--color-surface-active)]
 
                 focus:outline-none
+                focus-visible:ring-1
+                focus-visible:ring-[var(--color-accent)]
               "
             >
               <Minus
@@ -404,13 +408,17 @@ export default function Window({
 
                 transition-all
                 duration-150
+                ease-out
 
                 hover:bg-[var(--color-surface-hover)]
                 hover:text-[var(--color-text-primary)]
 
-                active:scale-[0.97]
+                active:scale-[0.92]
+                active:bg-[var(--color-surface-active)]
 
                 focus:outline-none
+                focus-visible:ring-1
+                focus-visible:ring-[var(--color-accent)]
               "
             >
               <MorphIcon
@@ -445,13 +453,18 @@ export default function Window({
 
                 transition-all
                 duration-150
+                ease-out
 
                 hover:bg-red-500/15
-                hover:text-red-400
+                hover:text-red-500
+                dark:hover:text-red-400
 
-                active:scale-[0.97]
+                active:scale-[0.92]
+                active:bg-red-500/25
 
                 focus:outline-none
+                focus-visible:ring-1
+                focus-visible:ring-red-400
               "
             >
               <X

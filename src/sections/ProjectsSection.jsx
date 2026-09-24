@@ -379,7 +379,7 @@ const ProjectCard = memo(function ProjectCard({ project, view, onPreview }) {
       animate="visible"
       exit="exit"
       transition={springPreset}
-      className={`group relative overflow-hidden rounded-[12px] bg-[var(--color-surface-hover)]/25 hover:bg-[var(--color-surface-hover)]/45 transition-[background-color,transform] duration-200 ease-out hover:-translate-y-0.5 ${
+      className={`group relative overflow-hidden rounded-[12px] bg-[var(--color-surface-hover)]/25 hover:bg-[var(--color-surface-hover)]/45 border border-[var(--color-surface-border)]/40 hover:border-[var(--color-surface-border-strong)] transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-xs ${
         isList ? "sm:flex" : "flex flex-col"
       }`}
     >
@@ -472,7 +472,7 @@ const ProjectCard = memo(function ProjectCard({ project, view, onPreview }) {
                 href={sanitizeUrl(project.github)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group/act inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors"
+                className="group/act inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text)] active:scale-[0.96] transition-all duration-150"
               >
                 <FiGithub size={12} />
                 <span>Code</span>
@@ -484,7 +484,7 @@ const ProjectCard = memo(function ProjectCard({ project, view, onPreview }) {
                 href={sanitizeUrl(project.live)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group/act inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--color-accent)] hover:underline transition-colors"
+                className="group/act inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--color-accent)] hover:underline active:scale-[0.96] transition-all duration-150"
               >
                 <span>Live</span>
                 <FiArrowUpRight
@@ -498,7 +498,7 @@ const ProjectCard = memo(function ProjectCard({ project, view, onPreview }) {
           <button
             type="button"
             onClick={onPreview}
-            className="text-[11px] font-medium text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] transition-colors"
+            className="text-[11px] font-medium text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] active:scale-[0.96] transition-all duration-150 cursor-pointer"
           >
             Details
           </button>

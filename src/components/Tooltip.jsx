@@ -59,10 +59,10 @@ export const TooltipBubble = memo(function TooltipBubble({
             z-[999999]
             whitespace-nowrap
             rounded-[8px]
-            bg-[#222225]/95
-            text-[#f5f5f7]
+            bg-[var(--color-surface-elevated)]
+            text-[var(--color-text)]
             border
-            border-white/[0.12]
+            border-[var(--color-surface-border-strong)]
             px-2.5
             py-1
             text-[11px]
@@ -70,7 +70,7 @@ export const TooltipBubble = memo(function TooltipBubble({
             leading-tight
             tracking-[-0.01em]
             backdrop-blur-2xl
-            shadow-[0_6px_20px_rgba(0,0,0,0.4),0_2px_6px_rgba(0,0,0,0.25)]
+            shadow-[var(--shadow-popover)]
             ${positionClasses}
             ${alignClasses}
             ${className}
@@ -79,7 +79,7 @@ export const TooltipBubble = memo(function TooltipBubble({
           <div className="relative flex items-center gap-1.5 z-10">
             <span>{content}</span>
             {shortcut && (
-              <span className="rounded-[3px] bg-white/[0.12] px-1 py-[1px] font-mono text-[9px] text-zinc-300">
+              <span className="rounded-[3px] bg-[var(--color-surface-hover)] border border-[var(--color-surface-border)] px-1 py-[1px] font-mono text-[9px] text-[var(--color-text-secondary)]">
                 {shortcut}
               </span>
             )}
@@ -88,18 +88,18 @@ export const TooltipBubble = memo(function TooltipBubble({
           {/* Integrated Pointer Beak */}
           {isTop && (
             <svg
-              className="absolute -top-[5px] left-1/2 -translate-x-1/2 w-[11px] h-[5px] text-[#222225]/95 overflow-visible"
+              className="absolute -top-[5px] left-1/2 -translate-x-1/2 w-[11px] h-[5px] overflow-visible"
               viewBox="0 0 11 5"
               fill="none"
               aria-hidden="true"
             >
               <path
                 d="M0 5C2.5 5 3.8 3.5 5.5 0.5C7.2 3.5 8.5 5 11 5Z"
-                fill="currentColor"
+                fill="var(--color-surface-elevated)"
               />
               <path
                 d="M0 5C2.5 5 3.8 3.5 5.5 0.5C7.2 3.5 8.5 5 11 5"
-                stroke="rgba(255, 255, 255, 0.12)"
+                stroke="var(--color-surface-border-strong)"
                 strokeWidth="0.8"
                 strokeLinecap="round"
               />
@@ -108,18 +108,18 @@ export const TooltipBubble = memo(function TooltipBubble({
 
           {isBottom && (
             <svg
-              className="absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-[11px] h-[5px] text-[#222225]/95 overflow-visible"
+              className="absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-[11px] h-[5px] overflow-visible"
               viewBox="0 0 11 5"
               fill="none"
               aria-hidden="true"
             >
               <path
                 d="M0 0C2.5 0 3.8 1.5 5.5 4.5C7.2 1.5 8.5 0 11 0Z"
-                fill="currentColor"
+                fill="var(--color-surface-elevated)"
               />
               <path
                 d="M0 0C2.5 0 3.8 1.5 5.5 4.5C7.2 1.5 8.5 0 11 0"
-                stroke="rgba(255, 255, 255, 0.12)"
+                stroke="var(--color-surface-border-strong)"
                 strokeWidth="0.8"
                 strokeLinecap="round"
               />

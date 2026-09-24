@@ -181,7 +181,7 @@ export default function TerminalPortfolio() {
               onClick={toggleTheme}
               title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
               aria-label={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              className={`absolute -bottom-1.5 -right-1.5 w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors cursor-pointer ${isDark
+              className={`absolute -bottom-1.5 -right-1.5 w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-150 cursor-pointer hover:scale-105 active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] ${isDark
                   ? "bg-zinc-800 border-[var(--color-desktop)] text-zinc-200 hover:bg-zinc-700"
                   : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100 shadow-xs"
                 }`}
@@ -451,15 +451,15 @@ function SectionHeader({ title, isDark }) {
 
 function ActionButton({ icon, text, href, onClick, isButton, primary, isDark }) {
   const baseClasses =
-    "inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 text-[12px] font-medium rounded-lg transition-all duration-150 cursor-pointer border active:scale-[0.97]";
+    "inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 text-[12px] font-medium rounded-lg transition-all duration-150 cursor-pointer border active:scale-[0.96] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2";
 
   const styles = primary
     ? isDark
-      ? "bg-white text-black border-transparent hover:bg-zinc-200 shadow-xs"
-      : "bg-zinc-900 text-white border-transparent hover:bg-zinc-800 shadow-xs"
+      ? "bg-white text-black border-transparent hover:bg-zinc-200 shadow-xs active:brightness-95"
+      : "bg-zinc-900 text-white border-transparent hover:bg-zinc-800 shadow-xs active:brightness-95"
     : isDark
-      ? "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10 hover:text-white"
-      : "bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-100 hover:text-zinc-900 shadow-xs";
+      ? "bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10 hover:text-white active:bg-white/15"
+      : "bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-100 hover:text-zinc-900 shadow-xs active:bg-zinc-200";
 
   if (isButton) {
     return (
@@ -486,9 +486,9 @@ function LinkBadge({ icon, text, href, isDark }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 border rounded-lg text-[11px] font-medium transition-all duration-150 active:scale-[0.96] ${isDark
-          ? "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white"
-          : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 shadow-xs"
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 border rounded-lg text-[11px] font-medium transition-all duration-150 active:scale-[0.95] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] ${isDark
+          ? "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white active:bg-white/15"
+          : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 shadow-xs active:bg-zinc-200"
         }`}
     >
       {icon} {text}

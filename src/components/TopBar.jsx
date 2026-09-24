@@ -104,9 +104,9 @@ export default function TopBar({
           className="
             topbar-text text-[13px] font-semibold text-[var(--color-text)]
             tracking-[-0.015em] px-1.5 py-0.5 rounded-[4px]
-            hover:bg-[var(--color-surface-hover)] active:scale-[0.98]
+            hover:bg-[var(--color-surface-hover)] active:scale-[0.97]
             transition-all duration-150 ease-out
-            cursor-default focus:outline-none
+            cursor-default focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
           "
         >
           <span>Siddharth Nirmale</span>
@@ -122,9 +122,10 @@ export default function TopBar({
               className="
                 text-[13px] font-normal text-[var(--color-text-secondary)]
                 hover:text-[var(--color-text)] px-2 py-0.5 rounded-[4px]
-                hover:bg-[var(--color-surface-hover)] active:scale-[0.96]
+                hover:bg-[var(--color-surface-hover)] active:scale-[0.95]
+                active:bg-[var(--color-surface-active)]
                 transition-all duration-150 ease-out
-                cursor-default focus:outline-none
+                cursor-default focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
               "
             >
               {item.label}
@@ -141,8 +142,8 @@ export default function TopBar({
               hidden sm:flex items-center gap-1.5 ml-2.5 h-[20px] px-2 rounded-[5px]
               bg-[var(--color-surface-hover)]/40 hover:bg-[var(--color-surface-hover)]/80
               text-[var(--color-text-tertiary)] hover:text-[var(--color-text)]
-              active:scale-[0.97] transition-all duration-150 ease-out
-              cursor-default text-[11px] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]
+              active:scale-[0.96] transition-all duration-150 ease-out
+              cursor-default text-[11px] font-medium focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
             "
             aria-label="Search commands"
           >
@@ -165,8 +166,8 @@ export default function TopBar({
               hidden lg:inline-flex items-center px-2 py-0.5 rounded-[4px]
               text-[11px] font-normal text-[var(--color-text-tertiary)]
               hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]
-              active:scale-[0.97] transition-all duration-150 ease-out
-              cursor-default focus:outline-none
+              active:scale-[0.96] transition-all duration-150 ease-out
+              cursor-default focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
             "
             aria-label="Available for Opportunities"
           >
@@ -183,8 +184,8 @@ export default function TopBar({
             className="
               group flex h-[22px] w-[24px] items-center justify-center rounded-[4px]
               hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]
-              active:scale-[0.95] transition-all duration-150 ease-out
-              cursor-default
+              active:scale-[0.92] transition-all duration-150 ease-out
+              cursor-default focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
             "
             aria-label="GitHub Profile"
           >
@@ -201,8 +202,8 @@ export default function TopBar({
             className="
               group flex h-[22px] w-[24px] items-center justify-center rounded-[4px]
               hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]
-              active:scale-[0.95] transition-all duration-150 ease-out
-              cursor-default
+              active:scale-[0.92] transition-all duration-150 ease-out
+              cursor-default focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
             "
             aria-label="LinkedIn Profile"
           >
@@ -217,8 +218,8 @@ export default function TopBar({
             className="
               group flex h-[22px] w-[24px] items-center justify-center rounded-[4px]
               hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]
-              active:scale-[0.95] transition-all duration-150 ease-out
-              cursor-default
+              active:scale-[0.92] transition-all duration-150 ease-out
+              cursor-default focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
             "
             aria-label="Send Email"
           >
@@ -234,8 +235,8 @@ export default function TopBar({
             aria-label="Control Center"
             className={`
               flex h-[22px] px-1.5 items-center justify-center rounded-[4px]
-              active:scale-[0.95] transition-all duration-150 ease-out
-              cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]
+              active:scale-[0.92] transition-all duration-150 ease-out
+              cursor-default focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
               ${
                 isControlCenterOpen
                   ? "bg-[var(--color-accent)] text-white shadow-xs"
@@ -257,9 +258,9 @@ export default function TopBar({
             onClick={() => setIsCalendarOpen((prev) => !prev)}
             className={`
               topbar-text text-[12px] font-medium tabular-nums tracking-[-0.01em]
-              px-1.5 py-0.5 rounded-[4px] active:scale-[0.97]
+              px-1.5 py-0.5 rounded-[4px] active:scale-[0.96]
               transition-all duration-150 ease-out cursor-default
-              whitespace-nowrap focus:outline-none
+              whitespace-nowrap focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
               ${
                 showCalendar
                   ? "bg-[var(--color-surface-hover)] text-[var(--color-text)] font-semibold shadow-xs"

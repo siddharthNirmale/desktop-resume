@@ -134,15 +134,15 @@ export default function CommandPalette({
                         key={cmd.id}
                         onClick={() => handleExecute(cmd)}
                         onMouseEnter={() => setSelectedIndex(i)}
-                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors text-left outline-none ${
+                        className={`group w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 ease-out text-left outline-none cursor-default active:scale-[0.99] ${
                           isSelected
-                            ? "bg-[var(--color-accent)] text-white"
+                            ? "bg-[var(--color-accent)] text-white shadow-xs"
                             : "text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]"
                         }`}
                         role="option"
                         aria-selected={isSelected}
                       >
-                        <div className={`p-1.5 rounded-lg ${isSelected ? "bg-white/20" : "bg-[var(--color-surface-hover)]"}`}>
+                        <div className={`p-1.5 rounded-lg transition-transform duration-150 group-hover:scale-105 ${isSelected ? "bg-white/20" : "bg-[var(--color-surface-hover)]"}`}>
                           <Icon className={`w-4 h-4 ${isSelected ? "text-white" : "text-[var(--color-text-secondary)]"}`} />
                         </div>
                         <div className="flex flex-col flex-1 min-w-0">
@@ -153,7 +153,7 @@ export default function CommandPalette({
                             {cmd.description}
                           </span>
                         </div>
-                        <div className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                        <div className={`text-[10px] font-medium px-2 py-0.5 rounded-full transition-colors ${
                           isSelected 
                             ? "bg-white/20 text-white" 
                             : "bg-[var(--color-surface-border)] text-[var(--color-text-tertiary)]"

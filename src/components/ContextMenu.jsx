@@ -40,7 +40,7 @@ export default function ContextMenu({
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.12, ease: [0.16, 1, 0.3, 1] }}
-      style={{ top: posY, left: posX }}
+      style={{ top: posY, left: posX, transformOrigin: "top left" }}
       onContextMenu={(e) => e.preventDefault()}
       className="
         fixed z-[999999] w-[210px] py-1
@@ -66,13 +66,15 @@ export default function ContextMenu({
               w-full flex items-center gap-2 px-2 py-1.5 rounded-md
               text-[12px] font-medium text-[var(--color-text)]
               hover:bg-[var(--color-accent)] hover:text-white
-              transition-colors cursor-default group focus:outline-none
+              active:scale-[0.985] active:brightness-95
+              transition-all duration-100 ease-out cursor-default group
+              focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
             "
           >
             <item.icon
               size={13}
               strokeWidth={2}
-              className="text-[var(--color-text-secondary)] group-hover:text-white transition-colors shrink-0"
+              className="text-[var(--color-text-secondary)] group-hover:text-white group-hover:scale-105 transition-all duration-150 shrink-0"
             />
             <span>{item.label}</span>
           </button>
@@ -91,10 +93,12 @@ export default function ContextMenu({
             w-full flex items-center gap-2 px-2 py-1.5 rounded-md
             text-[12px] font-medium text-[var(--color-text)]
             hover:bg-[var(--color-accent)] hover:text-white
-            transition-colors cursor-default group focus:outline-none
+            active:scale-[0.985] active:brightness-95
+            transition-all duration-100 ease-out cursor-default group
+            focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
           "
         >
-          <FiSliders size={13} className="text-[var(--color-text-secondary)] group-hover:text-white transition-colors shrink-0" />
+          <FiSliders size={13} className="text-[var(--color-text-secondary)] group-hover:text-white group-hover:scale-105 transition-all duration-150 shrink-0" />
           <span>Control Center & Widgets</span>
         </button>
 
@@ -113,10 +117,12 @@ export default function ContextMenu({
             w-full flex items-center gap-2 px-2 py-1.5 rounded-md
             text-[12px] font-medium text-[var(--color-text)]
             hover:bg-[var(--color-accent)] hover:text-white
-            transition-colors cursor-default group focus:outline-none
+            active:scale-[0.985] active:brightness-95
+            transition-all duration-100 ease-out cursor-default group
+            focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
           "
         >
-          <FiEye size={13} className="text-[var(--color-text-secondary)] group-hover:text-white transition-colors shrink-0" />
+          <FiEye size={13} className="text-[var(--color-text-secondary)] group-hover:text-white group-hover:scale-105 transition-all duration-150 shrink-0" />
           <span>{allWindowsMinimized ? "Show Windows" : "Show Desktop"}</span>
         </button>
 
@@ -131,10 +137,12 @@ export default function ContextMenu({
             w-full flex items-center gap-2 px-2 py-1.5 rounded-md
             text-[12px] font-medium text-[var(--color-text-secondary)]
             hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)]
-            transition-colors cursor-default group focus:outline-none
+            active:scale-[0.985] active:bg-[var(--color-surface-active)]
+            transition-all duration-100 ease-out cursor-default group
+            focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
           "
         >
-          <FiRotateCcw size={13} className="text-[var(--color-text-tertiary)] group-hover:text-[var(--color-text)] transition-colors shrink-0" />
+          <FiRotateCcw size={13} className="text-[var(--color-text-tertiary)] group-hover:text-[var(--color-text)] group-hover:scale-105 transition-all duration-150 shrink-0" />
           <span>Reset Layout</span>
         </button>
       </div>

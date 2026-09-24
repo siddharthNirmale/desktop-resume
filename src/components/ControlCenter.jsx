@@ -59,23 +59,24 @@ const QuickToggleCard = memo(function QuickToggleCard({
       type="button"
       onClick={onClick}
       whileHover={{ y: -1 }}
-      whileTap={{ scale: 0.96 }}
+      whileTap={{ scale: 0.95 }}
       transition={{ type: "spring", stiffness: 450, damping: 28 }}
       className={`
         group relative flex flex-col items-center justify-center gap-1
         py-2 px-1.5 rounded-xl cursor-default text-center select-none outline-none
-        transition-colors duration-150
-        focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]
+        border border-transparent
+        transition-all duration-150 ease-out
+        focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
         ${
           isActive
-            ? "bg-[var(--color-accent)]/[0.12] text-[var(--color-text)]"
-            : "bg-[var(--color-surface-hover)]/30 hover:bg-[var(--color-surface-hover)]/65 text-[var(--color-text-secondary)]"
+            ? "bg-[var(--color-accent)]/[0.12] text-[var(--color-text)] border-[var(--color-accent)]/20"
+            : "bg-[var(--color-surface-hover)]/30 hover:bg-[var(--color-surface-hover)]/65 hover:border-[var(--color-surface-border)] text-[var(--color-text-secondary)]"
         }
       `}
     >
       <div
         className={`
-          flex h-6 w-6 items-center justify-center rounded-lg transition-colors
+          flex h-6 w-6 items-center justify-center rounded-lg transition-transform duration-150 group-hover:scale-105
           ${
             isActive
               ? "text-[var(--color-accent)]"
@@ -113,22 +114,23 @@ const WidgetTile = memo(function WidgetTile({
       type="button"
       onClick={() => onToggle(item.id)}
       whileHover={{ y: -1 }}
-      whileTap={{ scale: 0.97 }}
+      whileTap={{ scale: 0.96 }}
       transition={{ type: "spring", stiffness: 480, damping: 28 }}
       className={`
         flex items-center gap-2 p-2 rounded-xl text-left select-none outline-none
-        transition-colors duration-150 cursor-default group min-w-0
-        focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]
+        border border-transparent
+        transition-all duration-150 ease-out cursor-default group min-w-0
+        focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
         ${
           isOpen
-            ? "bg-[var(--color-accent)]/[0.08] hover:bg-[var(--color-accent)]/[0.12] text-[var(--color-text)]"
-            : "bg-[var(--color-surface-hover)]/25 hover:bg-[var(--color-surface-hover)]/60 text-[var(--color-text-secondary)]"
+            ? "bg-[var(--color-accent)]/[0.08] hover:bg-[var(--color-accent)]/[0.12] hover:border-[var(--color-accent)]/20 text-[var(--color-text)]"
+            : "bg-[var(--color-surface-hover)]/25 hover:bg-[var(--color-surface-hover)]/60 hover:border-[var(--color-surface-border)] text-[var(--color-text-secondary)]"
         }
       `}
     >
       <div
         className={`
-          flex h-6 w-6 shrink-0 items-center justify-center rounded-lg transition-colors
+          flex h-6 w-6 shrink-0 items-center justify-center rounded-lg transition-all duration-150 group-hover:scale-105
           ${
             isOpen
               ? "bg-[var(--color-accent)] text-white shadow-xs"
@@ -378,7 +380,7 @@ export default function ControlCenter({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex h-6 w-6 items-center justify-center rounded-md text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]"
+                className="flex h-6 w-6 items-center justify-center rounded-md text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] active:scale-[0.92] transition-all duration-150 ease-out focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
                 title="Close"
               >
                 <FiX size={13} strokeWidth={2} />
@@ -533,12 +535,12 @@ export default function ControlCenter({
                 <motion.button
                   type="button"
                   onClick={handleDownloadResume}
-                  whileTap={{ scale: 0.97 }}
+                  whileTap={{ scale: 0.96 }}
                   className="
                     flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg
                     bg-[var(--color-accent)] text-white text-[11px] font-semibold
-                    hover:brightness-105 transition-all cursor-default select-none outline-none
-                    focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]
+                    hover:brightness-105 active:brightness-95 transition-all duration-150 cursor-default select-none outline-none
+                    focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
                   "
                 >
                   <FiDownload size={12} strokeWidth={2.2} />
@@ -549,13 +551,14 @@ export default function ControlCenter({
                   type="button"
                   onClick={handleCopyEmail}
                   title="Copy email address"
-                  whileTap={{ scale: 0.97 }}
+                  whileTap={{ scale: 0.96 }}
                   className="
                     flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg
                     bg-[var(--color-surface-hover)]/30 hover:bg-[var(--color-surface-hover)]/70
-                    text-[var(--color-text)] text-[11px] font-medium transition-all
+                    border border-transparent hover:border-[var(--color-surface-border)]
+                    text-[var(--color-text)] text-[11px] font-medium transition-all duration-150
                     cursor-default select-none outline-none
-                    focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]
+                    focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
                   "
                 >
                   <MorphIcon
@@ -574,13 +577,14 @@ export default function ControlCenter({
                   type="button"
                   onClick={handleOpenTerminal}
                   title="Open Terminal shell"
-                  whileTap={{ scale: 0.97 }}
+                  whileTap={{ scale: 0.94 }}
                   className="
                     flex items-center justify-center p-1.5 rounded-lg
                     bg-[var(--color-surface-hover)]/30 hover:bg-[var(--color-surface-hover)]/70
+                    border border-transparent hover:border-[var(--color-surface-border)]
                     text-[var(--color-text-secondary)] hover:text-[var(--color-text)]
-                    transition-all cursor-default select-none outline-none
-                    focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]
+                    transition-all duration-150 cursor-default select-none outline-none
+                    focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
                   "
                 >
                   <FiTerminal size={13} />

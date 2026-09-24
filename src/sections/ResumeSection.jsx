@@ -137,12 +137,18 @@ export default function ResumeSection() {
 
             transition-all
             duration-150
+            ease-out
 
-            hover:brightness-110
-            active:scale-[0.98]
+            hover:brightness-105
+            active:scale-[0.95]
             active:brightness-95
 
             focus:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-[var(--color-accent)]
+            focus-visible:ring-offset-2
+            focus-visible:ring-offset-[var(--color-surface)]
+            cursor-pointer
           "
         >
           <FiDownload size={13} />
@@ -709,10 +715,13 @@ function Info({ icon, text, href }) {
 
         text-[var(--color-text-secondary)]
 
-        transition-colors
+        transition-all
         duration-150
 
         hover:text-[var(--color-text)]
+        active:scale-[0.98]
+        outline-none
+        focus-visible:underline
       "
     >
       <span
@@ -802,6 +811,8 @@ function TechBadge({ label, icon }) {
         rounded-[6px]
 
         bg-[var(--color-surface-hover)]/40
+        border
+        border-[var(--color-surface-border)]/40
 
         px-2
         py-1
@@ -811,11 +822,13 @@ function TechBadge({ label, icon }) {
 
         text-[var(--color-text-secondary)]
 
-        transition-colors
+        transition-all
         duration-150
 
         hover:text-[var(--color-text)]
         hover:bg-[var(--color-surface-hover)]/80
+        hover:border-[var(--color-surface-border)]
+        cursor-default
       "
     >
       {icon && (

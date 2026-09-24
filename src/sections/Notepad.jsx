@@ -103,7 +103,7 @@ export default function Notepad() {
           </div>
           <button
             onClick={createNewNote}
-            className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[var(--color-accent)] text-white transition hover:brightness-105 active:scale-[0.98]"
+            className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[var(--color-accent)] text-white transition-all duration-150 hover:brightness-105 active:scale-[0.94] cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
           >
             <FiPlus size={15} />
           </button>
@@ -119,7 +119,7 @@ export default function Notepad() {
               className="min-w-0 flex-1 bg-transparent text-[11px] outline-none placeholder:text-[var(--color-text-tertiary)]"
             />
             {search && (
-              <button onClick={() => setSearch("")}><FiX size={12} /></button>
+              <button onClick={() => setSearch("")} className="text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] active:scale-[0.90] transition-transform p-0.5"><FiX size={12} /></button>
             )}
           </div>
         </div>
@@ -137,7 +137,7 @@ export default function Notepad() {
                   setActiveId(note.id);
                   if (window.innerWidth < 768) setSidebarOpen(false);
                 }}
-                className={`mb-1 flex w-full flex-col gap-1 rounded-[8px] p-2.5 text-left transition-all focus-visible:ring-1 focus-visible:ring-[var(--color-accent)] outline-none ${
+                className={`mb-1 flex w-full flex-col gap-1 rounded-[8px] p-2.5 text-left transition-all duration-150 active:scale-[0.985] cursor-pointer focus-visible:ring-1 focus-visible:ring-[var(--color-accent)] outline-none ${
                   note.id === activeId
                     ? "bg-[var(--color-surface-hover)] text-[var(--color-text)] shadow-xs"
                     : "hover:bg-[var(--color-surface-hover)]/40 text-[var(--color-text-secondary)]"
@@ -174,7 +174,7 @@ export default function Notepad() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setSidebarOpen(!sidebarOpen)}
-                  className="flex h-7 w-7 items-center justify-center rounded-[7px] text-[var(--color-text-tertiary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] transition-colors"
+                  className="flex h-7 w-7 items-center justify-center rounded-[7px] text-[var(--color-text-tertiary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] active:scale-[0.92] transition-all duration-150 cursor-pointer"
                 >
                   <FiMenu size={14} />
                 </button>
@@ -187,7 +187,7 @@ export default function Notepad() {
               </div>
               <button
                 onClick={() => setNoteToDelete(activeNote.id)}
-                className="flex h-7 w-7 items-center justify-center rounded-[7px] text-[var(--color-text-tertiary)] transition hover:bg-red-500/10 hover:text-red-400"
+                className="flex h-7 w-7 items-center justify-center rounded-[7px] text-[var(--color-text-tertiary)] hover:bg-red-500/15 hover:text-red-500 dark:hover:text-red-400 active:scale-[0.92] transition-all duration-150 cursor-pointer"
               >
                 <FiTrash2 size={13} />
               </button>
@@ -206,7 +206,7 @@ export default function Notepad() {
             <div className="text-[13px] font-medium text-[var(--color-text)]">No note selected</div>
             <button
               onClick={createNewNote}
-              className="mt-4 rounded-[7px] bg-[var(--color-accent)] px-3 py-2 text-[11px] font-medium text-white hover:brightness-105 active:scale-[0.98] transition-all"
+              className="mt-4 rounded-[7px] bg-[var(--color-accent)] px-3 py-2 text-[11px] font-medium text-white hover:brightness-105 active:scale-[0.96] transition-all duration-150 cursor-pointer"
             >
               Create note
             </button>
@@ -227,13 +227,13 @@ export default function Notepad() {
             <div className="flex gap-2">
               <button
                 onClick={() => setNoteToDelete(null)}
-                className="flex-1 rounded-[8px] bg-[var(--color-surface-hover)]/60 py-2 text-[11px] font-medium text-[var(--color-text-secondary)] transition hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] active:scale-[0.98]"
+                className="flex-1 rounded-[8px] bg-[var(--color-surface-hover)]/60 py-2 text-[11px] font-medium text-[var(--color-text-secondary)] transition-all duration-150 hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] active:scale-[0.96] cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={executeDelete}
-                className="flex-1 rounded-[8px] bg-red-500 py-2 text-[11px] font-medium text-white transition hover:bg-red-600 active:scale-[0.98]"
+                className="flex-1 rounded-[8px] bg-red-500 py-2 text-[11px] font-medium text-white transition-all duration-150 hover:bg-red-600 active:scale-[0.96] cursor-pointer"
               >
                 Delete
               </button>

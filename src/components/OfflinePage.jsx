@@ -14,10 +14,10 @@ export default function OfflinePage({
           animate={{ opacity: 1 }}
           exit={{
             opacity: 0,
-            scale: 1.015,
-            filter: "blur(6px)",
+            scale: 1.012,
+            filter: "blur(4px)",
             transition: {
-              duration: 3,
+              duration: 0.35,
               ease: [0.16, 1, 0.3, 1],
             },
           }}
@@ -34,7 +34,7 @@ export default function OfflinePage({
             initial={{ opacity: 0, y: 8, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{
-              duration: 0.5,
+              duration: 0.4,
               ease: [0.16, 1, 0.3, 1],
             }}
             className="flex flex-col items-center text-center px-6 max-w-sm"
@@ -62,11 +62,14 @@ export default function OfflinePage({
               className="
                 mt-6 h-9 px-5 rounded-[8px]
                 bg-[var(--color-surface-elevated)] hover:bg-[var(--color-surface-hover)]
+                hover:border-[var(--color-surface-border-strong)]
                 border border-[var(--color-surface-border)]
                 text-[var(--color-text)] text-[12px] font-medium
                 flex items-center gap-2
-                active:scale-[0.98] transition-all cursor-pointer
-                disabled:opacity-50
+                active:scale-[0.97] active:brightness-95
+                transition-all duration-150 ease-out cursor-pointer
+                focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-desktop)]
+                disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
               "
             >
               {isChecking && (

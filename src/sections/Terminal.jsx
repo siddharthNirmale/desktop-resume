@@ -79,7 +79,7 @@ export default function Terminal() {
               <button
                 type="button"
                 onClick={() => setInput("help")}
-                className="font-semibold text-[var(--color-accent)] transition-opacity hover:opacity-70"
+                className="font-semibold text-[var(--color-accent)] transition-opacity hover:opacity-75 active:opacity-50 focus-visible:outline-none focus-visible:underline"
               >
                 help
               </button>{" "}
@@ -207,12 +207,12 @@ export default function Terminal() {
                     setInput(cmd);
                     inputRef.current?.focus();
                   }}
-                  className="group flex min-w-0 items-center justify-between rounded-md px-2 py-2 text-left transition-colors duration-150 hover:bg-[var(--color-surface-inactive)]"
+                  className="group flex min-w-0 items-center justify-between rounded-md px-2 py-2 text-left transition-all duration-150 hover:bg-[var(--color-surface-inactive)] active:scale-[0.985] active:brightness-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
                 >
                   <span className="flex min-w-0 items-center gap-2">
                     <Icon
                       size={11}
-                      className="shrink-0 text-[var(--color-accent)]"
+                      className="shrink-0 text-[var(--color-accent)] transition-transform duration-150 group-hover:scale-110"
                     />
 
                     <span className="truncate font-mono text-[11px] font-medium text-[var(--color-text)]">
@@ -361,7 +361,7 @@ export default function Terminal() {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={`Open ${proj.title}`}
-                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[var(--color-text-tertiary)] transition-all duration-200 hover:bg-[var(--color-accent)] hover:text-white"
+                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[var(--color-text-tertiary)] transition-all duration-200 hover:bg-[var(--color-accent)] hover:text-white active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]"
                       >
                         <FiExternalLink size={11} />
                       </a>
@@ -546,7 +546,7 @@ export default function Terminal() {
                   setInput("help");
                   inputRef.current?.focus();
                 }}
-                className="font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-accent)]"
+                className="font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-accent)] active:opacity-60 focus-visible:outline-none focus-visible:underline"
               >
                 help
               </button>

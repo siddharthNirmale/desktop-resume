@@ -178,11 +178,11 @@ export default function ContactSection() {
               onClick={downloadVCard}
               title="Save contact"
               aria-label="Save contact"
-              className="group hidden shrink-0 items-center gap-2 rounded-lg bg-[var(--color-surface-hover)]/70 px-3 py-1.5 text-xs font-medium text-[var(--color-text-secondary)] transition-all hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] active:scale-[0.98] sm:flex"
+              className="group hidden shrink-0 items-center gap-2 rounded-lg bg-[var(--color-surface-hover)]/70 px-3 py-1.5 text-xs font-medium text-[var(--color-text-secondary)] transition-all duration-150 hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] active:scale-[0.96] sm:flex focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
             >
               <FiDownload
                 size={13}
-                className="transition-transform group-hover:-translate-y-0.5"
+                className="transition-transform duration-150 group-hover:-translate-y-0.5"
               />
 
               <span>Save contact</span>
@@ -199,10 +199,10 @@ export default function ContactSection() {
           return (
             <div
               key={item.id}
-              className="group flex items-center gap-3 py-3 transition-all duration-200"
+              className="group flex items-center gap-3 py-2.5 px-3 -mx-3 rounded-xl hover:bg-[var(--color-surface-hover)]/40 transition-colors duration-150"
             >
               {/* Icon */}
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center text-[var(--color-text-tertiary)] transition-all duration-200 group-hover:scale-105 group-hover:text-[var(--color-accent)]">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center text-[var(--color-text-tertiary)] transition-all duration-200 group-hover:scale-110 group-hover:text-[var(--color-accent)]">
                 <Icon size={17} />
               </div>
 
@@ -215,22 +215,22 @@ export default function ContactSection() {
                     ? "noopener noreferrer"
                     : undefined
                 }
-                className="min-w-0 flex-1"
+                className="min-w-0 flex-1 outline-none focus-visible:underline"
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-disabled)] transition-colors group-hover:text-[var(--color-text-tertiary)]">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-disabled)] transition-colors duration-150 group-hover:text-[var(--color-text-tertiary)]">
                     {item.label}
                   </span>
 
                   {item.external && (
                     <FiExternalLink
                       size={10}
-                      className="text-[var(--color-text-disabled)] opacity-0 transition-opacity group-hover:opacity-100"
+                      className="text-[var(--color-text-disabled)] opacity-0 transition-opacity duration-150 group-hover:opacity-100"
                     />
                   )}
                 </div>
 
-                <p className="mt-0.5 truncate text-sm font-medium text-[var(--color-text-secondary)] transition-colors group-hover:text-[var(--color-text)]">
+                <p className="mt-0.5 truncate text-sm font-medium text-[var(--color-text-secondary)] transition-colors duration-150 group-hover:text-[var(--color-text)]">
                   {item.value}
                 </p>
               </a>
@@ -248,7 +248,7 @@ export default function ContactSection() {
                   }
                   title={`Copy ${item.label}`}
                   aria-label={`Copy ${item.label}`}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--color-text-disabled)] opacity-0 transition-all duration-150 ease-out hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] group-hover:opacity-100 focus:opacity-100 active:scale-[0.95]"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--color-text-disabled)] opacity-0 transition-all duration-150 ease-out hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] group-hover:opacity-100 focus:opacity-100 active:scale-[0.92] active:bg-[var(--color-surface-active)] focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)] cursor-pointer"
                 >
                   <MorphIcon
                     icon={isCopied ? Check : Copy}
@@ -271,7 +271,7 @@ export default function ContactSection() {
                 }
                 title={item.action}
                 aria-label={`${item.action} ${item.label}`}
-                className="flex h-8 w-8 shrink-0 items-center justify-center text-[var(--color-text-disabled)] opacity-0 transition-all duration-200 hover:text-[var(--color-text)] group-hover:translate-x-0.5 group-hover:opacity-100 focus:opacity-100"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--color-text-disabled)] opacity-0 transition-all duration-150 hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] group-hover:translate-x-0.5 group-hover:opacity-100 focus:opacity-100 active:scale-[0.92] focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
               >
                 <FiArrowUpRight size={15} />
               </a>
@@ -286,7 +286,7 @@ export default function ContactSection() {
           href={`mailto:${CONTACT.email}?subject=${encodeURIComponent(
             "Hello Siddharth"
           )}`}
-          className="group inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-text)] transition-colors hover:text-[var(--color-accent)]"
+          className="group inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-text)] transition-colors hover:text-[var(--color-accent)] active:scale-[0.98] outline-none focus-visible:underline"
         >
           <FiMessageCircle size={15} />
 

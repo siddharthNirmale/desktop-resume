@@ -343,6 +343,7 @@
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.14);
     border-radius: var(--radius-pill);
+    transition: background-color var(--duration-fast) var(--ease-standard);
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
@@ -357,6 +358,7 @@
 
   .light-theme .custom-scrollbar::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.16);
+    transition: background-color var(--duration-fast) var(--ease-standard);
   }
 
   .light-theme .custom-scrollbar::-webkit-scrollbar-thumb:hover {

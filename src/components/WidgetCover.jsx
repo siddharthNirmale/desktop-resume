@@ -29,7 +29,7 @@ export default function WidgetCover({
         ...positionStyle,
       }}
       whileDrag={{
-        scale: 1.006,
+        scale: 1.012,
         cursor: "grabbing",
       }}
       initial={{
@@ -168,18 +168,23 @@ export default function WidgetCover({
 
                     opacity-0
                     group-hover:opacity-100
+                    focus:opacity-100
+                    focus-visible:opacity-100
 
                     hover:bg-red-500/15
-                    hover:text-red-400
+                    hover:text-red-500
+                    dark:hover:text-red-400
 
-                    active:scale-[0.95]
+                    active:scale-[0.90]
+                    active:bg-red-500/25
 
                     transition-all
                     duration-150
+                    ease-out
 
                     focus:outline-none
-                    focus-visible:ring-2
-                    focus-visible:ring-[var(--color-accent)]/30
+                    focus-visible:ring-1
+                    focus-visible:ring-red-400
 
                     cursor-default
                   "

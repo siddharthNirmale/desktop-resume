@@ -166,7 +166,7 @@ export default function WeatherWidget({
              FORECAST
           ================================================== */}
 
-          <div className="grid grid-cols-4 rounded-[10px] bg-[var(--color-surface-elevated)]/50 p-2">
+          <div className="grid grid-cols-4 rounded-[10px] bg-[var(--color-surface-elevated)]/50 border border-[var(--color-surface-border)]/40 p-1.5">
             {daily.time.slice(1, 5).map((dateStr, i) => {
               const idx = i + 1;
 
@@ -197,6 +197,14 @@ export default function WeatherWidget({
                     flex-col
                     items-center
                     gap-1.5
+                    py-1
+                    px-0.5
+                    rounded-[7px]
+                    hover:bg-[var(--color-surface-hover)]/50
+                    transition-colors
+                    duration-150
+                    cursor-default
+                    group
                   "
                 >
                   <span
@@ -207,6 +215,9 @@ export default function WeatherWidget({
                       uppercase
                       tracking-[0.08em]
                       text-[var(--color-text-tertiary)]
+                      group-hover:text-[var(--color-text-secondary)]
+                      transition-colors
+                      duration-150
                     "
                   >
                     {day}
@@ -215,7 +226,7 @@ export default function WeatherWidget({
                   <DayIcon
                     size={14}
                     strokeWidth={1.7}
-                    className="text-[var(--color-text-secondary)]"
+                    className="text-[var(--color-text-secondary)] group-hover:scale-110 group-hover:text-[var(--color-accent)] transition-all duration-150"
                   />
 
                   <span

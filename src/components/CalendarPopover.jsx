@@ -189,7 +189,9 @@ export default function CalendarPopover({ isOpen, onClose }) {
                 px-2 py-1 rounded-[6px]
                 text-[10px] font-medium text-[var(--color-text-secondary)]
                 hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]
-                transition-colors cursor-default focus:outline-none
+                active:scale-[0.94] active:bg-[var(--color-surface-active)]
+                transition-all duration-150 ease-out cursor-default
+                focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
               "
               title="Jump to today"
             >
@@ -213,8 +215,9 @@ export default function CalendarPopover({ isOpen, onClose }) {
                 className="
                   flex h-6 w-6 items-center justify-center rounded-[5px]
                   hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]
-                  active:bg-[var(--color-surface-active)] transition-colors
-                  cursor-default focus:outline-none
+                  active:bg-[var(--color-surface-active)] active:scale-[0.88]
+                  transition-all duration-150 ease-out
+                  cursor-default focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
                 "
               >
                 <FiChevronLeft size={14} strokeWidth={2.2} />
@@ -226,8 +229,9 @@ export default function CalendarPopover({ isOpen, onClose }) {
                 className="
                   flex h-6 w-6 items-center justify-center rounded-[5px]
                   hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]
-                  active:bg-[var(--color-surface-active)] transition-colors
-                  cursor-default focus:outline-none
+                  active:bg-[var(--color-surface-active)] active:scale-[0.88]
+                  transition-all duration-150 ease-out
+                  cursor-default focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
                 "
               >
                 <FiChevronRight size={14} strokeWidth={2.2} />
@@ -279,14 +283,15 @@ export default function CalendarPopover({ isOpen, onClose }) {
                       type="button"
                       className={`
                         flex h-7 w-7 items-center justify-center rounded-full
-                        text-[11px] font-medium transition-all duration-150
-                        focus:outline-none cursor-default
+                        text-[11px] font-medium transition-all duration-150 ease-out
+                        focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]
+                        cursor-default
                         ${
                           today
-                            ? "bg-[var(--color-accent)] text-white font-semibold shadow-xs scale-[1.04]"
+                            ? "bg-[var(--color-accent)] text-white font-semibold shadow-xs scale-[1.04] active:scale-[0.94] hover:brightness-105"
                             : isCurrentMonth
-                            ? "text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]"
-                            : "text-[var(--color-text-disabled)]/40 hover:text-[var(--color-text-disabled)]"
+                            ? "text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] active:scale-[0.90] active:bg-[var(--color-surface-active)]"
+                            : "text-[var(--color-text-disabled)]/40 hover:text-[var(--color-text-tertiary)] hover:bg-[var(--color-surface-hover)]/40 active:scale-[0.90]"
                         }
                       `}
                     >

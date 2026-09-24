@@ -69,9 +69,9 @@ export default function SkillsWidget({ constraintsRef, zIndex, onFocus, onClose,
             aria-label={`Show ${set.name} skills`}
             onClick={() => setIndex(i)}
             onPointerDown={(e) => e.stopPropagation()}
-            className={`rounded-full transition-all duration-300 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] ${
+            className={`rounded-full transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] active:scale-90 ${
               i === index
-                ? 'w-[16px] h-[4px] bg-[var(--color-accent)]'
+                ? 'w-[16px] h-[4px] bg-[var(--color-accent)] shadow-[0_0_8px_var(--color-accent-soft)]'
                 : 'w-[4px] h-[4px] bg-[var(--color-surface-border-strong)] hover:bg-[var(--color-text-secondary)]'
             }`}
           />
@@ -86,7 +86,7 @@ export default function SkillsWidget({ constraintsRef, zIndex, onFocus, onClose,
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
-            transition={{ duration: 0.16 }}
+            transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
             className="grid grid-cols-2 gap-1.5 absolute w-full"
             onPointerDown={(e) => e.stopPropagation()}
           >
@@ -97,10 +97,14 @@ export default function SkillsWidget({ constraintsRef, zIndex, onFocus, onClose,
                   group flex items-center gap-2.5 px-3 py-2 rounded-[10px] cursor-default
                   bg-[var(--color-surface-elevated)]/60
                   hover:bg-[var(--color-surface-elevated)]
-                  transition-colors duration-150
+                  border border-[var(--color-surface-border)]/40
+                  hover:border-[var(--color-surface-border-strong)]
+                  hover:-translate-y-0.5 hover:shadow-xs
+                  active:translate-y-0 active:scale-[0.98]
+                  transition-all duration-150 ease-out
                 "
               >
-                <span className="text-[13px] text-[var(--color-text-tertiary)] group-hover:text-[var(--color-accent)] transition-colors duration-150 shrink-0">
+                <span className="text-[13px] text-[var(--color-text-tertiary)] group-hover:text-[var(--color-accent)] group-hover:scale-110 transition-all duration-150 shrink-0">
                   {skill.icon}
                 </span>
                 <span className="text-[11px] font-medium text-[var(--color-text-secondary)] group-hover:text-[var(--color-text)] truncate transition-colors duration-150">

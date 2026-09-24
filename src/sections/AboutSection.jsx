@@ -185,7 +185,7 @@ export default function AboutSection() {
             <button
               type="button"
               onClick={handleDownloadResume}
-              className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] bg-[var(--color-text)] text-[var(--color-surface)] text-[11.5px] font-semibold transition-all duration-150 hover:opacity-90 active:scale-[0.98] cursor-pointer"
+              className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] bg-[var(--color-text)] text-[var(--color-surface)] text-[11.5px] font-semibold transition-all duration-150 hover:opacity-90 active:scale-[0.96] active:brightness-95 cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
             >
               <FiDownload
                 size={12}
@@ -198,7 +198,7 @@ export default function AboutSection() {
             <button
               type="button"
               onClick={handleCopyEmail}
-              className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] bg-[var(--color-surface-hover)]/40 hover:bg-[var(--color-surface-hover)] text-[11.5px] font-medium text-[var(--color-text)] transition-colors duration-150 active:scale-[0.98] cursor-pointer"
+              className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] bg-[var(--color-surface-hover)]/40 hover:bg-[var(--color-surface-hover)] border border-transparent hover:border-[var(--color-surface-border)] text-[11.5px] font-medium text-[var(--color-text)] transition-all duration-150 active:scale-[0.96] cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
             >
               <AnimatePresence mode="wait" initial={false}>
                 {copied ? (
@@ -235,7 +235,7 @@ export default function AboutSection() {
                 href="https://github.com/siddharthNirmale"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-[var(--color-text)] transition-colors duration-150"
+                className="hover:text-[var(--color-text)] active:scale-[0.96] transition-all duration-150 outline-none focus-visible:underline"
               >
                 GitHub
               </a>
@@ -246,7 +246,7 @@ export default function AboutSection() {
                 href="https://linkedin.com/in/siddharth-nirmale"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-[var(--color-text)] transition-colors duration-150"
+                className="hover:text-[var(--color-text)] active:scale-[0.96] transition-all duration-150 outline-none focus-visible:underline"
               >
                 LinkedIn
               </a>
