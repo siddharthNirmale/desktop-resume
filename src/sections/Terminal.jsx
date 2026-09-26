@@ -764,6 +764,7 @@ export default function Terminal() {
                 bg-transparent
                 py-1
                 outline-none
+                border-none
                 text-[12px]
                 tracking-[-0.01em]
                 text-[var(--color-text)]

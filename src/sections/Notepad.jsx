@@ -131,7 +131,7 @@ export default function Notepad() {
               onChange={(e) => setSearch(e.target.value)}
               aria-label="Search notes"
               placeholder="Search notes..."
-              className="min-w-0 flex-1 bg-transparent text-[11px] outline-none placeholder:text-[var(--color-text-tertiary)]"
+              className="min-w-0 flex-1 bg-transparent text-[11px] border-none outline-none placeholder:text-[var(--color-text-tertiary)]"
             />
             {search && (
               <button
@@ -210,7 +210,7 @@ export default function Notepad() {
                   onChange={(e) => updateActiveNote({ title: e.target.value })}
                   aria-label="Note title"
                   placeholder="Note Title"
-                  className="max-w-[240px] bg-transparent text-[12px] font-semibold text-[var(--color-text)] placeholder:text-[var(--color-text-tertiary)] outline-none"
+                  className="max-w-[240px] bg-transparent text-[12px] font-semibold text-[var(--color-text)] placeholder:text-[var(--color-text-tertiary)] border-none outline-none"
                 />
               </div>
               <button

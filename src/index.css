@@ -211,7 +211,7 @@
     color: #ffffff;
   }
 
-  :focus-visible {
+  :focus-visible:not(input):not(textarea):not(select) {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
   }
@@ -626,9 +626,28 @@
    ACCESSIBILITY: FOCUS-VISIBLE INDICATOR (WCAG 2.2 AA)
    ========================================================= */
 
-:focus-visible {
+:focus-visible:not(input):not(textarea):not(select) {
   outline: 2px solid var(--color-accent, #0a84ff);
   outline-offset: 2px;
+}
+
+/* Remove active border, focus outline, and default borders on input and textarea fields */
+input,
+textarea,
+select,
+input:focus,
+input:focus-visible,
+input:active,
+textarea:focus,
+textarea:focus-visible,
+textarea:active,
+select:focus,
+select:focus-visible,
+select:active {
+  outline: none !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 /* =========================================================
