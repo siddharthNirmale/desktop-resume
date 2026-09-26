@@ -22,6 +22,7 @@ import skills from "../data/skills";
 import resume from "../data/resume";
 import iconMap from "../utils/iconMap";
 import { safeGetItem, safeSetItem } from "../utils/storage";
+import { sanitizeUrl } from "../utils/security";
 
 // Robust date filter that correctly handles crossing over into previous years
 const filterResponsiveMonths = (contributions, monthsToShow) => {
@@ -420,16 +421,17 @@ function ActionButton({ icon, text, href, onClick, isButton, primary, isDark }) 
 
   if (isButton) {
     return (
-      <button onClick={onClick} className={`${baseClasses} ${styles}`}>
+      <button type="button" onClick={onClick} className={`${baseClasses} ${styles}`}>
         {icon} {text}
       </button>
     );
   }
   return (
     <a
-      href={href}
+      href={sanitizeUrl(href)}
       target="_blank"
       rel="noopener noreferrer"
+      aria-label={`${text} (opens in new tab)`}
       className={`${baseClasses} ${styles}`}
     >
       {icon} {text}
@@ -438,12 +440,14 @@ function ActionButton({ icon, text, href, onClick, isButton, primary, isDark }) 
 }
 
 function LinkBadge({ icon, text, href, isDark }) {
+  const safeHref = sanitizeUrl(href);
   return (
     <a
-      href={href}
+      href={safeHref}
       target="_blank"
       rel="noopener noreferrer"
       onClick={(e) => e.stopPropagation()}
+      aria-label={`${text} (opens in new tab)`}
       className={`inline-flex items-center gap-1.5 px-2.5 py-1 border rounded-lg text-[11px] font-medium transition-all duration-150 active:scale-[0.95] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] ${isDark
           ? "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white active:bg-white/15"
           : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 shadow-xs active:bg-zinc-200"

@@ -1,0 +1,42 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Lint, Test, Audit & Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Stage 1 - Static Analysis & Linting (Rule CI-01)
+        run: npm run lint
+
+      - name: Stage 2 - Security Audit (Rule CI-01, Rule SEC-01)
+        run: npm audit --omit=dev
+
+      - name: Stage 3 - Automated Test Suite (Rule TST-01, Rule TST-02)
+        run: npm test
+
+      - name: Stage 4 - Production Build (Rule PERF-01, Rule PERF-02)
+        run: npm run build

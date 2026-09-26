@@ -11,6 +11,7 @@ import {
   FiMessageCircle,
 } from "react-icons/fi";
 import { FaGithub, FaLinkedin, FaWhatsapp } from "react-icons/fa";
+import { sanitizeUrl } from "../utils/security";
 
 const CONTACT = {
   name: "Siddharth Nirmale",
@@ -208,7 +209,7 @@ export default function ContactSection() {
 
               {/* Main link */}
               <a
-                href={item.href}
+                href={sanitizeUrl(item.href)}
                 target={item.external ? "_blank" : undefined}
                 rel={
                   item.external
@@ -262,7 +263,7 @@ export default function ContactSection() {
 
               {/* Open */}
               <a
-                href={item.href}
+                href={sanitizeUrl(item.href)}
                 target={item.external ? "_blank" : undefined}
                 rel={
                   item.external
@@ -320,6 +321,7 @@ export default function ContactSection() {
         <button
           type="button"
           onClick={downloadVCard}
+          aria-label="Save contact"
           className="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-text-tertiary)] transition-colors hover:text-[var(--color-text)] sm:hidden"
         >
           <FiDownload size={14} />

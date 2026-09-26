@@ -13,6 +13,7 @@ import DesktopDisplay from "./mode/DesktopDisplay";
 import SmallDisplay from "./mode/SmallDisplay";
 import CommandPalette from "./components/CommandPalette";
 import OfflinePage from "./components/OfflinePage";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 // Config (Centralized outside the render cycle)
 import { initialWindowsConfig } from "./config/windowsConfig";
@@ -58,28 +59,33 @@ export default function App() {
 
       {!isLoading && (
         <div className="absolute inset-0 w-full h-full">
-          {isMobile ? (
-            <SmallDisplay
-              windows={windows}
-              toggleWindow={toggleWindow}
-              setWallpaper={setWallpaper}
-            />
-          ) : (
-            <DesktopDisplay
-              desktopRef={desktopRef}
-              windows={windows}
-              toggleWindow={toggleWindow}
-              toggleWidget={toggleWidget}
-              minimizeAll={minimizeAll}
-              restoreAll={restoreAll}
-              resetLayout={resetLayout}
-              bringToFront={bringToFront}
-              menu={menu}
-              closeMenu={closeMenu}
-              wallpaper={wallpaper}
-              setWallpaper={setWallpaper}
-            />
-          )}
+          <ErrorBoundary
+            title="Desktop Workspace Error"
+            message="An unexpected error occurred in the workspace. Please reset or reload."
+          >
+            {isMobile ? (
+              <SmallDisplay
+                windows={windows}
+                toggleWindow={toggleWindow}
+                setWallpaper={setWallpaper}
+              />
+            ) : (
+              <DesktopDisplay
+                desktopRef={desktopRef}
+                windows={windows}
+                toggleWindow={toggleWindow}
+                toggleWidget={toggleWidget}
+                minimizeAll={minimizeAll}
+                restoreAll={restoreAll}
+                resetLayout={resetLayout}
+                bringToFront={bringToFront}
+                menu={menu}
+                closeMenu={closeMenu}
+                wallpaper={wallpaper}
+                setWallpaper={setWallpaper}
+              />
+            )}
+          </ErrorBoundary>
         </div>
       )}
 

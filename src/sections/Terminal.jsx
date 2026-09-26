@@ -813,19 +813,6 @@ export default function Terminal() {
           </span>
         </div>
       </div>
-
-      <style>{`
-        @keyframes terminalIn {
-          from {
-            opacity: 0;
-            transform: translateY(3px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 }

@@ -5,8 +5,8 @@ import {
   CloudSnowIcon as CloudSnow,
   LoaderIcon as Loader2,
 } from "lucide-animated";
-import { Cloud } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Cloud, RotateCcw } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
 import WidgetCover from "./WidgetCover";
 
 // ============================================================
@@ -36,6 +36,8 @@ export default function WeatherWidget({
 }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -50,20 +52,28 @@ export default function WeatherWidget({
       })
       .then((d) => {
         setData(d);
+        setError(null);
         setLoading(false);
       })
       .catch((e) => {
         if (e.name !== "AbortError") {
+          setError("Weather unavailable");
           setLoading(false);
         }
       });
 
     return () => controller.abort();
+  }, [retryCount]);
+
+  const handleRetry = useCallback(() => {
+    setLoading(true);
+    setError(null);
+    setRetryCount((c) => c + 1);
   }, []);
 
   const current = data?.current;
   const daily = data?.daily;
-  const ready = !loading && current && daily;
+  const ready = !loading && !error && current && daily;
 
   const { Icon: CurrentIcon, label } = ready
     ? getWeatherDetails(current.weather_code)
@@ -79,7 +89,7 @@ export default function WeatherWidget({
       constraintsRef={constraintsRef}
       positionStyle={positionStyle || { top: "16px", left: "18px" }}
     >
-      {!ready ? (
+      {loading ? (
         /* ====================================================
            LOADING
         ==================================================== */
@@ -88,6 +98,24 @@ export default function WeatherWidget({
             size={15}
             className="animate-spin text-[var(--color-text-tertiary)]"
           />
+        </div>
+      ) : error || !ready ? (
+        /* ====================================================
+           ERROR / RETRY
+        ==================================================== */
+        <div className="flex h-[118px] flex-col items-center justify-center text-center px-3">
+          <p className="text-[11px] text-[var(--color-text-tertiary)] mb-2.5">
+            {error || "Weather forecast unavailable"}
+          </p>
+          <button
+            type="button"
+            onClick={handleRetry}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-[7px] bg-[var(--color-surface-hover)] hover:bg-[var(--color-surface-active)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] border border-[var(--color-surface-border)] transition-colors active:scale-[0.96] cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
+            aria-label="Retry loading weather forecast"
+          >
+            <RotateCcw size={11} aria-hidden="true" />
+            <span>Retry</span>
+          </button>
         </div>
       ) : (
         <div className="w-full">

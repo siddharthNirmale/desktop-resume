@@ -621,3 +621,27 @@
 ::view-transition-new(root) {
   z-index: 2;
 }
+
+/* =========================================================
+   ACCESSIBILITY: FOCUS-VISIBLE INDICATOR (WCAG 2.2 AA)
+   ========================================================= */
+
+:focus-visible {
+  outline: 2px solid var(--color-accent, #0a84ff);
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   TERMINAL ANIMATION
+   ========================================================= */
+
+@keyframes terminalIn {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

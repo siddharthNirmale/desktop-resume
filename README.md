@@ -429,6 +429,18 @@ Potential future additions include:
 - More WebGL experiences
 - Performance profiling and optimization
 
+## Engineering Standards & Quality Gates
+
+This project strictly adheres to the authoritative standards defined in the [Rules-and-Regulations Repository](https://github.com/siddharthNirmale/Rules-and-Regulations). Detailed project implementations, priority hierarchies, and rules are documented in [`STANDARDS.md`](./STANDARDS.md).
+
+All pull requests and contributions must pass the automated CI pipeline:
+```bash
+npm run lint         # ESLint static analysis
+npm test             # Automated unit & boundary test suite
+npm audit --omit=dev # Zero-vulnerability dependency check
+npm run build        # Production bundle verification
+```
+
 ## Contributing
 Contributions, ideas, improvements, and experiments are welcome. If you want to propose a change:
 ```bash

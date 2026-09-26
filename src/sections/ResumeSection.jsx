@@ -12,6 +12,7 @@ import projects from "../data/project";
 import skills from "../data/skills";
 import resume from "../data/resume";
 import iconMap from "../utils/iconMap";
+import { sanitizeUrl } from "../utils/security";
 
 export default function ResumeSection() {
   const handleDownload = () => {
@@ -658,7 +659,7 @@ function ProjectPanel({ project }) {
 
       {project.live && (
         <a
-          href={project.live}
+          href={sanitizeUrl(project.live)}
           target="_blank"
           rel="noopener noreferrer"
           className="

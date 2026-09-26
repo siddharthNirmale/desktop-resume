@@ -4,6 +4,7 @@ import { MorphIcon } from "morphicons/react";
 import { Maximize2, Minimize2 } from "lucide";
 import { Minus, X } from "lucide-react";
 import Tooltip from "./Tooltip";
+import ErrorBoundary from "./ErrorBoundary";
 
 function ResizeHandle({ direction, className, onStartResize }) {
   return (
@@ -490,7 +491,12 @@ export default function Window({
           rounded-b-[13px]
         "
       >
-        {children}
+        <ErrorBoundary
+          title={`${title || "Application"} Encountered an Issue`}
+          message="An error occurred inside this window. You can retry or close the window."
+        >
+          {children}
+        </ErrorBoundary>
       </div>
 
       {/* ======================================================

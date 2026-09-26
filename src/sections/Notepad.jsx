@@ -42,6 +42,18 @@ export default function Notepad() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [noteToDelete, setNoteToDelete] = useState(null); // Custom modal state
 
+  // Handle escape key to dismiss delete confirmation modal (Rule A11Y-05)
+  useEffect(() => {
+    if (!noteToDelete) return;
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setNoteToDelete(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [noteToDelete]);
+
   const activeNote = notes.find((n) => n.id === activeId) || notes[0];
 
   // Auto-save to local storage safely
@@ -102,7 +114,9 @@ export default function Notepad() {
             </div>
           </div>
           <button
+            type="button"
             onClick={createNewNote}
+            aria-label="Create new note"
             className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[var(--color-accent)] text-white transition-all duration-150 hover:brightness-105 active:scale-[0.94] cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
           >
             <FiPlus size={15} />
@@ -115,11 +129,19 @@ export default function Notepad() {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              aria-label="Search notes"
               placeholder="Search notes..."
               className="min-w-0 flex-1 bg-transparent text-[11px] outline-none placeholder:text-[var(--color-text-tertiary)]"
             />
             {search && (
-              <button onClick={() => setSearch("")} className="text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] active:scale-[0.90] transition-transform p-0.5"><FiX size={12} /></button>
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                aria-label="Clear search"
+                className="text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] active:scale-[0.90] transition-transform p-0.5"
+              >
+                <FiX size={12} />
+              </button>
             )}
           </div>
         </div>
@@ -133,6 +155,7 @@ export default function Notepad() {
             filteredNotes.map((note) => (
               <button
                 key={note.id}
+                type="button"
                 onClick={() => {
                   setActiveId(note.id);
                   if (window.innerWidth < 768) setSidebarOpen(false);
@@ -161,8 +184,10 @@ export default function Notepad() {
       {/* MOBILE BACKDROP */}
       {sidebarOpen && (
         <button
+          type="button"
           onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 z-20 bg-black/20 backdrop-blur-[1px] md:hidden"
+          aria-label="Close notes sidebar"
+          className="fixed inset-0 z-20 bg-black/20 backdrop-blur-[1px] md:hidden cursor-default"
         />
       )}
 
@@ -173,7 +198,9 @@ export default function Notepad() {
             <header className="flex shrink-0 items-center justify-between gap-3 border-b border-[var(--color-surface-border)] px-3 py-2.5 sm:px-4">
               <div className="flex items-center gap-2">
                 <button
+                  type="button"
                   onClick={() => setSidebarOpen(!sidebarOpen)}
+                  aria-label="Toggle notes sidebar"
                   className="flex h-7 w-7 items-center justify-center rounded-[7px] text-[var(--color-text-tertiary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] active:scale-[0.92] transition-all duration-150 cursor-pointer"
                 >
                   <FiMenu size={14} />
@@ -181,12 +208,15 @@ export default function Notepad() {
                 <input
                   value={activeNote.title}
                   onChange={(e) => updateActiveNote({ title: e.target.value })}
+                  aria-label="Note title"
                   placeholder="Note Title"
                   className="max-w-[240px] bg-transparent text-[12px] font-semibold text-[var(--color-text)] placeholder:text-[var(--color-text-tertiary)] outline-none"
                 />
               </div>
               <button
+                type="button"
                 onClick={() => setNoteToDelete(activeNote.id)}
+                aria-label="Delete active note"
                 className="flex h-7 w-7 items-center justify-center rounded-[7px] text-[var(--color-text-tertiary)] hover:bg-red-500/15 hover:text-red-500 dark:hover:text-red-400 active:scale-[0.92] transition-all duration-150 cursor-pointer"
               >
                 <FiTrash2 size={13} />
@@ -196,6 +226,7 @@ export default function Notepad() {
             <textarea
               value={activeNote.content}
               onChange={(e) => updateActiveNote({ content: e.target.value })}
+              aria-label="Note content"
               placeholder="Start writing..."
               className="custom-scrollbar h-full w-full resize-none border-none bg-transparent px-5 py-6 text-[14px] leading-[1.8] text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-tertiary)] sm:px-9 sm:py-7"
             />
@@ -205,7 +236,9 @@ export default function Notepad() {
             <FiFileText size={25} className="mb-3 text-[var(--color-text-tertiary)]" />
             <div className="text-[13px] font-medium text-[var(--color-text)]">No note selected</div>
             <button
+              type="button"
               onClick={createNewNote}
+              aria-label="Create note"
               className="mt-4 rounded-[7px] bg-[var(--color-accent)] px-3 py-2 text-[11px] font-medium text-white hover:brightness-105 active:scale-[0.96] transition-all duration-150 cursor-pointer"
             >
               Create note
@@ -216,9 +249,14 @@ export default function Notepad() {
 
       {/* CUSTOM DELETE MODAL */}
       {noteToDelete && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm transition-all">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-note-title"
+          className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm transition-all"
+        >
           <div className="w-full max-w-[280px] rounded-[14px] border border-[var(--color-surface-border)] bg-[var(--color-surface-elevated)] p-5 text-center shadow-[var(--shadow-popover)]">
-            <h3 className="mb-1 text-[14px] font-semibold text-[var(--color-text)]">
+            <h3 id="delete-note-title" className="mb-1 text-[14px] font-semibold text-[var(--color-text)]">
               Delete Note
             </h3>
             <p className="mb-5 text-[11px] text-[var(--color-text-tertiary)]">
@@ -226,12 +264,14 @@ export default function Notepad() {
             </p>
             <div className="flex gap-2">
               <button
+                type="button"
                 onClick={() => setNoteToDelete(null)}
                 className="flex-1 rounded-[8px] bg-[var(--color-surface-hover)]/60 py-2 text-[11px] font-medium text-[var(--color-text-secondary)] transition-all duration-150 hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)] active:scale-[0.96] cursor-pointer"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={executeDelete}
                 className="flex-1 rounded-[8px] bg-red-500 py-2 text-[11px] font-medium text-white transition-all duration-150 hover:bg-red-600 active:scale-[0.96] cursor-pointer"
               >

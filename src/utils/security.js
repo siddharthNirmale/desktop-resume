@@ -36,7 +36,11 @@ export function sanitizeUrl(url, fallback = "#") {
 
   try {
     // Attempt standard URL parse
-    const parsed = new URL(trimmed, window.location.origin);
+    const origin =
+      typeof window !== "undefined" && window.location?.origin
+        ? window.location.origin
+        : "https://localhost";
+    const parsed = new URL(trimmed, origin);
     if (ALLOWED_PROTOCOLS.has(parsed.protocol)) {
       return trimmed;
     }
