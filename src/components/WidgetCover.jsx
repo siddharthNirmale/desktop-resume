@@ -16,6 +16,8 @@ export default function WidgetCover({
 }) {
   return (
     <motion.div
+      role="region"
+      aria-label={title || "Widget"}
       drag
       dragMomentum={false}
       dragHandleClassName="widget-header-drag"

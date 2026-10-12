@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, lazy, Suspense } from "react";
 import { AnimatePresence } from "framer-motion";
 
 // Hooks
@@ -12,8 +12,10 @@ import Preloader from "./components/Preloader";
 import DesktopDisplay from "./mode/DesktopDisplay";
 import SmallDisplay from "./mode/SmallDisplay";
 import CommandPalette from "./components/CommandPalette";
-import OfflinePage from "./components/OfflinePage";
 import ErrorBoundary from "./components/ErrorBoundary";
+
+// Lazy-loaded offline fallback (decouples 258 kB Lottie bundle from initial page load)
+const OfflinePage = lazy(() => import("./components/OfflinePage"));
 
 // Config (Centralized outside the render cycle)
 import { initialWindowsConfig } from "./config/windowsConfig";
@@ -100,11 +102,13 @@ export default function App() {
       />
 
       {/* Offline Page with Lottie Animation */}
-      <OfflinePage
-        isOnline={isOnline}
-        isChecking={isChecking}
-        onRetry={retry}
-      />
+      <Suspense fallback={null}>
+        <OfflinePage
+          isOnline={isOnline}
+          isChecking={isChecking}
+          onRetry={retry}
+        />
+      </Suspense>
     </main>
   );
 }

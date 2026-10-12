@@ -21,6 +21,7 @@ import {
 } from "react-icons/fi";
 import projects from "../data/project";
 import skills from "../data/skills";
+import resume from "../data/resume";
 
 const COMMANDS = [
   { cmd: "help", label: "Show available commands", icon: FiHelpCircle },
@@ -504,14 +505,24 @@ export default function Terminal() {
         );
 
       case "resume":
+        safeOpen(resume);
         return (
-          <div className="my-3 flex items-center gap-2 text-[11px] text-[var(--color-text-secondary)]">
+          <div className="my-2 flex items-center gap-2 text-[11px] text-[var(--color-text-secondary)]">
             <FiExternalLink
               size={11}
               className="text-[var(--color-accent)]"
             />
             <span>
-              Resume command is ready — connect it to your resume URL.
+              Opening resume… (If blocked,{" "}
+              <a
+                href={sanitizeUrl(resume)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-[var(--color-accent)] underline hover:opacity-80"
+              >
+                click here
+              </a>
+              )
             </span>
           </div>
         );
