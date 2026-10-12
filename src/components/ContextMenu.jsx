@@ -36,6 +36,8 @@ export default function ContextMenu({
 
   return (
     <motion.div
+      role="menu"
+      aria-label="Desktop context menu"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
@@ -61,6 +63,8 @@ export default function ContextMenu({
         {menuItems.map((item) => (
           <button
             key={item.id}
+            type="button"
+            role="menuitem"
             onClick={(e) => { e.stopPropagation(); openApp(item.id); }}
             className="
               w-full flex items-center gap-2 px-2 py-1.5 rounded-md
@@ -84,6 +88,8 @@ export default function ContextMenu({
 
         {/* Control Center */}
         <button
+          type="button"
+          role="menuitem"
           onClick={(e) => {
             e.stopPropagation();
             onOpenControlCenter?.();
@@ -104,6 +110,8 @@ export default function ContextMenu({
 
         {/* Show Desktop */}
         <button
+          type="button"
+          role="menuitem"
           onClick={(e) => {
             e.stopPropagation();
             if (allWindowsMinimized) {
@@ -128,6 +136,8 @@ export default function ContextMenu({
 
         {/* Reset Layout */}
         <button
+          type="button"
+          role="menuitem"
           onClick={(e) => {
             e.stopPropagation();
             resetLayout?.();

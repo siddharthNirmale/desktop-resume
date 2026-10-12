@@ -56,6 +56,9 @@ export default function Preloader({ onLoadingComplete }) {
               ease: [0.16, 1, 0.3, 1],
             },
           }}
+          role="status"
+          aria-live="polite"
+          aria-label="Loading workspace"
           className="
             fixed inset-0 z-[99999] overflow-hidden
             bg-[var(--color-desktop)]

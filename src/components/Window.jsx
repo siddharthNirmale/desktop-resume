@@ -220,6 +220,8 @@ export default function Window({
   return (
     <motion.div
       ref={windowRef}
+      role="dialog"
+      aria-label={title || "Window"}
       drag={!isResizing}
       dragHandleClassName="window-header-drag"
       dragMomentum={false}

@@ -704,7 +704,7 @@ function Info({ icon, text, href }) {
 
   return (
     <a
-      href={href}
+      href={sanitizeUrl(href)}
       target={isExternal ? "_blank" : undefined}
       rel={isExternal ? "noopener noreferrer" : undefined}
       className="

@@ -229,6 +229,18 @@ export default function ControlCenter({
     return () => observer.disconnect();
   }, []);
 
+  // Dismiss on Escape key (Rule A11Y-05)
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        onClose?.();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   // Theme Toggle with circular clip-path transition
   const handleThemeToggle = useCallback(
     (event) => {
@@ -351,6 +363,9 @@ export default function ControlCenter({
 
           {/* Popover Window */}
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Control Center"
             initial={{ opacity: 0, scale: 0.96, y: -6 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -4 }}
@@ -384,6 +399,7 @@ export default function ControlCenter({
                 onClick={onClose}
                 className="flex h-6 w-6 items-center justify-center rounded-md text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] active:scale-[0.92] transition-all duration-150 ease-out focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
                 title="Close"
+                aria-label="Close Control Center"
               >
                 <FiX size={13} strokeWidth={2} />
               </button>

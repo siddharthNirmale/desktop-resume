@@ -565,6 +565,9 @@ function ProjectPreview({
           damping: 32,
           mass: 0.55,
         }}
+        role="dialog"
+        aria-modal="true"
+        aria-label={project.title ? `${project.title} Preview` : "Project Preview"}
         className="relative flex max-h-[92vh] w-full max-w-3xl lg:max-w-4xl flex-col overflow-hidden rounded-[14px] bg-[var(--color-surface)] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.55)] border border-[var(--color-surface-border)]"
       >
         {/* MODAL CONTROLS */}

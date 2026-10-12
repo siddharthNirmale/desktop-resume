@@ -21,6 +21,8 @@ export default function OfflinePage({
               ease: [0.16, 1, 0.3, 1],
             },
           }}
+          role="alert"
+          aria-live="assertive"
           className="
             fixed inset-0 z-[99999] overflow-hidden
             bg-[var(--color-desktop)]
