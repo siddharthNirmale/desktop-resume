@@ -160,9 +160,9 @@ export default function ContactSection() {
 
   return (
     <section className="h-full w-full overflow-y-auto custom-scrollbar bg-[var(--color-surface)] text-[var(--color-text)]">
-      <div className="mx-auto w-full max-w-2xl px-5 py-10 sm:px-7">
+      <div className="mx-auto w-full max-w-2xl px-5 py-8 sm:px-7">
         {/* Header */}
-        <header className="mb-8">
+        <header className="mb-6">
           <div className="flex items-end justify-between gap-6">
             <div>
               <h2 className="text-2xl font-semibold tracking-[-0.04em] text-[var(--color-text)] sm:text-3xl">
@@ -330,8 +330,8 @@ export default function ContactSection() {
       </div>
 
         {/* Minimal footer */}
-        <div className="mt-10 flex items-center justify-between">
-          <span className="text-[10px] uppercase tracking-[0.14em] text-[var(--color-text-disabled)]">
+        <div className="mt-8 flex items-center justify-between">
+          <span className="text-[10px] text-[var(--color-text-disabled)]">
             Indore · India
           </span>
 

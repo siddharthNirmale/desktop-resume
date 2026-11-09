@@ -58,7 +58,6 @@ const QuickToggleCard = memo(function QuickToggleCard({
     <motion.button
       type="button"
       onClick={onClick}
-      whileHover={{ y: -1 }}
       whileTap={{ scale: 0.95 }}
       transition={{ type: "spring", stiffness: 450, damping: 28 }}
       className={`
@@ -113,7 +112,6 @@ const WidgetTile = memo(function WidgetTile({
     <motion.button
       type="button"
       onClick={() => onToggle(item.id)}
-      whileHover={{ y: -1 }}
       whileTap={{ scale: 0.96 }}
       transition={{ type: "spring", stiffness: 480, damping: 28 }}
       className={`
@@ -488,7 +486,6 @@ export default function ControlCenter({
                           }
                         `}
                       >
-                        <span className="pointer-events-none absolute inset-x-0 top-0 h-[40%] rounded-t-full bg-white/20" />
                         <AnimatePresence>
                           {isSelected && (
                             <motion.div

@@ -59,7 +59,7 @@ export default function Preloader({ onLoadingComplete }) {
           }}
           role="status"
           aria-live="polite"
-          aria-label="Loading workspace"
+          aria-label="workspace"
           className="
             fixed inset-0 z-[99999] overflow-hidden
             bg-[var(--color-desktop)]
@@ -115,10 +115,10 @@ export default function Preloader({ onLoadingComplete }) {
             {/* Status Message */}
             <div className="mt-3 text-[11px] font-medium text-[var(--color-text-tertiary)] tracking-tight">
               {progress < 45
-                ? "Loading workspace"
+                ? "workspace"
                 : progress < 90
-                ? "Initializing interface"
-                : "Ready"}
+                ? "compiling"
+                : "ready"}
             </div>
           </motion.div>
         </motion.div>

@@ -72,7 +72,8 @@ export default function CommandPalette({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[99999] flex items-start justify-center pt-[15vh] sm:pt-[20vh] px-4 font-primary">
+        // Pass 1 · Spacing: single consistent 18vh offset instead of responsive magic pair
+        <div className="fixed inset-0 z-[99999] flex items-start justify-center pt-[18vh] px-4 font-primary">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -110,13 +111,14 @@ export default function CommandPalette({
             </div>
 
             {/* Results */}
-            <div 
+            <div
               ref={listRef}
               className="max-h-[340px] overflow-y-auto p-2 custom-scrollbar"
             >
               {results.length === 0 ? (
+                // Pass 4 · Copy: trim filler word "found"
                 <div className="py-10 text-center text-[var(--color-text-secondary)] text-sm">
-                  No results found for "{query}"
+                  No results for &ldquo;{query}&rdquo;
                 </div>
               ) : (
                 <>
@@ -141,9 +143,9 @@ export default function CommandPalette({
                         role="option"
                         aria-selected={isSelected}
                       >
-                        <div className={`p-1.5 rounded-lg transition-transform duration-150 group-hover:scale-105 ${isSelected ? "bg-white/20" : "bg-[var(--color-surface-hover)]"}`}>
-                          <Icon className={`w-4 h-4 ${isSelected ? "text-white" : "text-[var(--color-text-secondary)]"}`} />
-                        </div>
+                        {/* Pass 3 · Icons: bare icon, no padded tile box */}
+                        <Icon className={`w-[15px] h-[15px] shrink-0 ${isSelected ? "text-white" : "text-[var(--color-text-secondary)]"}`} />
+
                         <div className="flex flex-col flex-1 min-w-0">
                           <span className={`text-sm font-medium truncate ${isSelected ? "text-white" : "text-[var(--color-text)]"}`}>
                             {cmd.name}
@@ -152,33 +154,34 @@ export default function CommandPalette({
                             {cmd.description}
                           </span>
                         </div>
-                        <div className={`text-[10px] font-medium px-2 py-0.5 rounded-full transition-colors ${
-                          isSelected 
-                            ? "bg-white/20 text-white" 
-                            : "bg-[var(--color-surface-border)] text-[var(--color-text-tertiary)]"
-                        }`}>
+
+                        {/* Pass 5 & 7 · Typography + Details: flat mono metadata, no pill */}
+                        <span className={`text-[9px] font-mono shrink-0 transition-colors ${isSelected ? "text-white/60" : "text-[var(--color-text-disabled)]"}`}>
                           {cmd.category}
-                        </div>
+                        </span>
                       </button>
                     );
                   })}
                 </>
               )}
             </div>
-            
-            {/* Footer */}
-            <div className="px-4 py-2 bg-[var(--color-surface-dark)] border-t border-[var(--color-surface-border)] flex items-center justify-between text-xs text-[var(--color-text-tertiary)]">
-              <div className="flex items-center gap-4">
-                <span className="flex items-center gap-1">
-                  <span className="bg-[var(--color-surface-hover)]/70 px-1.5 py-0.5 rounded-[4px] text-[10px] font-mono leading-none">↑</span>
-                  <span className="bg-[var(--color-surface-hover)]/70 px-1.5 py-0.5 rounded-[4px] text-[10px] font-mono leading-none">↓</span>
-                  to navigate
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="bg-[var(--color-surface-hover)]/70 px-1.5 py-0.5 rounded-[4px] text-[10px] font-mono leading-none">↵</span>
-                  to select
-                </span>
-              </div>
+
+            {/* Pass 6 · Layout: collapsed single-line footer with less padding */}
+            <div className="px-4 py-1.5 bg-[var(--color-surface-dark)] border-t border-[var(--color-surface-border)] flex items-center gap-3 text-[10px] text-[var(--color-text-tertiary)]">
+              <span className="flex items-center gap-1">
+                <span className="bg-[var(--color-surface-hover)]/70 px-1 py-0.5 rounded-[3px] font-mono leading-none">↑↓</span>
+                navigate
+              </span>
+              <span className="opacity-30">·</span>
+              <span className="flex items-center gap-1">
+                <span className="bg-[var(--color-surface-hover)]/70 px-1 py-0.5 rounded-[3px] font-mono leading-none">↵</span>
+                select
+              </span>
+              <span className="opacity-30">·</span>
+              <span className="flex items-center gap-1">
+                <span className="bg-[var(--color-surface-hover)]/70 px-1 py-0.5 rounded-[3px] font-mono leading-none">esc</span>
+                close
+              </span>
             </div>
           </motion.div>
         </div>

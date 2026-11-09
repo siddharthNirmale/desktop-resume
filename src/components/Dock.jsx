@@ -314,7 +314,7 @@ function DockCircleItem({
         style={{ scale, y }}
         animate={
           bouncing && !reducedMotion
-            ? { y: [0, -14, 0, -6, 0] }
+            ? { y: [0, -10, 0, -3, 0] }
             : { y: 0 }
         }
         transition={
@@ -355,7 +355,7 @@ function DockCircleItem({
         <Icon
           size={18}
           strokeWidth={1.75}
-          className="transition-transform duration-150 group-hover:scale-[1.04]"
+          className="transition-colors duration-150"
         />
       </motion.button>
 

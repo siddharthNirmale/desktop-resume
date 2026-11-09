@@ -63,7 +63,7 @@ export default function AboutSection() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="max-w-3xl mx-auto px-6 py-6 sm:px-10 sm:py-8 md:px-12 md:py-10 min-h-full flex flex-col justify-between gap-9 sm:gap-11"
+        className="max-w-3xl mx-auto px-6 py-6 sm:px-10 sm:py-8 md:px-12 md:py-10 min-h-full flex flex-col justify-between gap-7 sm:gap-9"
       >
         {/* =====================================================
             TOP / MAIN CONTENT AREA
@@ -198,7 +198,7 @@ export default function AboutSection() {
             <button
               type="button"
               onClick={handleCopyEmail}
-              className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-[var(--color-surface-hover)] hover:bg-[var(--color-surface-active)] border border-[var(--color-surface-border)] text-[12px] font-medium text-[var(--color-text)] transition-colors duration-150 active:scale-[0.96] cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
+              className="group inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] transition-colors duration-150 active:scale-[0.96] cursor-pointer focus:outline-none focus-visible:underline"
             >
               <AnimatePresence mode="wait" initial={false}>
                 {copied ? (
@@ -222,7 +222,7 @@ export default function AboutSection() {
                   >
                     <FiMail
                       size={12}
-                      className="text-[var(--color-text-tertiary)] group-hover:text-[var(--color-text)] transition-colors duration-150"
+                      className="opacity-60"
                     />
                     <span>Email</span>
                   </motion.span>
