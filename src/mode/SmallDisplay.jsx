@@ -176,7 +176,7 @@ export default function TerminalPortfolio() {
         <aside
           role="status"
           aria-label="Display recommendation notice"
-          className="sticky top-0 z-50 w-full bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] px-4 py-2 sm:py-2.5 flex items-center justify-between gap-3 text-xs font-normal border-b border-[var(--color-surface-border)] select-text"
+          className="sticky top-0 z-50 w-full bg-[#39FF14] text-black px-4 py-2 sm:py-2.5 flex items-center justify-between gap-3 text-xs sm:text-sm font-medium border-b border-black/15 select-text"
         >
           <p className="flex-1 text-center sm:text-left leading-snug">
             Designed for desktop workspaces. For the complete environment, open on a wider screen.
@@ -185,7 +185,7 @@ export default function TerminalPortfolio() {
             type="button"
             onClick={() => setShowNotice(false)}
             aria-label="Close notification"
-            className="p-1 -mr-1 hover:bg-[var(--color-surface-hover)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] transition-colors rounded-[4px] cursor-pointer flex items-center justify-center shrink-0 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
+            className="p-1 -mr-1 hover:bg-black/10 active:bg-black/20 text-black transition-colors rounded-[4px] cursor-pointer flex items-center justify-center shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black"
           >
             <FiX size={14} aria-hidden="true" />
           </button>
