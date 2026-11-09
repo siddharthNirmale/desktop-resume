@@ -35,57 +35,37 @@ const SPRING_CONFIG = {
   mass: 0.48,
 };
 
-/* Pastel tinted palette with explicit Light and Dark classes */
+/* Quiet neutral dock ramp adhering to unslop design tokens */
 const DOCK_ITEMS = [
   {
     id: "about",
     icon: FiUser,
     label: "About Me",
     shortcut: "1",
-    lightClass:
-      "bg-[#EEF4FF] text-[#2563EB] hover:bg-[#DBEAFE] shadow-xs",
-    darkClass:
-      "bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 shadow-xs",
   },
   {
     id: "projects",
     icon: FiBriefcase,
     label: "Projects",
     shortcut: "2",
-    lightClass:
-      "bg-[#FFF4ED] text-[#EA580C] hover:bg-[#FFEDD5] shadow-xs",
-    darkClass:
-      "bg-orange-500/15 text-orange-400 hover:bg-orange-500/25 shadow-xs",
   },
   {
     id: "resume",
     icon: FiFileText,
     label: "Resume",
     shortcut: "3",
-    lightClass:
-      "bg-[#EDFAF6] text-[#0D9488] hover:bg-[#CCFBF1] shadow-xs",
-    darkClass:
-      "bg-teal-500/15 text-teal-400 hover:bg-teal-500/25 shadow-xs",
   },
   {
     id: "notepad",
     icon: FiEdit3,
     label: "Notes",
     shortcut: "4",
-    lightClass:
-      "bg-[#FEF2F2] text-[#E11D48] hover:bg-[#FFE4E6] shadow-xs",
-    darkClass:
-      "bg-rose-500/15 text-rose-400 hover:bg-rose-500/25 shadow-xs",
   },
   {
     id: "contact",
     icon: FiMail,
     label: "Contact",
     shortcut: "5",
-    lightClass:
-      "bg-[#FEFCE8] text-[#CA8A04] hover:bg-[#FEF9C3] shadow-xs",
-    darkClass:
-      "bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 shadow-xs",
   },
 ];
 
@@ -236,8 +216,6 @@ function DockCircleItem({
   icon: Icon,
   label,
   shortcut,
-  lightClass,
-  darkClass,
   isLight,
   windows,
   toggleWindow,
@@ -353,24 +331,30 @@ function DockCircleItem({
           group
           relative
           flex
-          h-[46px]
-          w-[46px]
+          h-[44px]
+          w-[44px]
           cursor-pointer
           items-center
           justify-center
-          rounded-full
+          rounded-[12px]
           outline-none
+          border border-[var(--color-surface-border)]
           transition-colors
           duration-150
           focus-visible:ring-2
           focus-visible:ring-[var(--color-accent,#0a84ff)]
           focus-visible:ring-offset-2
           active:brightness-95
-          ${isLight ? lightClass : darkClass}
+          ${
+            isLight
+              ? "bg-[#ffffff] text-[#525252] hover:text-[#171717] hover:bg-[#f4f4f5] shadow-xs"
+              : "bg-[var(--color-surface)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] shadow-xs"
+          }
         `}
       >
         <Icon
-          size={20}
+          size={18}
+          strokeWidth={1.75}
           className="transition-transform duration-150 group-hover:scale-[1.04]"
         />
       </motion.button>

@@ -457,10 +457,10 @@ export default function ControlCenter({
               ═══════════════════════════════════════ */}
               <div className="p-2.5 rounded-xl bg-[var(--color-surface-hover)]/20 space-y-2">
                 <div className="flex items-center justify-between px-0.5">
-                  <span className="text-[10px] font-heading font-semibold uppercase tracking-[0.08em] text-[var(--color-text-tertiary)] leading-none">
-                    Accent Color
+                  <span className="text-[11px] font-mono text-[var(--color-text-tertiary)] leading-none">
+                    Accent color
                   </span>
-                  <span className="text-[10px] font-medium text-[var(--color-text-secondary)] leading-none capitalize">
+                  <span className="text-[11px] font-medium text-[var(--color-text-secondary)] leading-none capitalize">
                     {currentAccentObj.name}
                   </span>
                 </div>
@@ -520,8 +520,8 @@ export default function ControlCenter({
                 <div className="flex items-center justify-between px-1">
                   <div className="flex items-center gap-1.5">
                     <FiLayers size={11} className="text-[var(--color-text-tertiary)]" />
-                    <span className="text-[10px] font-heading font-semibold uppercase tracking-[0.08em] text-[var(--color-text-tertiary)] leading-none">
-                      Desktop Widgets
+                    <span className="text-[11px] font-mono text-[var(--color-text-tertiary)] leading-none">
+                      Desktop widgets
                     </span>
                   </div>
                   <span className="text-[9px] font-medium text-[var(--color-text-disabled)] leading-none">

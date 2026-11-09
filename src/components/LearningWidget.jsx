@@ -43,10 +43,10 @@ export default function LearningWidget({
         {/* Progress Section */}
         <div className="flex flex-col gap-2 pt-1">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-heading font-semibold uppercase tracking-[0.08em] text-[var(--color-text-tertiary)]">
+            <span className="text-[11px] font-mono text-[var(--color-text-tertiary)]">
               Progress
             </span>
-            <span className="text-[11px] font-mono font-semibold text-[var(--color-accent)] tabular-nums">
+            <span className="text-[11px] font-mono font-medium text-[var(--color-accent)] tabular-nums">
               {progress}%
             </span>
           </div>

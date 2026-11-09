@@ -200,11 +200,11 @@ export default function ContactSection() {
           return (
             <div
               key={item.id}
-              className="group flex items-center gap-3 py-2.5 px-3 -mx-3 rounded-xl hover:bg-[var(--color-surface-hover)]/40 transition-colors duration-150"
+              className="group flex items-center gap-3 py-2.5 px-3 -mx-3 rounded-[8px] hover:bg-[var(--color-surface-hover)] transition-colors duration-150"
             >
               {/* Icon */}
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center text-[var(--color-text-tertiary)] transition-all duration-200 group-hover:scale-110 group-hover:text-[var(--color-accent)]">
-                <Icon size={17} />
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center text-[var(--color-text-tertiary)] transition-colors duration-150 group-hover:text-[var(--color-accent)]">
+                <Icon size={16} />
               </div>
 
               {/* Main link */}
@@ -219,7 +219,7 @@ export default function ContactSection() {
                 className="min-w-0 flex-1 outline-none focus-visible:underline"
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-disabled)] transition-colors duration-150 group-hover:text-[var(--color-text-tertiary)]">
+                  <span className="text-[11px] font-mono font-medium text-[var(--color-text-tertiary)]">
                     {item.label}
                   </span>
 

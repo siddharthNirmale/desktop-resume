@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import SystemGlyph from "./SystemGlyph";
 
 export default function Preloader({ onLoadingComplete }) {
   const [isVisible, setIsVisible] = useState(true);
@@ -81,14 +82,14 @@ export default function Preloader({ onLoadingComplete }) {
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className="
-                flex h-14 w-14  items-center justify-center rounded-full
-                bg-white/[0.08] shadow-sm mb-5
-                text-[var(--color-text)]
+                flex h-12 w-12 items-center justify-center rounded-[14px]
+                bg-[var(--color-surface-elevated)] border border-[var(--color-surface-border)]
+                shadow-xs mb-5 text-[var(--color-text)]
               "
             >
-              <span className="text-2xl leading-none select-none">😈</span>
+              <SystemGlyph size={22} className="text-[var(--color-text)]" />
             </motion.div>
 
 
@@ -114,9 +115,9 @@ export default function Preloader({ onLoadingComplete }) {
             {/* Status Message */}
             <div className="mt-3 text-[11px] font-medium text-[var(--color-text-tertiary)] tracking-tight">
               {progress < 45
-                ? "Loading workspace..."
+                ? "Loading workspace"
                 : progress < 90
-                ? "Initializing interface..."
+                ? "Initializing interface"
                 : "Ready"}
             </div>
           </motion.div>

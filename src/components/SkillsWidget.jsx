@@ -69,10 +69,10 @@ export default function SkillsWidget({ constraintsRef, zIndex, onFocus, onClose,
             aria-label={`Show ${set.name} skills`}
             onClick={() => setIndex(i)}
             onPointerDown={(e) => e.stopPropagation()}
-            className={`rounded-full transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] active:scale-90 ${
+            className={`rounded-full transition-colors duration-150 cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)] active:scale-95 ${
               i === index
-                ? 'w-[16px] h-[4px] bg-[var(--color-accent)] shadow-[0_0_8px_var(--color-accent-soft)]'
-                : 'w-[4px] h-[4px] bg-[var(--color-surface-border-strong)] hover:bg-[var(--color-text-secondary)]'
+                ? 'w-[16px] h-[3px] bg-[var(--color-accent)]'
+                : 'w-[4px] h-[3px] bg-[var(--color-surface-border-strong)] hover:bg-[var(--color-text-secondary)]'
             }`}
           />
         ))}

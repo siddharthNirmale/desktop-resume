@@ -23,6 +23,7 @@ import resume from "../data/resume";
 import iconMap from "../utils/iconMap";
 import { safeGetItem, safeSetItem } from "../utils/storage";
 import { sanitizeUrl } from "../utils/security";
+import SystemGlyph from "../components/SystemGlyph";
 
 // Robust date filter that correctly handles crossing over into previous years
 const filterResponsiveMonths = (contributions, monthsToShow) => {
@@ -175,18 +176,18 @@ export default function TerminalPortfolio() {
         <aside
           role="status"
           aria-label="Display recommendation notice"
-          className="sticky top-0 z-50 w-full bg-[#30D158] text-black px-4 py-2 sm:py-2.5 flex items-center justify-between gap-3 text-xs sm:text-sm font-medium border-b border-black/15 rounded-none select-text"
+          className="sticky top-0 z-50 w-full bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] px-4 py-2 sm:py-2.5 flex items-center justify-between gap-3 text-xs font-normal border-b border-[var(--color-surface-border)] select-text"
         >
           <p className="flex-1 text-center sm:text-left leading-snug">
-            For the best experience, please use a larger display. This site is designed for bigger screens.
+            Designed for desktop workspaces. For the complete environment, open on a wider screen.
           </p>
           <button
             type="button"
             onClick={() => setShowNotice(false)}
             aria-label="Close notification"
-            className="p-1 -mr-1 hover:bg-black/10 active:bg-black/20 text-black transition-colors rounded-none cursor-pointer flex items-center justify-center shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black"
+            className="p-1 -mr-1 hover:bg-[var(--color-surface-hover)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] transition-colors rounded-[4px] cursor-pointer flex items-center justify-center shrink-0 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
           >
-            <FiX size={16} aria-hidden="true" />
+            <FiX size={14} aria-hidden="true" />
           </button>
         </aside>
       )}
@@ -196,9 +197,9 @@ export default function TerminalPortfolio() {
         <div className="flex flex-col sm:flex-row gap-6 sm:gap-10 items-start">
           <div className="relative mx-auto sm:mx-0">
             <div
-              className={`w-28 h-28 shrink-0 rounded-2xl ${isDark ? "bg-[var(--color-surface)] border border-[var(--color-surface-border)]" : "bg-white border border-zinc-200 shadow-xs"} flex items-center justify-center relative transition-colors`}
+              className={`w-24 h-24 shrink-0 rounded-[16px] ${isDark ? "bg-[var(--color-surface)] border border-[var(--color-surface-border)]" : "bg-white border border-zinc-200 shadow-xs"} flex items-center justify-center relative transition-colors`}
             >
-              <span className="text-5xl">👨‍💻</span>
+              <SystemGlyph size={40} className="text-[var(--color-text)]" />
             </div>
 
             {/* Interactive Theme Toggle Button */}
@@ -279,9 +280,9 @@ export default function TerminalPortfolio() {
                     key={skill}
                     variants={fadeUpVariant}
                     whileHover={{ y: -3, scale: 1.05 }}
-                    className={`flex items-center gap-2 text-[13px] font-medium border px-3 py-1.5 rounded-lg transition-all cursor-default ${isDark
-                        ? "text-zinc-300 bg-white/[0.03] border-white/5 hover:bg-white/10 hover:border-green-400/20"
-                        : "text-zinc-700 bg-white border-zinc-200 hover:bg-zinc-50 hover:border-green-400/30 shadow-sm"
+                    className={`flex items-center gap-2 text-[13px] font-medium border px-3 py-1.5 rounded-lg transition-colors cursor-default ${isDark
+                        ? "text-zinc-300 bg-white/[0.03] border-white/5 hover:bg-white/10 hover:border-white/15"
+                        : "text-zinc-700 bg-white border-zinc-200 hover:bg-zinc-50 hover:border-zinc-300 shadow-xs"
                       }`}
                   >
                     <span className={isDark ? "text-zinc-400" : "text-zinc-500"}>
@@ -399,7 +400,7 @@ export default function TerminalPortfolio() {
 function SectionHeader({ title, isDark }) {
   return (
     <div className="flex items-center gap-4 mb-2">
-      <h2 className={`text-[13px] font-heading font-semibold tracking-wider uppercase whitespace-nowrap ${isDark ? "text-white" : "text-zinc-900"}`}>
+      <h2 className={`text-[13px] font-heading font-medium tracking-normal whitespace-nowrap ${isDark ? "text-white" : "text-zinc-900"}`}>
         {title}
       </h2>
       <div className={`h-[1px] flex-1 ${isDark ? "bg-white/10" : "bg-zinc-200"}`} />

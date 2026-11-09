@@ -290,9 +290,9 @@ const CompactWallpaperCard = memo(function CompactWallpaperCard({
             <path
               d="M0 8 Q 15 1, 30 8 T 60 8"
               stroke="var(--color-accent)"
-              strokeWidth="1.8"
+              strokeWidth="1.5"
               strokeLinecap="round"
-              className="opacity-95 drop-shadow-[0_0_5px_var(--color-accent)]"
+              className="opacity-90"
             />
             <path
               d="M0 11 Q 15 4, 30 11 T 60 11"

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { FiGithub, FiLinkedin, FiMail, FiSliders, FiSearch } from "react-icons/fi";
 import Tooltip from "./Tooltip";
 import CalendarPopover from "./CalendarPopover";
+import SystemGlyph from "./SystemGlyph";
 
 // ============================================================
 // FORMATTERS (Hoisted for performance)
@@ -88,12 +89,12 @@ export default function TopBar({
               flex h-[22px] px-1.5 items-center justify-center rounded-[4px]
               text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]
               active:bg-[var(--color-surface-active)] active:scale-[0.96]
-              transition-all duration-150 ease-out
+              transition-colors duration-150 ease-out
               cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]
             "
             aria-label="System Menu"
           >
-            <span className="text-[13px] leading-none select-none transition-transform duration-150 hover:scale-105">😈</span>
+            <SystemGlyph size={13} className="text-[var(--color-text)] opacity-85 hover:opacity-100" />
           </button>
         </Tooltip>
 

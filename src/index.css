@@ -2,7 +2,7 @@
 
 @theme {
   /* =========================================================
-     ACCENT
+     ACCENT (Cobalt - single deliberate accent)
      ========================================================= */
 
   --color-accent: #0a84ff;
@@ -19,49 +19,45 @@
 
 
   /* =========================================================
-     DESKTOP
+     DESKTOP (Graphite ramp)
      ========================================================= */
 
-  --color-desktop: #111111;
-  --color-desktop-dot: rgba(255, 255, 255, 0.08);
+  --color-desktop: #141415;
+  --color-desktop-dot: rgba(237, 237, 237, 0.06);
 
 
   /* =========================================================
-     SURFACES
-
-     Keep surfaces visually quiet.
-     Hierarchy comes from contrast, spacing and depth,
-     rather than excessive decoration.
+     SURFACES (Graphite ramp: 0f0f10 -> 141415 -> 19191b -> 232325)
      ========================================================= */
 
-  --color-surface-dark: #181818;
-  --color-surface: #1f1f1f;
-  --color-surface-inactive: #242424;
-  --color-surface-elevated: #2a2a2a;
+  --color-surface-dark: #0f0f10;
+  --color-surface: #19191b;
+  --color-surface-inactive: #141415;
+  --color-surface-elevated: #232325;
 
-  --color-surface-hover: rgba(255, 255, 255, 0.06);
-  --color-surface-active: rgba(255, 255, 255, 0.10);
+  --color-surface-hover: rgba(237, 237, 237, 0.05);
+  --color-surface-active: rgba(237, 237, 237, 0.09);
 
 
   /* =========================================================
-     BORDERS & DIVIDERS
+     BORDERS & DIVIDERS (Hairline at 8%)
      ========================================================= */
 
-  --color-surface-border: rgba(255, 255, 255, 0.07);
-  --color-surface-border-strong: rgba(255, 255, 255, 0.11);
-  --color-window-border: rgba(255, 255, 255, 0.08);
-  --color-divider: rgba(255, 255, 255, 0.07);
+  --color-surface-border: rgba(237, 237, 237, 0.08);
+  --color-surface-border-strong: rgba(237, 237, 237, 0.12);
+  --color-window-border: rgba(237, 237, 237, 0.08);
+  --color-divider: rgba(237, 237, 237, 0.08);
 
 
   /* =========================================================
-     TEXT HIERARCHY
+     TEXT HIERARCHY (3 distinct text roles from Graphite ramp)
      ========================================================= */
 
-  --color-text: #f5f5f7;
-  --color-text-primary: #f5f5f7;
-  --color-text-secondary: rgba(245, 245, 247, 0.68);
-  --color-text-tertiary: rgba(245, 245, 247, 0.42);
-  --color-text-disabled: rgba(245, 245, 247, 0.25);
+  --color-text: #ededed;
+  --color-text-primary: #ededed;
+  --color-text-secondary: #a1a1a6;
+  --color-text-tertiary: #85858b;
+  --color-text-disabled: rgba(237, 237, 237, 0.22);
 
 
   /* =========================================================
@@ -72,73 +68,70 @@
   --font-heading: "Space Grotesk", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-  --text-micro: 10px;
+  --text-micro: 11px;
 
-  --tracking-tight: -0.025em;
-  --tracking-normal: -0.01em;
-  --tracking-wide: 0.04em;
-  --tracking-super-wide: 0.12em;
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.01em;
+  --tracking-super-wide: 0.04em;
 
 
   /* =========================================================
-     RADIUS
+     RADIUS (Nested radius scale: control 8, card 12, window 16)
      ========================================================= */
 
   --radius-control: 8px;
   --radius-card: 12px;
-  --radius-window: 14px;
+  --radius-window: 16px;
   --radius-popover: 12px;
   --radius-pill: 999px;
 
 
   /* =========================================================
      DEPTH
-
-     Shadows are deliberately restrained.
-     Depth should communicate hierarchy, not decoration.
      ========================================================= */
 
   --shadow-window:
-    0 18px 45px rgba(0, 0, 0, 0.28),
-    0 2px 8px rgba(0, 0, 0, 0.18),
-    0 0 0 1px rgba(255, 255, 255, 0.04);
+    0 16px 40px rgba(0, 0, 0, 0.35),
+    0 2px 6px rgba(0, 0, 0, 0.20),
+    0 0 0 1px rgba(237, 237, 237, 0.08);
 
   --shadow-window-focused:
-    0 24px 55px rgba(0, 0, 0, 0.34),
-    0 3px 10px rgba(0, 0, 0, 0.2),
-    0 0 0 1px rgba(255, 255, 255, 0.06);
+    0 24px 50px rgba(0, 0, 0, 0.42),
+    0 3px 8px rgba(0, 0, 0, 0.24),
+    0 0 0 1px rgba(237, 237, 237, 0.12);
 
   --shadow-popover:
-    0 12px 32px rgba(0, 0, 0, 0.24),
-    0 2px 8px rgba(0, 0, 0, 0.12),
-    0 0 0 1px rgba(255, 255, 255, 0.05);
+    0 12px 28px rgba(0, 0, 0, 0.30),
+    0 2px 6px rgba(0, 0, 0, 0.16),
+    0 0 0 1px rgba(237, 237, 237, 0.08);
 
   --shadow-subtle:
-    0 2px 8px rgba(0, 0, 0, 0.12);
+    0 1px 4px rgba(0, 0, 0, 0.16);
 
   --shadow-widget:
-    0 8px 24px rgba(0, 0, 0, 0.24),
-    0 2px 6px rgba(0, 0, 0, 0.12),
-    0 0 0 1px rgba(255, 255, 255, 0.06);
+    0 8px 20px rgba(0, 0, 0, 0.28),
+    0 1px 4px rgba(0, 0, 0, 0.14),
+    0 0 0 1px rgba(237, 237, 237, 0.08);
 
   --widget-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.24),
-    0 2px 6px rgba(0, 0, 0, 0.12),
-    0 0 0 1px rgba(255, 255, 255, 0.06);
+    0 8px 20px rgba(0, 0, 0, 0.28),
+    0 1px 4px rgba(0, 0, 0, 0.14),
+    0 0 0 1px rgba(237, 237, 237, 0.08);
 
-  --wavy-line-opacity: 0.08;
+  --wavy-line-opacity: 0.06;
 
 
   /* =========================================================
-     MOTION
+     MOTION (One easing curve across interface: cubic-bezier(0.22, 1, 0.36, 1))
      ========================================================= */
 
-  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
 
-  --duration-fast: 120ms;
-  --duration-normal: 220ms;
-  --duration-slow: 360ms;
+  --duration-fast: 140ms;
+  --duration-normal: 200ms;
+  --duration-slow: 320ms;
 }
 
 
@@ -227,36 +220,36 @@
 
   /* Desktop */
 
-  --color-desktop: #e7e8eb;
-  --color-desktop-dot: rgba(0, 0, 0, 0.07);
+  --color-desktop: #fafafa;
+  --color-desktop-dot: rgba(23, 23, 23, 0.06);
 
 
-  /* Surfaces */
+  /* Surfaces (Light Graphite ramp: f4f4f5 -> fafafa -> ffffff) */
 
-  --color-surface-dark: #f0f1f3;
+  --color-surface-dark: #f0f0f2;
   --color-surface: #ffffff;
-  --color-surface-inactive: #f7f7f8;
-  --color-surface-elevated: #ffffff;
+  --color-surface-inactive: #f4f4f5;
+  --color-surface-elevated: #f4f4f5;
 
-  --color-surface-hover: rgba(0, 0, 0, 0.045);
-  --color-surface-active: rgba(0, 0, 0, 0.075);
-
-
-  /* Borders */
-
-  --color-surface-border: rgba(0, 0, 0, 0.075);
-  --color-surface-border-strong: rgba(0, 0, 0, 0.12);
-  --color-window-border: rgba(0, 0, 0, 0.10);
-  --color-divider: rgba(0, 0, 0, 0.075);
+  --color-surface-hover: rgba(23, 23, 23, 0.04);
+  --color-surface-active: rgba(23, 23, 23, 0.08);
 
 
-  /* Text */
+  /* Borders (Hairline at 8%) */
 
-  --color-text: #1d1d1f;
-  --color-text-primary: #1d1d1f;
-  --color-text-secondary: rgba(29, 29, 31, 0.68);
-  --color-text-tertiary: rgba(29, 29, 31, 0.44);
-  --color-text-disabled: rgba(29, 29, 31, 0.25);
+  --color-surface-border: rgba(23, 23, 23, 0.08);
+  --color-surface-border-strong: rgba(23, 23, 23, 0.12);
+  --color-window-border: rgba(23, 23, 23, 0.08);
+  --color-divider: rgba(23, 23, 23, 0.08);
+
+
+  /* Text (3 distinct text roles from Graphite ramp) */
+
+  --color-text: #171717;
+  --color-text-primary: #171717;
+  --color-text-secondary: #525252;
+  --color-text-tertiary: #737373;
+  --color-text-disabled: rgba(23, 23, 23, 0.22);
 
 
   /* Depth */

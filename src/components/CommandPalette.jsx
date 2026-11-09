@@ -101,7 +101,7 @@ export default function CommandPalette({
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Search apps, projects, skills..."
+                placeholder="Search apps and commands"
                 className="flex-1 bg-transparent border-none outline-none text-[var(--color-text)] placeholder:text-[var(--color-text-tertiary)] text-base font-medium"
               />
               <div className="hidden sm:flex items-center gap-1 text-[10px] text-[var(--color-text-tertiary)] font-semibold bg-[var(--color-surface-hover)]/70 px-1.5 py-0.5 rounded-[5px]">
@@ -121,8 +121,7 @@ export default function CommandPalette({
               ) : (
                 <>
                   {!query && (
-                    <div className="px-3 pt-2 pb-1 text-xs font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider">
-                      {/* Only label as recent if there are recent items, else suggestions */}
+                    <div className="px-3 pt-2 pb-1 text-xs font-medium text-[var(--color-text-tertiary)]">
                       Suggested
                     </div>
                   )}

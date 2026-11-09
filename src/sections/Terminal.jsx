@@ -56,7 +56,7 @@ export default function Terminal() {
       content: (
         <div className="mb-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] bg-[var(--color-accent)] text-white shadow-sm">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-[var(--color-surface-hover)] border border-[var(--color-surface-border)] text-[var(--color-accent)]">
               <FiTerminal size={14} />
             </div>
 

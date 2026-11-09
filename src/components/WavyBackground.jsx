@@ -1,5 +1,4 @@
 import { useMemo, memo } from "react";
-import { motion, useReducedMotion } from "framer-motion";
 import { DEFAULT_WAVY_CONFIG } from "../config/wavyConfig";
 
 /**
@@ -65,14 +64,10 @@ const WavyBackground = memo(function WavyBackground({
   lineCount = DEFAULT_WAVY_CONFIG.lineCount,
   opacity,
   strokeWidth = DEFAULT_WAVY_CONFIG.strokeWidth,
-  duration = DEFAULT_WAVY_CONFIG.duration,
-  direction = DEFAULT_WAVY_CONFIG.direction,
   angle = DEFAULT_WAVY_CONFIG.angle,
   verticalOffset = DEFAULT_WAVY_CONFIG.verticalOffset,
   className = "",
 }) {
-  const prefersReducedMotion = useReducedMotion();
-
   // Generously sized to ensure continuous coverage across the rotated 45-degree diagonal
   const totalSvgWidth = Math.max(1200, wavelength * 16);
   const totalSvgHeight = verticalOffset + lineCount * lineSpacing + amplitude * 2 + 30;
@@ -87,8 +82,6 @@ const WavyBackground = memo(function WavyBackground({
       totalWidth: totalSvgWidth,
     });
   }, [amplitude, wavelength, lineSpacing, lineCount, verticalOffset, totalSvgWidth]);
-
-  const shouldAnimate = !prefersReducedMotion && direction !== "none" && duration > 0;
 
   return (
     <div
@@ -105,32 +98,7 @@ const WavyBackground = memo(function WavyBackground({
           transformOrigin: "center center",
         }}
       >
-        <motion.div
-          className="absolute top-0 left-0 h-full flex items-start"
-          animate={
-            shouldAnimate
-              ? {
-                  x: direction === "left" ? [0, -wavelength] : [-wavelength, 0],
-                }
-              : undefined
-          }
-          transition={
-            shouldAnimate
-              ? {
-                  x: {
-                    repeat: Infinity,
-                    repeatType: "loop",
-                    duration,
-                    ease: "linear",
-                  },
-                }
-              : undefined
-          }
-          style={{
-            width: totalSvgWidth,
-            willChange: shouldAnimate ? "transform" : "auto",
-          }}
-        >
+        <div className="absolute top-0 left-0 h-full flex items-start" style={{ width: totalSvgWidth }}>
           <svg
             width={totalSvgWidth}
             height={totalSvgHeight}
@@ -139,7 +107,7 @@ const WavyBackground = memo(function WavyBackground({
             xmlns="http://www.w3.org/2000/svg"
             className="shrink-0 text-[var(--color-text)] transition-colors duration-200"
             style={{
-              opacity: opacity ?? "var(--wavy-line-opacity, 0.08)",
+              opacity: opacity ?? "var(--wavy-line-opacity, 0.06)",
               shapeRendering: "geometricPrecision",
             }}
           >
@@ -152,7 +120,7 @@ const WavyBackground = memo(function WavyBackground({
               fill="none"
             />
           </svg>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

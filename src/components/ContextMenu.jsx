@@ -53,8 +53,8 @@ export default function ContextMenu({
     >
       {/* Header */}
       <div className="px-2.5 py-1 mb-0.5">
-        <span className="text-[10px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[0.06em]">
-          Desktop Actions
+        <span className="text-[11px] font-medium text-[var(--color-text-tertiary)]">
+          Desktop actions
         </span>
       </div>
 

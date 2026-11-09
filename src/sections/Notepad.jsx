@@ -130,7 +130,7 @@ export default function Notepad() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               aria-label="Search notes"
-              placeholder="Search notes..."
+              placeholder="Search notes"
               className="min-w-0 flex-1 bg-transparent text-[11px] border-none outline-none placeholder:text-[var(--color-text-tertiary)]"
             />
             {search && (
@@ -166,13 +166,13 @@ export default function Notepad() {
                     : "hover:bg-[var(--color-surface-hover)]/40 text-[var(--color-text-secondary)]"
                 }`}
               >
-                <span className="truncate text-[11px] font-medium text-[var(--color-text)]">
+                <span className="truncate text-[12px] font-medium text-[var(--color-text)]">
                   {note.title || "Untitled Note"}
                 </span>
-                <span className="line-clamp-2 text-[9px] leading-[1.5] text-[var(--color-text-tertiary)]">
+                <span className="line-clamp-2 text-[11px] leading-[1.5] text-[var(--color-text-tertiary)]">
                   {note.content || "Empty note"}
                 </span>
-                <span className="text-[8px] text-[var(--color-text-disabled)]">
+                <span className="text-[10px] font-mono text-[var(--color-text-disabled)] tabular-nums">
                   {formatDate(note.updatedAt)}
                 </span>
               </button>

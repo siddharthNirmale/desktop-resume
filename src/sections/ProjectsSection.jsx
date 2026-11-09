@@ -238,7 +238,7 @@ export default function ProjectsSection() {
           </div>
         </div>
 
-        {/* CATEGORY FILTER PILLS WITH MORPHING PILL */}
+        {/* CATEGORY FILTER TABS */}
         <div className="mt-3 flex items-center gap-1 overflow-x-auto custom-scrollbar pb-0.5 relative">
           {filters.map((filter) => {
             const active = activeFilter === filter;
@@ -247,17 +247,17 @@ export default function ProjectsSection() {
                 key={filter}
                 type="button"
                 onClick={() => setActiveFilter(filter)}
-                className={`relative z-10 shrink-0 rounded-full px-2.5 py-1 text-[10px] font-medium transition-colors duration-150 active:scale-[0.96] cursor-pointer ${
+                className={`relative z-10 shrink-0 rounded-[8px] px-2.5 py-1 text-[11px] font-medium transition-colors duration-150 active:scale-[0.96] cursor-pointer ${
                   active
-                    ? "text-[var(--color-surface)] font-semibold"
-                    : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]/50"
+                    ? "text-[var(--color-surface)] font-medium"
+                    : "text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]"
                 }`}
               >
                 {active && (
                   <motion.div
                     layoutId="project-active-filter-pill"
                     transition={springPreset}
-                    className="absolute inset-0 rounded-full bg-[var(--color-text)] -z-10"
+                    className="absolute inset-0 rounded-[8px] bg-[var(--color-text)] -z-10"
                   />
                 )}
                 <span>{filter}</span>
@@ -382,17 +382,17 @@ const ProjectCard = memo(function ProjectCard({ project, view, onPreview }) {
             }}
             aria-label={`Open full preview for ${project.title}`}
             title="Full preview"
-            className="absolute top-2.5 right-2.5 z-10 hidden sm:flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-md opacity-0 group-hover/image:opacity-100 hover:bg-black/85 hover:scale-105 active:scale-95 transition-all duration-150 cursor-pointer"
+            className="absolute top-2.5 right-2.5 z-10 hidden sm:flex h-7 w-7 items-center justify-center rounded-[8px] bg-black/60 text-white backdrop-blur-md opacity-0 group-hover/image:opacity-100 hover:bg-black/85 transition-opacity duration-150 cursor-pointer"
           >
             <FiMaximize2 size={12} />
           </div>
 
-          {/* Interactive micro-indicator (Transitions.dev style) */}
-          <div className="absolute bottom-2.5 right-2.5 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-sm text-white text-[11px] font-medium transition-all duration-200 group-hover/image:bg-black/80 group-hover/image:scale-105">
+          {/* Interactive micro-indicator */}
+          <div className="absolute bottom-2.5 right-2.5 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-[8px] bg-black/60 backdrop-blur-sm text-white text-[11px] font-medium transition-colors duration-150 group-hover/image:bg-black/80">
             <span>{isExpanded ? "Close" : "Details"}</span>
             <FiChevronDown
               size={12}
-              className={`transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+              className={`transition-transform duration-150 ${isExpanded ? "rotate-180" : ""}`}
             />
           </div>
         </div>

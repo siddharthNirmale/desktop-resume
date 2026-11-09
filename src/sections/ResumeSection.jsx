@@ -87,14 +87,12 @@ export default function ResumeSection() {
             <span
               className="
                 hidden
-                rounded-full
-                bg-[var(--color-surface-hover)]/60
+                rounded-[6px]
+                bg-[var(--color-surface-hover)]
                 px-2
                 py-0.5
-                text-[9px]
-                font-medium
-                uppercase
-                tracking-wide
+                text-[10px]
+                font-mono
                 text-[var(--color-text-secondary)]
                 sm:inline-flex
               "
@@ -203,10 +201,9 @@ export default function ResumeSection() {
               <p
                 className="
                   mb-2
-                  text-[10px]
-                  font-semibold
-                  uppercase
-                  tracking-[0.12em]
+                  text-[11px]
+                  font-mono
+                  font-medium
                   text-[var(--color-text-tertiary)]
                 "
               >
@@ -215,14 +212,14 @@ export default function ResumeSection() {
 
               <h2
                 className="
-                  text-[34px]
+                  text-[32px]
                   font-heading
-                  font-bold
+                  font-medium
                   leading-[1]
-                  tracking-[-0.045em]
+                  tracking-[-0.03em]
                   text-[var(--color-text)]
 
-                  sm:text-[40px]
+                  sm:text-[38px]
                 "
               >
                 Siddharth Nirmale
@@ -319,7 +316,7 @@ export default function ResumeSection() {
 
           <StatCard
             label="Projects"
-            value={String(projects.length).padStart(2, "0")}
+            value={String(projects.length)}
             emphasis
           />
 
@@ -456,10 +453,8 @@ export default function ResumeSection() {
                 <h4
                   className="
                     mb-2.5
-                    text-[11px]
-                    font-bold
-                    uppercase
-                    tracking-[0.06em]
+                    text-[12px]
+                    font-medium
                     text-[var(--color-text)]
                   "
                 >
@@ -509,10 +504,9 @@ function SectionTitle({ icon, title }) {
 
       <h3
         className="
-          text-[11px]
-          font-bold
-          uppercase
-          tracking-[0.08em]
+          text-[12px]
+          font-heading
+          font-medium
           text-[var(--color-text)]
         "
       >
@@ -589,14 +583,12 @@ function ProjectPanel({ project }) {
                 className="
                   inline-flex
                   items-center
-                  rounded-full
+                  rounded-[6px]
                   bg-[var(--color-accent)]/12
                   px-2
                   py-0.5
-                  text-[8px]
-                  font-bold
-                  uppercase
-                  tracking-[0.06em]
+                  text-[10px]
+                  font-medium
                   text-[var(--color-accent)]
                 "
               >
@@ -610,11 +602,8 @@ function ProjectPanel({ project }) {
               mt-1.5
               inline-block
 
-              text-[10px]
-              font-bold
-              uppercase
-              tracking-[0.08em]
-
+              text-[11px]
+              font-mono
               text-[var(--color-accent)]
             "
           >

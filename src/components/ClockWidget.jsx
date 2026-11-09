@@ -1,5 +1,4 @@
 import { useEffect, useState, memo } from "react";
-import { motion } from "framer-motion";
 import WidgetCover from "./WidgetCover";
 
 /* ─────────────────────────────────────────────────────────────
@@ -82,11 +81,8 @@ export default function ClockWidget({
     >
       <div className="flex w-full flex-col items-center justify-center py-1 select-none">
         {/* Compact Analog Dial */}
-        <motion.div
-          whileHover={{ scale: 1.025 }}
-          whileTap={{ scale: 0.985 }}
-          transition={{ type: "spring", stiffness: 420, damping: 30 }}
-          className="relative flex h-[104px] w-[104px] items-center justify-center rounded-full bg-[var(--color-surface-elevated)]/80 backdrop-blur-sm border border-[var(--color-surface-border)]/60 hover:border-[var(--color-surface-border-strong)] shadow-xs transition-colors duration-200 cursor-default"
+        <div
+          className="relative flex h-[104px] w-[104px] items-center justify-center rounded-full bg-[var(--color-surface-elevated)] border border-[var(--color-surface-border)] shadow-xs transition-colors duration-150 cursor-default"
         >
           {/* Subtle Ticks */}
           <ClockTicks />
@@ -111,7 +107,7 @@ export default function ClockWidget({
           <div className="relative z-10 flex h-2 w-2 items-center justify-center rounded-full bg-[var(--color-surface-elevated)] shadow-xs border border-[var(--color-surface-border)]">
             <div className="h-1 w-1 rounded-full bg-[var(--color-text)]" />
           </div>
-        </motion.div>
+        </div>
 
         {/* Digital Time & Date */}
         <div className="mt-2 flex flex-col items-center text-center">

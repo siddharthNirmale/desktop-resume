@@ -71,16 +71,16 @@ export default function AboutSection() {
         <div className="space-y-9 sm:space-y-11">
           {/* Hero Lead */}
           <motion.div variants={itemVariants} className="space-y-3">
-            <h1 className="text-[clamp(2.25rem,6vw,3.5rem)] leading-[0.98] font-heading font-bold tracking-[-0.04em] text-[var(--color-text)]">
+            <h1 className="text-[clamp(2.25rem,6vw,3.5rem)] leading-[1] font-heading font-medium tracking-[-0.03em] text-[var(--color-text)]">
               Siddharth Nirmale
             </h1>
 
-            <p className="text-[clamp(1.1rem,2.2vw,1.35rem)] leading-snug font-heading font-medium tracking-[-0.02em] text-[var(--color-text-secondary)] max-w-2xl">
-              Full-stack engineer crafting fluid web applications, reactive interfaces, and intelligent systems.
+            <p className="text-[clamp(1.1rem,2.2vw,1.35rem)] leading-snug font-heading font-normal tracking-[-0.015em] text-[var(--color-text-secondary)] max-w-2xl">
+              Full-stack engineer building fluid web applications, reactive interfaces, and intelligent systems
             </p>
 
-            <p className="text-[13.5px] leading-relaxed text-[var(--color-text-tertiary)] max-w-xl">
-              Specializing in React 19 ecosystems, tactile micro-interactions, scalable Node.js architecture, and applied AI workflows.
+            <p className="text-[13px] leading-relaxed text-[var(--color-text-tertiary)] max-w-xl">
+              Specializing in React 19 ecosystems, tactile micro-interactions, scalable Node.js architecture, and applied AI workflows
             </p>
           </motion.div>
 
@@ -91,20 +91,20 @@ export default function AboutSection() {
           >
             {/* Stack */}
             <div className="space-y-2">
-              <h2 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-tertiary)] font-mono">
-                Core Stack
+              <h2 className="text-[11px] font-medium text-[var(--color-text-tertiary)] font-mono">
+                Core stack
               </h2>
-              <p className="text-[12.5px] leading-relaxed text-[var(--color-text-secondary)]">
-                React 19, Next.js, TypeScript, Node.js, Tailwind CSS, Framer Motion, MongoDB.
+              <p className="text-[13px] leading-relaxed text-[var(--color-text-secondary)]">
+                React 19, Next.js, TypeScript, Node.js, Tailwind CSS, Framer Motion, MongoDB
               </p>
             </div>
 
             {/* Background */}
             <div className="space-y-2">
-              <h2 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-tertiary)] font-mono">
+              <h2 className="text-[11px] font-medium text-[var(--color-text-tertiary)] font-mono">
                 Background
               </h2>
-              <div className="text-[12.5px] leading-relaxed text-[var(--color-text-secondary)] space-y-1">
+              <div className="text-[13px] leading-relaxed text-[var(--color-text-secondary)] space-y-1">
                 <div className="group cursor-default">
                   <span className="text-[var(--color-text)] font-medium transition-colors group-hover:text-[var(--color-accent)]">
                     Personifwy
@@ -122,10 +122,10 @@ export default function AboutSection() {
 
             {/* Selected Work */}
             <div className="space-y-2">
-              <h2 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-tertiary)] font-mono">
-                Selected Craft
+              <h2 className="text-[11px] font-medium text-[var(--color-text-tertiary)] font-mono">
+                Selected craft
               </h2>
-              <div className="text-[12.5px] leading-relaxed space-y-1">
+              <div className="text-[13px] leading-relaxed space-y-1">
                 <div>
                   <a
                     href="https://lekha-lilac.vercel.app/"
@@ -185,11 +185,11 @@ export default function AboutSection() {
             <button
               type="button"
               onClick={handleDownloadResume}
-              className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] bg-[var(--color-text)] text-[var(--color-surface)] text-[11.5px] font-semibold transition-all duration-150 hover:opacity-90 active:scale-[0.96] active:brightness-95 cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
+              className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-[var(--color-text)] text-[var(--color-surface)] text-[12px] font-medium transition-all duration-150 hover:opacity-90 active:scale-[0.96] active:brightness-95 cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
             >
               <FiDownload
                 size={12}
-                strokeWidth={2.2}
+                strokeWidth={2}
                 className="transition-transform duration-150 group-hover:-translate-y-0.5"
               />
               <span>Resume</span>
@@ -198,7 +198,7 @@ export default function AboutSection() {
             <button
               type="button"
               onClick={handleCopyEmail}
-              className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] bg-[var(--color-surface-hover)]/40 hover:bg-[var(--color-surface-hover)] border border-transparent hover:border-[var(--color-surface-border)] text-[11.5px] font-medium text-[var(--color-text)] transition-all duration-150 active:scale-[0.96] cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
+              className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-[var(--color-surface-hover)] hover:bg-[var(--color-surface-active)] border border-[var(--color-surface-border)] text-[12px] font-medium text-[var(--color-text)] transition-colors duration-150 active:scale-[0.96] cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-accent)]"
             >
               <AnimatePresence mode="wait" initial={false}>
                 {copied ? (
@@ -230,12 +230,12 @@ export default function AboutSection() {
               </AnimatePresence>
             </button>
 
-            <div className="flex items-center gap-3 ml-1 text-[11.5px] font-medium text-[var(--color-text-tertiary)]">
+            <div className="flex items-center gap-3 ml-1 text-[12px] font-medium text-[var(--color-text-tertiary)]">
               <a
                 href="https://github.com/siddharthNirmale"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-[var(--color-text)] active:scale-[0.96] transition-all duration-150 outline-none focus-visible:underline"
+                className="hover:text-[var(--color-text)] active:scale-[0.96] transition-colors duration-150 outline-none focus-visible:underline"
               >
                 GitHub
               </a>
@@ -246,7 +246,7 @@ export default function AboutSection() {
                 href="https://linkedin.com/in/siddharth-nirmale"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-[var(--color-text)] active:scale-[0.96] transition-all duration-150 outline-none focus-visible:underline"
+                className="hover:text-[var(--color-text)] active:scale-[0.96] transition-colors duration-150 outline-none focus-visible:underline"
               >
                 LinkedIn
               </a>
